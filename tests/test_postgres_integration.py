@@ -49,3 +49,26 @@ def test_audit_log_append_only_at_database(engine):
             conn.execute(text("delete from audit_log where id=:id"), {"id": event_id})
     with engine.connect() as conn:
         assert conn.execute(text("select count(*) from audit_log where id=:id"), {"id": event_id}).scalar_one() == 1
+
+
+def test_runtime_database_role_cannot_delete_audit_or_disable_triggers(engine):
+    with engine.begin() as conn:
+        conn.execute(text("DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='mcias_runtime_probe') THEN CREATE ROLE mcias_runtime_probe NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS; END IF; END $$"))
+        conn.execute(text("GRANT USAGE ON SCHEMA public TO mcias_runtime_probe"))
+        conn.execute(text("GRANT SELECT, INSERT ON audit_log TO mcias_runtime_probe"))
+    with engine.connect() as conn:
+        conn.execute(text("SET ROLE mcias_runtime_probe"))
+        try:
+            with pytest.raises(Exception):
+                with conn.begin_nested():
+                    conn.execute(text("DELETE FROM audit_log"))
+        finally:
+            conn.rollback()
+    with engine.connect() as conn:
+        conn.execute(text("SET ROLE mcias_runtime_probe"))
+        try:
+            with pytest.raises(Exception):
+                with conn.begin_nested():
+                    conn.execute(text("ALTER TABLE claims DISABLE TRIGGER trg_mcias_claim_guard"))
+        finally:
+            conn.rollback()
