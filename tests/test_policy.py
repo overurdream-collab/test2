@@ -21,6 +21,8 @@ def setup(db):
     user = User(username="test-user", password_hash="test-only")
     source = SourceFile(sha256="a"*64, original_filename="synthetic.xlsx", storage_key="encrypted")
     db.add_all([org, user, source]); db.flush()
+    user.organization_id = org.id
+    db.flush()
     return org, user, source
 
 def test_t06_exclusion_edit_default_deny(db):
