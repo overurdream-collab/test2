@@ -35,7 +35,13 @@ def sign_checkpoint(records, private_key: Ed25519PrivateKey):
     final_hash = records[-1]["digest"] if records else "0"*64
     return {"head": final_hash, "signature": private_key.sign(bytes.fromhex(final_hash)).hex()}
 
-def verify_checkpoint(checkpoint, public_key: Ed25519PublicKey):
+def verify_checkpoint(checkpoint, public_key: Ed25519PublicKey, records=None):
+    if records is not None:
+        if not verify_chain(records):
+            return False
+        expected_head = records[-1]["digest"] if records else "0"*64
+        if checkpoint.get("head") != expected_head:
+            return False
     try:
         public_key.verify(bytes.fromhex(checkpoint["signature"]), bytes.fromhex(checkpoint["head"]))
         return True
