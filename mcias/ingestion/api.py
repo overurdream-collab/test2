@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api/v1/ingestion", tags=["ingestion"])
 async def upload(request: Request, filename: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, _ = resolve_user(db, authorization)
     require_organization(db, user, user.organization_id, "ingestion.upload")
-    if len(filename) > 250 or not filename or "/" in filename or "\\\\" in filename:
+    if len(filename) > 250 or not filename or "/" in filename or chr(92) in filename:
         raise HTTPException(400, "invalid filename")
     if request.headers.get("content-length") and int(request.headers["content-length"]) > MAX_BYTES:
         raise HTTPException(413, "file too large")
