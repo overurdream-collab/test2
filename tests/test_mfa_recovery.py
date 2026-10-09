@@ -25,6 +25,8 @@ def test_dual_control_recovery_replay_and_self_approval():
             signatures = {uid: key.sign(payload).hex() for uid, key in keys.items()}
             with pytest.raises(ValueError, match="two independent"):
                 replace_factor(db, request, {people[0].id: signatures[people[0].id], people[1].id: signatures[people[1].id]}, pub, os.urandom(32))
+            with pytest.raises(ValueError, match="two independent"):
+                replace_factor(db, request, {people[1].id: signatures[people[1].id], people[2].id: "00"*64}, pub, os.urandom(32))
             key = os.urandom(32)
             secret = replace_factor(db, request, {people[1].id: signatures[people[1].id], people[2].id: signatures[people[2].id]}, pub, key)
             assert len(secret) == 32
