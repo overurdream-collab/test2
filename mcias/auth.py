@@ -21,9 +21,10 @@ def authenticate(db: Session, username: str, password: str, totp_code: str | Non
         record_failure(db, identity_hash)
         raise HTTPException(status_code=401, detail="invalid credentials")
     privileged = db.scalar(select(Role.id).join(UserRole, UserRole.role_id == Role.id).where(UserRole.user_id == user.id, Role.code == "super_admin")) is not None
-    factor = db.get(MFAFactor, user.id)
+    factor = db.scalar(select(MFAFactor).where(MFAFactor.user_id == user.id).with_for_update())
     if privileged or (factor is not None and factor.enabled):
         if factor is None or not factor.enabled or not totp_code:
+            record_failure(db, identity_hash)
             raise HTTPException(status_code=401, detail="MFA required")
         try:
             key = bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])
@@ -32,9 +33,10 @@ def authenticate(db: Session, username: str, password: str, totp_code: str | Non
             nonce, ciphertext = factor.encrypted_secret[:12], factor.encrypted_secret[12:]
             secret = AESGCM(key).decrypt(nonce, ciphertext, user.id.encode())
             counter = verify_totp(secret, totp_code, factor.last_accepted_counter)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, __import__("cryptography").exceptions.InvalidTag):
             raise HTTPException(status_code=503, detail="MFA unavailable")
         if counter is None:
+            record_failure(db, identity_hash)
             raise HTTPException(status_code=401, detail="invalid MFA code")
         factor.last_accepted_counter = counter
     clear_failures(db, identity_hash)
