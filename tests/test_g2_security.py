@@ -35,3 +35,33 @@ def test_xlsx_archive_path_traversal_rejected():
 def test_csv_duplicate_header_rejected():
     with pytest.raises(ValueError,match="header"):
         read(b"id,id\nA,B\n","dup.csv")
+
+def test_duplicate_zip_members_rejected():
+    import warnings
+    buffer=io.BytesIO()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        with zipfile.ZipFile(buffer, "w") as z:
+            z.writestr("[Content_Types].xml", "x")
+            z.writestr("xl/workbook.xml", "x")
+            z.writestr("xl/workbook.xml", "different")
+    with pytest.raises(UnsafeDocument, match="duplicate archive member"):
+        identify(buffer.getvalue(), "duplicate.xlsx")
+
+def test_backslash_archive_traversal_rejected():
+    buffer=io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as z:
+        z.writestr("[Content_Types].xml", "x")
+        z.writestr("xl/workbook.xml", "x")
+        z.writestr(".."+chr(92)+"outside.txt", "x")
+    with pytest.raises(UnsafeDocument, match="unsafe archive"):
+        identify(buffer.getvalue(), "backslash.xlsx")
+
+def test_excessive_xlsx_compression_rejected():
+    buffer=io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", "x")
+        z.writestr("xl/workbook.xml", "x")
+        z.writestr("xl/worksheets/sheet1.xml", "A"*1024*1024)
+    with pytest.raises(UnsafeDocument, match="compression ratio"):
+        identify(buffer.getvalue(), "compressed.xlsx")
