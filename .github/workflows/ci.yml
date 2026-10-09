@@ -56,4 +56,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -e '.[test]'
-      - run: python -m pytest -q tests/test_postgres_integration.py tests/test_restore_drill.py
+      - run: python -m pytest -q tests/test_postgres_integration.py tests/test_restore_drill.py tests/test_rule_immutability_postgres.py
