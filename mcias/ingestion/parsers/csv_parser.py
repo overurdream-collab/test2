@@ -10,9 +10,13 @@ def parse(data: bytes) -> Extraction:
     header = next(reader, None)
     if not header or any(not h.strip() for h in header) or len(set(header)) != len(header):
         raise ValueError("invalid CSV header")
+    if len(header) > 256:
+        raise ValueError("CSV column limit exceeded")
     result = Extraction(format="csv")
     for row in reader:
         result.units_total += 1
+        if result.units_total > 100_000:
+            raise ValueError("CSV row limit exceeded")
         if len(row) != len(header):
             result.quarantined.append(item("column count mismatch", "row", reader.line_num))
             continue
