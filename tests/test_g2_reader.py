@@ -50,3 +50,12 @@ def test_file_type_mismatch_rejected():
 def test_image_requires_local_ocr_and_is_quarantined():
     result=read(b"\x89PNG\r\n\x1a\n"+b"synthetic","scan.png")
     assert result.quarantined and result.units_total==1
+
+def test_xlsx_formula_row_quarantined_without_execution():
+    book=Workbook(); sheet=book.active
+    sheet.append(["claim","amount"]); sheet.append(["A","=1+1"])
+    out=io.BytesIO(); book.save(out)
+    result=read(out.getvalue(),"formulas.xlsx")
+    assert not result.records
+    assert result.quarantined[0]["reason"]=="formula cell"
+    assert result.quarantined[0]["locator"]["index"]==2
