@@ -26,9 +26,16 @@ async def upload(request: Request, filename: str, authorization: str | None = He
             raise HTTPException(400, "invalid content length")
         if declared < 0 or declared > MAX_BYTES:
             raise HTTPException(413, "file too large")
-    data = await request.body()
-    if not data or len(data) > MAX_BYTES:
-        raise HTTPException(413, "file empty or too large")
+    chunks = []
+    total = 0
+    async for chunk in request.stream():
+        total += len(chunk)
+        if total > MAX_BYTES:
+            raise HTTPException(413, "file too large")
+        chunks.append(chunk)
+    if not total:
+        raise HTTPException(400, "empty file")
+    data = b"".join(chunks)
     try:
         key = bytes.fromhex(os.environ["MCIAS_STORAGE_KEY"])
         store = EncryptedStore(os.environ["MCIAS_STORAGE_DIR"], key)
