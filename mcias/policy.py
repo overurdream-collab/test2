@@ -16,4 +16,14 @@ def can_activate_rule(db: Session, user: User, rule: RuleVersion) -> bool:
     if rule.status != "draft" or not has_permission(db, user, "rules.activate") or not rule.written_authorization_id:
         return False
     approval = db.get(WrittenAuthorization, rule.written_authorization_id)
-    return bool(approval and approval.organization_id == rule.organization_id and approval.source_id and approval.approved_by)
+    if not approval or approval.organization_id != rule.organization_id or not approval.source_id or not approval.approved_by:
+        return False
+    # A recorded authorization is not proof of an organization's head signature.
+    # Require a distinct, active approver in the same organization; external
+    # signature verification remains an explicit production acceptance blocker.
+    approver = db.get(User, approval.approved_by)
+    if not approver or not approver.active or approver.organization_id != rule.organization_id:
+        return False
+    if user.organization_id is not None and user.organization_id != rule.organization_id:
+        return False
+    return approval.approved_by != user.id
