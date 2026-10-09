@@ -117,3 +117,10 @@ def prevent_audit_mutation(mapper, connection, target):
 @event.listens_for(AuditLog, "before_delete")
 def prevent_audit_deletion(mapper, connection, target):
     raise ValueError("audit log is append-only")
+
+class MFAFactor(Base):
+    __tablename__ = "mfa_factors"
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    encrypted_secret: Mapped[bytes] = mapped_column(__import__("sqlalchemy").LargeBinary, nullable=False)
+    last_accepted_counter: Mapped[int] = mapped_column(Integer, nullable=False, default=-1)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
