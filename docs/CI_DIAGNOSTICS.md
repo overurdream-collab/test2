@@ -18,3 +18,12 @@ CI is triggering, but **the underlying failure cause cannot be established from 
 4. Fix any confirmed source/dependency issue, then run both jobs on the same commit.
 5. Record run ID, commit SHA, result and log evidence in GATE_STATUS.md.
 6. Do not accept G1 until all required tests, real PostgreSQL recovery and human sign-off succeed.
+
+
+## Resolution — verified GitHub run #15
+Re-run of #11: unit SUCCESS; dependency-audit FAILURE. Full audit log showed 7 advisory entries for cryptography 46.0.7 (PYSEC-2026-3552/3553/3554, GHSA-537c-gmf6-5ccf). Upgraded dependency bound from cryptography>=43,<47 to cryptography>=50.0.0,<51, commit a33a7257f244f65c3c586095f99afc28d374deed.
+
+GitHub Actions run #15: https://github.com/overurdream-collab/test2/actions/runs/38000684160
+- unit: completed SUCCESS (job 114057725578).
+- dependency-audit: completed SUCCESS (job 114057725305).
+This closes the observed dependency-audit CI failure, **not** G1 acceptance or a general security certification.
