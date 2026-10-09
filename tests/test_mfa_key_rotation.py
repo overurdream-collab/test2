@@ -18,3 +18,16 @@ def test_mfa_rewrap_preserves_secret_and_binds_identity():
         AESGCM(new_key).decrypt(rotated[:12], rotated[12:], b"other-user")
     with pytest.raises(ValueError):
         rewrap_mfa_secret(envelope, user_id, b"short", new_key)
+
+
+def test_rotation_empty_database_audited():
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import Session
+    from mcias.models import Base, AuditLog
+    from mcias.mfa_key_rotation import rotate_all_factors
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine) as db:
+        assert rotate_all_factors(db, os.urandom(32), os.urandom(32)) == 0
+        assert db.query(AuditLog).filter_by(action="offline_mfa_key_rotation").count() == 1
+    engine.dispose()
