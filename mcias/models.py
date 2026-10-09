@@ -124,3 +124,9 @@ class MFAFactor(Base):
     encrypted_secret: Mapped[bytes] = mapped_column(__import__("sqlalchemy").LargeBinary, nullable=False)
     last_accepted_counter: Mapped[int] = mapped_column(Integer, nullable=False, default=-1)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+class LoginAttempt(Base):
+    __tablename__ = "login_attempts"
+    identity_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    failures: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    window_start: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=now_utc)
