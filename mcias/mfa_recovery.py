@@ -17,7 +17,7 @@ def verify_approvals(db, request, signatures, trusted_keys):
     expiry = datetime.fromisoformat(request["expires_at"])
     if expiry.tzinfo is None or expiry <= datetime.now(timezone.utc):
         raise ValueError("expired request")
-    if len(request["request_id"]) < 16 or len(request["evidence_sha256"]) != 64:
+    if len(request["request_id"]) < 16 or len(request["evidence_sha256"]) != 64 or any(ch not in "0123456789abcdef" for ch in request["evidence_sha256"]):
         raise ValueError("invalid evidence")
     if db.scalar(select(AuditLog.id).where(AuditLog.action == "mfa_recovered", AuditLog.resource_id == request["request_id"])):
         raise ValueError("replayed request")
