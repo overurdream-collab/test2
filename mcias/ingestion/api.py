@@ -18,8 +18,14 @@ async def upload(request: Request, filename: str, authorization: str | None = He
     require_organization(db, user, user.organization_id, "ingestion.upload")
     if len(filename) > 250 or not filename or "/" in filename or chr(92) in filename:
         raise HTTPException(400, "invalid filename")
-    if request.headers.get("content-length") and int(request.headers["content-length"]) > MAX_BYTES:
-        raise HTTPException(413, "file too large")
+    length = request.headers.get("content-length")
+    if length is not None:
+        try:
+            declared = int(length)
+        except ValueError:
+            raise HTTPException(400, "invalid content length")
+        if declared < 0 or declared > MAX_BYTES:
+            raise HTTPException(413, "file too large")
     data = await request.body()
     if not data or len(data) > MAX_BYTES:
         raise HTTPException(413, "file empty or too large")
