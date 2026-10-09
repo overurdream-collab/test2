@@ -15,12 +15,12 @@ def identify(data: bytes, filename: str) -> str:
     suffix = PurePath(filename).suffix.lower()
     if suffix == ".pdf" and data.startswith(b"%PDF-"):
         return "pdf"
-    if suffix == ".png" and data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+    if suffix == ".png" and data.startswith(b"\x89PNG\r\n\x1a\n"):
         return "image"
-    if suffix in (".jpg", ".jpeg") and data.startswith(b"\\xff\\xd8\\xff"):
+    if suffix in (".jpg", ".jpeg") and data.startswith(b"\xff\xd8\xff"):
         return "image"
     if suffix == ".csv":
-        if b"\\x00" in data:
+        if b"\x00" in data:
             raise UnsafeDocument("binary CSV")
         return "csv"
     if suffix == ".xlsx" and zipfile.is_zipfile(io.BytesIO(data)):
