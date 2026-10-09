@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from mcias.config import Settings
 from mcias.auth import authenticate, resolve_user, revoke_session, require_permission
 from mcias.governance import activate_rule, exclusion_edit_permission
+from mcias.mfa_enrollment import begin_enrollment, confirm_enrollment
 
 app = FastAPI(title="MCIAS API", version="0.1.0")
 
@@ -66,3 +67,16 @@ def activate_rule_api(rule_id: str, authorization: str | None = Header(default=N
 def exclusion_edit_permission_api(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, session = resolve_user(db, authorization)
     return exclusion_edit_permission(db, user)
+
+class MFAConfirmRequest(BaseModel):
+    code: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
+
+@app.post("/api/v1/auth/mfa/enroll")
+def mfa_enroll(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, session = resolve_user(db, authorization)
+    return begin_enrollment(db, user)
+
+@app.post("/api/v1/auth/mfa/confirm")
+def mfa_confirm(payload: MFAConfirmRequest, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, session = resolve_user(db, authorization)
+    return confirm_enrollment(db, user, payload.code)
