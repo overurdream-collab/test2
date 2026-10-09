@@ -73,6 +73,7 @@ class MFAEnrollRequest(BaseModel):
     current_password: str = Field(min_length=1, max_length=1024)
 
 class MFAConfirmRequest(BaseModel):
+    current_password: str = Field(min_length=1, max_length=1024)
     code: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
 
 @app.post("/api/v1/auth/mfa/enroll")
@@ -85,4 +86,6 @@ def mfa_enroll(payload: MFAEnrollRequest, authorization: str | None = Header(def
 @app.post("/api/v1/auth/mfa/confirm")
 def mfa_confirm(payload: MFAConfirmRequest, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, session = resolve_user(db, authorization)
+    if not verify_password(payload.current_password, user.password_hash):
+        raise HTTPException(status_code=401, detail="invalid credentials")
     return confirm_enrollment(db, user, payload.code)
