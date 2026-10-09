@@ -30,10 +30,11 @@ def test_t17_postgres_restore_and_encrypted_bundle():
                 conn.execute(text("CREATE TABLE IF NOT EXISTS restore_probe (id integer primary key, payload text not null)"))
                 conn.execute(text("INSERT INTO restore_probe VALUES (1701, 'synthetic restore proof') ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload"))
             dump = run("pg_dump", *base, "-Fc", "-d", source_db, env=pg_env)
-            encrypted = encrypt_bundle({"database.dump": dump, "evidence.txt": b"synthetic"}, key)
+            encrypted = encrypt_bundle({"database.dump": dump, "evidence.txt": b"synthetic", "sources/fixture.enc": b"MCIAS1-synthetic-encrypted-source"}, key)
             assert b"synthetic restore proof" not in encrypted
             recovered = decrypt_bundle(encrypted, key)
             assert recovered["database.dump"] == dump
+            assert recovered["sources/fixture.enc"] == b"MCIAS1-synthetic-encrypted-source"
             run("pg_restore", *base, "-d", restore_db, "--no-owner", "--no-privileges", env=pg_env, input=recovered["database.dump"])
             restored_url = parsed.set(database=restore_db).render_as_string(hide_password=False)
             restored_engine = create_engine(restored_url)
