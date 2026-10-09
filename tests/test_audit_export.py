@@ -9,6 +9,7 @@ def test_audit_chain_detects_change_reorder_and_deletion():
     changed[1]["event"]={"id":"b","action":"allow"}
     assert not verify_chain(changed)
     assert not verify_chain(chain[1:])
+    assert not verify_chain(chain[:-1], starting_hash=chain[-1]["digest"])
     assert not verify_chain([chain[1],chain[0],chain[2]])
     key=Ed25519PrivateKey.generate()
     checkpoint=sign_checkpoint(chain,key)
