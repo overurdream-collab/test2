@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from mcias.models import User, SessionToken, AuditLog, MFAFactor, Role, UserRole
 from mcias.mfa import verify_totp
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.exceptions import InvalidTag
 import os
 from mcias.security import verify_password, new_session_token, session_not_expired
 from mcias.policy import has_permission
@@ -33,7 +34,7 @@ def authenticate(db: Session, username: str, password: str, totp_code: str | Non
             nonce, ciphertext = factor.encrypted_secret[:12], factor.encrypted_secret[12:]
             secret = AESGCM(key).decrypt(nonce, ciphertext, user.id.encode())
             counter = verify_totp(secret, totp_code, factor.last_accepted_counter)
-        except (KeyError, ValueError, __import__("cryptography").exceptions.InvalidTag):
+        except (KeyError, ValueError, InvalidTag):
             raise HTTPException(status_code=503, detail="MFA unavailable")
         if counter is None:
             record_failure(db, identity_hash)
