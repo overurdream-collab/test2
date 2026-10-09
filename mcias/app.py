@@ -6,6 +6,7 @@ from mcias.config import Settings
 from mcias.auth import authenticate, resolve_user, revoke_session, require_permission
 from mcias.governance import activate_rule, exclusion_edit_permission
 from mcias.mfa_enrollment import begin_enrollment, confirm_enrollment
+from mcias.security import verify_password
 
 app = FastAPI(title="MCIAS API", version="0.1.0")
 
@@ -68,12 +69,17 @@ def exclusion_edit_permission_api(authorization: str | None = Header(default=Non
     user, session = resolve_user(db, authorization)
     return exclusion_edit_permission(db, user)
 
+class MFAEnrollRequest(BaseModel):
+    current_password: str = Field(min_length=1, max_length=1024)
+
 class MFAConfirmRequest(BaseModel):
     code: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
 
 @app.post("/api/v1/auth/mfa/enroll")
-def mfa_enroll(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+def mfa_enroll(payload: MFAEnrollRequest, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, session = resolve_user(db, authorization)
+    if not verify_password(payload.current_password, user.password_hash):
+        raise HTTPException(status_code=401, detail="invalid credentials")
     return begin_enrollment(db, user)
 
 @app.post("/api/v1/auth/mfa/confirm")
