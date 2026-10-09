@@ -23,11 +23,14 @@ def test_mfa_enrollment_flow(monkeypatch):
     app.dependency_overrides[get_db] = override
     try:
         client = TestClient(app)
-        token = client.post("/api/v1/auth/login", json={"username":"mfa-test","password":"synthetic-long-password"}).json()["access_token"]
+        login_response = client.post("/api/v1/auth/login", json={"username":"mfa-test","password":"synthetic-long-password"})
+        assert login_response.headers["cache-control"] == "no-store"
+        token = login_response.json()["access_token"]
         headers = {"Authorization":"Bearer "+token}
         assert client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"incorrect"}).status_code == 401
         response = client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"synthetic-long-password"})
         assert response.status_code == 200
+        assert response.headers["cache-control"] == "no-store"
         secret = base64.b32decode(response.json()["secret_base32"] + "=" * (-len(response.json()["secret_base32"]) % 8))
         with Session(engine) as db:
             factor = db.query(MFAFactor).one()
