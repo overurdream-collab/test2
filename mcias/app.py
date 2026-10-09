@@ -10,6 +10,7 @@ app = FastAPI(title="MCIAS API", version="0.1.0")
 class LoginRequest(BaseModel):
     username: str = Field(min_length=1, max_length=120)
     password: str = Field(min_length=1, max_length=1024)
+    totp_code: str | None = Field(default=None, min_length=6, max_length=6)
 
 def get_settings():
     return Settings()
@@ -36,7 +37,7 @@ def ready(db: Session = Depends(get_db)):
 
 @app.post("/api/v1/auth/login")
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
-    return {"access_token": authenticate(db, payload.username, payload.password), "token_type": "bearer", "expires_in": 1800}
+    return {"access_token": authenticate(db, payload.username, payload.password, payload.totp_code), "token_type": "bearer", "expires_in": 1800}
 
 @app.post("/api/v1/auth/logout", status_code=204)
 def logout(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
