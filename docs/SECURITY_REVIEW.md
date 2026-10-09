@@ -11,7 +11,7 @@ Status: PARTIAL, NOT A SECURITY CERTIFICATION.
 
 ## Known gaps — do not deploy to production
 1. Full login, MFA, session revocation, lockout/rate limiting, CSRF and credential lifecycle are not integrated with API.
-2. ORM mutation hooks do NOT prevent raw SQL or privileged database users from altering protected data. Add PostgreSQL database roles, triggers and append-only storage protections.
+2. PostgreSQL triggers now protect original claim fields and append-only audit events from ordinary SQL UPDATE/DELETE, but their deployment is not yet verified. Database owners/superusers can bypass or remove triggers; add least-privilege database roles and tamper-evident off-database audit replication.
 3. Written-authorization checks verify linked records, not authentic signatures or role of the actual approving organization head. Add identity/authority and signed-document verification.
 4. Backup helper is not a complete PostgreSQL pg_dump/pg_restore disaster recovery workflow; T17 full system restore not yet proven.
 5. Key custody, rotation, HSM/OS keyring integration and secure key distribution are not implemented.
