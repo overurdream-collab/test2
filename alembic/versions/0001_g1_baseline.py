@@ -12,7 +12,7 @@ depends_on = None
 
 def upgrade():
     # Initial baseline only. Future changes MUST use explicit migration scripts.
-    Base.metadata.create_all(bind=op.get_bind(), tables=[table for table in Base.metadata.sorted_tables if table.name != 'mfa_factors'])
+    Base.metadata.create_all(bind=op.get_bind(), tables=[table for table in Base.metadata.sorted_tables if table.name not in ('mfa_factors', 'login_attempts')])
 
 def downgrade():
     raise RuntimeError("Destructive downgrade disabled: restore an encrypted backup instead.")
