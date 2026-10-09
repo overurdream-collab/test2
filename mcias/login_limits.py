@@ -40,4 +40,4 @@ def clear_failures(db: Session, identity_hash: str):
     row = db.get(LoginAttempt, identity_hash)
     if row is not None:
         db.delete(row)
-        db.commit()
+        db.flush()
