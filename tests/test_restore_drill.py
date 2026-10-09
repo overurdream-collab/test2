@@ -2,6 +2,10 @@
 import os
 import subprocess
 import uuid
+import tempfile
+import hashlib
+from pathlib import Path
+from mcias.storage import EncryptedStore
 import pytest
 from sqlalchemy import create_engine, text
 from mcias.backup import encrypt_bundle, decrypt_bundle
@@ -30,11 +34,19 @@ def test_t17_postgres_restore_and_encrypted_bundle():
                 conn.execute(text("CREATE TABLE IF NOT EXISTS restore_probe (id integer primary key, payload text not null)"))
                 conn.execute(text("INSERT INTO restore_probe VALUES (1701, 'synthetic restore proof') ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload"))
             dump = run("pg_dump", *base, "-Fc", "-d", source_db, env=pg_env)
-            encrypted = encrypt_bundle({"database.dump": dump, "evidence.txt": b"synthetic", "sources/fixture.enc": b"MCIAS1-synthetic-encrypted-source"}, key)
+            with tempfile.TemporaryDirectory() as source_dir:
+                source_key = os.urandom(32)
+                store = EncryptedStore(source_dir, source_key)
+                object_id, digest = store.put(b"synthetic source document")
+                source_blob = (Path(source_dir) / object_id).read_bytes()
+                encrypted = encrypt_bundle({"database.dump": dump, "evidence.txt": b"synthetic", "sources/" + object_id: source_blob}, key)
             assert b"synthetic restore proof" not in encrypted
             recovered = decrypt_bundle(encrypted, key)
             assert recovered["database.dump"] == dump
-            assert recovered["sources/fixture.enc"] == b"MCIAS1-synthetic-encrypted-source"
+            assert recovered["sources/" + object_id] == source_blob
+            with tempfile.TemporaryDirectory() as restored_source_dir:
+                (Path(restored_source_dir) / object_id).write_bytes(recovered["sources/" + object_id])
+                assert EncryptedStore(restored_source_dir, source_key).get(object_id, digest) == b"synthetic source document"
             run("pg_restore", *base, "-d", restore_db, "--no-owner", "--no-privileges", env=pg_env, input=recovered["database.dump"])
             restored_url = parsed.set(database=restore_db).render_as_string(hide_password=False)
             restored_engine = create_engine(restored_url)
