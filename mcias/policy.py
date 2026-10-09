@@ -24,6 +24,6 @@ def can_activate_rule(db: Session, user: User, rule: RuleVersion) -> bool:
     approver = db.get(User, approval.approved_by)
     if not approver or not approver.active or approver.organization_id != rule.organization_id:
         return False
-    if user.organization_id is not None and user.organization_id != rule.organization_id:
+    if user.organization_id != rule.organization_id:
         return False
     return approval.approved_by != user.id
