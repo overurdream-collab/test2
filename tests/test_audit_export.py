@@ -13,5 +13,6 @@ def test_audit_chain_detects_change_reorder_and_deletion():
     assert not verify_chain([chain[1],chain[0],chain[2]])
     key=Ed25519PrivateKey.generate()
     checkpoint=sign_checkpoint(chain,key)
-    assert verify_checkpoint(checkpoint,key.public_key())
+    assert verify_checkpoint(checkpoint,key.public_key(),chain)
+    assert not verify_checkpoint(checkpoint,key.public_key(),chain[:-1])
     assert not verify_checkpoint({"head":"0"*64,"signature":checkpoint["signature"]},key.public_key())
