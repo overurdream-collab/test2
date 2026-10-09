@@ -5,7 +5,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Gate | Status | Deliverables | Mandatory tests | Verified evidence | Approval |
 |---|---|---|---|---|---|
 | G0 Architecture & Readiness | OPEN | ADRs, threat model, permission matrix, reproducible environment, policy register | Readiness review | None recorded | Pending |
-| G1 Foundation | IN PROGRESS — NOT ACCEPTED | FastAPI/SQLAlchemy/Docker scaffold, baseline migration, permission primitives, encrypted file store and backup archive helper; still missing integrated auth/MFA/RBAC, DB-enforced immutability and real pg_dump/pg_restore | T06, T07, T11, T17 + security suite | Focused local working-tree tests: 10 passed (not GitHub-commit CI evidence); no PostgreSQL restore evidence | Pending |
+| G1 Foundation | IN PROGRESS — NOT ACCEPTED | FastAPI/SQLAlchemy/Docker scaffold, baseline migration, permission primitives, encrypted file store and backup archive helper; still missing integrated auth/MFA/RBAC, verified deployment of DB immutability triggers and real pg_dump/pg_restore | T06, T07, T11, T17 + security suite | GitHub CI #15: unit SUCCESS; dependency-audit SUCCESS on commit a33a7257; no PostgreSQL restore evidence | Pending |
 | G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
 | G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
 | G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
@@ -27,7 +27,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Medical field permissions | UNRESOLVED | Sensitive reports/exports blocked |
 
 ## Evidence log
-Local focused development test run: 10 tests passed in 0.83s on 2026-10-10, using a comparable local working tree, NOT a verified exact GitHub commit. GitHub CI result, real PostgreSQL restore drill and signed acceptance are not recorded. See docs/CHANGELOG_IMPLEMENTATION.md and docs/SECURITY_REVIEW.md.
+Local focused development test run: 10 tests passed in 0.83s on 2026-10-10, using a comparable local working tree, NOT a verified exact GitHub commit. GitHub CI #15 (run 38000684160) completed SUCCESS for unit and dependency-audit on commit a33a7257f244f65c3c586095f99afc28d374deed. Real PostgreSQL restore drill and signed acceptance remain outstanding. See docs/CHANGELOG_IMPLEMENTATION.md and docs/SECURITY_REVIEW.md.
 
 ## Update policy
 A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTRACT.md are satisfied and a human approver signs the gate. Never mark PASS merely because tests are present.
