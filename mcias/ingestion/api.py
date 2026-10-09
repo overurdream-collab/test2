@@ -53,3 +53,25 @@ def document_status(document_id: str, authorization: str | None = Header(default
         raise HTTPException(404, "document not found")
     require_organization(db, user, document.organization_id, "ingestion.read")
     return {"id": document.id, "sha256": document.sha256, "status": document.status}
+
+@router.get("/documents/{document_id}/manifest")
+def document_manifest(document_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from sqlalchemy import select
+    user, _ = resolve_user(db, authorization)
+    document = db.get(IngestionDocument, document_id)
+    if document is None:
+        raise HTTPException(404, "document not found")
+    require_organization(db, user, document.organization_id, "ingestion.read")
+    job = db.scalar(select(IngestionJob).where(IngestionJob.document_id == document.id).order_by(IngestionJob.created_at.desc()))
+    return {"document_id": document.id, "manifest": job.manifest if job else {}, "status": job.status if job else document.status}
+
+@router.get("/jobs/{job_id}/quarantine")
+def job_quarantine(job_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from sqlalchemy import select
+    user, _ = resolve_user(db, authorization)
+    job = db.get(IngestionJob, job_id)
+    if job is None:
+        raise HTTPException(404, "job not found")
+    require_organization(db, user, job.organization_id, "ingestion.read")
+    items = db.scalars(select(QuarantineItem).where(QuarantineItem.job_id == job.id)).all()
+    return {"job_id": job.id, "items": [{"reason": x.reason, "locator": x.locator} for x in items]}
