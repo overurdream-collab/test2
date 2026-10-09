@@ -125,3 +125,7 @@ def sensitive_field_access(organization_id: str, field_code: str, authorization:
     user, _ = resolve_user(db, authorization)
     require_sensitive_field(db, user, organization_id, field_code)
     return {"allowed": True}
+
+# Import after get_db is defined to avoid a dependency cycle during route registration.
+from mcias.ingestion.api import router as ingestion_router
+app.include_router(ingestion_router)
