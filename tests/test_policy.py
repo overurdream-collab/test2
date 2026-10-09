@@ -39,7 +39,14 @@ def test_t07_activation_requires_written_authorization(db):
     approval = WrittenAuthorization(organization_id=org.id, source_id=source.id, approved_by=user.id, approved_at=datetime.now(timezone.utc))
     db.add(approval); db.flush()
     rule.written_authorization_id = approval.id
+    assert not can_activate_rule(db, user, rule)  # self-authorization forbidden
+    approver = User(username="org-head-test", password_hash="test-only", organization_id=org.id)
+    db.add(approver); db.flush()
+    approval.approved_by = approver.id
     assert can_activate_rule(db, user, rule)
+    approver.active = False
+    db.flush()
+    assert not can_activate_rule(db, user, rule)
 
 def test_t11_approved_claim_immutable(db):
     org, user, source = setup(db)
