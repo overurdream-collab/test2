@@ -16,6 +16,6 @@ def parse(data: bytes) -> Extraction:
         if len(row) != len(header):
             result.quarantined.append(item("column count mismatch", "row", reader.line_num))
             continue
-        result.records.append(ExtractedRecord(Locator("row", reader.line_num), dict(zip(header, row))))
+        result.records.append(ExtractedRecord(Locator("row", reader.line_num, reader.line_num), dict(zip(header, row))))
         result.units_processed += 1
     return result
