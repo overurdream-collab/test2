@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 from mcias.config import Settings
 from mcias.auth import authenticate, resolve_user, revoke_session, require_permission
+from mcias.governance import activate_rule, exclusion_edit_permission
 
 app = FastAPI(title="MCIAS API", version="0.1.0")
 
@@ -55,3 +56,13 @@ def system_status(x_bootstrap_token: str | None = Header(default=None), settings
     if settings.environment != "development" or not settings.bootstrap_token or x_bootstrap_token != settings.bootstrap_token:
         raise HTTPException(status_code=403, detail="forbidden")
     return {"version": "0.1.0", "phase": "G1", "production_ready": False}
+
+@app.post("/api/v1/rules/{rule_id}/activate")
+def activate_rule_api(rule_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, session = resolve_user(db, authorization)
+    return activate_rule(db, user, rule_id)
+
+@app.get("/api/v1/rules/exclusions/edit-permission")
+def exclusion_edit_permission_api(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, session = resolve_user(db, authorization)
+    return exclusion_edit_permission(db, user)
