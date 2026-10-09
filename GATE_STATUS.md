@@ -5,7 +5,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Gate | Status | Deliverables | Mandatory tests | Verified evidence | Approval |
 |---|---|---|---|---|---|
 | G0 Architecture & Readiness | OPEN | ADRs, threat model, permission matrix, reproducible environment, policy register | Readiness review | None recorded | Pending |
-| G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #177 (run 38004293226): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS. New signed authorization and recovery tests pending latest CI verification | Pending |
+| G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #197 (run 38004591655): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS. Later security regression is pending CI #211 | Pending |
 | G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
 | G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
 | G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
@@ -43,3 +43,11 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Offline MFA recovery now requires two independently verified Ed25519 signatures, valid identity-evidence digest, non-expired unique request, and replaces the factor while revoking sessions. Key enrollment and identity checks remain organizational operations.
 - Detached signature verifier for organization-head authorizations added; production rule activation intentionally stays blocked until trusted key registry and verification are wired into governance.
 - Target on-prem TLS, key custody, privileged DB runtime account, and independent disaster recovery are not demonstrated by GitHub CI.
+
+## Engineering test inventory (2026-10-10)
+- MFA: privileged enrollment/bootstrap, failed decryption, invalid signature, independent approvers, replay, expiration, key rewrap.
+- Authorization: cross-tenant and sensitive-field denial, rule activation denial, detached signed-document integrity.
+- Storage: AES-GCM confidentiality and tampering, backup corruption, PostgreSQL and encrypted source recovery.
+- Database: immutable approved claims, audit records, activated rules, limited runtime-role negative checks.
+- API: no-store and defensive headers, invalid and expired sessions, feature entitlement default deny.
+- Remaining acceptance evidence: signed head-authority registry wired to rule activation; operational MFA recovery and key custody; production TLS and DB runtime credentials; independent on-prem restore; G0 approvals and human gate signature.
