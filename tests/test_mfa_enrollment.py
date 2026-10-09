@@ -36,8 +36,11 @@ def test_mfa_enrollment_flow(monkeypatch):
         assert client.post("/api/v1/auth/mfa/confirm", headers=headers, json={"code":"not-a-code"}).status_code == 422
         code = generate_totp(secret, int(time.time()) // 30)
         assert client.post("/api/v1/auth/mfa/confirm", headers=headers, json={"code":code}).json() == {"enabled":True}
-        assert client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"synthetic-long-password"}).status_code == 409
+        assert client.get("/api/v1/auth/me", headers=headers).status_code == 401
+        assert client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"synthetic-long-password"}).status_code == 401
         assert client.post("/api/v1/auth/login", json={"username":"mfa-test","password":"synthetic-long-password"}).status_code == 401
+        next_code = generate_totp(secret, int(time.time()) // 30 + 1)
+        assert client.post("/api/v1/auth/login", json={"username":"mfa-test","password":"synthetic-long-password","totp_code":next_code}).status_code == 200
     finally:
         app.dependency_overrides.clear()
         engine.dispose()
