@@ -33,6 +33,10 @@ def test_production_requires_valid_head_signature(tmp_path, monkeypatch):
         path.write_text(json.dumps(registry))
         monkeypatch.setenv("MCIAS_AUTHORIZATION_REGISTRY",str(path))
         assert can_activate_rule(db,actor,rule)
+        path.chmod(0o666)
+        assert not can_activate_rule(db,actor,rule)
+        path.chmod(0o600)
+        assert can_activate_rule(db,actor,rule)
         registry["approvals"][approval.id]["signature"]="00"*64
         path.write_text(json.dumps(registry))
         assert not can_activate_rule(db,actor,rule)
