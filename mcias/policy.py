@@ -1,4 +1,5 @@
 """Server-side default-deny rule governance. Caller must log every denied action."""
+import os
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from mcias.models import User, Permission, RolePermission, UserRole, RuleVersion, WrittenAuthorization
@@ -13,6 +14,9 @@ def can_edit_exclusion(db: Session, user: User) -> bool:
     return has_permission(db, user, "rules.exclusions.edit")
 
 def can_activate_rule(db: Session, user: User, rule: RuleVersion) -> bool:
+    # Production activation stays closed until signed authorization verification ships.
+    if os.getenv("MCIAS_ENVIRONMENT", "development") == "production":
+        return False
     if rule.status != "draft" or not has_permission(db, user, "rules.activate") or not rule.written_authorization_id:
         return False
     approval = db.get(WrittenAuthorization, rule.written_authorization_id)
