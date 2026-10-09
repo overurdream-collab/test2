@@ -14,8 +14,9 @@ def env():
     Base.metadata.create_all(engine)
     with Session(engine) as db:
         org = Organization(name="Synthetic")
+        db.add(org); db.flush()
         actor = User(username="operator", password_hash=hash_password("synthetic-long-password"), organization_id=org.id)
-        db.add_all([org, actor]); db.flush()
+        db.add(actor); db.flush()
         rule = RuleVersion(organization_id=org.id, rule_type="exclusion")
         db.add(rule); db.commit()
         rule_id = rule.id
