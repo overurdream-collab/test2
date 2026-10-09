@@ -51,3 +51,9 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Database: immutable approved claims, audit records, activated rules, limited runtime-role negative checks.
 - API: no-store and defensive headers, invalid and expired sessions, feature entitlement default deny.
 - Remaining acceptance evidence: signed head-authority registry wired to rule activation; operational MFA recovery and key custody; production TLS and DB runtime credentials; independent on-prem restore; G0 approvals and human gate signature.
+
+## G1 production signature verification implementation (2026-10-10)
+- Signed rule activation is now wired to `can_activate_rule` in production, backed by `MCIAS_AUTHORIZATION_REGISTRY` and a canonical Ed25519 signature binding the organization, rule, approval, approver and archived source SHA-256.
+- Negative tests reject missing trust registry, forged signature, mismatched rule binding and writable registry. API test confirms unsigned activation is denied and rule stays draft.
+- Off-host audit checkpoint signatures and tamper-detection tests are present; external audit sink and its custody are not deployed by CI.
+- **G1 technical acceptance remains OPEN** pending deployment tests of TLS, real head-key custody and authority, actual backup restore on target hardware, and independently controlled audit receipt. Human signoff remains deferred at user's request.
