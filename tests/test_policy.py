@@ -73,3 +73,12 @@ def test_audit_log_append_only_orm(db):
     log.action = "changed"
     with pytest.raises(ValueError, match="append-only"):
         db.flush()
+
+
+def test_production_rule_activation_fails_closed(db, monkeypatch):
+    org, user, source = setup(db)
+    rule = RuleVersion(organization_id=org.id, rule_type="exclusion")
+    db.add(rule)
+    db.flush()
+    monkeypatch.setenv("MCIAS_ENVIRONMENT", "production")
+    assert not can_activate_rule(db, user, rule)
