@@ -33,6 +33,7 @@ def test_dual_control_recovery_replay_and_self_approval():
             key = os.urandom(32)
             secret = replace_factor(db, request, {people[1].id: signatures[people[1].id], people[2].id: signatures[people[2].id]}, pub, key)
             assert len(secret) == 32
+            assert db.get(MFAFactor, people[0].id).last_accepted_counter == -1
             assert db.get(MFAFactor, people[0].id).enabled
             assert db.query(AuditLog).filter_by(action="mfa_recovered").count() == 1
             with pytest.raises(ValueError, match="replayed"):
