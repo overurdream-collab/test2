@@ -41,6 +41,9 @@ def replace_factor(db, request, signatures, trusted_keys, key):
     if len(key) != 32:
         raise ValueError("invalid MFA encryption key")
     subject, approvers = verify_approvals(db, request, signatures, trusted_keys)
+    # Serialize recovery for this subject on PostgreSQL to prevent concurrent requests.
+    subject = db.scalar(select(User).where(User.id == subject.id).with_for_update())
+    subject, approvers = verify_approvals(db, request, signatures, trusted_keys)
     import secrets
     secret = secrets.token_bytes(20)
     nonce = os.urandom(12)
