@@ -12,3 +12,20 @@ def rewrap_mfa_secret(envelope: bytes, user_id: str, old_key: bytes, new_key: by
         raise ValueError("invalid TOTP secret length")
     nonce = os.urandom(12)
     return nonce + AESGCM(new_key).encrypt(nonce, secret, user_id.encode())
+
+
+def rotate_all_factors(db, old_key: bytes, new_key: bytes) -> int:
+    """Offline atomic rewrap. Caller MUST back up and retain old key until restore verified."""
+    from sqlalchemy import select
+    from mcias.models import MFAFactor, AuditLog
+    factors = db.scalars(select(MFAFactor).with_for_update()).all()
+    try:
+        rotated = [(factor, rewrap_mfa_secret(factor.encrypted_secret, factor.user_id, old_key, new_key)) for factor in factors]
+        for factor, envelope in rotated:
+            factor.encrypted_secret = envelope
+        db.add(AuditLog(action="offline_mfa_key_rotation", resource_type="auth", details={"factors": len(rotated)}))
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return len(rotated)
