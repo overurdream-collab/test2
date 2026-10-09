@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.exceptions import InvalidTag
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from mcias.models import MFAFactor, AuditLog, User
+from mcias.models import MFAFactor, AuditLog, User, SessionToken
 from mcias.mfa import verify_totp
 
 def encryption_key():
@@ -51,6 +51,12 @@ def confirm_enrollment(db: Session, user: User, code: str):
         raise HTTPException(status_code=401, detail="invalid MFA code")
     factor.enabled = True
     factor.last_accepted_counter = counter
+    # Revoke all sessions issued before MFA activation.
+    from datetime import datetime, timezone
+    db.query(SessionToken).filter(
+        SessionToken.user_id == user.id,
+        SessionToken.revoked_at.is_(None),
+    ).update({"revoked_at": datetime.now(timezone.utc)}, synchronize_session=False)
     db.add(AuditLog(actor_id=user.id, action="mfa_enabled", resource_type="auth"))
     db.commit()
     return {"enabled": True}
