@@ -66,3 +66,13 @@ def test_t07_requires_distinct_active_approver(env):
     response = client.post(f"/api/v1/rules/{rule_id}/activate", headers=h)
     assert response.status_code == 200
     assert response.json()["status"] == "active"
+
+
+def test_tenant_scoped_rule_read_is_denied_without_permission(env):
+    client, engine, rule_id = env
+    token = client.post("/api/v1/auth/login", json={"username":"operator","password":"synthetic-long-password"}).json()["access_token"]
+    h = {"Authorization":"Bearer "+token}
+    assert client.get(f"/api/v1/rules/{rule_id}", headers=h).status_code == 403
+    with Session(engine) as db:
+        actor = db.query(User).filter_by(username="operator").one()
+        assert client.get(f"/api/v1/organizations/{actor.organization_id}/sensitive-fields/diagnosis/access", headers=h).status_code == 403
