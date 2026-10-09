@@ -7,6 +7,8 @@ from mcias.auth import authenticate, resolve_user, revoke_session, require_permi
 from mcias.governance import activate_rule, exclusion_edit_permission
 from mcias.mfa_enrollment import begin_enrollment, confirm_enrollment
 from mcias.security import verify_password
+from mcias.tenant import require_organization, require_sensitive_field
+from mcias.models import RuleVersion
 
 app = FastAPI(title="MCIAS API", version="0.1.0")
 
@@ -95,3 +97,18 @@ def mfa_confirm(payload: MFAConfirmRequest, response: Response, authorization: s
     response.headers["Cache-Control"] = "no-store"
     response.headers["Pragma"] = "no-cache"
     return confirm_enrollment(db, user, payload.code)
+
+@app.get("/api/v1/rules/{rule_id}")
+def rule_details(rule_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, _ = resolve_user(db, authorization)
+    rule = db.get(RuleVersion, rule_id)
+    if rule is None:
+        raise HTTPException(status_code=404, detail="rule not found")
+    require_organization(db, user, rule.organization_id, "rules.read")
+    return {"id": rule.id, "rule_type": rule.rule_type, "status": rule.status}
+
+@app.get("/api/v1/organizations/{organization_id}/sensitive-fields/{field_code}/access")
+def sensitive_field_access(organization_id: str, field_code: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user, _ = resolve_user(db, authorization)
+    require_sensitive_field(db, user, organization_id, field_code)
+    return {"allowed": True}
