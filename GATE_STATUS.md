@@ -5,7 +5,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Gate | Status | Deliverables | Mandatory tests | Verified evidence | Approval |
 |---|---|---|---|---|---|
 | G0 Architecture & Readiness | OPEN | ADRs, threat model, permission matrix, reproducible environment, policy register | Readiness review | None recorded | Pending |
-| G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #83 (run 38002320745): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS; T17 covered by PostgreSQL integration job | Pending |
+| G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #118 (run 38003160064): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS; T17 covers PostgreSQL restore only. Additional hardening after #118 awaits CI verification | Pending |
 | G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
 | G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
 | G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
@@ -31,3 +31,10 @@ Local focused development test run: 10 tests passed in 0.83s on 2026-10-10, usin
 
 ## Update policy
 A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTRACT.md are satisfied and a human approver signs the gate. Never mark PASS merely because tests are present.
+
+## G1 closure review (2026-10-10)
+- G1 remains OPEN: the successful CI runs do not substitute for signed acceptance.
+- MFA enrollment, confirmation, old-session revocation and fail-closed decryption are implemented. Password/MFA secret responses now carry no-store headers (pending CI verification).
+- Database trigger blocks updates/deletions to active rule versions; does not protect against DB owner/superuser bypass.
+- Pending blocking evidence: approved G0 architecture and threat model; organization-head signature and authority verification; secure super-admin bootstrap and two-person MFA recovery; versioned key rotation and custody; tenant/record/field authorization integration; least-privilege database service role; whole-system restore of database and encrypted source files with hash verification; TLS deployment and negative security tests; reviewer sign-off.
+- Policy decisions remain unresolved and must block only dependent financial/medical features, never silently default.
