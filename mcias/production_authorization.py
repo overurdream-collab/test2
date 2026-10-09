@@ -28,7 +28,7 @@ def verify_production_approval(db, rule, approval):
         return False
     try:
         path = Path(location)
-        if not path.is_file() or path.is_symlink():
+        if not path.is_file() or path.is_symlink() or (path.stat().st_mode & 0o022):
             return False
         registry = json.loads(path.read_text(encoding="utf-8"))
         entry = registry["approvals"][approval.id]
