@@ -4,6 +4,7 @@ The trusted key registry must be provisioned out of band and tied to the
 verified head's authority. Never accept a public key supplied in the request.
 """
 import hashlib
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 def verify_written_authorization(document: bytes, expected_sha256: str, signature_hex: str, trusted_public_key: bytes) -> bool:
@@ -15,5 +16,5 @@ def verify_written_authorization(document: bytes, expected_sha256: str, signatur
             return False
         Ed25519PublicKey.from_public_bytes(trusted_public_key).verify(signature, document)
         return True
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, InvalidSignature):
         return False
