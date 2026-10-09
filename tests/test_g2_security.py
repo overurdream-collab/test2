@@ -3,13 +3,17 @@ import io
 import zipfile
 import pytest
 from fastapi.testclient import TestClient
-from mcias.app import app
+from mcias.app import app, get_db
 from mcias.ingestion.file_scanner import identify, UnsafeDocument, MAX_BYTES
 from mcias.ingestion.reader_agent import read
 
 def test_upload_without_auth_is_rejected():
-    response=TestClient(app).post("/api/v1/ingestion/uploads?filename=claims.csv",content=b"id\n1\n")
-    assert response.status_code==401
+    app.dependency_overrides[get_db] = lambda: None
+    try:
+        response=TestClient(app).post("/api/v1/ingestion/uploads?filename=claims.csv",content=b"id\n1\n")
+        assert response.status_code==401
+    finally:
+        app.dependency_overrides.pop(get_db, None)
 
 def test_reject_binary_csv():
     with pytest.raises(UnsafeDocument):
