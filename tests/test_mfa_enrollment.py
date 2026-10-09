@@ -28,7 +28,7 @@ def test_mfa_enrollment_flow(monkeypatch):
         assert client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"incorrect"}).status_code == 401
         response = client.post("/api/v1/auth/mfa/enroll", headers=headers, json={"current_password":"synthetic-long-password"})
         assert response.status_code == 200
-        secret = base64.b32decode(response.json()["secret_base32"] + "====")
+        secret = base64.b32decode(response.json()["secret_base32"] + "=" * (-len(response.json()["secret_base32"]) % 8))
         with Session(engine) as db:
             factor = db.query(MFAFactor).one()
             assert not factor.enabled
