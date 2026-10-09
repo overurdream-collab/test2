@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi import FastAPI, HTTPException, Header, Depends, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
@@ -39,7 +39,9 @@ def ready(db: Session = Depends(get_db)):
     return {"status": "ready"}
 
 @app.post("/api/v1/auth/login")
-def login(payload: LoginRequest, db: Session = Depends(get_db)):
+def login(payload: LoginRequest, response: Response, db: Session = Depends(get_db)):
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
     return {"access_token": authenticate(db, payload.username, payload.password, payload.totp_code), "token_type": "bearer", "expires_in": 1800}
 
 @app.post("/api/v1/auth/logout", status_code=204)
@@ -77,15 +79,19 @@ class MFAConfirmRequest(BaseModel):
     code: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
 
 @app.post("/api/v1/auth/mfa/enroll")
-def mfa_enroll(payload: MFAEnrollRequest, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+def mfa_enroll(payload: MFAEnrollRequest, response: Response, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, session = resolve_user(db, authorization)
     if not verify_password(payload.current_password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
     return begin_enrollment(db, user)
 
 @app.post("/api/v1/auth/mfa/confirm")
-def mfa_confirm(payload: MFAConfirmRequest, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+def mfa_confirm(payload: MFAConfirmRequest, response: Response, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user, session = resolve_user(db, authorization)
     if not verify_password(payload.current_password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
     return confirm_enrollment(db, user, payload.code)
