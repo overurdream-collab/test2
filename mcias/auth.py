@@ -4,14 +4,34 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from mcias.models import User, SessionToken, AuditLog
+from mcias.models import User, SessionToken, AuditLog, MFAFactor, Role, UserRole
+from mcias.mfa import verify_totp
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
 from mcias.security import verify_password, new_session_token, session_not_expired
 from mcias.policy import has_permission
 
-def authenticate(db: Session, username: str, password: str):
+def authenticate(db: Session, username: str, password: str, totp_code: str | None = None):
     user = db.scalar(select(User).where(User.username == username, User.active.is_(True)))
     if user is None or not verify_password(password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
+    privileged = db.scalar(select(Role.id).join(UserRole, UserRole.role_id == Role.id).where(UserRole.user_id == user.id, Role.code == "super_admin")) is not None
+    factor = db.get(MFAFactor, user.id)
+    if privileged or (factor is not None and factor.enabled):
+        if factor is None or not factor.enabled or not totp_code:
+            raise HTTPException(status_code=401, detail="MFA required")
+        try:
+            key = bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])
+            if len(key) != 32:
+                raise ValueError("invalid MFA key")
+            nonce, ciphertext = factor.encrypted_secret[:12], factor.encrypted_secret[12:]
+            secret = AESGCM(key).decrypt(nonce, ciphertext, user.id.encode())
+            counter = verify_totp(secret, totp_code, factor.last_accepted_counter)
+        except (KeyError, ValueError):
+            raise HTTPException(status_code=503, detail="MFA unavailable")
+        if counter is None:
+            raise HTTPException(status_code=401, detail="invalid MFA code")
+        factor.last_accepted_counter = counter
     token, token_hash = new_session_token()
     db.add(SessionToken(user_id=user.id, token_hash=token_hash, expires_at=datetime.now(timezone.utc)+timedelta(minutes=30)))
     db.add(AuditLog(actor_id=user.id, action="login", resource_type="auth"))
