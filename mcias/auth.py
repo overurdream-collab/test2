@@ -1,5 +1,6 @@
 """Database-backed session authentication."""
 import hashlib
+from mcias.login_limits import blocked, record_failure, clear_failures
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -12,8 +13,12 @@ from mcias.security import verify_password, new_session_token, session_not_expir
 from mcias.policy import has_permission
 
 def authenticate(db: Session, username: str, password: str, totp_code: str | None = None):
+    identity_hash = hashlib.sha256(username.strip().casefold().encode()).hexdigest()
+    if blocked(db, identity_hash):
+        raise HTTPException(status_code=429, detail="login temporarily restricted")
     user = db.scalar(select(User).where(User.username == username, User.active.is_(True)))
     if user is None or not verify_password(password, user.password_hash):
+        record_failure(db, identity_hash)
         raise HTTPException(status_code=401, detail="invalid credentials")
     privileged = db.scalar(select(Role.id).join(UserRole, UserRole.role_id == Role.id).where(UserRole.user_id == user.id, Role.code == "super_admin")) is not None
     factor = db.get(MFAFactor, user.id)
@@ -32,6 +37,7 @@ def authenticate(db: Session, username: str, password: str, totp_code: str | Non
         if counter is None:
             raise HTTPException(status_code=401, detail="invalid MFA code")
         factor.last_accepted_counter = counter
+    clear_failures(db, identity_hash)
     token, token_hash = new_session_token()
     db.add(SessionToken(user_id=user.id, token_hash=token_hash, expires_at=datetime.now(timezone.utc)+timedelta(minutes=30)))
     db.add(AuditLog(actor_id=user.id, action="login", resource_type="auth"))
