@@ -1,5 +1,6 @@
 """Offline dual-control recovery; the old MFA factor is replaced, never disabled."""
 import base64
+from cryptography.exceptions import InvalidSignature
 import json
 import os
 from datetime import datetime, timezone
@@ -31,7 +32,7 @@ def verify_approvals(db, request, signatures, trusted_keys):
         try:
             Ed25519PublicKey.from_public_bytes(public_key).verify(bytes.fromhex(sig), payload)
             approved.add(user_id)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, InvalidSignature):
             pass
     if len(approved) < 2:
         raise ValueError("two independent trusted signatures required")
