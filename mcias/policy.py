@@ -14,9 +14,6 @@ def can_edit_exclusion(db: Session, user: User) -> bool:
     return has_permission(db, user, "rules.exclusions.edit")
 
 def can_activate_rule(db: Session, user: User, rule: RuleVersion) -> bool:
-    # Production activation stays closed until signed authorization verification ships.
-    if os.getenv("MCIAS_ENVIRONMENT", "development") == "production":
-        return False
     if rule.status != "draft" or not has_permission(db, user, "rules.activate") or not rule.written_authorization_id:
         return False
     approval = db.get(WrittenAuthorization, rule.written_authorization_id)
@@ -30,4 +27,9 @@ def can_activate_rule(db: Session, user: User, rule: RuleVersion) -> bool:
         return False
     if user.organization_id != rule.organization_id:
         return False
-    return approval.approved_by != user.id
+    if approval.approved_by == user.id:
+        return False
+    if os.getenv("MCIAS_ENVIRONMENT", "development") == "production":
+        from mcias.production_authorization import verify_production_approval
+        return verify_production_approval(db, rule, approval)
+    return True
