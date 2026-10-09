@@ -5,7 +5,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Gate | Status | Deliverables | Mandatory tests | Verified evidence | Approval |
 |---|---|---|---|---|---|
 | G0 Architecture & Readiness | OPEN | ADRs, threat model, permission matrix, reproducible environment, policy register | Readiness review | None recorded | Pending |
-| G1 Foundation | IN PROGRESS — NOT ACCEPTED | FastAPI/SQLAlchemy/Docker scaffold, baseline migration, permission primitives, encrypted file store and backup archive helper; still missing integrated auth/MFA/RBAC, verified deployment of DB immutability triggers and real pg_dump/pg_restore | T06, T07, T11, T17 + security suite | GitHub CI #15: unit SUCCESS; dependency-audit SUCCESS on commit a33a7257; no PostgreSQL restore evidence | Pending |
+| G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #83 (run 38002320745): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS; T17 covered by PostgreSQL integration job | Pending |
 | G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
 | G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
 | G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
@@ -27,7 +27,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | Medical field permissions | UNRESOLVED | Sensitive reports/exports blocked |
 
 ## Evidence log
-Local focused development test run: 10 tests passed in 0.83s on 2026-10-10, using a comparable local working tree, NOT a verified exact GitHub commit. GitHub CI #15 (run 38000684160) completed SUCCESS for unit and dependency-audit on commit a33a7257f244f65c3c586095f99afc28d374deed. Real PostgreSQL restore drill and signed acceptance remain outstanding. See docs/CHANGELOG_IMPLEMENTATION.md and docs/SECURITY_REVIEW.md.
+Local focused development test run: 10 tests passed in 0.83s on 2026-10-10, using a comparable local working tree, NOT a verified exact GitHub commit. GitHub CI #83 (run 38002320745) completed SUCCESS for unit, PostgreSQL integration (including T17 real restore drill), and dependency-audit. T06/T07 API denial and separation-of-duties tests are included. Signed acceptance and independent authorization verification remain outstanding. See docs/CHANGELOG_IMPLEMENTATION.md and docs/SECURITY_REVIEW.md.
 
 ## Update policy
 A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTRACT.md are satisfied and a human approver signs the gate. Never mark PASS merely because tests are present.
