@@ -50,3 +50,9 @@ G2 remains OPEN until all mandatory T01–T03, full coverage and OCR accuracy te
 - Original-preserving decimal/date normalization helper and invalid-value tests.
 - Ingestion service enforces 20 MiB independently of the HTTP boundary.
 - A successful parser/CI run is not proof of complete G2 acceptance. Manual review, production sandbox hardening, OCR validation and scanned PDF OCR remain pending.
+
+## Review and scanned PDF support
+- Scanned PDF pages can now be rasterized with PyMuPDF and transcribed by local Tesseract when explicitly configured. Unreadable pages are quarantined.
+- Human quarantine decisions require `ingestion.review` and a reason, and are recorded in the append-only G1 audit log; acknowledgement does not silently promote data to trusted.
+- Reprocessing is available under `ingestion.reprocess`, using the encrypted original and preserving every prior job and its findings.
+- Operational installation of Tesseract and language packs, OCR acceptance on real labeled medical documents, and ClamAV deployment remain environmental prerequisites. No real OCR accuracy has been asserted.
