@@ -64,3 +64,17 @@ def prevent_approved_contract_mutation(mapper, connection, target):
 def prevent_approved_contract_delete(mapper, connection, target):
     if target.status == "approved":
         raise ValueError("approved contract cannot be deleted")
+
+@event.listens_for(ProviderTariff, "before_update")
+def prevent_approved_tariff_mutation(mapper, connection, target):
+    from sqlalchemy import select
+    status = connection.execute(select(ContractVersion.status).where(ContractVersion.id == target.contract_id)).scalar_one_or_none()
+    if status == "approved":
+        raise ValueError("approved contract tariff is immutable")
+
+@event.listens_for(ProviderTariff, "before_delete")
+def prevent_approved_tariff_delete(mapper, connection, target):
+    from sqlalchemy import select
+    status = connection.execute(select(ContractVersion.status).where(ContractVersion.id == target.contract_id)).scalar_one_or_none()
+    if status == "approved":
+        raise ValueError("approved contract tariff is immutable")
