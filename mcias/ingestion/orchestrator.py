@@ -43,7 +43,7 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
     except Exception as exc:
         # Preserve encrypted originals; scanner failures are never treated as safe.
         job.status = "review_required"
-        job.manifest = {"complete": False, "error": type(exc).__name__}
+        job.manifest = {"complete": False, "error": type(exc).__name__, "expected_units": 1, "processed_units": 0, "quarantined_units": 1}
         db.add(QuarantineItem(job_id=job.id, reason="unreadable or unsafe source", locator={"kind":"file","index":1}))
     document.status = job.status
     db.add(AuditLog(actor_id=actor_id, action="source_ingested", resource_type="ingestion_document", resource_id=document.id, details={"sha256": digest, "status": job.status}))
