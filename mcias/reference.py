@@ -79,7 +79,8 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
         raise ReferenceConflict("independent documented contract precedence approval required")
     if impact["requires_human_review"]:
         impact_reviews = [r for r in reviews if r.action == "contract_impact_reviewed"
-                          and r.actor_id not in (actor.id, authorization.approved_by)]
+                          and r.actor_id not in (actor.id, authorization.approved_by, contract.created_by)
+                          and r.details.get("fingerprint") == reference_fingerprint(contract)]
         if not impact_reviews:
             raise ReferenceConflict("T05 retroactive contract requires independent documented impact review")
         if impact["conflicting_contract_ids"]:
