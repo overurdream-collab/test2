@@ -1,12 +1,22 @@
 """Temporal reference controls. All effective ranges are half-open [start, end)."""
 from datetime import date
 import os
+import hashlib
+import json
 from sqlalchemy import select
 from mcias.models import AuditLog, WrittenAuthorization, User
 from mcias.models_reference import ContractVersion, ProviderTariff, BeneficiaryEnrollment
 
 class ReferenceConflict(ValueError):
     pass
+
+def reference_fingerprint(contract: ContractVersion) -> str:
+    payload = {"id": contract.id, "organization_id": contract.organization_id,
+               "provider_code": contract.provider_code, "version": contract.version,
+               "effective_from": contract.effective_from.isoformat(),
+               "effective_until": contract.effective_until.isoformat(),
+               "precedence": contract.precedence}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 def overlaps(a_start: date, a_end: date, b_start: date, b_end: date) -> bool:
     if a_start >= a_end or b_start >= b_end:
@@ -63,7 +73,8 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
         AuditLog.resource_type == "contract_version",
         AuditLog.resource_id == contract.id)).all()
     precedence_reviews = [r for r in reviews if r.action == "contract_precedence_approved"
-                          and r.actor_id not in (actor.id, authorization.approved_by, contract.created_by)]
+                          and r.actor_id not in (actor.id, authorization.approved_by, contract.created_by)
+                          and r.details.get("fingerprint") == reference_fingerprint(contract)]
     if not precedence_reviews:
         raise ReferenceConflict("independent documented contract precedence approval required")
     if impact["requires_human_review"]:
