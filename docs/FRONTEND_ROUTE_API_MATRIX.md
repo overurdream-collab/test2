@@ -35,7 +35,7 @@ is intentional: the acceptance contract requires separate local installations.
 | `/admin/workflows` | Unavailable — planned | No operational API | G6 events exist; configurable stages, assignment and escalation APIs are unavailable. |
 | `/admin/integrations` | Unavailable — planned | No operational API | An integration-management API is unavailable. Medical data must remain on premises. |
 | `/admin/system-health` | Integrated — partial | GET /health/live, /health/ready | Action-specific permission / no implicit grant |
-| `/admin/backups` | Unavailable — planned | No operational API | Local backup tooling exists. Scheduling and restore-status APIs with separated duties are unavailable. |
+| `/admin/backups` | Partial — audit archival | GET `/api/v1/admin/retention/status`; POST `/api/v1/admin/retention/archive` | Tenant-scoped `retention.read` / `retention.archive`; local encrypted queued monthly worker. Purge and institutional seven-year approval remain blocked. Full database backup scheduling/restore-status APIs are unavailable. |
 | `/admin/alerts` | Unavailable — planned | No operational API | Analysis signals are separate from notifications. An alert inbox and delivery API are unavailable. |
 | `/admin/settings` | Integrated — partial | GET /api/v1/workspace/context (UI preferences only) | profile.read |
 | `/institution/dashboard` | Integrated — partial | GET /api/v1/report-explorer/snapshots, /snapshots/{id}/entries | reports.read |
