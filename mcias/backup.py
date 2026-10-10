@@ -107,7 +107,7 @@ def decrypt_bundle(blob: bytes, key: bytes) -> dict[str,bytes]:
     except (TypeError,ValueError) as exc:
         raise ValueError("invalid backup manifest") from exc
     if (type(manifest) is not dict or set(result) != set(manifest)
-        or any(type(checksum) is not str or
+        or any(type(manifest[name]) is not str or
                hashlib.sha256(value).hexdigest()!=manifest[name]
                for name,value in result.items())):
         raise ValueError("backup checksum mismatch")
