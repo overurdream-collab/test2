@@ -52,7 +52,7 @@ def decide(db,actor,case_id,*,stage,decision,evidence):
     return record
 
 def object_to_claim(db,actor,case_id,claim_id,document_id):
-    from mcias.ingestion.models import IngestionDocument
+    from mcias.models_ingestion import IngestionDocument
     case=db.scalar(select(GovernanceCase).where(GovernanceCase.id==case_id,
         GovernanceCase.organization_id==actor.organization_id))
     if case is None or not actor.active:
