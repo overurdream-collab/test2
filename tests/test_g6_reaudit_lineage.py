@@ -1,4 +1,5 @@
 """G6 T10: re-audit is a linked new snapshot, never an old-record edit."""
+from datetime import datetime, timezone, timedelta
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 import pytest
@@ -37,7 +38,11 @@ def test_t10_link_denies_cross_tenant_and_unrelated_claim(_permission):
 def test_t10_link_creates_new_case_and_append_only_event(_permission):
     db = MagicMock()
     db.scalar.side_effect = [oldcase(),last_event("request_reaudit"),None]
-    db.get.return_value = SimpleNamespace(id="snapshot2",organization_id="org1",claim_id="claim1")
+    start = datetime(2026, 10, 10, tzinfo=timezone.utc)
+    db.get.side_effect = [
+        SimpleNamespace(id="snapshot2",organization_id="org1",claim_id="claim1",created_at=start + timedelta(days=1)),
+        SimpleNamespace(id="snapshot1",organization_id="org1",claim_id="claim1",created_at=start),
+    ]
     event = append_event(db,actor(),"case1","link_reaudit",{"new_snapshot_id":"snapshot2"})
     assert event.kind == "link_reaudit"
     assert event.snapshot_id == "snapshot2"
