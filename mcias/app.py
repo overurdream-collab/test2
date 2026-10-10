@@ -132,3 +132,6 @@ app.include_router(ingestion_router)
 
 from mcias.reference_api import router as reference_router
 app.include_router(reference_router)
+
+from mcias.claims_api import router as claims_router
+app.include_router(claims_router)
