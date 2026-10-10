@@ -3,7 +3,7 @@
 Official implementation repository. On-premises medical claims financial and administrative audit.
 
 ## Status
-G5/G6 hardening and G7 reporting engineering are present on this **feature branch**, but every production acceptance gate remains OPEN until institutional authorization and signed acceptance. Synthetic CI success is not production certification.
+The integrated engineering baseline is maintained on **main**: security/authentication, ingestion, reference data, claims, audit, governance, reporting, intelligence, enterprise RTL/LTR interfaces, release tooling and operational controls. Backend/UI coverage and unavailable capabilities are documented in `docs/FRONTEND_ROUTE_API_MATRIX.md` and `docs/OPERATIONAL_CONTROLS.md`. Every production acceptance gate remains OPEN until institutional authorization and signed acceptance. Synthetic CI success is not production certification.
 
 ## Binding constraints
 - Separate local PostgreSQL database and document storage per organization.
@@ -16,7 +16,7 @@ See `docs/IMPLEMENTATION_PLAN.md` for acceptance gates and policy blockers.
 
 ## G5 → G6 → G7 implementation track
 
-See `docs/G5_G6_G7_ENGINEERING_HANDOFF.md` and `docs/G7_IMPLEMENTATION.md`. Generate only synthetic or institution-authorized development reports. The `/api/v1/reports` endpoints are permission-gated, and original medical columns are denied without individual field permissions. This branch is not a production deployment.
+See `docs/G5_G6_G7_ENGINEERING_HANDOFF.md` and `docs/G7_IMPLEMENTATION.md`. Generate only synthetic or institution-authorized development reports. The `/api/v1/reports` endpoints are permission-gated, and original medical columns are denied without individual field permissions. This engineering baseline is not a production deployment.
 
 ## G7 browser quick start (engineering)
 
@@ -83,3 +83,7 @@ Seed CLI refuses production and non-`*_e2e` databases. Existing synthetic data i
 not backfilled or relabeled. Production starts with a clean database. Archival is
 local and encrypted; the proposed seven-year policy and any purge remain blocked
 pending institutional approval.
+
+### Consolidated main and continuous integration
+
+`main` is the integrated engineering baseline, not institutional production acceptance. All four CI workflows run on pushes to `main`, including PostgreSQL regression, dependency checks, browser/accessibility checks and portable test packaging. See [branch consolidation](docs/MAIN_CONSOLIDATION.md) for incorporated and superseded branches.

@@ -25,7 +25,7 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/workspace.yml'
   push:
-    branches: [feat/mcias-premium-enterprise, feat/mcias-integrated-candidate, feat/mcias-operational-controls]
+    branches: [main, feat/main-consolidation, feat/mcias-premium-enterprise, feat/mcias-integrated-candidate, feat/mcias-operational-controls]
 permissions:
   contents: read
 jobs:
@@ -108,7 +108,7 @@ jobs:
                   assert 'mcias/web_workspace/'+name in wheel.namelist(), name
           PY
       - name: Build portable source and runtime wheelhouse
-        if: github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate'
+        if: github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate'
         run: |
           python - <<'PYCODE'
           from importlib.metadata import distributions
@@ -118,7 +118,7 @@ jobs:
           python -m pip wheel . --constraint /tmp/mcias-runtime-constraints.txt -w dist/wheelhouse
           python scripts/build_integrated_handoff.py --wheelhouse dist/wheelhouse --output dist/external-handoff
       - uses: actions/upload-artifact@v4
-        if: success() && (github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate')
+        if: success() && (github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate')
         with:
           name: mcias-external-test-handoff
           path: dist/external-handoff/

@@ -1,7 +1,7 @@
 name: MCIAS G9 release candidate and recovery checks
 on:
   push:
-    branches: [feat/g9-release-hardening]
+    branches: [main, feat/main-consolidation, feat/g9-release-hardening]
   pull_request:
     paths:
       - "mcias/backup.py"

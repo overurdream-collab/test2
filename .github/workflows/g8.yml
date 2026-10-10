@@ -1,7 +1,7 @@
 name: MCIAS G8 Intelligence and Studio
 on:
   push:
-    branches: [feat/g8-intelligence]
+    branches: [main, feat/main-consolidation, feat/g8-intelligence]
   pull_request:
     paths:
       - "mcias/intelligence*"
