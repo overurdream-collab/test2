@@ -46,7 +46,7 @@ def check_runtime_env(env: dict[str,str]) -> list[dict]:
         configured=(url.get_backend_name()=="postgresql" and
                     url.drivername=="postgresql+psycopg" and
                     bool(url.database and url.username and url.password))
-    except (ValueError, TypeError):
+    except Exception:
         configured=False
     results.append(control("database.postgresql",
         configured, "local or isolated PostgreSQL runtime credentials required"))
@@ -76,7 +76,8 @@ def check_certificate(path: str | None, host: str | None,
             x509.SubjectAlternativeName).value.get_values_for_type(x509.DNSName)
         # No wildcard matching: administrators must provision an exact intranet SAN.
         matched=host.lower() in {item.lower() for item in names}
-        ok=remaining>MAX_CERT_DAYS*86400 and matched
+        valid_start=cert.not_valid_before_utc<=present
+        ok=remaining>MAX_CERT_DAYS*86400 and matched and valid_start
         return control("tls.certificate",ok,
             "nonexpired locally supplied SAN certificate with >30-day runway required")
     except (ValueError, OSError, x509.ExtensionNotFound, TypeError):
