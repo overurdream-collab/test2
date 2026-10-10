@@ -1,0 +1,133 @@
+name: Enterprise workspaces
+on:
+  pull_request:
+    paths:
+      - 'mcias/web_workspace/**'
+      - 'mcias/workspace_*.py'
+      - 'mcias/app.py'
+      - 'mcias/seed/**'
+      - 'mcias/*retention*'
+      - 'mcias/rate_limits.py'
+      - 'mcias/models_operations.py'
+      - 'alembic/**'
+      - 'tests/test_operational*'
+      - 'tests/seed/**'
+      - 'tests/test_enterprise_workspace.py'
+      - 'tests/frontend/**'
+      - 'scripts/*workspace*'
+      - 'scripts/check_integrated_workflow.py'
+      - 'scripts/build_integrated_handoff.py'
+      - 'tests/test_integrated_handoff.py'
+      - 'docs/INTEGRATED*'
+      - 'mcias/ingestion/api.py'
+      - 'mcias/governance_g6.py'
+      - 'package*.json'
+      - 'pyproject.toml'
+      - '.github/workflows/workspace.yml'
+  push:
+    branches: [main, feat/main-consolidation, feat/mcias-premium-enterprise, feat/mcias-integrated-candidate, feat/mcias-operational-controls]
+permissions:
+  contents: read
+jobs:
+  browser-and-contracts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci_e2e
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci_e2e"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      MCIAS_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_E2E_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_BOOTSTRAP_TOKEN: synthetic_browser_tests_only
+      MCIAS_ENABLE_UI_DEMO: 'true'
+      MCIAS_ENVIRONMENT: development
+      MCIAS_STORAGE_DIR: .e2e-output/integrated-sources
+      MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
+      MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: python -m pip install -e '.[test,browser]'
+      - run: python -m playwright install --with-deps chromium
+      - run: npm ci --ignore-scripts
+      - run: npm test && npm run check
+      - name: Dedicated idempotent Seed integration
+        run: |
+          python - <<'PYCODE'
+          import os
+          from sqlalchemy import create_engine, text
+          from sqlalchemy.engine import make_url
+          url = make_url(os.environ['MCIAS_DATABASE_URL'])
+          admin = create_engine(url.set(database='postgres'), isolation_level='AUTOCOMMIT')
+          with admin.connect() as connection:
+              connection.execute(text('CREATE DATABASE mcias_seed_checks_e2e'))
+          admin.dispose()
+          PYCODE
+          export MCIAS_SEED_TEST_DATABASE_URL=postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_seed_checks_e2e
+          MCIAS_E2E_DATABASE_URL="$MCIAS_SEED_TEST_DATABASE_URL" python -m mcias.seed --output .e2e-output/seed-check.json
+          python -m pytest tests/seed -q
+      - name: Full combined regression on fresh PostgreSQL
+        env:
+          MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+        run: python -m pytest -q
+      - run: python scripts/seed_workspace_e2e.py
+      - name: Browser E2E, responsive layouts and WCAG checks
+        run: |
+          set -e
+          python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 > /tmp/mcias-ui-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health/live >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/check_workspace_browser.py
+          python scripts/check_workspace_live.py --base-url http://127.0.0.1:8000
+          python scripts/check_integrated_workflow.py --base-url http://127.0.0.1:8000
+          python scripts/check_retention_browser.py --base-url http://127.0.0.1:8000
+      - name: Package frontend assets
+        run: |
+          python -m pip wheel . --no-deps -w dist
+          python - <<'PY'
+          import glob,zipfile
+          with zipfile.ZipFile(glob.glob('dist/mcias-*.whl')[0]) as wheel:
+              for name in ('index.html','app.js','api.js','ui.js','views.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2','fonts/PLEX-OFL.txt'):
+                  assert 'mcias/web_workspace/'+name in wheel.namelist(), name
+          PY
+      - name: Build portable source and runtime wheelhouse
+        if: github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate'
+        run: |
+          python - <<'PYCODE'
+          from importlib.metadata import distributions
+          from pathlib import Path
+          Path('/tmp/mcias-runtime-constraints.txt').write_text('\n'.join(sorted({d.metadata['Name']+'=='+d.version for d in distributions() if d.metadata.get('Name') and d.metadata['Name'].lower()!='mcias'}))+'\n')
+          PYCODE
+          python -m pip wheel . --constraint /tmp/mcias-runtime-constraints.txt -w dist/wheelhouse
+          python scripts/build_integrated_handoff.py --wheelhouse dist/wheelhouse --output dist/external-handoff
+      - uses: actions/upload-artifact@v4
+        if: success() && (github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate')
+        with:
+          name: mcias-external-test-handoff
+          path: dist/external-handoff/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: enterprise-workspace-evidence
+          include-hidden-files: true
+          path: |
+            .e2e-output/*results.json
+            .e2e-output/*.png
+            /tmp/mcias-ui-server.log

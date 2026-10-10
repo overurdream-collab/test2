@@ -1,0 +1,21 @@
+{
+  "checks": [
+    "evidence-backed dashboard values and explicit synthetic banner",
+    "59 routes and dynamic record states",
+    "Arabic RTL, English LTR, light and dark accessibility",
+    "tablet/mobile layouts, drawer focus, escape and inert navigation",
+    "claim table filtering and drill-down",
+    "eight audit findings, backend decimal values and accessible evidence dialog",
+    "confirmation result resets; Escape never reuses a prior approval",
+    "synthetic mode blocks consequential actions",
+    "login, memory-only bearer session, authorized report integration",
+    "XSS-safe server text and no sensitive browser storage",
+    "administration role guard",
+    "permission-aware reads prevented before request",
+    "expired session removes all protected content"
+  ],
+  "route_count": 59,
+  "page_errors": [],
+  "accessibility_violations": [],
+  "synthetic_data": true
+}

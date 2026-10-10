@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="no-referrer">
+  <title>MCIAS | التقارير والرقابة المالية</title>
+  <link rel="stylesheet" href="/ui/reports/assets/dashboard.css">
+  <script src="/ui/reports/assets/dashboard.js" defer></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" aria-label="القائمة الرئيسية">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">M</div>
+      <div><strong>MCIAS</strong><small>الرقابة المالية والإدارية</small></div>
+    </div>
+    <div class="sidebar-category">مساحة التقارير</div>
+    <nav class="navigation" aria-label="أقسام التقارير">
+      <button class="nav-link is-active" type="button" data-tab="overview" aria-current="page"><span class="nav-icon" aria-hidden="true">▦</span>نظرة عامة</button>
+      <button class="nav-link" type="button" data-tab="claims"><span class="nav-icon" aria-hidden="true">≡</span>تفاصيل المطالبات</button>
+      <button class="nav-link" type="button" data-tab="beneficiaries"><span class="nav-icon" aria-hidden="true">◎</span>كشف المستفيد</button>
+      <button class="nav-link" type="button" data-tab="archive"><span class="nav-icon" aria-hidden="true">▤</span>أرشيف الإصدارات</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="soft-icon" aria-hidden="true">⌁</div>
+      <div><strong>البيانات محلية ومحمية</strong><p>لا توجد تسويات آلية، وكل تقرير مرتبط بإصدار ثابت.</p></div>
+    </div>
+  </aside>
+
+  <div class="content-column">
+    <header class="topbar">
+      <div class="topbar-title"><span class="eyebrow">MCIAS / G7</span><span>التقارير التنفيذية</span></div>
+      <div class="topbar-actions"><a class="btn btn-ghost" href="/ui/intelligence">تحليلات G8</a>
+        <span class="connection-indicator" id="connectionIndicator"><span class="dot"></span>غير متصل</span>
+        <button class="topbar-button" id="logoutButton" hidden type="button">تسجيل الخروج</button>
+      </div>
+    </header>
+
+    <main class="main-container">
+      <section class="login-panel" id="loginPanel" aria-labelledby="loginTitle">
+        <div class="login-art" aria-hidden="true"><span>◈</span><span class="art-ring"></span></div>
+        <div class="login-content">
+          <p class="eyebrow">وصول مقيّد بالصلاحيات</p>
+          <h1 id="loginTitle">الدخول إلى التقارير</h1>
+          <p class="intro">لا يمكن عرض مطالبات أو تقارير فعلية دون تسجيل الدخول وصلاحيات المؤسسة. لا توجد بيانات تجريبية معروضة على أنها حقيقية.</p>
+          <form id="loginForm">
+            <label for="username">اسم المستخدم</label>
+            <input id="username" name="username" autocomplete="username" required maxlength="120" placeholder="اسم المستخدم">
+            <label for="password">كلمة المرور</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+            <label for="mfaCode">رمز التحقق الثنائي (عند التفعيل)</label>
+            <input id="mfaCode" name="mfa" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="6 أرقام">
+            <button class="btn btn-primary login-button" type="submit" id="loginButton">تسجيل الدخول</button>
+          </form>
+          <p class="muted-small">رمز الجلسة محفوظ في الذاكرة فقط، ويُمسح عند إعادة تحميل الصفحة.</p>
+        </div>
+      </section>
+
+      <section id="workspace" hidden aria-label="مساحة عمل التقارير">
+        <div class="heading-row">
+          <div><p class="eyebrow">لوحة المتابعة / المطالبات الطبية</p>
+            <h1 id="viewTitle">نظرة عامة على المطالبات</h1>
+            <p class="subtitle" id="viewSubtitle">اعرض ملخصاً من نسخة تقرير معتمدة للقراءة، أو أنشئ نسخة من دفعة مكتملة.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="btn btn-ghost" id="refreshButton" type="button">↻ تحديث</button>
+            <button class="btn btn-outline" id="excelButton" type="button" disabled>تصدير Excel</button>
+            <button class="btn btn-primary" id="pdfButton" type="button" disabled>تنزيل PDF عربي</button>
+          </div>
+        </div>
+
+        <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+        <section class="report-toolbar" aria-labelledby="reportToolbarTitle">
+          <div>
+            <h2 id="reportToolbarTitle">تحديد التقرير</h2>
+            <p>النسخ المجمدة لا تتغير بعد إعادة التدقيق.</p>
+          </div>
+          <form class="inline-form" id="openReportForm">
+            <label for="reportIdInput">رقم نسخة التقرير</label>
+            <div class="joined-inputs">
+              <input id="reportIdInput" autocomplete="off" placeholder="معرّف التقرير" maxlength="36" required>
+              <button class="btn btn-primary" type="submit">فتح التقرير</button>
+            </div>
+          </form>
+          <form class="inline-form" id="freezeForm">
+            <label for="batchIdInput">إنشاء نسخة من دفعة مكتملة</label>
+            <div class="joined-inputs">
+              <input id="batchIdInput" placeholder="معرّف الدفعة" maxlength="36" required>
+              <button class="btn btn-ghost" type="submit">تجميد نسخة</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="report-meta" id="reportMeta" hidden>
+          <span id="reportVersion">الإصدار —</span><span>•</span>
+          <span class="hash-preview" id="reportHash"></span><span>•</span>
+          <span id="reportBatch"></span>
+        </div>
+
+        <section id="tab-overview" class="tab-pane" aria-labelledby="viewTitle">
+          <div class="section-title"><div><h2>المؤشرات المالية</h2><p>مبالغ كل عملة منفصلة، ولا يتم جمع العملات المختلفة.</p></div><span class="subtle-tag">نسخة ثابتة • قراءة فقط</span></div>
+          <div id="currencyCards" class="metrics-grid"></div>
+          <div class="two-columns">
+            <article class="panel">
+              <div class="panel-header"><div><h3>حالة المطالبات</h3><p>مقارنة بعدد المطالبات، دون افتراض مسؤولية مالية للمعلّقة.</p></div></div>
+              <div id="statusBars"></div>
+            </article>
+            <article class="panel provenance-panel">
+              <div class="panel-header"><div><h3>سلامة وتتبع التقرير</h3><p>مرجع التقرير المحفوظ ومصدر المطالبات.</p></div></div>
+              <dl id="provenanceList" class="definition-list"></dl>
+            </article>
+          </div>
+        </section>
+
+        <section id="tab-claims" class="tab-pane" hidden>
+          <div class="panel">
+            <div class="panel-header"><div><h3>المطالبات المصرّح بعرضها</h3><p>تظهر المبالغ والحالات فقط، دون بيانات المرضى أو أعمدة الملفات الأصلية.</p></div></div>
+            <form class="filter-bar" id="claimsFilter">
+              <label for="stateFilter">الحالة</label>
+              <select id="stateFilter"><option value="">جميع الحالات</option><option value="approved">معتمدة</option><option value="held">معلّقة</option></select>
+              <label for="currencyFilter">العملة</label>
+              <select id="currencyFilter"><option value="">جميع العملات</option></select>
+              <button class="btn btn-outline" type="submit">تطبيق المرشحات</button>
+            </form>
+            <div class="table-scroll"><table><thead><tr><th>معرّف المطالبة</th><th>العملة</th><th>المبلغ المطالب به</th><th>المستحق</th><th>الحالة</th><th>التفاصيل</th></tr></thead><tbody id="claimsRows"></tbody></table></div>
+            <div class="pager"><span id="claimsPageLabel"></span><div><button class="btn btn-ghost" id="prevPage" type="button" disabled>السابق</button><button class="btn btn-ghost" id="nextPage" type="button" disabled>التالي</button></div></div>
+          </div>
+          <article class="panel details-panel" id="evidencePanel" hidden>
+            <div class="panel-header"><div><h3>سلسلة الأدلة المالية</h3><p>يمكن استعراض حالة التدقيق والحوكمة للمطالبة المختارة دون عرض مصدر طبي خام.</p></div></div>
+            <dl class="definition-list" id="evidenceInfo"></dl>
+          </article>
+        </section>
+
+        <section id="tab-beneficiaries" class="tab-pane" hidden>
+          <article class="panel narrow-panel">
+            <h3>كشف مستفيد من تقرير محفوظ</h3>
+            <p>تُطلب صلاحية كشف المستفيد وقراءة حقل المستفيد. أدخل رمز المستفيد في نموذج آمن، ولن يظهر في عنوان الصفحة.</p>
+            <form id="statementForm" class="statement-form">
+              <label for="beneficiaryToken">رمز المستفيد</label>
+              <div class="joined-inputs">
+                <input id="beneficiaryToken" type="text" maxlength="128" autocomplete="off" required placeholder="أدخل الرمز المعتمد">
+                <button class="btn btn-primary" type="submit">عرض الكشف</button>
+              </div>
+            </form>
+            <div id="statementResult" class="statement-results"></div>
+          </article>
+        </section>
+
+        <section id="tab-archive" class="tab-pane" hidden>
+          <article class="panel">
+            <div class="panel-header"><div><h3>الإصدارات المحفوظة</h3><p>كل إصدار يمتلك بصمة سلامة مستقلة، ولا يُستبدل بالإصدارات اللاحقة.</p></div><button class="btn btn-ghost" id="archiveRefresh" type="button">تحديث القائمة</button></div>
+            <div id="archiveList" class="archive-list"></div>
+            <div class="pager"><span id="archivePageLabel"></span><div><button class="btn btn-ghost" id="archivePrev" type="button" disabled>السابق</button><button class="btn btn-ghost" id="archiveNext" type="button" disabled>التالي</button></div></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer"><span>MCIAS v2.0 • G7 Reporting</span><span>السجلات الأصلية غير قابلة للتعديل • لا توجد موافقة مالية إنتاجية تلقائية</span></footer>
+  </div>
+</div>
+</body>
+</html>

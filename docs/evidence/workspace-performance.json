@@ -1,0 +1,40 @@
+{
+  "timestamp_utc": "2026-10-10T16:29:01.466483+00:00",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "chromium": "154.0.8037.57",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "synthetic_data": true,
+  "not_production_sla_evidence": true,
+  "cold_browser_samples": [
+    {
+      "navigation_ms": 195.20000000018626,
+      "dom_content_loaded_ms": 164,
+      "first_contentful_paint_ms": 140,
+      "resource_count": 25,
+      "resource_encoded_bytes": 586799
+    },
+    {
+      "navigation_ms": 236.79999999981374,
+      "dom_content_loaded_ms": 236.5,
+      "first_contentful_paint_ms": 208,
+      "resource_count": 25,
+      "resource_encoded_bytes": 586799
+    },
+    {
+      "navigation_ms": 294.19999999925494,
+      "dom_content_loaded_ms": 238.19999999925494,
+      "first_contentful_paint_ms": 252,
+      "resource_count": 25,
+      "resource_encoded_bytes": 586799
+    }
+  ],
+  "asset_bytes": {
+    ".js": 148230,
+    ".css": 23761,
+    ".svg": 14032,
+    ".woff2": 360036
+  }
+}

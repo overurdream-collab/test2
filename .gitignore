@@ -1,0 +1,26 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+*.db
+*.sqlite
+uploads/
+backups/
+data/
+*.egg-info/
+build/
+dist/
+.e2e-output/
+node_modules/
+deploy/private/
+*.key
+*.p12
+*.pfx
+*.pem
+RECEIPT.json
+# Only the validated public synthetic fixture is tracked; operational data stays ignored.
+!mcias/seed/data/
+!mcias/seed/data/workspace-v1.json

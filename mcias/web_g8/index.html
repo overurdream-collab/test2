@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="referrer" content="no-referrer">
+<title>MCIAS | استخبارات المطالبات — G8</title>
+<link rel="stylesheet" href="/ui/reports/assets/dashboard.css">
+<link rel="stylesheet" href="/ui/intelligence/assets/studio.css">
+<script src="/ui/intelligence/assets/studio.js" defer></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">M</div>
+      <div><strong>MCIAS</strong><small>استوديو التحليل والرقابة</small></div>
+    </div>
+    <div class="sidebar-category">الذكاء التحليلي • G8</div>
+    <nav class="navigation" aria-label="أقسام التحليل">
+      <button type="button" class="nav-link is-active" data-view="summary" aria-current="page"><span class="nav-icon">▦</span>الاتجاهات والمؤشرات</button>
+      <button type="button" class="nav-link" data-view="signals"><span class="nav-icon">◎</span>إشارات تحتاج مراجعة</button>
+      <button type="button" class="nav-link" data-view="scenario"><span class="nav-icon">◈</span>المحاكاة الافتراضية</button>
+      <button type="button" class="nav-link" data-view="studio"><span class="nav-icon">⚙</span>استوديو المهام</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="soft-icon" aria-hidden="true">✓</div>
+      <div><strong>مخرجات استرشادية</strong><p>لا اتهامات احتيال، ولا تشخيصات، ولا خصومات مالية آلية.</p></div>
+    </div>
+  </aside>
+  <div class="content-column">
+    <header class="topbar">
+      <div class="topbar-title"><span class="eyebrow">MCIAS / INTELLIGENCE</span><span>التحليل الذكي للمطالبات</span></div>
+      <div class="topbar-actions">
+        <a class="btn btn-ghost" href="/ui/reports">تقارير G7</a>
+        <span class="connection-indicator" id="g8Connected"><span class="dot"></span><span id="connectionText">غير متصل</span></span>
+        <button type="button" class="topbar-button" id="logout" hidden>خروج</button>
+      </div>
+    </header>
+    <main class="main-container">
+      <section id="loginSection" class="panel g8-auth" aria-labelledby="g8LoginHeading">
+        <div class="g8-auth-mark" aria-hidden="true">◇</div>
+        <p class="eyebrow">ANALYSIS STUDIO / SECURE ACCESS</p>
+        <h1 id="g8LoginHeading">استخبارات وتحليل المطالبات</h1>
+        <p class="subtitle">الوصول إلى بيانات وتقارير المؤسسة يتطلب صلاحيات مستقلة. لا يتم تحميل أي بيانات طبية إلى الإنترنت، ولا تظهر أي أرقام اصطناعية باعتبارها نتائج فعلية.</p>
+        <form id="loginForm" class="g8-login-form">
+          <label for="user">اسم المستخدم</label><input id="user" autocomplete="username" required maxlength="120">
+          <label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required>
+          <label for="otp">التحقق الثنائي (عند تفعيله)</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="6 أرقام">
+          <button type="submit" class="btn btn-primary" id="loginBtn">دخول آمن</button>
+        </form>
+        <p class="g8-helper">يُحفظ رمز الجلسة في الذاكرة فقط، ولا يُخزَّن في المتصفح أو عنوان الصفحة.</p>
+      </section>
+
+      <section id="workArea" hidden aria-label="التحليلات">
+        <div class="heading-row">
+          <div><p class="eyebrow">المرحلة G8 · بناء على G7 المجمد</p>
+            <h1 id="currentTitle">التحليل التاريخي للمطالبات</h1>
+            <p class="subtitle" id="currentDescription">مؤشرات وصفية قابلة للتتبع إلى التقارير الأصلية، دون دمج عملات أو اختلاق أسباب.</p>
+          </div>
+          <span class="g8-pill"><span class="g8-pill-dot"></span>للمراجعة فقط · لا قرارات مالية تلقائية</span>
+        </div>
+        <div class="notice" role="status" id="g8Notice" aria-live="polite" hidden></div>
+        <section class="panel g8-source-panel" aria-labelledby="sourceHeading">
+          <div class="panel-header">
+            <div><h3 id="sourceHeading">مصادر البيانات المعتمدة للتحليل</h3>
+              <p>يمكن اختيار حتى 12 تقريراً من دفعات مختلفة؛ لا يمكن خلط إصدارين من الدفعة نفسها في تحليل واحد.</p></div>
+            <button class="btn btn-ghost" type="button" id="reloadReports">↻ تحديث المصادر</button>
+          </div>
+          <div class="g8-source-grid">
+            <div><label for="sources">تقارير G7 المجمدة</label>
+              <select multiple size="5" id="sources" aria-describedby="sourceHelper"></select>
+              <p id="sourceHelper" class="g8-helper">استخدم Ctrl أو Command لاختيار أكثر من تقرير.</p>
+            </div>
+            <div><label for="manualSources">أو أدخل معرفات التقارير يدوياً (مفصولة بفواصل)</label>
+              <textarea id="manualSources" rows="4" maxlength="600" placeholder="معرّف تقرير 1، معرّف تقرير 2"></textarea>
+              <p class="g8-helper">يُستخدم الإدخال اليدوي فقط عند عدم توفر صلاحية عرض أرشيف G7، وتظل صلاحية المصدر مفروضة من الخادم.</p></div>
+          </div>
+          <div class="g8-source-foot"><span id="selectionCaption">لم يتم تحديد أي تقرير بعد.</span><span>الحد الأقصى 10,000 مطالبة للاختبار الهندسي</span></div>
+        </section>
+
+        <section id="view-summary" class="g8-view">
+          <div class="panel">
+            <div class="panel-header"><div><h2>التحليل الوصفي التاريخي</h2><p>مجموعات حسب مقدم الخدمة أو الخدمة أو الشهر. المجموعات الصغيرة تُحجب تلقائياً.</p></div></div>
+            <form class="g8-inline-form" id="summaryForm">
+              <div><label for="summaryDimension">التجميع حسب</label>
+                <select id="summaryDimension"><option value="provider">مقدم الخدمة</option><option value="service">رمز الخدمة</option><option value="month">الشهر</option></select></div>
+              <div><label for="summaryPrivacy">الحد الأدنى لحجم المجموعة</label>
+                <input id="summaryPrivacy" type="number" min="5" max="1000" step="1" value="5" required></div>
+              <button class="btn btn-primary" type="submit">إنشاء تحليل موثّق</button>
+            </form>
+          </div>
+          <div id="summaryOutput" class="g8-result-slot"></div>
+        </section>
+
+        <section id="view-signals" class="g8-view" hidden>
+          <div class="panel"><div class="panel-header"><div><h2>المؤشرات غير الاعتيادية</h2>
+            <p>التنبيه ليس اتهاماً أو دليلاً على مخالفة. يُعرض البسط والمقام وخط الأساس والعتبة لتمكين مراجعة مستقلة.</p></div></div>
+            <form class="g8-inline-form" id="signalsForm">
+              <div class="g8-field-grow"><label for="approvedTask">المؤشر المختبر والمفعّل</label><select id="approvedTask" required></select></div>
+              <button class="btn btn-primary" type="submit">تشغيل المؤشر للمراجعة</button>
+            </form>
+          </div>
+          <div id="signalsOutput" class="g8-result-slot"></div>
+        </section>
+
+        <section id="view-scenario" class="g8-view" hidden>
+          <div class="panel"><div class="panel-header"><div><h2>محاكاة أثر افتراضي</h2>
+            <p>تجربة تعليمية غير ملزمة: افتراض خفض نسبي على المستحقات المعتمدة فقط، دون تغيير المطالبات أو السياسات أو النسخ المالية.</p></div></div>
+            <form class="g8-inline-form" id="simulationForm">
+              <div><label for="assumedReduction">نسبة التخفيض الافتراضية (%)</label><input id="assumedReduction" type="number" required min="0" max="100" step="0.01" value="10"></div>
+              <button class="btn btn-primary" type="submit">احتساب السيناريو</button>
+            </form>
+          </div>
+          <div id="simulationOutput" class="g8-result-slot"></div>
+        </section>
+
+        <section id="view-studio" class="g8-view" hidden>
+          <article class="panel">
+            <div class="panel-header"><div><h2>استوديو التحليل — Super Admin</h2>
+              <p>إعداد مؤشر جديد بإصدار محفوظ، اختبار اصطناعي متكرر، ثم موافقة مُراجع مستقل. يمنع تنفيذ SQL أو أوامر مخصصة.</p></div></div>
+            <form id="newTaskForm" class="g8-task-grid">
+              <div><label for="taskCode">معرّف المهمة (أحرف إنجليزية صغيرة)</label><input id="taskCode" pattern="[a-z][a-z0-9_]{2,63}" maxlength="64" required placeholder="provider_hold_ratio"></div>
+              <div><label for="indicator">المؤشر</label>
+                <select id="indicator"><option value="hold_rate">نسبة المطالبات المعلقة</option><option value="provider_claimed_share">حصة مقدم الخدمة من المطالبات</option></select></div>
+              <div><label for="taskDimension">التحليل حسب</label>
+                <select id="taskDimension"><option value="provider">مقدم الخدمة</option><option value="service">الخدمة</option><option value="month">الشهر</option></select></div>
+              <div><label for="taskThreshold">عتبة التنبيه (%)</label><input id="taskThreshold" type="number" min="0" max="100" step="0.01" required value="60"></div>
+              <div><label for="taskMin">الحد الأدنى لحجم العينة</label><input id="taskMin" type="number" min="5" max="1000" step="1" required value="5"></div>
+              <button type="submit" class="btn btn-primary">حفظ نسخة مسودة جديدة</button>
+            </form>
+            <p class="g8-helper">المصدر المسموح الوحيد: تقارير G7 المحفوظة. يتطلب التفعيل مستخدماً آخر يمتلك صلاحية الاعتماد؛ الاختبار نفسه لا يعتبر اعتماداً مؤسسياً نهائياً.</p>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><div><h2>سجل المهام والإصدارات</h2>
+              <p>حالات «مسودة ← مُختبَرة ← نشطة» مع إيقاف النسخ السابقة قبل تفعيل اللاحقة.</p></div>
+              <button class="btn btn-ghost" id="refreshTasks" type="button">تحديث المهام</button></div>
+            <div id="taskList" class="g8-result-slot"></div>
+          </article>
+        </section>
+        <section class="panel g8-policy-footer"><strong>ضوابط الاستخدام</strong>
+          <p>كل تحليل يرتبط ببصمة التقرير المصدر وسجل إصدار قابل للتحقق، وجميع الإشارات للمراجعة فقط. متطلبات قبول G0–G7 وG8 الرسمية لم تُلغَ.</p></section>
+      </section>
+    </main>
+    <footer class="footer"><span>MCIAS v2.0 · G8</span><span>تجربة تطوير مؤسسية · لا ادعاءات احتيال · لا معالجة بيانات خارجية</span></footer>
+  </div>
+</div>
+</body>
+</html>
