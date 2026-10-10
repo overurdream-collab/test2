@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from mcias.models import AuditLog, WrittenAuthorization, User
 from mcias.models_reference import ContractVersion, ProviderTariff, BeneficiaryCategory, BeneficiaryEnrollment
-from mcias.reference import ReferenceConflict, check_contract_overlap, analyze_retroactive, validate_enrollment
+from mcias.reference import ReferenceConflict, check_contract_overlap, analyze_retroactive, validate_enrollment, reference_fingerprint
 
 def _audit(db, actor, action, kind, resource_id, details=None):
     db.add(AuditLog(actor_id=actor.id, action=action, resource_type=kind,
@@ -121,7 +121,8 @@ def impact_review(db, actor, contract_id, rationale, as_of=None):
         raise ReferenceConflict("proposal author cannot review own impact")
     result = analyze_retroactive(db, contract, as_of or date.today())
     _audit(db, actor, "contract_impact_reviewed", "contract_version", contract.id,
-           {"rationale": rationale.strip(), "impact": result, "reviewer_id": actor.id})
+           {"rationale": rationale.strip(), "impact": result, "reviewer_id": actor.id,
+            "fingerprint": reference_fingerprint(contract)})
     db.commit()
     return result
 
@@ -140,7 +141,8 @@ def approve_precedence_policy(db, actor, contract_id, rationale):
     if auth is None or auth.approved_by == actor.id:
         raise ReferenceConflict("precedence reviewer must be independent of written approver")
     _audit(db, actor, "contract_precedence_approved", "contract_version", contract.id,
-           {"rationale": rationale.strip(), "precedence": contract.precedence})
+           {"rationale": rationale.strip(), "precedence": contract.precedence,
+            "fingerprint": reference_fingerprint(contract)})
     db.commit()
     return {"contract_id": contract.id, "precedence_reviewed": True}
 
