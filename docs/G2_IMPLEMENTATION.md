@@ -28,3 +28,19 @@ python -m pytest -q
 alembic upgrade head
 
 G2 remains OPEN until all mandatory T01–T03, full coverage and OCR accuracy tests and G1 regression pass on the same commit with acceptance evidence.
+## Additional implemented hardening
+- Streaming upload size checks, including requests without a Content-Length header.
+- ZIP archive duplicate/path/compression-bomb detection.
+- CSV/XLSX limits and Excel formula quarantine.
+- Optional Tesseract subprocess OCR for locally provisioned images; default-deny if absent.
+- Spawned parser worker with timeout and best-effort OS resource limits (Linux). This is process isolation, not a hardened OS sandbox.
+- OCR golden-set character-error measurement and regression tests. These synthetic metrics do not establish real medical-document OCR accuracy.
+- Tenant-scoped paginated record/provenance endpoint.
+
+## Operational acceptance still required
+- Real labeled Arabic/English medical-document OCR dataset and agreed minimum accuracy thresholds.
+- Locally installed and secured Tesseract, Arabic/English language packs, and PDF rasterization for scanned PDF pages.
+- Mandatory antivirus or scanning service with fail-closed results before parser dispatch.
+- Hardened container/OS sandbox, not merely subprocess isolation.
+- Quarantine resolution with authorized reviewer, resumable ingestion, revision tracking and production-scale load tests.
+- Actual on-prem restore and G1/G2 acceptance evidence.
