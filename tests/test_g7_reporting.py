@@ -167,3 +167,16 @@ def test_export_pdf_and_excel_verify_integrity_first():
         render_xlsx(report)
     with pytest.raises(ReportBlocked):
         render_pdf(report)
+
+def test_t18_arabic_rtl_workbook_preserves_literal_originals():
+    report = frozen()
+    excel = render_xlsx(report, include_originals=True, language="ar")
+    wb = load_workbook(BytesIO(excel), data_only=False)
+    assert wb.sheetnames == ["الملخص التنفيذي", "القيم الأصلية"]
+    assert wb["الملخص التنفيذي"].sheet_view.rightToLeft
+    assert wb["القيم الأصلية"].sheet_view.rightToLeft
+    raw = wb["القيم الأصلية"]
+    names = {raw.cell(1, i).value: i for i in range(1, raw.max_column + 1)}
+    assert raw.cell(2, names["raw_identifier"]).value == "0012300"
+    assert raw.cell(2, names["raw_formula"]).value == "=SUM(1,2)"
+    assert raw.cell(2, names["raw_formula"]).data_type == "s"
