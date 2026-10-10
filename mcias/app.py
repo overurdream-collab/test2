@@ -144,3 +144,6 @@ app.include_router(audit_policy_router)
 
 from mcias.governance_g6_api import router as governance_g6_router
 app.include_router(governance_g6_router)
+
+from mcias.reporting_g7_api import router as reporting_g7_router
+app.include_router(reporting_g7_router)
