@@ -19,7 +19,7 @@ Status: **IMPLEMENTED FOR SYNTHETIC ENGINEERING TESTS / OPEN FOR INSTITUTIONAL A
 | GET | \`/api/v1/reports/snapshots/{report_id}/excel\` | \`reports.export\` |
 | GET | \`/api/v1/reports/snapshots/{report_id}/excel?include_originals=true\` | above + \`reports.originals.export\` + every column medical-field permission |
 | GET | \`/api/v1/reports/snapshots/{report_id}/pdf\` | \`reports.export\` |
-| GET | \`/api/v1/reports/snapshots/{report_id}/beneficiaries/{token}/statement\` | \`reports.beneficiary.read\`, \`medical_fields.beneficiary_token.read\` |
+| POST | \`/api/v1/reports/snapshots/{report_id}/beneficiary-statement\` | \`reports.beneficiary.read\`, \`medical_fields.beneficiary_token.read\` |
 
 The \`dashboard\` endpoint provides safe metrics for a future RTL UI; an interactive frontend has not been delivered here. Reports are created explicitly by authorized staff and do not imply payment authorization.
 
