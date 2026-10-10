@@ -5,7 +5,7 @@ from hashlib import sha256
 import json
 from sqlalchemy import select
 from mcias.audit_engine import AuditPolicy,PolicyBlocked,evaluate
-from mcias.audit_authorization import VerifiedPolicyAuthorization
+from mcias.audit_authorization import VerifiedPolicyAuthorization, verify_registered_policy
 from mcias.audit_policy_registry import resolve_grant
 from mcias.audit_agents import inspect_claim
 from mcias.palermo2 import verify
@@ -34,6 +34,13 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
         raise PolicyBlocked('policy authorization is invalid or not independently reviewed')
     if not actor.active or not actor.organization_id:
         raise PolicyBlocked("authorized active organization required")
+    try:
+        registered=verify_registered_policy(db,organization_id=actor.organization_id,
+            policy_fingerprint=fingerprint_policy(policy))
+    except ValueError as exc:
+        raise PolicyBlocked(str(exc)) from exc
+    if registered != verified_authorization:
+        raise PolicyBlocked('authorization must match active institutional registry')
     # Re-check durable institutional authorization on every execution,
     # including after a policy grant has been revoked.
     resolve_grant(db,organization_id=actor.organization_id,
