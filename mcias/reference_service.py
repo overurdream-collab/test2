@@ -122,3 +122,20 @@ def impact_review(db, actor, contract_id, rationale, as_of=None):
            {"rationale": rationale.strip(), "impact": result, "reviewer_id": actor.id})
     db.commit()
     return result
+
+def approve_precedence_policy(db, actor, contract_id, rationale):
+    contract = db.get(ContractVersion, contract_id, with_for_update=True)
+    if contract is None:
+        raise ReferenceConflict("contract unavailable")
+    _tenant(actor, contract.organization_id)
+    if contract.status != "draft" or not rationale or len(rationale.strip()) < 20:
+        raise ReferenceConflict("substantive precedence rationale required")
+    if not contract.authorization_id:
+        raise ReferenceConflict("written authorization required before precedence review")
+    auth = db.get(WrittenAuthorization, contract.authorization_id)
+    if auth is None or auth.approved_by == actor.id:
+        raise ReferenceConflict("precedence reviewer must be independent of written approver")
+    _audit(db, actor, "contract_precedence_approved", "contract_version", contract.id,
+           {"rationale": rationale.strip(), "precedence": contract.precedence})
+    db.commit()
+    return {"contract_id": contract.id, "precedence_reviewed": True}
