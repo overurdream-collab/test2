@@ -1,0 +1,65 @@
+name: MCIAS G8 Intelligence and Studio
+on:
+  push:
+    branches: [feat/g8-intelligence]
+  pull_request:
+    paths:
+      - "mcias/intelligence*"
+      - "mcias/models_g8.py"
+      - "mcias/report_web_g8.py"
+      - "mcias/web_g8/**"
+      - "alembic/versions/0015_g8_intelligence.py"
+      - "alembic/versions/0016_g8_signal_review.py"
+      - "tests/test_g8*"
+      - "pyproject.toml"
+      - ".github/workflows/g8.yml"
+
+jobs:
+  g8-unit-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m compileall -q mcias tests
+      - run: node --check mcias/web_g8/studio.js
+      - run: python -m pytest -q tests/test_g8_intelligence.py tests/test_g8_studio.py tests/test_g8_web.py tests/test_g8_reviews.py
+      - run: python -m pip wheel . --no-deps -w dist
+      - run: |
+          python - <<'PY'
+          import glob,zipfile
+          with zipfile.ZipFile(glob.glob("dist/mcias-*.whl")[0]) as z:
+              for name in ("index.html","studio.css","studio.js"):
+                  assert "mcias/web_g8/"+name in z.namelist(), name
+          PY
+  g8-postgres:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_g8_postgres.py tests/test_g7_integration.py
