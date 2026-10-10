@@ -1,67 +1,127 @@
-"""G6 deterministic approval workflow; no mutation of G4 or G5 records."""
+"""G6 append-only workflow with objected-case re-audit lineage.
+
+Every re-audit references a separately generated G5 snapshot; never change the
+original claim, audit snapshot or governance decision.
+"""
 from sqlalchemy import select
 from mcias.models import AuditLog
 from mcias.models_audit import AuditSnapshot
-from mcias.models_governance_g6 import GovernanceCase,GovernanceEvent
+from mcias.models_governance_g6 import GovernanceCase, GovernanceEvent
 from mcias.models_ingestion import IngestionDocument
 from mcias.policy import has_permission
 
-class GovernanceBlocked(ValueError): pass
+class GovernanceBlocked(ValueError):
+    pass
 
-def open_case(db,actor,snapshot_id):
-    if not actor.active or not actor.organization_id or not has_permission(db,actor,"claims.read"):
+PERMISSIONS = {
+    "propose": "governance.propose",
+    "approve": "governance.approve",
+    "hold": "governance.review",
+    "reject": "governance.approve",
+    "object": "claims.read",
+    "request_reaudit": "governance.reaudit",
+    "link_reaudit": "governance.reaudit",
+}
+
+def open_case(db, actor, snapshot_id):
+    if (not actor.active or not actor.organization_id
+        or not has_permission(db, actor, "claims.read")):
         raise GovernanceBlocked("not authorized to open governance case")
-    snap=db.get(AuditSnapshot,snapshot_id)
-    if snap is None or snap.organization_id!=actor.organization_id:
+    snap = db.get(AuditSnapshot, snapshot_id)
+    if snap is None or snap.organization_id != actor.organization_id:
         raise GovernanceBlocked("audit snapshot not accessible")
-    case=GovernanceCase(organization_id=actor.organization_id,claim_id=snap.claim_id,
-        audit_snapshot_id=snap.id,opened_by=actor.id)
-    db.add(case);db.flush()
-    db.add(AuditLog(actor_id=actor.id,action="g6_case_opened",resource_type="governance_case",
-        resource_id=case.id,details={"snapshot_id":snap.id}))
+    # Avoid multiple independent decisions for an identical G5 snapshot.
+    existing = db.scalar(select(GovernanceCase).where(
+        GovernanceCase.organization_id == actor.organization_id,
+        GovernanceCase.audit_snapshot_id == snap.id).with_for_update())
+    if existing:
+        return existing
+    case = GovernanceCase(organization_id=actor.organization_id, claim_id=snap.claim_id,
+        audit_snapshot_id=snap.id, opened_by=actor.id)
+    db.add(case)
+    db.flush()
+    db.add(AuditLog(actor_id=actor.id, action="g6_case_opened",
+        resource_type="governance_case", resource_id=case.id,
+        details={"snapshot_id": snap.id}))
     db.commit()
     return case
 
-def append_event(db,actor,case_id,kind,payload,*,evidence_document_id=None):
-    allowed={"propose","approve","hold","reject","object","request_reaudit"}
-    if kind not in allowed or not isinstance(payload,dict):
+def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None):
+    if kind not in PERMISSIONS or not isinstance(payload, dict):
         raise GovernanceBlocked("invalid governance action")
-    permission="claims.read" if kind in {"object"} else "rules.activate"
-    if not actor.active or not actor.organization_id or not has_permission(db,actor,permission):
+    permission = PERMISSIONS[kind]
+    if (not actor.active or not actor.organization_id
+        or not has_permission(db, actor, permission)):
         raise GovernanceBlocked("governance permission denied")
-    case=db.scalar(select(GovernanceCase).where(GovernanceCase.id==case_id,
-        GovernanceCase.organization_id==actor.organization_id).with_for_update())
+    case = db.scalar(select(GovernanceCase).where(
+        GovernanceCase.id == case_id, GovernanceCase.organization_id == actor.organization_id
+    ).with_for_update())
     if case is None:
         raise GovernanceBlocked("case not accessible")
-    latest=db.scalar(select(GovernanceEvent).where(GovernanceEvent.case_id==case.id)
-        .order_by(GovernanceEvent.version.desc()).limit(1))
-    if latest and latest.kind in {"approve","reject"} and kind!="object":
+    latest = db.scalar(select(GovernanceEvent).where(
+        GovernanceEvent.case_id == case.id
+    ).order_by(GovernanceEvent.version.desc()).limit(1))
+    if latest and latest.kind in {"approve", "reject"} and kind != "object":
         raise GovernanceBlocked("final decision is immutable; file a new objection")
-    if kind=="approve":
-        if actor.id==case.opened_by or (latest and actor.id==latest.actor_id):
+    if kind == "approve":
+        if actor.id == case.opened_by or (latest and actor.id == latest.actor_id):
             raise GovernanceBlocked("separation of duties: self approval prohibited")
-        snap=db.get(AuditSnapshot,case.audit_snapshot_id)
-        if (snap is None or snap.organization_id!=case.organization_id
-            or snap.claim_id!=case.claim_id
-            or snap.calculation.get("status")!="calculated"
-            or snap.verification.get("status")!="verified"):
+        snap = db.get(AuditSnapshot, case.audit_snapshot_id)
+        if (snap is None or snap.organization_id != case.organization_id
+            or snap.claim_id != case.claim_id
+            or snap.calculation.get("status") != "calculated"
+            or snap.verification.get("status") != "verified"):
             raise GovernanceBlocked("held or unverified items cannot be approved")
-        if latest is None or latest.kind not in {"propose","hold"}:
+        if latest is None or latest.kind not in {"propose", "hold"}:
             raise GovernanceBlocked("proposal required before approval")
-    if kind=="object":
-        if not evidence_document_id:
-            raise GovernanceBlocked("objection requires linked evidence")
+    if kind == "object" and not evidence_document_id:
+        raise GovernanceBlocked("objection requires linked evidence")
     if evidence_document_id:
-        doc=db.get(IngestionDocument,evidence_document_id)
-        if doc is None or doc.organization_id!=actor.organization_id:
-            raise GovernanceBlocked("evidence not accessible")
-    if kind=="request_reaudit" and (latest is None or latest.kind!="object"):
+        doc = db.get(IngestionDocument, evidence_document_id)
+        if (doc is None or doc.organization_id != actor.organization_id
+            or doc.status not in {"extracted", "review_required"}
+            or not isinstance(doc.sha256, str) or len(doc.sha256) != 64
+            or any(c not in "0123456789abcdefABCDEF" for c in doc.sha256)):
+            raise GovernanceBlocked("objection evidence not verified or quarantined")
+    if kind == "request_reaudit" and (latest is None or latest.kind != "object"):
         raise GovernanceBlocked("re-audit must follow an objection")
-    event=GovernanceEvent(case_id=case.id,organization_id=case.organization_id,
-        version=1 if latest is None else latest.version+1,kind=kind,actor_id=actor.id,
-        snapshot_id=case.audit_snapshot_id,evidence_document_id=evidence_document_id,payload=payload)
-    db.add(event);db.flush()
-    db.add(AuditLog(actor_id=actor.id,action="g6_"+kind,resource_type="governance_event",
-        resource_id=event.id,details={"case_id":case.id,"version":event.version}))
+
+    linked_case = None
+    event_snapshot_id = case.audit_snapshot_id
+    event_payload = dict(payload)
+    if kind == "link_reaudit":
+        if latest is None or latest.kind != "request_reaudit":
+            raise GovernanceBlocked("re-audit snapshot must follow a recorded request")
+        new_snapshot_id = payload.get("new_snapshot_id")
+        if (not isinstance(new_snapshot_id, str) or not new_snapshot_id
+            or new_snapshot_id == case.audit_snapshot_id):
+            raise GovernanceBlocked("a new immutable audit snapshot is required")
+        fresh = db.get(AuditSnapshot, new_snapshot_id)
+        if (fresh is None or fresh.organization_id != case.organization_id
+            or fresh.claim_id != case.claim_id):
+            raise GovernanceBlocked("re-audit snapshot tenant or claim mismatch")
+        # A G5 audit must already exist; this function does not fabricate one.
+        if db.scalar(select(GovernanceCase.id).where(
+            GovernanceCase.organization_id == case.organization_id,
+            GovernanceCase.audit_snapshot_id == fresh.id)):
+            raise GovernanceBlocked("re-audit snapshot already governed")
+        linked_case = GovernanceCase(organization_id=case.organization_id,
+            claim_id=case.claim_id, audit_snapshot_id=fresh.id, opened_by=actor.id)
+        db.add(linked_case)
+        db.flush()
+        event_payload = {"new_snapshot_id": fresh.id,
+                         "linked_case_id": linked_case.id}
+        event_snapshot_id = fresh.id
+
+    event = GovernanceEvent(case_id=case.id, organization_id=case.organization_id,
+        version=1 if latest is None else latest.version + 1, kind=kind,
+        actor_id=actor.id, snapshot_id=event_snapshot_id,
+        evidence_document_id=evidence_document_id, payload=event_payload)
+    db.add(event)
+    db.flush()
+    db.add(AuditLog(actor_id=actor.id, action="g6_" + kind,
+        resource_type="governance_event", resource_id=event.id,
+        details={"case_id": case.id, "version": event.version,
+                 "new_case_id": linked_case.id if linked_case else None}))
     db.commit()
     return event
