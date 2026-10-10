@@ -12,6 +12,7 @@ from mcias.models_claims import ClaimBatch, ClaimEntry
 from mcias.models_audit import AuditSnapshot
 from mcias.models_governance_g6 import GovernanceCase, GovernanceEvent
 from mcias.models_reporting_g7 import ReportSnapshot
+from mcias.palermo2 import verify as verify_palermo2
 
 class ReportBlocked(ValueError):
     pass
@@ -83,7 +84,10 @@ def freeze_batch(batch, claims, snapshots, cases, events):
         deduction = None
         if snapshot and latest and latest.kind == "approve":
             calc = snapshot.calculation
+            findings = snapshot.findings.get("agents", []) if isinstance(snapshot.findings, dict) else []
+            independent = verify_palermo2(claim, findings, calc)
             if (isinstance(calc, dict) and calc.get("status") == "calculated"
+                and independent["status"] == "verified"
                 and snapshot.verification.get("status") == "verified"
                 and calc.get("currency") == claim.currency
                 and calc.get("source_id") == claim.extracted_record_id):
