@@ -2,7 +2,35 @@
 # Operator must provide deployment-private files and separate on-prem PostgreSQL.
 # Do not label this production-approved without all signed G0-G9 acceptance evidence.
 services:
+  db:
+    # Separate private DBA/migration identity, not the application runtime role.
+    # Replace mutable image tags with reviewed digests before formal release.
+    image: postgres:16
+    env_file:
+      - path: ./private/postgres-owner.env
+        required: true
+    volumes:
+      - database:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks: [backend]
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev
+      - /var/run/postgresql:rw,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
   api:
+    depends_on:
+      db:
+        condition: service_healthy
     build:
       context: ..
       dockerfile: deploy/Dockerfile
@@ -55,3 +83,6 @@ services:
 networks:
   backend:
     internal: true
+
+volumes:
+  database:
