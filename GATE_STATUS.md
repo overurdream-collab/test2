@@ -6,13 +6,13 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 |---|---|---|---|---|---|
 | G0 Architecture & Readiness | OPEN | ADRs, threat model, permission matrix, reproducible environment, policy register | Readiness review | None recorded | Pending |
 | G1 Foundation | IN PROGRESS — NOT ACCEPTED | Auth sessions, RBAC, MFA verification, login throttling, governance API, PostgreSQL immutability triggers, encrypted archive and real pg_dump/pg_restore drill. Pending: MFA enrollment/recovery and key operations, verified written authorization signatures, deployment hardening and human security review | T06, T07, T11, T17 + security suite | CI #197 (run 38004591655): unit SUCCESS, postgres-integration SUCCESS, dependency-audit SUCCESS. Later security regression is pending CI #211 | Pending |
-| G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
-| G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
-| G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
+| G2 Ingestion | ENGINEERING COMPONENTS PRESENT — NOT ACCEPTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
+| G3 Reference | ENGINEERING COMPONENTS PRESENT — NOT ACCEPTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
+| G4 Claims | ENGINEERING COMPONENTS PRESENT — NOT ACCEPTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
 | G5 Audit Engine | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | rule engine, 8 agents, Palermo-2 | T08, T09 + reconciliation | None | Pending |
 | G6 Governance | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | approvals, objections, selective re-audit | T10–T12 + separation of duties | None | Pending |
-| G7 Reporting | ENGINEERING IMPLEMENTED IN PART — OPEN / NOT ACCEPTED | Excel/PDF, dashboard, statements | T13, T18, T20 + reconciliation | None | Pending |
-| G8 Intelligence | NOT STARTED | analytics, anomalies, simulations, Analysis Studio | T14, T15, T19 + false positives | None | Pending |
+| G7 Reporting | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | Excel/PDF, dashboard, statements | T13, T18, T20 + reconciliation | None | Pending |
+| G8 Intelligence | ENGINEERING IMPLEMENTED — OPEN / NOT ACCEPTED | analytics, anomalies, simulations, Analysis Studio | T14, T15, T19 + false positives | None | Pending |
 | G9 Release | NOT STARTED | security, performance, restore, docs, training | full regression + human signature | None | Pending |
 
 ## G0 policy decision register
@@ -73,3 +73,13 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Financial safety: G7 recomputes G5 Palermo-2 reconciliation independently before including an approved item; held/objection/unverified data cannot enter payable totals. T13, T18 and T20 are implemented and tested, with a real PostgreSQL G7 versioning/tenant/immutability test.
 - **Verified CI on commit `74dfe61673ff2599528cdbea0479608c8cd7a593`:** [GitHub run #38060137692](https://github.com/overurdream-collab/test2/actions/runs/38060137692). Unit **187 passed, 14 skipped**; PostgreSQL integration **143 passed**; dependency audit **SUCCESS**; `node --check` included. These exact results cover that specific commit; later documentation-only commits must separately complete CI.
 - Institutional policy pack unresolved; G0–G6 human acceptance, written financial authorization, approved medical report permissions, deployment/privacy/performance and Arabic UX review remain prerequisites to production. No real payment or production claims were processed.
+
+## G8 engineering / cross-gate acceptance tracking (2026-10-10)
+
+- Dedicated code branch: `feat/g8-intelligence` stacked on `feat/g5-g6-g7-reporting` via draft PR #9.
+- Delivered **engineering code**, not an authorized institutional implementation: deterministic provider/service/month analytical aggregates, low-population suppression, separate currency calculations, Palermo-2/G7 provenance linkage, alert-only signals, what-if scenarios, versioned Analysis Studio task configuration, server-generated synthetic test evidence, independent reviewer activation and append-only manual feedback for false-positive quality measurement.
+- PostgreSQL migrations `0015_g8_intelligence` and `0016_g8_signal_review` protect task versions, lifecycle and runs against normal-role updates and cross-organization inserts. A DB owner can bypass triggers and must not be the production application service account.
+- Separate Arabic RTL user interface at `/ui/intelligence`. G8 is test-only; default-deny RBAC does not automatically grant access. No AI-driven accusation, payer adjustment or clinical action is authorized.
+- Original **G0–G7** signed acceptance requirements remain OPEN, with owners, criteria and blockers summarized in `docs/G0_G8_ACCEPTANCE_TRACKER.md`.
+- **G8 acceptance remains OPEN:** synthetic CI is not institution-labeled evidence. Remaining prerequisites are real baseline denominators, independent false-positive calibration, field-level authorization approvals, trusted reviewer authority, target-load test, threat/privacy review, MFA/TLS/backup deployment audit and signed human acceptance.
+- CI results should be attached only for an exact completed SHA; intermediate commits and prior CI do not certify the latest branch head.
