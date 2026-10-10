@@ -28,7 +28,8 @@ def _validate_path(name: str) -> None:
     if (not isinstance(name, str) or not 1 <= len(name) <= 200 or "\\" in name
         or name.startswith("/") or name.startswith(".") or ":" in name
         or not all(part not in ("", ".", "..") for part in name.split("/"))
-        or PurePosixPath(name).suffix.lower() not in ALLOWED_EXTENSIONS):
+        or (PurePosixPath(name).suffix.lower() not in ALLOWED_EXTENSIONS
+            and name != "deploy/Dockerfile")):
         raise ReleaseBlocked("unsafe artifact name or extension")
 
 def artifact_record(path: Path, logical_name: str) -> dict:
@@ -84,6 +85,15 @@ def verify_manifest(manifest: dict, directory: Path) -> bool:
             raise ReleaseBlocked("duplicate release artifact")
         seen.add(name)
         artifact = Path(directory) / name
+        root = Path(directory).resolve()
+        segments = PurePosixPath(name).parts
+        parent = root
+        for segment in segments:
+            parent = parent / segment
+            if parent.is_symlink():
+                raise ReleaseBlocked("symlinked release component forbidden")
+        if artifact.resolve().is_relative_to(root) is False:
+            raise ReleaseBlocked("release artifact escapes selected directory")
         if artifact_record(artifact, name) != item:
             raise ReleaseBlocked("release artifact checksum or size mismatch")
     return True
