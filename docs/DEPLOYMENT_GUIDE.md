@@ -94,7 +94,7 @@ umask 077
   --expected-commit "$MCIAS_RELEASE_COMMIT" --ca-file /secure/institution-ca.crt
 ```
 
-السكربت .sh يشغّل deploy_check.py باستخدام python3 أو `MCIAS_CHECK_PYTHON` المحدد. GET محصور في health وصفحة login ووثائق API العامة للتحقق من إغلاقها في production؛ لا يسجل الدخول ولا يرفع ملفًا ولا يرحّل أو يزرع أو يغير سياسة أو يفحص API طبية. SQL SELECT فقط عبر preflight الحالي، وClamAV PING محلي دون إرسال مستند. المهلات محدودة، redirects مرفوضة، TLS يُتحقق منه ولا يوجد خيار insecure، ويُرفض userinfo/query/path في origin.
+السكربت .sh يشغّل deploy_check.py باستخدام python3 أو `MCIAS_CHECK_PYTHON` المحدد. GET محصور في health وصفحة login ووثائق API العامة للتحقق من إغلاقها في production؛ لا يسجل الدخول ولا يرفع ملفًا ولا يرحّل أو يزرع أو يغير سياسة أو يفحص API طبية. SQL SELECT فقط عبر preflight الحالي في جلسة قراءة فقط ومهلة خمس ثوان لكل استعلام تتجاوز خيارات المتصل، وClamAV PING محلي دون إرسال مستند. المهلات محدودة، redirects مرفوضة، TLS يُتحقق منه ولا يوجد خيار insecure، ويُرفض userinfo/query/path في origin.
 
 `0`: جميع الفحوص الهندسية المطلوبة PASS؛ لا يعني قبولًا مؤسسيًا. `2`: BLOCKED، بما فيه `--skip-database` أو غياب هوية Git لأرشيف يحتاج تحققًا مستقلًا. أخطاء الاستخدام يرجعها argparse بـ2. ملفات JSON لا تحتوي URLs كاملة أو أسرارًا أو أجسام أخطاء HTTP. الفحص من داخل سياق خدمة التشغيل؛ حساب غير قادر على الوصول الصحيح يُحجب. لا يثبت الفحص تدوير المفاتيح أو سلطة سجل الثقة أو جودة فحص malware أو backup/restore أو firewall أو SLA.
 
