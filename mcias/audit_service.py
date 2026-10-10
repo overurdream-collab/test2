@@ -17,7 +17,16 @@ def fingerprint_policy(policy):
        for key,value in asdict(policy).items()}
     return sha256(json.dumps(d,sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
-def run_audit(db,actor,claim_id,policy:AuditPolicy):
+def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None):
+    # The caller must supply a verified, tenant-bound authorization from a
+    # trusted G1 signer; a client-side 'approved=True' flag is insufficient.
+    if verified_authorization is None:
+        raise PolicyBlocked('verified institutional policy authorization required')
+    if (verified_authorization.get('organization_id')!=getattr(actor,'organization_id',None)
+        or verified_authorization.get('policy_fingerprint')!=fingerprint_policy(policy)
+        or not verified_authorization.get('signature_verified')
+        or not verified_authorization.get('independent_reviewer_verified')):
+        raise PolicyBlocked('policy authorization is invalid or not independently reviewed')
     if not actor.active or not actor.organization_id:
         raise PolicyBlocked("authorized active organization required")
     claim=db.scalar(select(ClaimEntry).where(ClaimEntry.id==claim_id,
