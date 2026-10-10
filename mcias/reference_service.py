@@ -139,3 +139,24 @@ def approve_precedence_policy(db, actor, contract_id, rationale):
            {"rationale": rationale.strip(), "precedence": contract.precedence})
     db.commit()
     return {"contract_id": contract.id, "precedence_reviewed": True}
+
+def apply_tariff_batch(db, actor, contract_id, rows):
+    contract = db.get(ContractVersion, contract_id, with_for_update=True)
+    if contract is None:
+        raise ReferenceConflict("contract unavailable")
+    _tenant(actor, contract.organization_id)
+    if contract.status != "draft":
+        raise ReferenceConflict("tariff import requires draft contract")
+    existing = set(db.scalars(select(ProviderTariff.service_code).where(
+        ProviderTariff.contract_id == contract_id)).all())
+    codes = [row["service_code"] for row in rows]
+    if len(codes) != len(set(codes)) or existing.intersection(codes):
+        raise ReferenceConflict("duplicate service code in tariff batch")
+    for row in rows:
+        db.add(ProviderTariff(contract_id=contract_id, service_code=row["service_code"],
+                              amount=Decimal(row["amount"]), currency=row["currency"]))
+    db.flush()
+    _audit(db, actor, "tariff_batch_imported", "contract_version", contract_id,
+           {"count": len(rows)})
+    db.commit()
+    return {"contract_id": contract_id, "imported": len(rows)}
