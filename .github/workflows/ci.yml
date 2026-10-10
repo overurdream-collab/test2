@@ -1,7 +1,7 @@
-name: MCIAS G1 + G2 + G3 + G4 + G5 checks
+name: MCIAS G1–G6 preparatory checks
 on:
   push:
-    branches: [main, feat/g1-foundation, feat/g2-ingestion, feat/g3-reference, feat/g4-claims-batches, feat/g5-audit-engine]
+    branches: [main, feat/g1-foundation, feat/g2-ingestion, feat/g3-reference, feat/g4-claims-batches, feat/g5-audit-engine, feat/g6-governance-preparatory]
   pull_request:
 jobs:
   unit:
@@ -56,4 +56,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -e '.[test]'
-      - run: python -m pytest -q tests/test_postgres_integration.py tests/test_restore_drill.py tests/test_rule_immutability_postgres.py tests/test_g2_ingestion.py tests/test_g2_reader.py tests/test_g2_security.py tests/test_g3_postgres_guards.py tests/test_g3_reference.py tests/test_g3_lifecycle.py tests/test_g3_api_security.py tests/test_g3_tariff_import.py tests/test_g3_signed_authorization.py tests/test_g3_tariff_postgres.py tests/test_g4_normalization.py tests/test_g4_batches.py tests/test_g4_postgres_guards.py tests/test_g5_engine.py tests/test_g5_postgres.py tests/test_g5_authorization.py tests/test_g5_registry.py tests/test_g5_policy_drafts.py tests/test_g5_adversarial.py tests/test_g5_lifecycle.py tests/test_g5_policy_api.py
+      - run: python -m pytest -q tests/test_postgres_integration.py tests/test_restore_drill.py tests/test_rule_immutability_postgres.py tests/test_g2_ingestion.py tests/test_g2_reader.py tests/test_g2_security.py tests/test_g3_postgres_guards.py tests/test_g3_reference.py tests/test_g3_lifecycle.py tests/test_g3_api_security.py tests/test_g3_tariff_import.py tests/test_g3_signed_authorization.py tests/test_g3_tariff_postgres.py tests/test_g4_normalization.py tests/test_g4_batches.py tests/test_g4_postgres_guards.py tests/test_g5_engine.py tests/test_g5_postgres.py tests/test_g5_authorization.py tests/test_g5_registry.py tests/test_g5_policy_drafts.py tests/test_g5_adversarial.py tests/test_g5_lifecycle.py tests/test_g5_policy_api.py tests/test_g6_governance.py
