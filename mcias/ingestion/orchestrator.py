@@ -3,6 +3,7 @@ from sqlalchemy import select
 from mcias.models import SourceFile, AuditLog
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord, QuarantineItem
 from mcias.ingestion.fingerprint import sha256
+from mcias.ingestion.malware_scan import scan, MalwareDetected, MalwareScannerUnavailable
 from mcias.ingestion.file_scanner import identify
 from mcias.ingestion.isolated_parser import isolated_parse
 from mcias.ingestion.manifest import manifest
@@ -30,6 +31,7 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
     db.add(job)
     db.flush()
     try:
+        scan(data)
         extraction = isolated_parse(identify(data, filename), data)
         result = review(extraction)
         for record in extraction.records:
@@ -39,7 +41,7 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
         job.manifest = manifest(extraction)
         job.status = result["status"]
     except Exception as exc:
-        # Preserve the encrypted original even when parser rejects it.
+        # Preserve encrypted originals; scanner failures are never treated as safe.
         job.status = "review_required"
         job.manifest = {"complete": False, "error": type(exc).__name__}
         db.add(QuarantineItem(job_id=job.id, reason="unreadable or unsafe source", locator={"kind":"file","index":1}))
