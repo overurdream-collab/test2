@@ -20,11 +20,14 @@ def _text_cell(sheet, row, column, value):
     cell.number_format = "@"
     return cell
 
-def render_xlsx(report, *, include_originals=False):
+def render_xlsx(report, *, include_originals=False, language="en"):
+    if language not in {"ar", "en"}:
+        raise ReportBlocked("unsupported report language")
     verify_snapshot(report)
     wb = Workbook()
     ws = wb.active
-    ws.title = "Executive Summary"
+    ws.title = "الملخص التنفيذي" if language == "ar" else "Executive Summary"
+    ws.sheet_view.rightToLeft = language == "ar"
     headings = [
         ["MCIAS | Frozen Financial Report"],
         ["Report ID", report.id], ["Version", report.version],
@@ -34,6 +37,16 @@ def render_xlsx(report, *, include_originals=False):
         ["Currency", "Claimed", "Approved claimed", "Held claimed", "Payable",
          "Deductions", "Approved count", "Held count"],
     ]
+    if language == "ar":
+        headings = [
+            ["MCIAS | تقرير مراجعة المطالبات"],
+            ["معرّف التقرير", report.id], ["رقم النسخة", report.version],
+            ["بصمة النسخة SHA-256", report.fingerprint],
+            ["الدفعة", report.batch_id], ["بصمة المصدر SHA-256", report.dataset["source_sha256"]],
+            ["إجمالي المطالبات", report.summary["total_claims"]], [],
+            ["العملة", "المطالب به", "المطالبات المعتمدة", "المطالبات المعلقة",
+             "صافي المستحق", "الخصومات", "عدد المعتمدة", "عدد المعلقة"],
+        ]
     for row in headings:
         ws.append(row)
     for currency, item in sorted(report.summary["by_currency"].items()):
@@ -49,10 +62,17 @@ def render_xlsx(report, *, include_originals=False):
         cell.fill = PatternFill("solid", fgColor="243B53")
         cell.alignment = Alignment(horizontal="center")
     ws.sheet_view.showGridLines = False
+    for row in ws:
+        for cell in row:
+            cell.alignment = Alignment(horizontal="right" if language == "ar" else "left")
+    for cell in ws[9]:
+        cell.alignment = Alignment(horizontal="center")
     if include_originals:
-        raw = wb.create_sheet("Original Source Values")
+        raw = wb.create_sheet("القيم الأصلية" if language == "ar" else "Original Source Values")
+        raw.sheet_view.rightToLeft = language == "ar"
         fields = sorted({k for item in report.dataset["rows"] for k in item["source_values"]})
-        headers = ["Claim ID", "Source Record ID", "Source Locator"] + fields
+        headers = (["معرّف المطالبة", "معرّف سجل المصدر", "موضع المصدر"]
+                   if language == "ar" else ["Claim ID", "Source Record ID", "Source Locator"]) + fields
         for col, heading in enumerate(headers, start=1):
             _text_cell(raw, 1, col, heading)
             cell = raw.cell(1, col)
