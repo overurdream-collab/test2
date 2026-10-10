@@ -1,5 +1,6 @@
 """Temporal reference controls. All effective ranges are half-open [start, end)."""
 from datetime import date
+import os
 from sqlalchemy import select
 from mcias.models import AuditLog, WrittenAuthorization, User
 from mcias.models_reference import ContractVersion, ProviderTariff, BeneficiaryEnrollment
@@ -50,6 +51,10 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
     approver = db.get(User, authorization.approved_by)
     if not approver or not approver.active or approver.organization_id != contract.organization_id:
         raise ReferenceConflict("written approver must be active in same organization")
+    if os.getenv("MCIAS_ENVIRONMENT", "development") == "production":
+        from mcias.production_authorization import verify_production_approval
+        if not verify_production_approval(db, contract, authorization):
+            raise ReferenceConflict("signed head-of-organization authorization required in production")
     check_contract_overlap(db, contract)
     impact = analyze_retroactive(db, contract, as_of)
     reviews = db.scalars(select(AuditLog).where(
