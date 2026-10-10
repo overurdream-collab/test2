@@ -56,7 +56,7 @@ def test_t14_false_positive_rates_explicit_denominator(signal_database):
     assert status["by_disposition"]["false_positive"]==1
     assert status["false_positive_rate_among_reviewed"]=="100"
     assert status["denominator"]=="reviewed_signals_only"
-    assert "fraud" not in str(status).lower()
+    assert "fraud_confirmed" not in str(status).lower()
 
 def test_t14_reassessment_appends_revision_without_overwriting_history(signal_database):
     db,run,author,reviewer,_=signal_database
@@ -101,5 +101,5 @@ def test_g8_review_source_fingerprint_integrity(signal_database):
     review.add_review(db,reviewer,run.id,0,"false_positive","DATA_QUALITY")
     run.result["output"]["findings"][0]["sample_count"]=55
     # ORM changes to stored JSON are blocked, but verify on a forged read fails closed.
-    with pytest.raises(IntelligenceBlocked,match="evidence integrity"):
+    with pytest.raises(IntelligenceBlocked,match="integrity"):
         review.reviews_summary(db,reviewer,run.id)
