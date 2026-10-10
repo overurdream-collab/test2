@@ -1,0 +1,26 @@
+........................................................................ [ 22%]
+........................................................................ [ 44%]
+........................................................................ [ 67%]
+........................................................................ [ 89%]
+..................................                                       [100%]
+=============================== warnings summary ===============================
+../../opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_g3_postgres_guards.py: 1 warning
+tests/test_g3_tariff_postgres.py: 1 warning
+tests/test_g4_postgres_guards.py: 1 warning
+tests/test_g5_postgres.py: 1 warning
+tests/test_g6_postgres.py: 1 warning
+tests/test_g7_integration.py: 1 warning
+tests/test_g7_postgres.py: 1 warning
+tests/test_g8_postgres.py: 2 warnings
+tests/test_g9_postgres.py: 1 warning
+tests/test_postgres_integration.py: 1 warning
+tests/test_rule_immutability_postgres.py: 1 warning
+  /workspace/mcias-venv/lib/python3.12/site-packages/alembic/config.py:604: DeprecationWarning: No path_separator found in configuration; falling back to legacy splitting on spaces, commas, and colons for prepend_sys_path.  Consider adding path_separator=os to Alembic config.
+    util.warn_deprecated(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+322 passed, 13 warnings in 10.57s

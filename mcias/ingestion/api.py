@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy.orm import Session
 from mcias.auth import resolve_user
 from mcias.app import get_db
-from mcias.tenant import require_organization
+from mcias.tenant import require_organization, require_sensitive_field
 from mcias.storage import EncryptedStore
 from mcias.ingestion.file_scanner import MAX_BYTES
 from mcias.ingestion.orchestrator import ingest
@@ -95,6 +95,10 @@ def job_records(job_id: str, limit: int = 100, offset: int = 0, authorization: s
     if limit < 1 or limit > 100 or offset < 0:
         raise HTTPException(400, "invalid pagination")
     records = db.scalars(select(ExtractedSourceRecord).where(ExtractedSourceRecord.job_id == job.id).order_by(ExtractedSourceRecord.id).limit(limit).offset(offset)).all()
+    # Source columns can include medical identifiers and diagnoses. Metadata read
+    # permission alone must never authorize disclosure of arbitrary source values.
+    for field in sorted({field for record in records for field in record.values}):
+        require_sensitive_field(db, user, job.organization_id, field)
     return {"job_id": job.id, "records": [{"id": x.id, "locator": x.locator, "values": x.values, "confidence": x.confidence} for x in records]}
 
 @router.post("/jobs/{job_id}/quarantine/{quarantine_id}/review")

@@ -66,3 +66,11 @@ All unavailable backend modules are labeled, and all gates remain unaccepted.
 - [Design system](docs/FRONTEND_DESIGN_SYSTEM.md)
 - [Implementation and verification report](docs/FRONTEND_IMPLEMENTATION_REPORT.md)
 - [Synthetic screenshots of both interfaces](docs/previews/README.md)
+
+## Integrated engineering candidate
+
+Frontend + G9 are combined on `feat/mcias-integrated-candidate` for synthetic external
+validation. See [implementation report](docs/INTEGRATED_CANDIDATE_REPORT.md),
+[Arabic handoff](docs/INTEGRATED_CANDIDATE_HANDOFF_AR.md),
+[security fixes](docs/INTEGRATED_SECURITY_REVIEW.md) and
+[role-based UAT checklist](docs/INTEGRATED_UAT_AR.md). No G0–G9 approval is implied.

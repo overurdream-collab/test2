@@ -128,3 +128,35 @@ def test_synthetic_preview_is_explicit_and_never_production(monkeypatch):
     assert c.get('/api/v1/workspace/demo-availability').json()=={'enabled':True}
     monkeypatch.delenv('MCIAS_ENABLE_UI_DEMO')
     assert c.get('/api/v1/workspace/demo-availability').json()=={'enabled':False}
+
+def test_raw_ingestion_requires_each_explicit_source_field_permission(client):
+    c,engine=client
+    path='/api/v1/ingestion/jobs/job-a/records'
+    denied=c.get(path,headers=HEADERS)
+    assert denied.status_code==403 and 'NEVER-RETURN' not in denied.text
+    with Session(engine) as db:
+        code='medical_fields.diagnosis.read'
+        db.add(Permission(id=code,code=code));db.flush()
+        db.add(RolePermission(role_id='read-role',permission_id=code));db.commit()
+    assert c.get(path,headers=HEADERS).json()['records'][0]['values']=={'diagnosis':'NEVER-RETURN'}
+    assert c.get('/api/v1/ingestion/jobs/job-b/records',headers=HEADERS).status_code==403
+
+@pytest.mark.parametrize('kind',['approve','reject'])
+def test_original_proposer_cannot_decide_after_another_reviewer_hold(client,kind):
+    from mcias.models_audit import AuditSnapshot
+    from mcias.models_governance_g6 import GovernanceCase,GovernanceEvent
+    c,engine=client
+    with Session(engine) as db:
+        db.add(User(id='reviewer',organization_id='org-a',username='reviewer',password_hash='synthetic'))
+        db.flush()
+        code='governance.approve'
+        db.add(Permission(id=code,code=code));db.flush()
+        db.add(RolePermission(role_id='read-role',permission_id=code))
+        snap=AuditSnapshot(id='snapshot-a',organization_id='org-a',claim_id='claim-a',policy_id='synthetic',policy_fingerprint='c'*64,calculation={'status':'calculated'},findings={},verification={'status':'verified'},created_by='reviewer')
+        db.add(snap);db.flush()
+        db.add(GovernanceCase(id='case-a',organization_id='org-a',claim_id='claim-a',audit_snapshot_id=snap.id,opened_by='reviewer'));db.flush()
+        db.add_all([GovernanceEvent(case_id='case-a',organization_id='org-a',version=1,kind='propose',actor_id='actor',snapshot_id=snap.id,payload={}),GovernanceEvent(case_id='case-a',organization_id='org-a',version=2,kind='hold',actor_id='reviewer',snapshot_id=snap.id,payload={})]);db.commit()
+    r=c.post('/api/v1/governance/cases/case-a/events',headers=HEADERS,json={'kind':kind,'payload':{}})
+    assert r.status_code==403 and 'proposer cannot decide' in r.json()['detail']
+    history=c.get('/api/v1/governance/cases/case-a',headers=HEADERS).json()
+    assert len(history['events'])==2

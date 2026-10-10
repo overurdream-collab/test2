@@ -72,17 +72,24 @@ def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None
     ).order_by(GovernanceEvent.version.desc()).limit(1))
     if latest and latest.kind in {"approve", "reject"} and kind != "object":
         raise GovernanceBlocked("final decision is immutable; file a new objection")
-    if kind == "approve":
+    if kind in {"approve", "reject"}:
         if actor.id == case.opened_by or (latest and actor.id == latest.actor_id):
             raise GovernanceBlocked("separation of duties: self approval prohibited")
+        # An intervening hold must not erase the original proposer's conflict.
+        proposers = db.scalars(select(GovernanceEvent.actor_id).where(
+            GovernanceEvent.case_id == case.id,
+            GovernanceEvent.kind == "propose"))
+        if any(proposer == actor.id for proposer in proposers):
+            raise GovernanceBlocked("separation of duties: proposer cannot decide")
+        if latest is None or latest.kind not in {"propose", "hold"}:
+            raise GovernanceBlocked("proposal required before final decision")
+    if kind == "approve":
         snap = db.get(AuditSnapshot, case.audit_snapshot_id)
         if (snap is None or snap.organization_id != case.organization_id
             or snap.claim_id != case.claim_id
             or snap.calculation.get("status") != "calculated"
             or snap.verification.get("status") != "verified"):
             raise GovernanceBlocked("held or unverified items cannot be approved")
-        if latest is None or latest.kind not in {"propose", "hold"}:
-            raise GovernanceBlocked("proposal required before approval")
     if kind == "object" and not evidence_document_id:
         raise GovernanceBlocked("objection requires linked evidence")
     if evidence_document_id:

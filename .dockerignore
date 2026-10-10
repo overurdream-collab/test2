@@ -24,3 +24,7 @@ data/
 tests/
 docs/
 scripts/
+node_modules/
+.e2e-output/
+build/
+*.egg-info/

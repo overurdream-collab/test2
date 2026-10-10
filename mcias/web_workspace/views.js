@@ -1358,8 +1358,8 @@ async function jobDetail(ctx, id) {
   const n = panel(
       L("الاستخراج والحجر", "Extraction & quarantine"),
       L(
-        "الأسباب ومواضع المصدر من الخادم. لا توجد API للإفراج أو إعادة المعالجة.",
-        "Reasons and source locators come from the backend. Release and reprocessing APIs are unavailable.",
+        "الأسباب ومواضع المصدر من الخادم. مراجعة الحجر وإعادة المعالجة متاحتان في الخادم ولم تُدمجا بعد في هذه الشاشة.",
+        "Reasons and source locators come from the backend. Quarantine review and reprocessing APIs exist but are not integrated in this screen.",
       ),
     ),
     target = el("div"),

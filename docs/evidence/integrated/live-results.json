@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "real login/session and frozen PostgreSQL report totals",
+    "tenant-scoped real claim catalog excludes raw medical fields",
+    "real protected claim detail drill-down",
+    "real reader identity cannot enter administrative interface",
+    "real backend logout revokes session and clears protected DOM",
+    "zero external browser requests or JavaScript errors"
+  ],
+  "actual_http_and_postgresql": true,
+  "synthetic_data": true,
+  "errors": []
+}

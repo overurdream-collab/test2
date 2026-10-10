@@ -67,3 +67,11 @@ def test_g6_approval_fails_closed_on_missing_or_mismatched_snapshot(permission,s
     with pytest.raises(GovernanceBlocked):
         append_event(db,actor("reviewer"),"case1","approve",{})
     db.commit.assert_not_called()
+
+@patch('mcias.governance_g6.has_permission',return_value=True)
+def test_rejection_also_requires_independent_actor(permission):
+    db=MagicMock()
+    db.scalar.side_effect=[case(),SimpleNamespace(kind='propose',actor_id='user1',version=1)]
+    with pytest.raises(GovernanceBlocked,match='self approval'):
+        append_event(db,actor(),'case1','reject',{})
+    db.commit.assert_not_called()

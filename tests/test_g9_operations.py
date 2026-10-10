@@ -9,7 +9,7 @@ import pytest
 
 from mcias.performance_g9 import fake_rows, profile
 from mcias.release_g9 import ReleaseBlocked
-from scripts.g9_release import build, verify
+from scripts.g9_release import ALLOWED_REPO_FILES, build, verify
 
 def test_g9_docs_not_accessible_in_production_app():
     env=dict(os.environ, MCIAS_ENVIRONMENT="production",
@@ -43,10 +43,7 @@ def test_g9_benchmark_only_synthetic_deterministic_and_no_institutional_sla():
 
 def test_g9_release_candidate_copies_only_known_artifacts(tmp_path):
     source=tmp_path/"repo"
-    for name in ("deploy/Dockerfile","deploy/nginx.conf","deploy/compose.g9.yml",
-                 "docs/G9_RELEASE.md","docs/G9_OPERATOR_TRAINING_AR.md",
-                 "docs/G9_DISASTER_RECOVERY_AR.md","docs/G0_G9_ACCEPTANCE_TRACKER.md",
-                 "GATE_STATUS.md"):
+    for name in ALLOWED_REPO_FILES:
         f=source/name
         f.parent.mkdir(parents=True,exist_ok=True)
         f.write_text("SYNTHETIC RELEASE FILE: "+name)
@@ -58,7 +55,7 @@ def test_g9_release_candidate_copies_only_known_artifacts(tmp_path):
     head="c"*40
     result=build(source,output,wheels,head)
     assert result["acceptance"]=="OPEN_NOT_AUTHORIZED_FOR_PRODUCTION"
-    assert len(result["artifacts"])==10
+    assert len(result["artifacts"])==len(ALLOWED_REPO_FILES)+2
     assert verify(output)==result
     assert not (output/".env").exists()
     assert not (output/"deploy/private").exists()
