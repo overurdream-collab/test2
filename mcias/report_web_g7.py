@@ -17,3 +17,14 @@ def reporting_asset(asset: Literal["dashboard.css","dashboard.js"]):
     media = "text/css; charset=utf-8" if asset.endswith(".css") else "text/javascript; charset=utf-8"
     return FileResponse(ASSETS / asset, media_type=media,
                         headers={"Cache-Control":"no-store"})
+
+@router.get("/ui/workspace", include_in_schema=False)
+def workspace_ui():
+    return FileResponse(ASSETS / "workspace.html", media_type="text/html; charset=utf-8",
+                        headers={"Cache-Control":"no-store"})
+
+@router.get("/ui/workspace/assets/{asset}", include_in_schema=False)
+def workspace_asset(asset: Literal["workspace.css","workspace.js"]):
+    media="text/css; charset=utf-8" if asset.endswith(".css") else "text/javascript; charset=utf-8"
+    return FileResponse(ASSETS / asset, media_type=media,
+                        headers={"Cache-Control":"no-store"})
