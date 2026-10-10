@@ -69,7 +69,10 @@ def test_g7_postgres_real_freeze_idempotence_versioning_and_tenant_denial():
             contract_id="synthetic-contract",beneficiary_enrollment_id="synthetic-enrollment")
         snapshot = AuditSnapshot(organization_id=org.id, claim_id=claim.id,
                                  policy_id="synthetic-g7",policy_fingerprint="b"*64,
-                                 calculation=calculation,findings={"agents":[]},
+                                 calculation=calculation,findings={"agents":[
+                                    {"agent":x,"status":"pass"} for x in (
+                                    "eligibility","tariff","contract","exclusion",
+                                    "caps","cost_sharing","duplicates","evidence")]},
                                  verification={"status":"verified"},created_by=proposer.id)
         db.add(snapshot);db.flush()
         case=GovernanceCase(organization_id=org.id,claim_id=claim.id,
