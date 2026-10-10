@@ -53,7 +53,7 @@ def test_t17_postgres_restore_and_encrypted_bundle():
             try:
                 with restored_engine.connect() as conn:
                     assert conn.execute(text("SELECT payload FROM restore_probe WHERE id=1701")).scalar_one() == "synthetic restore proof"
-                    assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0015_g8_intelligence"
+                    assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "0016_g8_signal_review"
             finally:
                 restored_engine.dispose()
         finally:
