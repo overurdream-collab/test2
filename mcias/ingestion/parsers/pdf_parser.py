@@ -24,7 +24,7 @@ def parse(data: bytes) -> Extraction:
         elif not text.strip():
             if os.environ.get("MCIAS_LOCAL_OCR") == "tesseract":
                 try:
-                    import fitz
+                    import pymupdf as fitz
                     with fitz.open(stream=data, filetype="pdf") as document:
                         if document.is_encrypted:
                             raise OCRUnavailable("encrypted document")
