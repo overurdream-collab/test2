@@ -75,3 +75,26 @@ def test_g4_tenant_cannot_stage_foreign_document():
         with pytest.raises(BatchConflict,match="not accessible"):
             stage(db,stranger,doc.id)
     engine.dispose()
+
+def test_g4_resume_in_bounded_chunks():
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine,expire_on_commit=False) as db:
+        org,user,doc,row=_fixture(db)
+        for i in range(1,25):
+            db.add(ExtractedSourceRecord(job_id=row.job_id,
+                locator={"kind":"row","index":i+1,"row":i+2},
+                values={**row.values,"claim_reference":f"C{i+1}"},confidence=100))
+        db.commit()
+        batch=stage(db,user,doc.id)
+        assert batch.record_count==25
+        first=resume(db,user,batch.id,chunk_size=10)
+        assert first["status"]=="importing" and first["imported_count"]==10
+        db.expire_all()
+        second=resume(db,user,batch.id,chunk_size=10)
+        assert second["imported_count"]==20
+        final=resume(db,user,batch.id,chunk_size=10)
+        assert final["status"]=="imported" and final["imported_count"]==25
+        assert resume(db,user,batch.id,chunk_size=10)["imported_count"]==25
+        assert db.query(ClaimEntry).count()==25
+    engine.dispose()
