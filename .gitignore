@@ -10,3 +10,9 @@ __pycache__/
 uploads/
 backups/
 data/
+
+*.egg-info/
+build/
+dist/
+.e2e-output/
+node_modules/

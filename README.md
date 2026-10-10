@@ -53,3 +53,16 @@ uvicorn mcias.app:app --host 127.0.0.1 --port 8000
 For PostgreSQL tests use the separately configured `MCIAS_TEST_DATABASE_URL`.
 See `docs/G8_IMPLEMENTATION.md`, `docs/G0_G8_ACCEPTANCE_TRACKER.md` and the
 draft G8 PR. All G0–G8 **institutional signed acceptance remains OPEN**.
+
+## Enterprise administration and institution interfaces
+
+The `feat/mcias-premium-enterprise` feature (stacked on G8) adds Arabic RTL /
+English LTR enterprise workspaces at `/admin/dashboard` and
+`/institution/dashboard`, with dark/light themes and authorized evidence views.
+All unavailable backend modules are labeled, and all gates remain unaccepted.
+
+- [Installation and on-premises deployment](docs/FRONTEND_INSTALLATION.md)
+- [Complete frontend route/API coverage](docs/FRONTEND_ROUTE_API_MATRIX.md)
+- [Design system](docs/FRONTEND_DESIGN_SYSTEM.md)
+- [Implementation and verification report](docs/FRONTEND_IMPLEMENTATION_REPORT.md)
+- [Synthetic screenshots of both interfaces](docs/previews/README.md)

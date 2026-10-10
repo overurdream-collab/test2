@@ -1,0 +1,81 @@
+name: Enterprise workspaces
+on:
+  pull_request:
+    paths:
+      - 'mcias/web_workspace/**'
+      - 'mcias/workspace_*.py'
+      - 'mcias/app.py'
+      - 'tests/test_enterprise_workspace.py'
+      - 'tests/frontend/**'
+      - 'scripts/*workspace*'
+      - 'package*.json'
+      - 'pyproject.toml'
+      - '.github/workflows/workspace.yml'
+  push:
+    branches: [feat/mcias-premium-enterprise]
+permissions:
+  contents: read
+jobs:
+  browser-and-contracts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci_e2e
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd 'pg_isready -U mcias_ci -d mcias_ci_e2e'
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      MCIAS_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_E2E_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_BOOTSTRAP_TOKEN: synthetic_browser_tests_only
+      MCIAS_ENABLE_UI_DEMO: 'true'
+      MCIAS_ENVIRONMENT: development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: python -m pip install -e '.[test,browser]'
+      - run: python -m playwright install --with-deps chromium
+      - run: npm ci --ignore-scripts
+      - run: npm test && npm run check
+      - run: python -m pytest -q tests/test_enterprise_workspace.py
+      - run: python scripts/seed_workspace_e2e.py
+      - name: Browser E2E, responsive layouts and WCAG checks
+        run: |
+          set -e
+          python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 > /tmp/mcias-ui-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health/live >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/check_workspace_browser.py
+          python scripts/check_workspace_live.py --base-url http://127.0.0.1:8000
+      - name: Package frontend assets
+        run: |
+          python -m pip wheel . --no-deps -w dist
+          python - <<'PY'
+          import glob,zipfile
+          with zipfile.ZipFile(glob.glob('dist/mcias-*.whl')[0]) as wheel:
+              for name in ('index.html','app.js','api.js','ui.js','views.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2','fonts/PLEX-OFL.txt'):
+                  assert 'mcias/web_workspace/'+name in wheel.namelist(), name
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: enterprise-workspace-evidence
+          path: |
+            .e2e-output/*results.json
+            .e2e-output/*.png
+            /tmp/mcias-ui-server.log
