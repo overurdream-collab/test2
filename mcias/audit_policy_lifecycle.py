@@ -14,7 +14,7 @@ def enroll_grant(db, *, actor, organization_id, policy_id, policy_fingerprint,
         raise PolicyBlocked("policy approval permission required")
     approver=db.get(User,approver_id)
     reviewer=db.get(User,reviewer_id)
-    if (approver is None or reviewer is None or not approver.active or not reviewer.active
+    if (approver is None or reviewer is None or approver.id==reviewer.id or not approver.active or not reviewer.active
         or approver.organization_id!=organization_id or reviewer.organization_id!=organization_id):
         raise PolicyBlocked("institutional signers invalid")
     try:
