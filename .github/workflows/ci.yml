@@ -1,7 +1,7 @@
 name: MCIAS G1 + G2 checks
 on:
   push:
-    branches: [main, feat/g1-foundation, feat/g2-ingestion]
+    branches: [main, feat/g1-foundation, feat/g2-ingestion, feat/g3-reference]
   pull_request:
 jobs:
   unit:
