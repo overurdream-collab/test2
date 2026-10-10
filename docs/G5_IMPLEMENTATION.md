@@ -20,3 +20,10 @@
 - CI: GitHub Actions on `feat/g5-audit-engine`; record exact successful SHA and run URL before acceptance.
 - Tests: `python -m pytest -q tests/test_g5_engine.py tests/test_g5_postgres.py`.
 - Required signoff: named organization approver and independent reviewer; never infer acceptance from passing CI.
+
+## Additional hardening and synthetic validation
+- Draft policies are explicitly marked unauthorized and cannot become approved by using the draft helper.
+- Internal audit orchestration now rejects missing policy authorization before any database access; it remains **non-production** until a trusted signed-authorization verifier is integrated. Do not treat caller-supplied verification flags as cryptographic proof.
+- Added seeded 1,000-case Decimal arithmetic regression covering varying exclusions, tariffs, caps, copays and independent Palermo-2 verification.
+- No real patient data, real claims, or institutional approval is implied by these tests.
+- Activation, signed-policy trust chain, end-to-end full batch processing, advanced policy catalog and real-scale load testing remain blockers; do not mark G5 ACCEPTED.
