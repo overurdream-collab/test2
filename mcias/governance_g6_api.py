@@ -56,4 +56,5 @@ def case_history(case_id:str,authorization:str|None=Header(default=None),db:Sess
         GovernanceEvent.organization_id==case.organization_id).order_by(GovernanceEvent.version)).all()
     return {"id":case.id,"claim_id":case.claim_id,"audit_snapshot_id":case.audit_snapshot_id,
         "events":[{"id":e.id,"version":e.version,"kind":e.kind,"actor_id":e.actor_id,
-                   "evidence_document_id":e.evidence_document_id,"payload":e.payload} for e in events]}
+                   "evidence_document_id":e.evidence_document_id,"snapshot_id":e.snapshot_id,
+                   "payload":e.payload} for e in events]}
