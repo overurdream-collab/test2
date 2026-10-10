@@ -39,3 +39,6 @@
 - Migration `0012_g5_policy_grants` creates grant storage and enforces distinct reviewer identity. Production migration rollback is intentionally blocked.
 - Each internal audit now rechecks an active database grant and cryptographic signature, including active same-tenant signer identities, before financial processing. Revoked grants fail closed.
 - No approval-enrollment or revocation API has been exposed: authorized institutional enrollment, signature issuance, operational key rotation and tamper-evident lifecycle remain prerequisites. Do not mark G5 accepted.
+
+## Palermo-2 defensive regression
+Synthetic G5 tests now hold on malformed/non-finite monetary evidence, forged total deductions and incorrect eight-agent identity sets, rather than raising unhandled errors or falsely verifying. Institutional policy decisions still block production activation.
