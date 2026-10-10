@@ -12,7 +12,7 @@ acceptance in `ACCEPTANCE_CONTRACT.md`.
 ```bash
 git clone https://github.com/overurdream-collab/test2.git
 cd test2
-git checkout feat/mcias-premium-enterprise
+git checkout main
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e '.[test]'

@@ -19,7 +19,7 @@
 ```bash
 git clone https://github.com/overurdream-collab/test2.git
 cd test2
-git checkout feat/mcias-integrated-candidate
+git checkout main
 git rev-parse HEAD
 python -m venv .venv
 . .venv/bin/activate
