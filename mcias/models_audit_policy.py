@@ -25,3 +25,13 @@ class AuditPolicyGrant(Base):
 @event.listens_for(AuditPolicyGrant,"before_delete")
 def prevent_grant_deletion(*args):
     raise ValueError("policy authorization history cannot be deleted")
+
+@event.listens_for(AuditPolicyGrant,"before_update")
+def guard_policy_grant_update(mapper, connection, target):
+    from sqlalchemy import inspect
+    state=inspect(target)
+    if target.revoked_at is None or state.attrs.revoked_at.history.deleted:
+        raise ValueError("only first revocation is allowed")
+    for key in ("id","organization_id","policy_fingerprint","policy_id","approver_id","reviewer_id","signature","created_at"):
+        if state.attrs[key].history.has_changes():
+            raise ValueError("approval identity is immutable")
