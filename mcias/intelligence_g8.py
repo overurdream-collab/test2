@@ -49,7 +49,8 @@ def validate_config(config):
         raise IntelligenceBlocked("unsupported indicator schema or source configuration")
     if config["source"] != SOURCE:
         raise IntelligenceBlocked("data source not approved")
-    if config["indicator"] not in INDICATORS or config["dimension"] not in DIMENSIONS:
+    if (type(config["indicator"]) is not str or type(config["dimension"]) is not str
+        or config["indicator"] not in INDICATORS or config["dimension"] not in DIMENSIONS):
         raise IntelligenceBlocked("unsupported indicator or dimension")
     if config["indicator"] == "provider_claimed_share" and config["dimension"] != "provider":
         raise IntelligenceBlocked("provider share requires provider grouping")
@@ -171,12 +172,14 @@ def aggregate(rows, dimension="provider", min_group_size=5):
         payable = sum((v["payable"] for v in values), Decimal(0))
         deductions = sum((v["deductions"] for v in values), Decimal(0))
         held = sum(v["state"] == "held" for v in values)
+        low_count = key == "__suppressed__" and len(values) < min_group_size
         groups.append({"currency": currency, "dimension": dimension,
                        "group": key, "suppressed": key == "__suppressed__",
                        "count": len(values), "approved_count": len(values)-held,
-                       "held_count": held, "claimed": as_string(claimed),
-                       "payable": as_string(payable), "deductions": as_string(deductions),
-                       "hold_rate_percent": pct(Decimal(held), Decimal(len(values)))})
+                       "held_count": held, "claimed": None if low_count else as_string(claimed),
+                       "payable": None if low_count else as_string(payable),
+                       "deductions": None if low_count else as_string(deductions),
+                       "hold_rate_percent": None if low_count else pct(Decimal(held), Decimal(len(values)))})
     return {"engine": ENGINE_VERSION, "dimension": dimension,
             "denominator_count": len(rows), "suppressed_groups": suppressed_groups,
             "groups": groups, "interpretation": "descriptive_only_no_clinical_or_fraud_verdict"}
@@ -248,10 +251,12 @@ def simulate(rows, reduction_percent):
     for currency, vals in sorted(by_currency.items()):
         original = vals["payable"]
         hypothetical = original * (Decimal(100) - percent) / Decimal(100)
+        small_cohort = vals["approved_count"] < 5
         output.append({"currency": currency, "approved_count": vals["approved_count"],
-                       "baseline_payable": as_string(original),
-                       "hypothetical_payable": as_string(hypothetical),
-                       "hypothetical_difference": as_string(original - hypothetical)})
+                       "privacy_suppressed": small_cohort,
+                       "baseline_payable": None if small_cohort else as_string(original),
+                       "hypothetical_payable": None if small_cohort else as_string(hypothetical),
+                       "hypothetical_difference": None if small_cohort else as_string(original - hypothetical)})
     return {"engine": ENGINE_VERSION, "mode": "review_only_hypothetical",
             "assumption": {"approved_payable_reduction_percent": as_string(percent)},
             "by_currency": output, "policy_change_authorized": False,
