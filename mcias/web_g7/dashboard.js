@@ -281,7 +281,7 @@
     const btn=kind==="pdf"?$("pdfButton"):$("excelButton");
     busy(btn,true);
     try {
-      const suffix=kind==="pdf"?"/pdf?lang=ar":"/excel";
+      const suffix=kind==="pdf"?"/pdf?lang=ar":"/excel?lang=ar";
       const blob=await api("/api/v1/reports/snapshots/"+
         encodeURIComponent(state.current.id)+suffix,{binary:true});
       const objectUrl=URL.createObjectURL(blob);
