@@ -29,7 +29,7 @@ def create_draft(db, actor, provider_code, start, end, precedence=0):
         ContractVersion.provider_code == provider_code)) or 0
     item = ContractVersion(organization_id=actor.organization_id, provider_code=provider_code,
                            version=current + 1, effective_from=start, effective_until=end,
-                           precedence=precedence, status="draft")
+                           precedence=precedence, status="draft", created_by=actor.id)
     db.add(item); db.flush()
     _audit(db, actor, "contract_draft_created", "contract_version", item.id,
            {"version": item.version, "provider_code": provider_code})
@@ -117,6 +117,8 @@ def impact_review(db, actor, contract_id, rationale, as_of=None):
     _tenant(actor, contract.organization_id)
     if contract.status != "draft" or not rationale or len(rationale.strip()) < 20:
         raise ReferenceConflict("draft and substantive review rationale required")
+    if contract.created_by == actor.id:
+        raise ReferenceConflict("proposal author cannot review own impact")
     result = analyze_retroactive(db, contract, as_of or date.today())
     _audit(db, actor, "contract_impact_reviewed", "contract_version", contract.id,
            {"rationale": rationale.strip(), "impact": result, "reviewer_id": actor.id})
@@ -130,6 +132,8 @@ def approve_precedence_policy(db, actor, contract_id, rationale):
     _tenant(actor, contract.organization_id)
     if contract.status != "draft" or not rationale or len(rationale.strip()) < 20:
         raise ReferenceConflict("substantive precedence rationale required")
+    if contract.created_by == actor.id:
+        raise ReferenceConflict("proposal author cannot approve own precedence")
     if not contract.authorization_id:
         raise ReferenceConflict("written authorization required before precedence review")
     auth = db.get(WrittenAuthorization, contract.authorization_id)
