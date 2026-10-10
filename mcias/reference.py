@@ -67,3 +67,19 @@ def active_contract(db, organization_id: str, provider_code: str, at: date):
     if len(contracts) > 1:
         raise ReferenceConflict("conflicting active contracts")
     return contracts[0] if contracts else None
+
+def validate_enrollment(db, enrollment: BeneficiaryEnrollment):
+    from mcias.models_reference import BeneficiaryCategory
+    category = db.get(BeneficiaryCategory, enrollment.category_id)
+    if category is None or category.organization_id != enrollment.organization_id:
+        raise ReferenceConflict("beneficiary category must belong to same organization")
+    if enrollment.effective_from >= enrollment.effective_until:
+        raise ReferenceConflict("invalid enrollment period")
+    conflict = db.scalars(select(BeneficiaryEnrollment).where(
+        BeneficiaryEnrollment.organization_id == enrollment.organization_id,
+        BeneficiaryEnrollment.beneficiary_token == enrollment.beneficiary_token,
+        BeneficiaryEnrollment.id != enrollment.id,
+        BeneficiaryEnrollment.effective_from < enrollment.effective_until,
+        BeneficiaryEnrollment.effective_until > enrollment.effective_from)).first()
+    if conflict:
+        raise ReferenceConflict("overlapping beneficiary enrollment")
