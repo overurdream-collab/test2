@@ -9,3 +9,6 @@ Implemented: versioned case and event records, linked immutable G5 snapshot, act
 Remaining for G6: configurable approval stages and institution-specific permission matrix; formal objection attachment validation, selective re-audit executor with new snapshot version; batch partial approval totals; concurrency and cross-tenant PostgreSQL tests; human-approved acceptance evidence T10/T11/T12; institutional policies and G1–G5 acceptance.
 
 Do not mark G6 ACCEPTED or production ready based on synthetic CI.
+
+## G6 hardening on G5–G7 feature branch
+Separate server-enforced governance action permissions; verified extracted objection documents, controlled reason-code payloads, immutable re-audit event lineage referencing later tenant-matched G5 snapshots and a newly opened G6 case. No automatic G5 recalculation or invented authorization; stage configuration and human approvals remain OPEN.
