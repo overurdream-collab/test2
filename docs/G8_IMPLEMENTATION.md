@@ -6,7 +6,7 @@
 ## Scope delivered for engineering verification
 
 1. Historical and comparative descriptive analytics from frozen G7 report snapshots, grouped by **provider**, **service code** or **calendar month**, with isolated currencies, exact Decimal reconciliation and G4 source integrity checks.
-2. Privacy floor: identifiable provider/service/month groups with fewer than **5** records are combined into an unlabeled suppressed group. Cohorts smaller than twice the minimum group size cannot produce statistical signals. A count, numerator, denominator, baseline and threshold accompany each signal.
+2. Privacy floor: identifiable provider/service/month groups with fewer than **5** records are combined into an unlabeled suppressed group; if the combined group is still below 5, its financial values are hidden. Hypothetical scenario financial values are also withheld for currencies with fewer than 5 approved claims. Cohorts smaller than twice the minimum group size cannot produce statistical signals. A count, numerator, denominator, baseline and threshold accompany each signal.
 3. **Review-only statistical signals**: held-claim rate or provider claimed-amount share. They do **not** classify a doctor, patient, insurer or provider as fraudulent and cannot generate a clinical judgment, payout, claim status, deduction or policy change.
 4. **What-if** simulation: a caller explicitly selects a hypothetical percentage reduction of approved payable amounts. Exact per-currency baselines and hypothetical differences are displayed. No financial write-back, hidden rounding convention or policy mutation.
 5. Versioned **Analysis Studio**: an authorized technical owner creates a new immutable version with exactly five whitelisted settings (approved source, indicator, dimension, percent threshold, minimum group size). A server-side synthetic 20-record positive/negative-control test writes an immutable evidence event. A **different human reviewer** must explicitly activate it; inactive or untested tasks cannot run (**T19**). Deactivation is append-only; a successor version cannot activate while its predecessor is still active.
@@ -27,7 +27,7 @@ All endpoints require an authenticated user in the same tenant, plus a server-si
 | POST | `/api/v1/intelligence/studio/tasks/{id}/activate` | `intelligence.studio.activate`, different from creator and tester |
 | POST | `/api/v1/intelligence/studio/tasks/{id}/deactivate` | `intelligence.studio.activate` |
 | GET | `/api/v1/intelligence/studio/tasks/{id}` | `intelligence.studio.read` |
-| POST | `/api/v1/intelligence/runs` | `intelligence.run` |
+| POST | `/api/v1/intelligence/runs` | `intelligence.run` **and** `reports.read` |
 | GET | `/api/v1/intelligence/runs` and `/runs/{id}` | `intelligence.read` |
 | POST | `/api/v1/intelligence/runs/{id}/signals/{index}/reviews` | `intelligence.review`, different from run creator |
 | GET | `/api/v1/intelligence/runs/{id}/review-summary` | `intelligence.read` |
@@ -80,3 +80,14 @@ uvicorn mcias.app:app --host 127.0.0.1 --port 8000
 ```
 
 Open `http://127.0.0.1:8000/ui/intelligence` with an institution-provisioned account with only the roles needed. Set `MCIAS_TEST_DATABASE_URL` for the separate PostgreSQL integration suite. Do not commit real patient data, insurance claims or signing secrets. **G8 and earlier gates remain non-production pending written signoff.**
+
+## Last verified reproducible engineering run (before human acceptance)
+
+- Commit: `7efa4515e1bbc9ea146b3c9a55bc56f97173d7e0`.
+- Full inherited regression: [CI run 38062833679](https://github.com/overurdream-collab/test2/actions/runs/38062833679) — **216 passed, 16 skipped** unit tests; **143 passed** PostgreSQL integration tests; dependency audit success.
+- G8-specific: [CI run 38062830731](https://github.com/overurdream-collab/test2/actions/runs/38062830731) — **29 passed** unit/security/UI tests; **3 passed** PostgreSQL tests, including a synthetic frozen G7 report -> audited G8 analysis -> activated Studio signal -> independent review.
+- JavaScript syntax and wheel asset packaging are tested in the G8-specific pipeline. Successful synthetic CI remains distinct from institution-specific quality review and signature.
+
+## Operational privacy controls beyond k-anonymity
+
+A user needs **both** `intelligence.run` and `reports.read` to generate any analysis, so the G8 endpoint cannot be used to bypass access controls for the underlying G7 report. It never exposes `source_values`, beneficiary tokens, source-page locators or patient records. Medical source fields are not allowed as dynamic dimensions or expressions. The specific reviewer permission `intelligence.review` is required to enter a false-positive or further-review disposition; the author of the signal cannot review their own signal. The source report and reviewer events remain immutable.
