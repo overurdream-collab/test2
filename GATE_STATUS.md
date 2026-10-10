@@ -83,3 +83,10 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Original **G0–G7** signed acceptance requirements remain OPEN, with owners, criteria and blockers summarized in `docs/G0_G8_ACCEPTANCE_TRACKER.md`.
 - **G8 acceptance remains OPEN:** synthetic CI is not institution-labeled evidence. Remaining prerequisites are real baseline denominators, independent false-positive calibration, field-level authorization approvals, trusted reviewer authority, target-load test, threat/privacy review, MFA/TLS/backup deployment audit and signed human acceptance.
 - CI results should be attached only for an exact completed SHA; intermediate commits and prior CI do not certify the latest branch head.
+
+## G8 exact synthetic CI evidence register (2026-10-10)
+
+- Code commit `7efa4515e1bbc9ea146b3c9a55bc56f97173d7e0`: [full inherited regression](https://github.com/overurdream-collab/test2/actions/runs/38062833679): unit **216 passed / 16 skipped**, PostgreSQL integration **143 passed**, dependency audit **SUCCESS**.
+- Same code commit: [G8 focused workflow](https://github.com/overurdream-collab/test2/actions/runs/38062830731): G8 unit/UX/security **29 passed**, G8 PostgreSQL **3 passed**, including actual G7-frozen-report-to-G8-analysis-to-independent-review test. JavaScript syntax and installed wheel assets checked.
+- This is **software engineering evidence only**. It does not resolve the prior signed acceptances in `docs/G0_G8_ACCEPTANCE_TRACKER.md` or the G8 signed acceptance with real labeled data, independent false-positive evaluation, institution-configured medical permissions, real workload SLA, production TLS/key custody and verified recovery.
+- Post-evidence documentation commits require their own exact-head CI before merge. **All human gate statuses remain OPEN.**
