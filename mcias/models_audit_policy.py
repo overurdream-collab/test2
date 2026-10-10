@@ -5,7 +5,7 @@ specific policy digest. Database grants are not a substitute for verifying the
 institutional signature before enrollment.
 """
 from datetime import datetime, timezone
-from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint, event
+from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint, CheckConstraint, event
 from sqlalchemy.orm import Mapped, mapped_column
 from mcias.models import Base, uid, now_utc
 
@@ -20,7 +20,7 @@ class AuditPolicyGrant(Base):
     signature:Mapped[str]=mapped_column(String(64),nullable=False)
     created_at:Mapped[datetime]=mapped_column(DateTime(timezone=True),nullable=False,default=now_utc)
     revoked_at:Mapped[datetime|None]=mapped_column(DateTime(timezone=True))
-    __table_args__=(UniqueConstraint("organization_id","policy_fingerprint",name="uq_g5_policy_grant"),)
+    __table_args__=(UniqueConstraint("organization_id","policy_fingerprint",name="uq_g5_policy_grant"),CheckConstraint("approver_id != reviewer_id",name="ck_g5_independent_reviewer"))
 
 @event.listens_for(AuditPolicyGrant,"before_delete")
 def prevent_grant_deletion(*args):
