@@ -18,6 +18,8 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
         raise IngestionError("organization required")
     if not isinstance(data, bytes) or not data:
         raise IngestionError("nonempty bytes required")
+    if len(data) > 20 * 1024 * 1024:
+        raise IngestionError("source exceeds upload limit")
     digest = sha256(data)
     previous = db.scalar(select(IngestionDocument).where(IngestionDocument.organization_id == organization_id, IngestionDocument.sha256 == digest))
     if previous:
