@@ -2,8 +2,8 @@
 
 ## Baseline and prerequisites
 
-This feature is stacked on `feat/g8-intelligence`, not the README-only `main`.
-Use the feature branch or a reviewed integration containing its G1–G8 baseline.
+The integrated engineering baseline is now on `main`; pin an independently reviewed full commit SHA.
+See the bilingual [deployment guide](DEPLOYMENT_GUIDE_EN.md) for external handoff.
 Python 3.11+, PostgreSQL 16, and the existing on-premises security/key configuration
 are required for authorized data. Keep a separate database/document store per
 organization. Do not deploy production medical records before institutional

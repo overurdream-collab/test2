@@ -2,6 +2,15 @@ name: Enterprise workspaces
 on:
   pull_request:
     paths:
+      - 'docs/ACCEPTANCE_PACK*'
+      - 'docs/policies/**'
+      - 'docs/DEPLOYMENT*'
+      - 'docs/EXTERNAL_TEST*'
+      - 'docs/UAT_*'
+      - 'docs/PENETRATION_TEST*'
+      - 'scripts/deploy_check.*'
+      - 'tests/test_deploy_check.py'
+      - 'tests/test_acceptance_pack.py'
       - 'mcias/web_workspace/**'
       - 'mcias/workspace_*.py'
       - 'mcias/app.py'

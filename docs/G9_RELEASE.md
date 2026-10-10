@@ -1,6 +1,6 @@
 # G9 — On-premises Release Engineering and Acceptance (NOT FOR PRODUCTION)
 
-**Status: engineering work in progress; formal G9 gate OPEN.** Based on stacked G8 draft PR #9, which itself depends on G7 draft PR #7. None of the open G0–G8 institutional approvals are waived or inherited from synthetic CI.
+**Status: integrated engineering baseline on main; formal G9 gate OPEN.** Technical consolidation through PR #14 does not waive institutional approvals or turn synthetic CI into acceptance. See the [bilingual acceptance pack](ACCEPTANCE_PACK_INDEX_EN.md).
 
 ## Scope and safety model
 
@@ -61,7 +61,7 @@ On the **target host**, with its intended runtime-only PostgreSQL user, after pr
 python -m mcias.preflight_g9 --check-database
 ```
 
-The JSON response never prints passwords, full connection URIs, raw keys, patient data or institution identifiers. It checks production bootstrap disabled, PostgreSQL runtime credentials present, migration at `0016_g8_signal_review`, runtime account not superuser/owner/DDL creator, no UPDATE or DELETE permission on `audit_log`, non-writable institution authorization registry and trusted SAN certificate with more than 30 days before expiry. The certificate's hostname and local path come from `MCIAS_TLS_HOST` and `MCIAS_TLS_CERT_PATH`.
+The JSON response never prints passwords, full connection URIs, raw keys, patient data or institution identifiers. It checks production bootstrap disabled, PostgreSQL runtime credentials present, migration at `0018_claim_query_indexes`, runtime account not superuser/owner/DDL creator, no UPDATE or DELETE permission on `audit_log`, non-writable institution authorization registry and trusted SAN certificate with more than 30 days before expiry. The certificate's hostname and local path come from `MCIAS_TLS_HOST` and `MCIAS_TLS_CERT_PATH`.
 
 Exit code `2` means engineering checks are blocked. Even if it exits `0`, the response always shows `production_accepted: false` because a separate signed institutional gate and other controls are required.
 
@@ -93,7 +93,7 @@ A signed organizational `N` claims, concurrency, P95 and recovery-time target mu
 5. Pinned and audited offline image/third-party dependency hashes, an organization-signed release manifest, security threat/penetration review, target-hardware concurrency/load benchmarks and independent disaster recovery.
 6. Human signoff **G0 through G9**, exact CI reference, installation UAT and rollback rehearsal.
 
-All prior PRs remain drafts pending independent review. A future release PR may only target `main` after dependency PRs are reviewed in order and every mandatory gate is signed. Until then, the release candidate is an **engineering preview** only.
+Main now contains the consolidated engineering baseline. A production release still requires independent review and every mandatory institutional gate signature. The release candidate remains an **engineering preview** only.
 
 ## Optional independent signing of a release receipt
 
