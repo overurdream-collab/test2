@@ -49,6 +49,15 @@ def open_case(db, actor, snapshot_id):
 def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None):
     if kind not in PERMISSIONS or not isinstance(payload, dict):
         raise GovernanceBlocked("invalid governance action")
+    allowed_keys = {"reason_code", "new_snapshot_id"} if kind == "link_reaudit" else {"reason_code"}
+    if set(payload).difference(allowed_keys):
+        raise GovernanceBlocked("governance event payload contains unsupported fields; use evidence attachments")
+    reason_code = payload.get("reason_code")
+    if reason_code is not None and (not isinstance(reason_code, str)
+        or not 1 <= len(reason_code) <= 64
+        or not reason_code.replace("_", "").isalnum()
+        or not reason_code.isascii()):
+        raise GovernanceBlocked("invalid reason code")
     permission = PERMISSIONS[kind]
     if (not actor.active or not actor.organization_id
         or not has_permission(db, actor, permission)):
@@ -79,7 +88,7 @@ def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None
     if evidence_document_id:
         doc = db.get(IngestionDocument, evidence_document_id)
         if (doc is None or doc.organization_id != actor.organization_id
-            or doc.status not in {"extracted", "review_required"}
+            or doc.status != "extracted"
             or not isinstance(doc.sha256, str) or len(doc.sha256) != 64
             or any(c not in "0123456789abcdefABCDEF" for c in doc.sha256)):
             raise GovernanceBlocked("objection evidence not verified or quarantined")
@@ -100,6 +109,12 @@ def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None
         if (fresh is None or fresh.organization_id != case.organization_id
             or fresh.claim_id != case.claim_id):
             raise GovernanceBlocked("re-audit snapshot tenant or claim mismatch")
+        previous = db.get(AuditSnapshot, case.audit_snapshot_id)
+        if (previous is None or previous.organization_id != case.organization_id
+            or not getattr(fresh, "created_at", None)
+            or not getattr(previous, "created_at", None)
+            or fresh.created_at <= previous.created_at):
+            raise GovernanceBlocked("re-audit must be a later G5 snapshot")
         # A G5 audit must already exist; this function does not fabricate one.
         if db.scalar(select(GovernanceCase.id).where(
             GovernanceCase.organization_id == case.organization_id,
