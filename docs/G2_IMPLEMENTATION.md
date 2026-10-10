@@ -44,3 +44,9 @@ G2 remains OPEN until all mandatory T01–T03, full coverage and OCR accuracy te
 - Hardened container/OS sandbox, not merely subprocess isolation.
 - Quarantine resolution with authorized reviewer, resumable ingestion, revision tracking and production-scale load tests.
 - Actual on-prem restore and G1/G2 acceptance evidence.
+
+## Further security and normalization implementation
+- ClamAV INSTREAM scanning adapter over loopback with production fail-closed behavior. A running local clamd service and malware signature updates must be demonstrated in deployment; no such service is provisioned by CI.
+- Original-preserving decimal/date normalization helper and invalid-value tests.
+- Ingestion service enforces 20 MiB independently of the HTTP boundary.
+- A successful parser/CI run is not proof of complete G2 acceptance. Manual review, production sandbox hardening, OCR validation and scanned PDF OCR remain pending.
