@@ -98,3 +98,66 @@ def test_g4_resume_in_bounded_chunks():
         assert resume(db,user,batch.id,chunk_size=10)["imported_count"]==25
         assert db.query(ClaimEntry).count()==25
     engine.dispose()
+
+def test_g4_crash_before_commit_recovers_without_duplicates(monkeypatch):
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine,expire_on_commit=False) as db:
+        org,user,doc,row=_fixture(db)
+        batch=stage(db,user,doc.id)
+        original_flush=db.flush
+        calls=[0]
+        def fail_once(*args,**kwargs):
+            calls[0]+=1
+            if calls[0]==1:
+                raise RuntimeError("simulated process interruption before checkpoint")
+            return original_flush(*args,**kwargs)
+        monkeypatch.setattr(db,"flush",fail_once)
+        with pytest.raises(RuntimeError,match="interruption"):
+            resume(db,user,batch.id,chunk_size=1)
+        db.rollback()
+        monkeypatch.setattr(db,"flush",original_flush)
+        assert db.query(ClaimEntry).count()==0
+        recovered=resume(db,user,batch.id,chunk_size=1)
+        assert recovered["status"]=="imported"
+        assert recovered["imported_count"]==1
+        assert db.query(ClaimEntry).count()==1
+    engine.dispose()
+
+def test_g4_large_synthetic_batch_checkpoints():
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine,expire_on_commit=False) as db:
+        org,user,doc,row=_fixture(db)
+        for i in range(1,1001):
+            db.add(ExtractedSourceRecord(job_id=row.job_id,
+                locator={"kind":"row","row":i+2},
+                values={**row.values,"claim_reference":f"C{i+1}"},confidence=100))
+        db.commit()
+        batch=stage(db,user,doc.id)
+        assert batch.record_count==1001
+        for expected in (200,400,600,800,1000,1001):
+            result=resume(db,user,batch.id,chunk_size=200)
+            assert result["imported_count"]==expected
+        assert result["status"]=="imported"
+        assert db.query(ClaimEntry).count()==1001
+    engine.dispose()
+
+def test_g4_cross_tenant_attachment_denied():
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine,expire_on_commit=False) as db:
+        org,user,doc,row=_fixture(db)
+        batch=stage(db,user,doc.id)
+        resume(db,user,batch.id)
+        entry=db.scalar(select(ClaimEntry))
+        other=Organization(name="G4 foreign")
+        stranger=User(username="g4-stranger",password_hash="fixture")
+        db.add_all([other,stranger]);db.flush()
+        stranger.organization_id=other.id
+        db.commit()
+        with pytest.raises(BatchConflict,match="not accessible"):
+            attach(db,stranger,entry.id,doc.id)
+        with pytest.raises(BatchConflict,match="not accessible"):
+            attach(db,user,entry.id,"unknown")
+    engine.dispose()
