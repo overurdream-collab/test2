@@ -82,3 +82,17 @@ def job_quarantine(job_id: str, authorization: str | None = Header(default=None)
     require_organization(db, user, job.organization_id, "ingestion.read")
     items = db.scalars(select(QuarantineItem).where(QuarantineItem.job_id == job.id)).all()
     return {"job_id": job.id, "items": [{"reason": x.reason, "locator": x.locator} for x in items]}
+
+@router.get("/jobs/{job_id}/records")
+def job_records(job_id: str, limit: int = 100, offset: int = 0, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from sqlalchemy import select
+    from mcias.models_ingestion import ExtractedSourceRecord
+    user, _ = resolve_user(db, authorization)
+    job = db.get(IngestionJob, job_id)
+    if job is None:
+        raise HTTPException(404, "job not found")
+    require_organization(db, user, job.organization_id, "ingestion.read")
+    if limit < 1 or limit > 100 or offset < 0:
+        raise HTTPException(400, "invalid pagination")
+    records = db.scalars(select(ExtractedSourceRecord).where(ExtractedSourceRecord.job_id == job.id).order_by(ExtractedSourceRecord.id).limit(limit).offset(offset)).all()
+    return {"job_id": job.id, "records": [{"id": x.id, "locator": x.locator, "values": x.values, "confidence": x.confidence} for x in records]}
