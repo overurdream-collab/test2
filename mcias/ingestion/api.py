@@ -96,3 +96,19 @@ def job_records(job_id: str, limit: int = 100, offset: int = 0, authorization: s
         raise HTTPException(400, "invalid pagination")
     records = db.scalars(select(ExtractedSourceRecord).where(ExtractedSourceRecord.job_id == job.id).order_by(ExtractedSourceRecord.id).limit(limit).offset(offset)).all()
     return {"job_id": job.id, "records": [{"id": x.id, "locator": x.locator, "values": x.values, "confidence": x.confidence} for x in records]}
+
+@router.post("/jobs/{job_id}/quarantine/{quarantine_id}/review")
+async def review_quarantine(job_id: str, quarantine_id: str, request: Request, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from mcias.ingestion.review import decide, ReviewDenied
+    user, _ = resolve_user(db, authorization)
+    job = db.get(IngestionJob, job_id)
+    if job is None:
+        raise HTTPException(404, "job not found")
+    require_organization(db, user, job.organization_id, "ingestion.review")
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "invalid review")
+    try:
+        return decide(db, user, job_id, quarantine_id, body.get("decision"), body.get("rationale"))
+    except ReviewDenied as exc:
+        raise HTTPException(409, str(exc)) from exc
