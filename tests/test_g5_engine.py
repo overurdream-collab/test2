@@ -63,3 +63,20 @@ def test_t09_palermo2_independently_detects_tampering():
 
 def test_g5_reproducible_fingerprint():
     assert calculate()["fingerprint"]==calculate()["fingerprint"]
+
+def test_t09_palermo2_detects_forged_fingerprint():
+    result=calculate()
+    claim=SimpleNamespace(id="claim-1",claimed_amount=Decimal("200"),currency="YER",
+        extracted_record_id="source-1")
+    findings=[{"agent":x,"status":"pass"} for x in
+        ("eligibility","tariff","contract","exclusion","caps","cost_sharing","duplicates","evidence")]
+    forged={**result,"payable":"65.00"}
+    outcome=verify(claim,findings,forged)
+    assert "calculation_fingerprint_mismatch" in outcome["issues"]
+    assert outcome["status"]=="held"
+
+def test_g5_unapproved_policy_blocks_even_missing_evidence():
+    with pytest.raises(PolicyBlocked):
+        evaluate(Decimal("100"),"YER",policy(approved=False),
+            eligible=False,evidence_complete=False,source_id="src",
+            contract_id="contract",beneficiary_enrollment_id="enrollment")
