@@ -41,7 +41,9 @@ def test_t13_frozen_report_is_stable_after_source_changes():
     original=row()
     first=freeze_report([original],organization_id="org1",version=1)
     original["payable"]="10.00"
+    original["source_values"]["original_col"]="changed"
     assert first["rows"][0]["payable"]=="80.00"
+    assert first["rows"][0]["source_values"]["original_col"]=="=SUM(1,2)"
     assert first["sha256"]==freeze_report([row()],organization_id="org1",version=1)["sha256"]
 
 def test_t18_original_source_columns_preserved_in_excel():
