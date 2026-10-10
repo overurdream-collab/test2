@@ -82,7 +82,7 @@ A signed organizational `N` claims, concurrency, P95 and recovery-time target mu
 - Full predecessor G0–G8 unit and real PostgreSQL test suite **on the exact G9 commit**.
 - G9 negative tests: manipulated and traversal-containing backups, spoofed/altered release manifest, mismatched/expiring TLS certificates, insecure settings and leaking secrets, symlinked release artifacts, expired/bootstrap misuse, server docs access in production.
 - Real-world privacy/least-privilege acceptance must additionally include MFA provisioning, institutional role matrix, authorized source field export review, host vulnerability scanning, encryption key rotation, HTTP TLS scan, PostgreSQL readonly-role negative tests, full restore of *both* PostgreSQL and encrypted source storage, backup SHA-256 source verification and independent witness.
-- Track unresolved G0–G8 approvers in `docs/G0_G8_ACCEPTANCE_TRACKER.md`. G9 inherits every prior blocker and cannot be declared green due to code tests alone.
+- Track unresolved G0–G8 approvers in `docs/G0_G9_ACCEPTANCE_TRACKER.md`. G9 inherits every prior blocker and cannot be declared green due to code tests alone.
 
 ## Known blockers and handoff
 
@@ -94,3 +94,7 @@ A signed organizational `N` claims, concurrency, P95 and recovery-time target mu
 6. Human signoff **G0 through G9**, exact CI reference, installation UAT and rollback rehearsal.
 
 All prior PRs remain drafts pending independent review. A future release PR may only target `main` after dependency PRs are reviewed in order and every mandatory gate is signed. Until then, the release candidate is an **engineering preview** only.
+
+## Optional independent signing of a release receipt
+
+The code in `mcias.release_sign_g9` supports Ed25519 signatures of already-verified SHA-256 release receipts using a locally held and strictly permissioned (0600) private key file. Verification requires the organization's separately trusted public key and rechecks every artifact. This confirms integrity and cryptographic provenance **only**, not a contractual human acceptance. The private signing seed must never enter Git, Docker builds, CI fixture logs, or distribution packages. Signed deployment and signatory authority remain under institutional custody and independent acceptance.
