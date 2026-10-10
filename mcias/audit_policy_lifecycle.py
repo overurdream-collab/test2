@@ -9,7 +9,8 @@ from mcias.policy import has_permission
 
 def enroll_grant(db, *, actor, organization_id, policy_id, policy_fingerprint,
                  approver_id, reviewer_id, signature):
-    if not actor.active or actor.organization_id!=organization_id or not has_permission(db,actor,"policies.approve"):
+    if (not actor.active or actor.organization_id!=organization_id or actor.id!=approver_id
+        or not has_permission(db,actor,"policies.approve")):
         raise PolicyBlocked("policy approval permission required")
     approver=db.get(User,approver_id)
     reviewer=db.get(User,reviewer_id)
