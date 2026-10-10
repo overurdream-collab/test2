@@ -1,5 +1,7 @@
 """Palermo-2 independent reconciliation and evidence gate."""
 from decimal import Decimal
+from hashlib import sha256
+import json
 
 def verify(claim,findings,calculation):
     issues=[]
@@ -22,5 +24,10 @@ def verify(claim,findings,calculation):
             issues.append("source_mismatch")
         if calculation["currency"]!=claim.currency:
             issues.append("currency_mismatch")
+        fingerprint=calculation.get("fingerprint")
+        payload={k:v for k,v in calculation.items() if k!="fingerprint"}
+        expected=sha256(json.dumps(payload,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+        if fingerprint!=expected:
+            issues.append("calculation_fingerprint_mismatch")
     return {"status":"verified" if not issues else "held","issues":issues,
             "claim_id":claim.id,"calculation_fingerprint":calculation.get("fingerprint")}
