@@ -25,3 +25,5 @@ def immutable_snapshot(*args):
 
 # Register institutional policy grant mapping for G5 migrations and service use.
 from mcias.models_audit_policy import AuditPolicyGrant  # noqa: F401
+
+from mcias.models_governance import GovernanceCase, GovernanceDecision, GovernanceObjection  # noqa: F401
