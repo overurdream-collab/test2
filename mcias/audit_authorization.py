@@ -34,6 +34,7 @@ def verify_registered_policy(db, *, organization_id, policy_fingerprint):
     """Verify current persisted approval before each audit; revocations fail closed."""
     from sqlalchemy import select
     from mcias.models import User
+    from mcias.policy import has_permission
     from mcias.models_audit_policy import AuditPolicyGrant
     grant=db.scalar(select(AuditPolicyGrant).where(
         AuditPolicyGrant.organization_id==organization_id,
@@ -47,6 +48,8 @@ def verify_registered_policy(db, *, organization_id, policy_fingerprint):
         or approver.id==reviewer.id or approver.organization_id!=organization_id
         or reviewer.organization_id!=organization_id):
         raise ValueError("institutional approver or reviewer invalid")
+    if not has_permission(db,approver,"policies.approve") or not has_permission(db,reviewer,"policies.review"):
+        raise ValueError("institutional signer permission revoked")
     return verify_policy_authorization(
         organization_id=organization_id,policy_fingerprint=policy_fingerprint,
         approver_id=approver.id,reviewer_id=reviewer.id,signature=grant.signature)
