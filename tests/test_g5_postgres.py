@@ -14,4 +14,5 @@ def test_g5_snapshot_trigger_and_migration():
         assert conn.execute(text("""SELECT count(*) FROM pg_trigger
           WHERE tgname='trg_g5_audit_snapshot' AND NOT tgisinternal""")).scalar_one()==1
         assert conn.execute(text("SELECT count(*) FROM pg_trigger WHERE tgname='trg_g5_grant_guard' AND NOT tgisinternal")).scalar_one()==1
+        assert conn.execute(text("SELECT count(*) FROM pg_trigger WHERE tgname='trg_g5_grant_guard' AND NOT tgisinternal")).scalar_one()==1
     engine.dispose()
