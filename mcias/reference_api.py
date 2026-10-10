@@ -1,6 +1,6 @@
 """Tenant-scoped reference read and impact-review API."""
 from datetime import date
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from mcias.app import get_db
@@ -158,3 +158,25 @@ def activate_contract(contract_id: str, authorization: str | None = Header(defau
     _contract(db, user, contract_id, "reference.approve")
     return _perform(db, lambda: approve_contract(db, contract_id, user, date.today(),
                                                    precedence_approved=True))
+
+@router.post("/contracts/{contract_id}/tariffs/import")
+async def import_tariffs(contract_id: str, request: Request, apply: bool = False,
+                         authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from mcias.tariff_import import preview_csv, TariffImportError
+    from mcias.reference_service import apply_tariff_batch
+    user = _actor(db, authorization, "reference.write")
+    _contract(db, user, contract_id, "reference.write")
+    buffer = bytearray()
+    async for chunk in request.stream():
+        if len(buffer) + len(chunk) > 2_000_000:
+            raise HTTPException(413, "tariff CSV exceeds 2 MB")
+        buffer.extend(chunk)
+    try:
+        preview = preview_csv(bytes(buffer))
+    except TariffImportError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    if not apply:
+        return preview
+    if not preview["complete"] or not preview["accepted"]:
+        raise HTTPException(409, "all tariff rows must validate before atomic import")
+    return _perform(db, lambda: apply_tariff_batch(db, user, contract_id, preview["accepted"]))
