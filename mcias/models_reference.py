@@ -16,6 +16,7 @@ class ContractVersion(Base):
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="draft")
     precedence: Mapped[int] = mapped_column(__import__("sqlalchemy").Integer, nullable=False, default=0)
     authorization_id: Mapped[str | None] = mapped_column(ForeignKey("written_authorizations.id"))
+    created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, nullable=False)
     __table_args__ = (
         UniqueConstraint("organization_id", "provider_code", "version", name="uq_contract_version"),
@@ -57,7 +58,7 @@ def prevent_approved_contract_mutation(mapper, connection, target):
     if state.attrs.status.history.deleted and state.attrs.status.history.deleted[0] == "approved":
         raise ValueError("approved contract cannot be changed in place")
     if target.status == "approved" and any(state.attrs[name].history.has_changes() for name in
-            ("provider_code", "version", "effective_from", "effective_until", "precedence", "organization_id")):
+            ("provider_code", "version", "effective_from", "effective_until", "precedence", "organization_id", "created_by")):
         raise ValueError("approved contract content is immutable")
 
 @event.listens_for(ContractVersion, "before_delete")
