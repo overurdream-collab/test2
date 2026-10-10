@@ -5,7 +5,7 @@
     ".github/workflows/ci.yml": "126e301b94ecce4f1ae323f2c693fa61f58de61c25b8b356922374709c93ec4f",
     ".github/workflows/g8.yml": "3b9158f39aaf67a5caae982ff0e5eaed6e32424a3729f13a43b9f81f9f9db0eb",
     ".github/workflows/g9.yml": "6a27b7b8d1adb740b68785cd2e09533bc6abbc87979a5f4242f8d1bd33ac9ec0",
-    ".github/workflows/workspace.yml": "1009e7a905c6ed55347fad5833d1a3a7ca91e1f2f3e4c6e4cf4c41111e0f6564",
+    ".github/workflows/workspace.yml": "49ba13ecfdf05c89b10e460f96be47b368f48b2655c8c84f6aed0b20c517f30a",
     "deploy/Dockerfile": "ad04c4f2028c555bc7483649158ba34aa6ac6f2cb1d4c6e9da9c2da618d7f2d4",
     "deploy/compose.g9.yml": "846155f711835a1ccccf6f86010355eac3d3356ba1505e1c10c5390933f5ca33",
     "deploy/nginx.conf": "f78d0aae68e69c496b13aecb9ac76b8bee71e657b725258c1eec272653ecd4a3",
