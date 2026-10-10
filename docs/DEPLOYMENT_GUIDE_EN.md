@@ -94,7 +94,7 @@ umask 077
   --expected-commit "$MCIAS_RELEASE_COMMIT" --ca-file /secure/institution-ca.crt
 ```
 
-The .sh wrapper runs deploy_check.py with python3 or selected `MCIAS_CHECK_PYTHON`. GETs cover health, public login and production-disabled public API docs; no login, upload, migrations, Seed, policy changes or medical API probes. PostgreSQL uses only existing preflight SELECTs. Local ClamAV receives PING, never a document. Timeouts are bounded, redirects rejected and TLS verified with no insecure option; origins containing userinfo/query/path are rejected.
+The .sh wrapper runs deploy_check.py with python3 or selected `MCIAS_CHECK_PYTHON`. GETs cover health, public login and production-disabled public API docs; no login, upload, migrations, Seed, policy changes or medical API probes. PostgreSQL uses only existing preflight SELECTs, with a read-only session and a five-second statement timeout overriding caller options. Local ClamAV receives PING, never a document. Timeouts are bounded, redirects rejected and TLS verified with no insecure option; origins containing userinfo/query/path are rejected.
 
 Exit `0`: every required engineering control passes, not institutional approval. `2`: BLOCKED, including `--skip-database` or an archive without Git identity requiring separate integrity review. argparse returns 2 for usage errors. JSON excludes full URLs, secrets and HTTP error bodies. Run within the intended runtime context; incorrect permissions fail closed. This does not prove key rotation, registry authority, malware accuracy, backup/restore, firewall or SLA.
 

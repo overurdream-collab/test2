@@ -146,7 +146,10 @@ def run_checks(env, *, profile, origin, expected_commit, ca_file=None, skip_data
         if skip_database:
             checks.append(result("database.runtime_probe", False, "database probe explicitly skipped; result remains BLOCKED"))
         else:
-            checks.extend(check_postgres_role(env.get("MCIAS_DATABASE_URL")))
+            runtime_url = make_url(env.get("MCIAS_DATABASE_URL", "")).update_query_dict({
+                "options": "-c statement_timeout=5000 -c default_transaction_read_only=on"
+            })
+            checks.extend(check_postgres_role(runtime_url))
     except Exception:
         EXPECTED_MIGRATION = None
         checks.append(result("runtime.dependencies", False, "MCIAS dependencies unavailable; no exception text is disclosed"))

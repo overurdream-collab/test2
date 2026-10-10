@@ -82,3 +82,19 @@ def test_http_redirect_is_not_followed_on_real_server():
         server.shutdown()
         server.server_close()
         worker.join(timeout=2)
+
+def test_database_probe_enforces_read_only_and_query_timeout(monkeypatch,tmp_path):
+    import mcias.preflight_g9 as preflight
+    monkeypatch.setattr(check.subprocess,'check_output',lambda args,**kw:'a'*40 if args[1]=='rev-parse' else '')
+    monkeypatch.setattr(check,'health_checks',lambda *a:[])
+    seen=[]
+    def probe(url):
+        seen.append(url.query['options'])
+        return [check.result('database.runtime_probe',True,'synthetic stub')]
+    monkeypatch.setattr(preflight,'check_postgres_role',probe)
+    tmp_path.chmod(0o700)
+    env={'MCIAS_RELEASE_COMMIT':'a'*40,'MCIAS_ENVIRONMENT':'development','MCIAS_DATABASE_URL':'postgresql+psycopg://u:private_password@localhost/test_e2e?options=-c%20default_transaction_read_only=off','MCIAS_STORAGE_DIR':str(tmp_path),'MCIAS_STORAGE_KEY':'1a'*32,'MCIAS_MFA_ENCRYPTION_KEY':'2b'*32}
+    outcome=check.run_checks(env,profile='test',origin='http://localhost',expected_commit='a'*40)
+    assert seen==['-c statement_timeout=5000 -c default_transaction_read_only=on']
+    assert outcome['status']=='ENGINEERING_CHECKS_PASS'
+    assert outcome['production_accepted'] is False
