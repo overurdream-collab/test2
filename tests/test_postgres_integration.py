@@ -20,7 +20,7 @@ def engine():
 
 def test_migrations_reach_mfa_revision(engine):
     with engine.connect() as conn:
-        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0014_g7_reporting"
+        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0015_g8_intelligence"
         assert conn.execute(text("select to_regclass('public.mfa_factors')")).scalar_one() is not None
 
 def test_claim_originals_protected_by_database(engine):
