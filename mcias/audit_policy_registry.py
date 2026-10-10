@@ -4,6 +4,7 @@ from mcias.audit_authorization import verify_policy_authorization
 from mcias.models_audit_policy import AuditPolicyGrant
 from mcias.models import User
 from mcias.audit_engine import PolicyBlocked
+from mcias.policy import has_permission
 
 def resolve_grant(db, *, organization_id, policy_fingerprint, policy_id):
     grant=db.scalar(select(AuditPolicyGrant).where(
@@ -18,6 +19,8 @@ def resolve_grant(db, *, organization_id, policy_fingerprint, policy_id):
         or approver.id==reviewer.id or approver.organization_id!=organization_id
         or reviewer.organization_id!=organization_id):
         raise PolicyBlocked("institutional signers invalid")
+    if not has_permission(db,approver,"policies.approve") or not has_permission(db,reviewer,"policies.review"):
+        raise PolicyBlocked("institutional signer permission revoked")
     try:
         return verify_policy_authorization(
             organization_id=organization_id,policy_fingerprint=policy_fingerprint,
