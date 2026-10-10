@@ -3,7 +3,7 @@
 Official implementation repository. On-premises medical claims financial and administrative audit.
 
 ## Status
-G1 Foundation in progress. No production claims or completed tests are asserted.
+G5/G6 hardening and G7 reporting engineering are present on this **feature branch**, but every production acceptance gate remains OPEN until institutional authorization and signed acceptance. Synthetic CI success is not production certification.
 
 ## Binding constraints
 - Separate local PostgreSQL database and document storage per organization.
@@ -13,3 +13,7 @@ G1 Foundation in progress. No production claims or completed tests are asserted.
 - Contract/exclusion activation requires written organization-head approval and Super Admin activation.
 
 See `docs/IMPLEMENTATION_PLAN.md` for acceptance gates and policy blockers.
+
+## G5 → G6 → G7 implementation track
+
+See `docs/G5_G6_G7_ENGINEERING_HANDOFF.md` and `docs/G7_IMPLEMENTATION.md`. Generate only synthetic or institution-authorized development reports. The `/api/v1/reports` endpoints are permission-gated, and original medical columns are denied without individual field permissions. This branch is not a production deployment.
