@@ -2,6 +2,7 @@
 
 Bilingual draft handoff; external results and signatures remain unexecuted. This package grants no production acceptance.
 
+- [MCIAS_MASTER_DESIGN_BASELINE](MCIAS_MASTER_DESIGN_BASELINE_EN.md)
 - [POLICY_PACK](policies/POLICY_PACK_EN.md)
 - [COVER_LETTER](policies/COVER_LETTER_EN.md)
 - [CLIENT_REQUIREMENTS](policies/CLIENT_REQUIREMENTS_EN.md)

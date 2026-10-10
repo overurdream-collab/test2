@@ -2,6 +2,7 @@
 
 هذه حزمة مسودات عربية وإنجليزية؛ جميع التوقيعات والنتائج الخارجية غير منفذة. لا تمنح اعتمادًا إنتاجيًا.
 
+- [MCIAS_MASTER_DESIGN_BASELINE](MCIAS_MASTER_DESIGN_BASELINE.md)
 - [POLICY_PACK](policies/POLICY_PACK.md)
 - [COVER_LETTER](policies/COVER_LETTER.md)
 - [CLIENT_REQUIREMENTS](policies/CLIENT_REQUIREMENTS.md)

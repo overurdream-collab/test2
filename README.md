@@ -5,6 +5,10 @@ Official implementation repository. On-premises medical claims financial and adm
 ## Status
 The integrated engineering baseline is maintained on **main**: security/authentication, ingestion, reference data, claims, audit, governance, reporting, intelligence, enterprise RTL/LTR interfaces, release tooling and operational controls. Backend/UI coverage and unavailable capabilities are documented in `docs/FRONTEND_ROUTE_API_MATRIX.md` and `docs/OPERATIONAL_CONTROLS.md`. Every production acceptance gate remains OPEN until institutional authorization and signed acceptance. Synthetic CI success is not production certification.
 
+## Master design baseline
+
+[العربية](docs/MCIAS_MASTER_DESIGN_BASELINE.md) · [English](docs/MCIAS_MASTER_DESIGN_BASELINE_EN.md): consolidated implemented design, functional scope, architecture/PostgreSQL, eight agents, evidence flow, interfaces, permissions, reporting, G0–G9 conditions, verified baseline evidence and remaining blockers. Engineering baseline; institutional approval pending.
+
 ## Binding constraints
 - Separate local PostgreSQL database and document storage per organization.
 - Original claims and source files immutable; full provenance and quarantine.
