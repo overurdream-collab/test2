@@ -1,6 +1,8 @@
 """PDF page accounting: scanned/unreadable pages are isolated, never guessed."""
 import io
 from pypdf import PdfReader
+from mcias.ingestion.ocr_engine import recognize, OCRUnavailable
+import os
 from mcias.ingestion.schemas import Extraction, ExtractedRecord, Locator
 from mcias.ingestion.quarantine import item
 
@@ -20,9 +22,23 @@ def parse(data: bytes) -> Extraction:
         if len(text) > 2_000_000:
             result.quarantined.append(item("page text exceeds limit", "page", index))
         elif not text.strip():
-            # Scanned PDF rasterization is not available in the parser sandbox.
-            # Never silently substitute a guessed transcription.
-            result.quarantined.append(item("unreadable or scanned page", "page", index))
+            if os.environ.get("MCIAS_LOCAL_OCR") == "tesseract":
+                try:
+                    import fitz
+                    with fitz.open(stream=data, filetype="pdf") as document:
+                        if document.is_encrypted:
+                            raise OCRUnavailable("encrypted document")
+                        raster = document[index-1].get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                        if raster.width * raster.height > 20_000_000:
+                            raise OCRUnavailable("page too large")
+                        text = recognize(raster.tobytes("png"))
+                except (ImportError, OCRUnavailable, OSError, ValueError, RuntimeError):
+                    text = ""
+            if text.strip():
+                result.records.append(ExtractedRecord(Locator("page", index), {"text": text}, confidence=0.5))
+                result.units_processed += 1
+            else:
+                result.quarantined.append(item("unreadable or scanned page", "page", index))
         else:
             result.records.append(ExtractedRecord(Locator("page", index), {"text": text}))
             result.units_processed += 1
