@@ -112,3 +112,20 @@ async def review_quarantine(job_id: str, quarantine_id: str, request: Request, a
         return decide(db, user, job_id, quarantine_id, body.get("decision"), body.get("rationale"))
     except ReviewDenied as exc:
         raise HTTPException(409, str(exc)) from exc
+
+@router.post("/documents/{document_id}/reprocess")
+def reprocess_document(document_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    from mcias.ingestion.reprocessing import retry
+    user, _ = resolve_user(db, authorization)
+    document = db.get(IngestionDocument, document_id)
+    if document is None:
+        raise HTTPException(404, "document not found")
+    require_organization(db, user, document.organization_id, "ingestion.reprocess")
+    try:
+        store = EncryptedStore(os.environ["MCIAS_STORAGE_DIR"], bytes.fromhex(os.environ["MCIAS_STORAGE_KEY"]))
+    except (KeyError, ValueError):
+        raise HTTPException(503, "encrypted storage unavailable")
+    try:
+        return retry(db, store, document_id, user)
+    except ValueError as exc:
+        raise HTTPException(409, "reprocessing unavailable") from exc
