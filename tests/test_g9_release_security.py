@@ -165,3 +165,31 @@ def test_g9_bundle_rejects_bounded_size_and_nonbinary_payload():
         encrypt_bundle({"blob":"not bytes"},key)
     with pytest.raises(ValueError):
         decrypt_bundle(b"x"*(MAX_BUNDLE_BYTES+1024*1024+99),key)
+
+def test_g9_offline_ed25519_signed_receipt_requires_independently_trusted_key(tmp_path):
+    from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat, PrivateFormat, NoEncryption
+    from mcias.release_sign_g9 import sign_release, verify_release_signature
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    artifact=tmp_path/"mcias.whl"
+    artifact.write_bytes(b"synthetic receipt proof only")
+    output=tmp_path/"release"
+    output.mkdir()
+    (output/"mcias.whl").write_bytes(artifact.read_bytes())
+    receipt=create_manifest({"mcias.whl":artifact},COMMIT)
+    key=Ed25519PrivateKey.generate()
+    private_path=tmp_path/"operator-signing-seed"
+    private_path.write_bytes(key.private_bytes(Encoding.Raw,PrivateFormat.Raw,NoEncryption()))
+    private_path.chmod(0o600)
+    public=key.public_key().public_bytes(Encoding.Raw,PublicFormat.Raw)
+    signed=sign_release(receipt,output,private_path)
+    assert signed["acceptance"]=="NOT_A_HUMAN_SIGNOFF"
+    assert verify_release_signature(receipt,output,signed,public)
+    impostor=Ed25519PrivateKey.generate().public_key().public_bytes(Encoding.Raw,PublicFormat.Raw)
+    with pytest.raises(ReleaseBlocked,match="independent trust"):
+        verify_release_signature(receipt,output,signed,impostor)
+    signed["signature_hex"]="0"*128
+    with pytest.raises(ReleaseBlocked,match="signature invalid"):
+        verify_release_signature(receipt,output,signed,public)
+    private_path.chmod(0o644)
+    with pytest.raises(ReleaseBlocked,match="permissions"):
+        sign_release(receipt,output,private_path)
