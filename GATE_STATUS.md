@@ -65,3 +65,11 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - G6: granular permission checks and immutable re-audit links with objections. Institution-configurable approval stages and formal signoff are still OPEN.
 - G7: immutable snapshots, Excel/PDF synthetic reports, summary/dashboard API and protected statements; live RTL dashboard UI, approved reporting format, scaled workload and privacy review still OPEN.
 - **Engineering work is not production gate acceptance.** G0 policy pack, earlier gate signatures, reviewer evidence and human organizational authority remain blocking. No production finance rule enabled.
+
+## G7 engineering implementation and reproducible CI evidence (2026-10-10)
+
+- **Status: DEVELOPMENT VERIFIED; FORMAL G7 GATE OPEN / NOT ACCEPTED.** The feature branch contains an authenticated Arabic RTL reporting screen at `/ui/reports`, safe executive summaries, report version archive, minimized claim drilldowns with G5/G6 evidence links, server-authorized beneficiary statements, Arabic Excel and locally rendered Arabic PDF.
+- Security: CSP with no inline scripts, no-store sensitive API responses, in-memory access tokens only, same-origin assets, per-field protection for original source exports. No private data or credentials included.
+- Financial safety: G7 recomputes G5 Palermo-2 reconciliation independently before including an approved item; held/objection/unverified data cannot enter payable totals. T13, T18 and T20 are implemented and tested, with a real PostgreSQL G7 versioning/tenant/immutability test.
+- **Verified CI on commit `74dfe61673ff2599528cdbea0479608c8cd7a593`:** [GitHub run #38060137692](https://github.com/overurdream-collab/test2/actions/runs/38060137692). Unit **187 passed, 14 skipped**; PostgreSQL integration **143 passed**; dependency audit **SUCCESS**; `node --check` included. These exact results cover that specific commit; later documentation-only commits must separately complete CI.
+- Institutional policy pack unresolved; G0–G6 human acceptance, written financial authorization, approved medical report permissions, deployment/privacy/performance and Arabic UX review remain prerequisites to production. No real payment or production claims were processed.
