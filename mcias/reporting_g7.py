@@ -135,7 +135,7 @@ def freeze_batch(batch, claims, snapshots, cases, events):
             tot["held_claimed"] += claimed
             tot["held_count"] += 1
 
-    if batch.imported_count != len(rows) or batch.record_count != len(rows) or batch.status != "completed":
+    if batch.imported_count != len(rows) or batch.record_count != len(rows) or batch.status != "imported":
         raise ReportBlocked("batch not fully imported; report cannot be reconciled")
     summary = {"total_claims": len(rows), "by_currency": {}}
     for currency, values in sorted(totals.items()):
