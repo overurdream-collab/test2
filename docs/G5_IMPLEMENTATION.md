@@ -27,3 +27,9 @@
 - Added seeded 1,000-case Decimal arithmetic regression covering varying exclusions, tariffs, caps, copays and independent Palermo-2 verification.
 - No real patient data, real claims, or institutional approval is implied by these tests.
 - Activation, signed-policy trust chain, end-to-end full batch processing, advanced policy catalog and real-scale load testing remain blockers; do not mark G5 ACCEPTED.
+
+## Security hardening follow-up (2026-10-10)
+- Added `mcias/audit_authorization.py`: local HMAC-SHA256 signature verification, fail-closed without configured key, and separation of approver/reviewer identities.
+- `run_audit` rejects plain caller-supplied authorization dictionaries; only typed server-verified objects are accepted. The current internal verifier is **not** a complete institutional trust registry: trusted approver identities, revocation and persistent signed approval records remain blocked.
+- Added authorization negative tests to CI. The public API remains **read-only**: no production financial audit execution is exposed before governance approval.
+- These are engineering protections, not evidence of real institutional authorization or formal G5 acceptance.
