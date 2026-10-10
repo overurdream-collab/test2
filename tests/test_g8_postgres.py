@@ -18,7 +18,7 @@ def test_g8_migration_task_lifecycle_and_db_mutation_guards():
     command.upgrade(Config("alembic.ini"), "head")
     engine=create_engine(os.environ["MCIAS_TEST_DATABASE_URL"])
     with engine.connect() as conn:
-        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()=="0015_g8_intelligence"
+        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()=="0016_g8_signal_review"
         triggers={x[0] for x in conn.execute(text("""
             SELECT tgname FROM pg_trigger WHERE NOT tgisinternal AND tgname LIKE 'trg_g8_%'
         """))}
