@@ -29,3 +29,24 @@ def verify_policy_authorization(*, organization_id, policy_fingerprint,
     if not hmac.compare_digest(expected,signature):
         raise ValueError("invalid policy signature")
     return VerifiedPolicyAuthorization(organization_id,policy_fingerprint,True,True)
+
+def verify_registered_policy(db, *, organization_id, policy_fingerprint):
+    """Verify current persisted approval before each audit; revocations fail closed."""
+    from sqlalchemy import select
+    from mcias.models import User
+    from mcias.models_audit_policy import AuditPolicyGrant
+    grant=db.scalar(select(AuditPolicyGrant).where(
+        AuditPolicyGrant.organization_id==organization_id,
+        AuditPolicyGrant.policy_fingerprint==policy_fingerprint,
+        AuditPolicyGrant.revoked_at.is_(None)))
+    if grant is None:
+        raise ValueError("active institutional policy grant required")
+    approver=db.get(User,grant.approver_id)
+    reviewer=db.get(User,grant.reviewer_id)
+    if (approver is None or reviewer is None or not approver.active or not reviewer.active
+        or approver.id==reviewer.id or approver.organization_id!=organization_id
+        or reviewer.organization_id!=organization_id):
+        raise ValueError("institutional approver or reviewer invalid")
+    return verify_policy_authorization(
+        organization_id=organization_id,policy_fingerprint=policy_fingerprint,
+        approver_id=approver.id,reviewer_id=reviewer.id,signature=grant.signature)
