@@ -20,6 +20,8 @@ def parse(data: bytes) -> Extraction:
         if len(text) > 2_000_000:
             result.quarantined.append(item("page text exceeds limit", "page", index))
         elif not text.strip():
+            # Scanned PDF rasterization is not available in the parser sandbox.
+            # Never silently substitute a guessed transcription.
             result.quarantined.append(item("unreadable or scanned page", "page", index))
         else:
             result.records.append(ExtractedRecord(Locator("page", index), {"text": text}))
