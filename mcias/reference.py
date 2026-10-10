@@ -1,7 +1,7 @@
 """Temporal reference controls. All effective ranges are half-open [start, end)."""
 from datetime import date
 from sqlalchemy import select
-from mcias.models import AuditLog, WrittenAuthorization
+from mcias.models import AuditLog, WrittenAuthorization, User
 from mcias.models_reference import ContractVersion, ProviderTariff, BeneficiaryEnrollment
 
 class ReferenceConflict(ValueError):
@@ -47,10 +47,25 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
     authorization = db.get(WrittenAuthorization, contract.authorization_id) if contract.authorization_id else None
     if authorization is None or authorization.organization_id != contract.organization_id or authorization.approved_by == actor.id:
         raise ReferenceConflict("independent written authorization required")
+    approver = db.get(User, authorization.approved_by)
+    if not approver or not approver.active or approver.organization_id != contract.organization_id:
+        raise ReferenceConflict("written approver must be active in same organization")
     check_contract_overlap(db, contract)
     impact = analyze_retroactive(db, contract, as_of)
+    reviews = db.scalars(select(AuditLog).where(
+        AuditLog.resource_type == "contract_version",
+        AuditLog.resource_id == contract.id)).all()
+    precedence_reviews = [r for r in reviews if r.action == "contract_precedence_approved"
+                          and r.actor_id not in (actor.id, authorization.approved_by)]
+    if not precedence_reviews:
+        raise ReferenceConflict("independent documented contract precedence approval required")
     if impact["requires_human_review"]:
-        raise ReferenceConflict("T05 retroactive or conflicting contract requires documented impact review")
+        impact_reviews = [r for r in reviews if r.action == "contract_impact_reviewed"
+                          and r.actor_id not in (actor.id, authorization.approved_by)]
+        if not impact_reviews:
+            raise ReferenceConflict("T05 retroactive contract requires independent documented impact review")
+        if impact["conflicting_contract_ids"]:
+            raise ReferenceConflict("T04 conflicting approved contract cannot be overridden")
     contract.status = "approved"
     db.add(AuditLog(actor_id=actor.id, action="contract_approved", resource_type="contract_version",
                     resource_id=contract.id, details={"authorization_id": authorization.id, "impact": impact}))
