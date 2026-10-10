@@ -6,7 +6,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from mcias.app import get_db
+from mcias.config import Settings
+from sqlalchemy import create_engine
 from mcias.auth import resolve_user
 from mcias.tenant import require_organization
 from mcias.models_g8 import AnalysisTaskVersion, AnalysisTaskEvent, AnalysisRun
@@ -18,6 +19,16 @@ from mcias.intelligence_service_g8 import (
 )
 
 router = APIRouter(prefix="/api/v1/intelligence", tags=["G8 intelligence"])
+
+def get_db():
+    """Independent dependency prevents circular module import in test runners."""
+    engine = create_engine(Settings().database_url, pool_pre_ping=True)
+    try:
+        with Session(engine) as db:
+            yield db
+    finally:
+        engine.dispose()
+
 
 class NewTask(BaseModel):
     code: str = Field(min_length=3, max_length=64, pattern=r"^[a-z][a-z0-9_]+$")
