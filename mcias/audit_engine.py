@@ -33,11 +33,11 @@ class AuditPolicy:
             raise PolicyBlocked("deduction order requires explicit approval of exclusion, tariff, cap, copay")
         if len(self.currency)!=3 or not self.currency.isupper():
             raise PolicyBlocked("invalid currency")
-        if not D(0)<=self.copay_percent<=D(100):
+        if not self.copay_percent.is_finite() or not D(0)<=self.copay_percent<=D(100):
             raise PolicyBlocked("invalid copay")
-        if any(x<0 or not x.is_finite() for x in (self.tariff,self.exclusion)):
+        if any(not x.is_finite() or x<0 for x in (self.tariff,self.exclusion)):
             raise PolicyBlocked("invalid tariff or exclusion")
-        if self.cap is not None and (self.cap<0 or not self.cap.is_finite()):
+        if self.cap is not None and (not self.cap.is_finite() or self.cap<0):
             raise PolicyBlocked("invalid cap")
 
 def money(value,policy):
