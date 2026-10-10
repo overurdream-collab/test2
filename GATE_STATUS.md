@@ -13,7 +13,7 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | G6 Governance | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | approvals, objections, selective re-audit | T10–T12 + separation of duties | None | Pending |
 | G7 Reporting | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | Excel/PDF, dashboard, statements | T13, T18, T20 + reconciliation | None | Pending |
 | G8 Intelligence | ENGINEERING IMPLEMENTED — OPEN / NOT ACCEPTED | analytics, anomalies, simulations, Analysis Studio | T14, T15, T19 + false positives | None | Pending |
-| G9 Release | NOT STARTED | security, performance, restore, docs, training | full regression + human signature | None | Pending |
+| G9 Release | ENGINEERING VERIFIED IN PART — OPEN / NOT ACCEPTED | security, performance, restore, docs, training | full regression + human signature | None | Pending |
 
 ## G0 policy decision register
 | Decision | Status | Consequence |
@@ -90,3 +90,12 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Same code commit: [G8 focused workflow](https://github.com/overurdream-collab/test2/actions/runs/38062830731): G8 unit/UX/security **29 passed**, G8 PostgreSQL **3 passed**, including actual G7-frozen-report-to-G8-analysis-to-independent-review test. JavaScript syntax and installed wheel assets checked.
 - This is **software engineering evidence only**. It does not resolve the prior signed acceptances in `docs/G0_G8_ACCEPTANCE_TRACKER.md` or the G8 signed acceptance with real labeled data, independent false-positive evaluation, institution-configured medical permissions, real workload SLA, production TLS/key custody and verified recovery.
 - Post-evidence documentation commits require their own exact-head CI before merge. **All human gate statuses remain OPEN.**
+
+## G9 release-engineering verification and pending institutional acceptance (2026-10-10)
+
+- Branch: `feat/g9-release-hardening`, stacked as **draft PR #10** on still-unaccepted G8 draft PR #9; its dependency chain remains in review. These GitHub changes are **NOT** deployed to a real healthcare insurer.
+- Added engineering controls: isolated on-prem TLS preview (loopback 8443 only); non-root API and private PostgreSQL; optional off-line Ed25519 release-receipt validation; file-by-file SHA-256 inventory; read-only target-host preflight; production Swagger/OpenAPI disabled; stricter HTTP headers; hardened tar/AES-GCM backup extraction; synthetic deterministic analytics performance measurement; Arabic training and separate database/source-restore runbook.
+- **Verified reproducible CI from SHA `5a12bc836f5bd8cb22145d493d8f130fb67dbc9c`**: [all-gates GitHub regression](https://github.com/overurdream-collab/test2/actions/runs/38064789118): unit **229 passed, 17 skipped**, PostgreSQL **143 passed**, dependency audit **SUCCESS**. [G9-focused GitHub workflow](https://github.com/overurdream-collab/test2/actions/runs/38064789111): security/operations **13 passed** and PostgreSQL runtime-role + independent restore **2 passed**, release artifact checksum verified, Compose configuration checked. These results apply to that exact SHA; newer changes must pass their own CI before merged review.
+- Formal G9 status **OPEN / NOT ACCEPTED**: institutional financial policies, medical field permissions, human sign-offs for G0–G8, real target-machine backup/recovery, approved SLA/concurrent load, complete private certified TLS deployment, independently trusted key custody and reviewer authority, pinned and independently audited OCI/dependency artifacts, penetration testing, and signed release approval are missing.
+- Authoritative cross-stage evidence register: `docs/G0_G9_ACCEPTANCE_TRACKER.md`; practical deployment and preflight: `docs/G9_RELEASE.md`; recovery: `docs/G9_DISASTER_RECOVERY_AR.md`; Arabic operator training: `docs/G9_OPERATOR_TRAINING_AR.md`.
+- **Do not mark G9 or any earlier stage ACCEPTED**, do not merge to main and do not run on real patient claims without organizational approval.
