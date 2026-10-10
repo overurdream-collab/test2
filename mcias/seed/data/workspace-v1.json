@@ -1,0 +1,8 @@
+{
+  "version": "workspace-v1",
+  "organization_name": "SYN-E2E — demonstration only",
+  "username": "SYN-workspace-reader",
+  "currency": "LYD",
+  "claimed_amount": "1000.0000",
+  "permissions": ["profile.read", "claims.read", "reports.read", "reports.details.read"]
+}
