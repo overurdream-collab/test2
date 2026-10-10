@@ -8,6 +8,8 @@ def parse(data: bytes) -> Extraction:
     book = load_workbook(io.BytesIO(data), read_only=True, data_only=False, keep_links=False)
     result = Extraction(format="xlsx")
     try:
+        if len(book.worksheets) > 50:
+            raise ValueError("worksheet limit exceeded")
         for sheet_index, sheet in enumerate(book.worksheets, start=1):
             iterator = sheet.iter_rows(values_only=False)
             header = next(iterator, None)
