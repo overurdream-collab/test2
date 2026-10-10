@@ -19,8 +19,17 @@ async def secure_response_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
-    if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/")):
+    if request.url.path.startswith("/ui/reports"):
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'none'; script-src 'self'; style-src 'self'; "
+            "connect-src 'self'; font-src 'self'; img-src 'self'; "
+            "base-uri 'none'; form-action 'self'; object-src 'none'; "
+            "frame-ancestors 'none'"
+        )
+    else:
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+    if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/",
+                                        "/api/v1/report-explorer/", "/ui/reports")):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response
@@ -150,3 +159,6 @@ app.include_router(reporting_g7_router)
 
 from mcias.reporting_g7_explorer import router as reporting_g7_explorer_router
 app.include_router(reporting_g7_explorer_router)
+
+from mcias.report_web_g7 import router as report_web_g7_router
+app.include_router(report_web_g7_router)
