@@ -1,0 +1,58 @@
+/* G8 supplemental RTL intelligence studio styles; all assets local. */
+.g8-auth{max-width:790px;margin:60px auto;padding:42px 48px}
+.g8-auth h1{margin:10px 0}
+.g8-auth .subtitle{margin-bottom:24px}
+.g8-auth-mark{font-size:76px;color:#0d8792;line-height:1;text-align:center;margin-bottom:22px}
+.g8-login-form{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+.g8-login-form label{align-self:end}
+.g8-login-form input{grid-row:span 1}
+.g8-login-form button{grid-column:1/-1;margin-top:14px}
+.g8-helper{color:#80909a;font-size:11px;margin-top:8px;line-height:1.8}
+.g8-pill{display:inline-flex;align-items:center;gap:9px;border:1px solid #cfe7d9;background:#eaf7ef;color:#2d7655;padding:9px 13px;border-radius:50px;font-weight:700;font-size:11px}
+.g8-pill-dot{height:8px;width:8px;border-radius:50%;background:#52ac7a}
+.g8-source-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+.g8-source-grid>div{display:grid;align-content:start;gap:7px}
+.g8-source-grid select{height:auto;min-height:145px}
+.g8-source-grid select option{padding:9px 12px;border-bottom:1px solid #eef2f6}
+.g8-source-grid textarea{resize:vertical;min-height:145px;width:100%;border:1px solid #cfdbe5;border-radius:9px;padding:12px;font:inherit}
+.g8-source-grid textarea:focus{border-color:#329ca1;outline:2px solid #d2edeb}
+.g8-source-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:18px;padding-top:12px;color:var(--muted);font-size:11px}
+.g8-inline-form{display:flex;align-items:end;flex-wrap:wrap;gap:14px;margin-top:20px}
+.g8-inline-form>div{display:grid;gap:7px;min-width:185px}
+.g8-inline-form .g8-field-grow{flex:1}
+.g8-inline-form .btn{min-width:145px}
+.g8-result-slot{display:grid;gap:16px;margin-bottom:24px}
+.g8-data-grid{overflow-x:auto}
+.g8-data-grid table{min-width:720px}
+.g8-note{font-size:11px;color:#748a9a;border-right:3px solid #64b5bb;padding:8px 12px;margin:12px 0}
+.g8-result-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.g8-result-head h3{font-size:15px}
+.g8-badge{border-radius:999px;background:#e7f2fa;color:#376279;font-weight:800;font-size:11px;padding:5px 9px}
+.g8-badge.warning{background:#fff4da;color:#8d691f}
+.g8-badge.ready{background:#ddf5e8;color:#2a7556}
+.g8-signal{border-right:4px solid #d2a453}
+.g8-signal p{margin-top:7px}
+.g8-signal-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:15px}
+.g8-signal-metrics div{background:#f5f8fa;border-radius:9px;padding:10px}
+.g8-signal-metrics dt{font-size:11px;color:#728294}
+.g8-signal-metrics dd{margin:4px 0 0;font:700 15px Arial;direction:ltr;text-align:right}
+.g8-scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.g8-scenario-item{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff}
+.g8-scenario-item strong{font-size:13px;display:block}
+.g8-scenario-item .g8-figure{font:700 24px Arial;direction:ltr;text-align:right;margin:10px 0}
+.g8-task-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:24px 0 14px}
+.g8-task-grid>div{display:grid;gap:6px;align-content:end}
+.g8-task-grid .btn{align-self:end}
+.g8-task{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--line)}
+.g8-task:last-child{border-bottom:0}
+.g8-task-title{display:grid;gap:3px}
+.g8-task-title strong{font-size:14px}
+.g8-task-title small{font:11px Arial;direction:ltr;color:#8295a4}
+.g8-task-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.g8-source-fingerprint{font-size:11px;font-family:ui-monospace,monospace;overflow-wrap:anywhere;direction:ltr}
+.g8-small-button{font-size:11px;min-height:34px;padding:6px 11px}
+.g8-policy-footer{background:#e9f3f4;border-color:#d1e7e7}
+.g8-policy-footer strong{font-size:13px}
+.g8-policy-footer p{margin-top:7px;font-size:12px}
+@media(max-width:880px){.g8-source-grid{grid-template-columns:1fr}.g8-task-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.g8-signal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:630px){.g8-auth{padding:24px 17px;margin:14px auto}.g8-login-form{grid-template-columns:1fr}.g8-task-grid{grid-template-columns:1fr}.g8-scenario-grid{grid-template-columns:1fr}.g8-inline-form{display:grid}.g8-inline-form>div{min-width:0}.g8-signal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
