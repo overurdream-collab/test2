@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 from sqlalchemy import select
 from mcias.audit_engine import AuditPolicy,PolicyBlocked,evaluate
+from mcias.audit_authorization import VerifiedPolicyAuthorization
 from mcias.audit_agents import inspect_claim
 from mcias.palermo2 import verify
 from mcias.models_claims import ClaimEntry
@@ -20,7 +21,7 @@ def fingerprint_policy(policy):
 def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None):
     # The caller must supply a verified, tenant-bound authorization from a
     # trusted G1 signer; a client-side 'approved=True' flag is insufficient.
-    # A caller-supplied dictionary is not proof of a cryptographic signature.\n    # Only a server-verified authorization object from the trusted verifier\n    # may authorize a financial snapshot.\n    if verified_authorization is None or isinstance(verified_authorization,dict):\n        raise PolicyBlocked('trusted server-side policy verification required')
+    # A caller-supplied dictionary is not proof of a cryptographic signature.\n    # Only a server-verified authorization object from the trusted verifier\n    # may authorize a financial snapshot.\n    if type(verified_authorization) is not VerifiedPolicyAuthorization:\n        raise PolicyBlocked('trusted server-side policy verification required')
     if (verified_authorization.organization_id!=getattr(actor,'organization_id',None)
         or verified_authorization.policy_fingerprint!=fingerprint_policy(policy)
         or not verified_authorization.signature_verified
