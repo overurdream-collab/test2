@@ -57,7 +57,6 @@ def test_g9_readonly_runtime_role_preflight_and_negative_mutation():
         if runtime is not None:
             runtime.dispose()
         with admin.connect() as connection:
-            connection.execute(text(
-                f'REVOKE UPDATE ON public.audit_log FROM "{synthetic_role}"'))
+            connection.execute(text(f'DROP OWNED BY "{synthetic_role}"'))
             connection.execute(text(f'DROP ROLE IF EXISTS "{synthetic_role}"'))
         admin.dispose()
