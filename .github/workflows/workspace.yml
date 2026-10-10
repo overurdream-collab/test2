@@ -27,7 +27,7 @@ jobs:
           POSTGRES_DB: mcias_ci_e2e
         ports: ['5432:5432']
         options: >-
-          --health-cmd 'pg_isready -U mcias_ci -d mcias_ci_e2e'
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci_e2e"
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       MCIAS_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e

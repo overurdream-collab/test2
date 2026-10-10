@@ -1,7 +1,7 @@
 {
   "recorded_at_utc": "2026-10-10T16:35:29.383101+00:00",
   "sha256": {
-    ".github/workflows/workspace.yml": "862d175e87d436f29c2eed2c4b7aa6cb421facece327d8963a3c005258eb5490",
+    ".github/workflows/workspace.yml": "25292b9e43f69995578ae33e98c3c57d3266aba6566a5fe6c301d68303c59fea",
     "mcias/app.py": "400d690b8931d703670beb1e0e882173fb8648060c18b3ea77f00abb4d9f78de",
     "mcias/web_workspace/api.js": "da5bb56b95c5bb5e2c81e62f3bb2b9e78ffab14498928075cf8816995b484cf2",
     "mcias/web_workspace/app.js": "3dbc3007dca41774d9b11fb42e089db85e332ec6e060b6fbfc331c22aff5bfe5",
