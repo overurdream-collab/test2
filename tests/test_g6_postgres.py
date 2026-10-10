@@ -10,7 +10,7 @@ def test_g6_migration_and_immutable_trigger():
     command.upgrade(Config("alembic.ini"),"head")
     engine=create_engine(os.environ["MCIAS_TEST_DATABASE_URL"])
     with engine.connect() as conn:
-        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()=="0014_g7_reporting"
+        assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()=="0015_g8_intelligence"
         assert conn.execute(text("SELECT count(*) FROM pg_trigger WHERE tgname='trg_g6_event_immutable' AND NOT tgisinternal")).scalar_one()==1
         assert conn.execute(text("SELECT count(*) FROM pg_constraint WHERE conname='uq_g6_case_version'")).scalar_one()==1
     engine.dispose()
