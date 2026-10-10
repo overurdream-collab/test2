@@ -138,3 +138,11 @@ def test_api_T19_client_cannot_supply_activation_flags(monkeypatch):
     assert "sql" not in api.NewTask.model_fields
     assert "query" not in api.RunRequest.model_fields
     assert set(api.RunRequest.model_fields)=={"kind","report_ids","parameters","task_id"}
+
+def test_t15_analytics_cannot_bypass_g7_report_read_permissions(database,monkeypatch):
+    db,creator,_,_,_=database
+    monkeypatch.setattr(svc,"has_permission",
+                        lambda db,actor,code: code=="intelligence.run")
+    with pytest.raises(IntelligenceBlocked,match="permission denied"):
+        svc.create_run(db,creator,"summary",["hidden-g7-report"],{"dimension":"provider"})
+    assert db.scalars(select(AnalysisRun)).all()==[]
