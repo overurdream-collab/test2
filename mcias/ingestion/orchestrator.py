@@ -3,7 +3,8 @@ from sqlalchemy import select
 from mcias.models import SourceFile, AuditLog
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord, QuarantineItem
 from mcias.ingestion.fingerprint import sha256
-from mcias.ingestion.reader_agent import read
+from mcias.ingestion.file_scanner import identify
+from mcias.ingestion.isolated_parser import isolated_parse
 from mcias.ingestion.manifest import manifest
 from mcias.ingestion.provenance import locator_dict
 from mcias.ingestion.palermo.palermo_1 import review
@@ -29,7 +30,7 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
     db.add(job)
     db.flush()
     try:
-        extraction = read(data, filename)
+        extraction = isolated_parse(identify(data, filename), data)
         result = review(extraction)
         for record in extraction.records:
             db.add(ExtractedSourceRecord(job_id=job.id, locator=locator_dict(record.locator), values=record.values, confidence=round(record.confidence*100)))
