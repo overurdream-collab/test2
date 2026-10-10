@@ -63,6 +63,7 @@ def dashboard(report_id: str, authorization: str | None = Header(default=None),
 
 @router.get("/snapshots/{report_id}/excel")
 def download_excel(report_id: str, include_originals: bool = Query(False),
+                   lang: Literal["ar", "en"] = Query("ar"),
                    authorization: str | None = Header(default=None),
                    db: Session = Depends(get_db)):
     actor = _actor(db, authorization, "reports.export")
@@ -74,7 +75,7 @@ def download_excel(report_id: str, include_originals: bool = Query(False),
             # No guessed field permissions: unregistered names fail closed.
             require_sensitive_field(db, actor, actor.organization_id, field)
     try:
-        data = render_xlsx(report, include_originals=include_originals)
+        data = render_xlsx(report, include_originals=include_originals, language=lang)
     except ReportBlocked as exc:
         raise HTTPException(409, str(exc)) from exc
     return StreamingResponse(BytesIO(data),
