@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, Header, Depends, Response, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -11,7 +12,13 @@ from mcias.security import verify_password
 from mcias.tenant import require_organization, require_sensitive_field
 from mcias.models import RuleVersion
 
-app = FastAPI(title="MCIAS API", version="0.1.0")
+app = FastAPI(
+    title="MCIAS API",
+    version="0.1.0",
+    docs_url=None if os.environ.get("MCIAS_ENVIRONMENT") == "production" else "/docs",
+    redoc_url=None if os.environ.get("MCIAS_ENVIRONMENT") == "production" else "/redoc",
+    openapi_url=None if os.environ.get("MCIAS_ENVIRONMENT") == "production" else "/openapi.json",
+)
 
 @app.middleware("http")
 async def secure_response_headers(request: Request, call_next):
@@ -19,6 +26,8 @@ async def secure_response_headers(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["X-Permitted-Cross-Domain-Policies"] = "none"
     if request.url.path.startswith(("/ui/reports", "/ui/intelligence", "/admin", "/institution", "/shared", "/login", "/mfa", "/forgot-password", "/workspace-assets")):
         response.headers["Content-Security-Policy"] = (
             "default-src 'none'; script-src 'self'; style-src 'self'; "
