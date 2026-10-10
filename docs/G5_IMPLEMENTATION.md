@@ -33,3 +33,9 @@
 - `run_audit` rejects plain caller-supplied authorization dictionaries; only typed server-verified objects are accepted. The current internal verifier is **not** a complete institutional trust registry: trusted approver identities, revocation and persistent signed approval records remain blocked.
 - Added authorization negative tests to CI. The public API remains **read-only**: no production financial audit execution is exposed before governance approval.
 - These are engineering protections, not evidence of real institutional authorization or formal G5 acceptance.
+
+## Persisted approval registry work (2026-10-10)
+- Added `AuditPolicyGrant` with tenant, policy fingerprint, approver/reviewer identities, signature and revocation timestamp.
+- Migration `0012_g5_policy_grants` creates grant storage and enforces distinct reviewer identity. Production migration rollback is intentionally blocked.
+- Each internal audit now rechecks an active database grant and cryptographic signature, including active same-tenant signer identities, before financial processing. Revoked grants fail closed.
+- No approval-enrollment or revocation API has been exposed: authorized institutional enrollment, signature issuance, operational key rotation and tamper-evident lifecycle remain prerequisites. Do not mark G5 accepted.
