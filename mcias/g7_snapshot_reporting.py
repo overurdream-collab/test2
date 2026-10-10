@@ -30,7 +30,7 @@ def freeze_report(rows, *, organization_id, version, allowed_sensitive_fields=()
         if claimed!=payable+deduction:
             raise ReportBlocked("independent report reconciliation failed")
         frozen.append({"snapshot_id":str(row["snapshot_id"]),
-                       "source_values":row["source_values"],
+                       "source_values":json.loads(json.dumps(row["source_values"],ensure_ascii=False)),
                        "claimed":str(claimed),"deduction":str(deduction),
                        "payable":str(payable),"currency":str(row["currency"])})
     payload={"organization_id":organization_id,"version":version,"rows":frozen,
