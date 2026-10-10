@@ -64,3 +64,26 @@ def _immutable(*_args):
 for klass in (AnalysisTaskVersion, AnalysisTaskEvent, AnalysisRun):
     event.listen(klass, "before_update", _immutable)
     event.listen(klass, "before_delete", _immutable)
+
+class AnalysisSignalReview(Base):
+    """Append-only independent assessment of a G8 review signal."""
+    __tablename__ = "g8_signal_reviews"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False, index=True)
+    run_id: Mapped[str] = mapped_column(ForeignKey("g8_analysis_runs.id"), nullable=False, index=True)
+    signal_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    disposition: Mapped[str] = mapped_column(String(32), nullable=False)
+    reviewer_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
+    evidence: Mapped[dict] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),
+                                                   nullable=False, default=now_utc)
+    __table_args__ = (
+        UniqueConstraint("run_id", "signal_index", "version", name="uq_g8_signal_review_version"),
+        CheckConstraint("signal_index >= 0 AND version > 0", name="ck_g8_signal_review_order"),
+        CheckConstraint("disposition IN ('false_positive','needs_followup','insufficient_evidence')",
+                        name="ck_g8_signal_disposition"),
+    )
+
+event.listen(AnalysisSignalReview, "before_update", _immutable)
+event.listen(AnalysisSignalReview, "before_delete", _immutable)
