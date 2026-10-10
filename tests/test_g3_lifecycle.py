@@ -69,3 +69,13 @@ def test_beneficiary_eligibility_and_conflict(db):
     assert eligibility(db,org.id,"opaque-synthetic-token",date(2026,12,1)) is None
     with pytest.raises(ReferenceConflict,match="overlapping"):
         enroll(db,actors[1],"opaque-synthetic-token",category.id,date(2026,6,1),date(2027,1,1))
+
+def test_proposer_cannot_approve_own_contract(db):
+    org,actors,auth=setup_actors(db)
+    proposer,reviewer,precedence,activator=actors
+    contract=create_draft(db,proposer,"HOSP-C",date(2027,1,1),date(2028,1,1))
+    attach_authorization(db,reviewer,contract.id,auth.id)
+    approve_precedence_policy(db,precedence,contract.id,"Independent written precedence decision for this contract")
+    with pytest.raises(ReferenceConflict,match="proposal author"):
+        approve_contract(db,contract.id,proposer,date(2026,10,10),precedence_approved=True)
+    assert db.get(ContractVersion,contract.id).status=="draft"
