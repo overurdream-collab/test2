@@ -2,6 +2,7 @@
 from io import BytesIO
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from mcias.app import get_db
 from mcias.auth import resolve_user
@@ -92,12 +93,16 @@ def download_pdf(report_id: str, authorization: str | None = Header(default=None
         headers={"Content-Disposition": 'attachment; filename="mcias-report.pdf"',
                  "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
-@router.get("/snapshots/{report_id}/beneficiaries/{token}/statement")
-def statement(report_id: str, token: str, authorization: str | None = Header(default=None),
+class StatementRequest(BaseModel):
+    beneficiary_token: str = Field(min_length=1, max_length=128)
+
+@router.post("/snapshots/{report_id}/beneficiary-statement")
+def statement(report_id: str, body: StatementRequest,
+              authorization: str | None = Header(default=None),
               db: Session = Depends(get_db)):
     actor = _actor(db, authorization, "reports.beneficiary.read")
     require_sensitive_field(db, actor, actor.organization_id, "beneficiary_token")
     try:
-        return beneficiary_statement(_report(db, actor, report_id), token)
+        return beneficiary_statement(_report(db, actor, report_id), body.beneficiary_token)
     except ReportBlocked as exc:
         raise HTTPException(409, str(exc)) from exc
