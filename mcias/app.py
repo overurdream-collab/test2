@@ -129,3 +129,6 @@ def sensitive_field_access(organization_id: str, field_code: str, authorization:
 # Import after get_db is defined to avoid a dependency cycle during route registration.
 from mcias.ingestion.api import router as ingestion_router
 app.include_router(ingestion_router)
+
+from mcias.reference_api import router as reference_router
+app.include_router(reference_router)
