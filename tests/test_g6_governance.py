@@ -49,3 +49,21 @@ def test_g6_event_update_rejected():
 def test_g6_default_deny(permission):
     with pytest.raises(GovernanceBlocked,match="permission"):
         append_event(None,actor(),"case1","approve",{})
+
+@patch("mcias.governance_g6.has_permission",return_value=True)
+@pytest.mark.parametrize("snapshot",[
+    None,
+    SimpleNamespace(organization_id="other",claim_id="claim1",
+                    calculation={"status":"calculated"},verification={"status":"verified"}),
+    SimpleNamespace(organization_id="org1",claim_id="wrong",
+                    calculation={"status":"calculated"},verification={"status":"verified"}),
+])
+def test_g6_approval_fails_closed_on_missing_or_mismatched_snapshot(permission,snapshot):
+    db=MagicMock()
+    item=case(opened_by="opener")
+    item.claim_id="claim1"
+    db.scalar.side_effect=[item,SimpleNamespace(kind="propose",actor_id="proposer",version=1)]
+    db.get.return_value=snapshot
+    with pytest.raises(GovernanceBlocked):
+        append_event(db,actor("reviewer"),"case1","approve",{})
+    db.commit.assert_not_called()
