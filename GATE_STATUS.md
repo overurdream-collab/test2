@@ -99,3 +99,7 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Formal G9 status **OPEN / NOT ACCEPTED**: institutional financial policies, medical field permissions, human sign-offs for G0–G8, real target-machine backup/recovery, approved SLA/concurrent load, complete private certified TLS deployment, independently trusted key custody and reviewer authority, pinned and independently audited OCI/dependency artifacts, penetration testing, and signed release approval are missing.
 - Authoritative cross-stage evidence register: `docs/G0_G9_ACCEPTANCE_TRACKER.md`; practical deployment and preflight: `docs/G9_RELEASE.md`; recovery: `docs/G9_DISASTER_RECOVERY_AR.md`; Arabic operator training: `docs/G9_OPERATOR_TRAINING_AR.md`.
 - **Do not mark G9 or any earlier stage ACCEPTED**, do not merge to main and do not run on real patient claims without organizational approval.
+
+## Acceptance handoff documents
+
+The [Arabic](docs/ACCEPTANCE_PACK_INDEX.md) / [English](docs/ACCEPTANCE_PACK_INDEX_EN.md) pack contains draft financial policies and unexecuted external acceptance plans. No gate status changes or institutional approval are implied.

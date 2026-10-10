@@ -17,3 +17,7 @@ Statuses: APPROVED, PROPOSED, OPEN, BLOCKED. Record owner, rationale, alternativ
 | ADR-011 | Retention, target load and medical-field access | BLOCKED pending policy |
 
 An ADR is not evidence of passing software tests. See docs/ACCEPTANCE_CONTRACT.md and GATE_STATUS.md.
+
+## Financial policy decisions and current implementation
+
+The 13 FIN-ADR proposals in [POLICY_PACK](policies/POLICY_PACK_EN.md) are separate from this architecture index. Historical framework proposals are not implementation evidence: the current enterprise workspace uses vanilla JavaScript ES modules served by FastAPI. Decisions remain subject to institutional approval.

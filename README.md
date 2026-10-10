@@ -87,3 +87,7 @@ pending institutional approval.
 ### Consolidated main and continuous integration
 
 `main` is the integrated engineering baseline, not institutional production acceptance. All four CI workflows run on pushes to `main`, including PostgreSQL regression, dependency checks, browser/accessibility checks and portable test packaging. See [branch consolidation](docs/MAIN_CONSOLIDATION.md) for incorporated and superseded branches.
+
+## Bilingual policy and external acceptance pack
+
+[العربية](docs/ACCEPTANCE_PACK_INDEX.md) · [English](docs/ACCEPTANCE_PACK_INDEX_EN.md): 13 proposed financial decisions, deployment checks, external test/report templates, UAT and independent penetration-test scope. All external results/signatures remain unexecuted; these documents do not authorize production.
