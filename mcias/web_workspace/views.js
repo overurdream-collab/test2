@@ -58,6 +58,10 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "retention") {
+    retention(ctx);
+    return;
+  }
   if (kind === "unavailable") {
     unavailable(ctx);
     return;
@@ -2853,4 +2857,22 @@ function runResult(ctx, run) {
     );
   }
   return n;
+}
+
+function retention(ctx) {
+  const card = panel(L("أرشفة سجل التدقيق", "Audit log archival"),
+    L("احتفاظ مقترح لمدة 7 سنوات ينتظر الاعتماد المؤسسي. لا يُحذف أي سجل.",
+      "Proposed seven-year retention awaits institutional approval. Audit rows are preserved."));
+  const result = el("div");
+  card.append(result); ctx.root.append(card);
+  fetchPanel(ctx, result, "/api/v1/admin/retention/status", (data) => {
+    result.append(details(data));
+    result.append(badge(L("الحذف الدوري معطّل", "Purge disabled"), "warning"));
+  });
+  ctx.root.append(operation(ctx, L("طلب أرشفة شهر مكتمل", "Request completed-month archive"),
+    L("يُسجّل الطلب وينفذه العامل المحلي المشفّر. لا يشمل سجلات المؤسسات الأخرى.",
+      "The local encrypted worker processes this request; other institutions are excluded."),
+    [{name:"month", label:L("الشهر", "Month"), type:"month", required:true}],
+    "retention.archive", (inputs) => ctx.api.request("/api/v1/admin/retention/archive",
+      {method:"POST", body:{month:inputs.month}}), {confirmation:true}));
 }

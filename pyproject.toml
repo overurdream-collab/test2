@@ -21,4 +21,5 @@ where = ["."]
 include = ["mcias*"]
 
 [tool.setuptools.package-data]
+"mcias.seed" = ["data/*.json"]
 mcias = ["web_g7/*.html", "web_g7/*.css", "web_g7/*.js", "web_g8/*.html", "web_g8/*.css", "web_g8/*.js", "web_workspace/*.html", "web_workspace/*.css", "web_workspace/*.js", "web_workspace/*.json", "web_workspace/icons/*.svg", "web_workspace/fonts/*"]

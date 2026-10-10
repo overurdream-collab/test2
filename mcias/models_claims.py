@@ -1,7 +1,7 @@
 """G4 immutable source-linked batches, claims and attachments."""
 from datetime import date, datetime
 from decimal import Decimal
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint, JSON, event
+from sqlalchemy import Index, CheckConstraint, Date, DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint, JSON, event
 from sqlalchemy.orm import Mapped, mapped_column
 from mcias.models import Base, now_utc, uid
 
@@ -35,7 +35,10 @@ class ClaimEntry(Base):
     claimed_amount: Mapped[Decimal]=mapped_column(Numeric(18,4),nullable=False)
     currency: Mapped[str]=mapped_column(String(3),nullable=False)
     created_at: Mapped[datetime]=mapped_column(DateTime(timezone=True),nullable=False,default=now_utc)
-    __table_args__=(UniqueConstraint("batch_id","extracted_record_id",name="uq_claim_batch_record"),
+    __table_args__=(Index("ix_claim_org_service_date", "organization_id", "service_date"),
+                    Index("ix_claim_org_provider_code", "organization_id", "provider_code"),
+                    Index("ix_claim_org_beneficiary_token", "organization_id", "beneficiary_token"),
+                    UniqueConstraint("batch_id","extracted_record_id",name="uq_claim_batch_record"),
                     CheckConstraint("claimed_amount >= 0",name="ck_entry_nonnegative"))
 
 class ClaimAttachment(Base):

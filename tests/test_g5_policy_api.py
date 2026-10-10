@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.usefixtures("limiter_database")
 """G5 API approval endpoints deny unauthenticated requests."""
 from fastapi.testclient import TestClient
 from mcias.app import app, get_settings

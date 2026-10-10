@@ -256,12 +256,12 @@
     "ar": "النسخ والاستعادة",
     "en": "Backup & restore",
     "icon": "security",
-    "kind": "unavailable",
-    "permission": "",
+    "kind": "retention",
+    "permission": "retention.read",
     "admin": true,
-    "availability": "unavailable",
-    "blocker_ar": "توجد أدوات نسخ محلية؛ API للجدولة وحالة الاستعادة وفصل المسؤوليات غير متاح.",
-    "blocker_en": "Local backup tooling exists. Scheduling and restore-status APIs with separated duties are unavailable."
+    "availability": "partial",
+    "blocker_ar": "أرشفة محلية مشفّرة؛ الحذف الدوري واعتماد سياسة الاحتفاظ غير متاحين.",
+    "blocker_en": "Local encrypted archival; purge and institutional retention approval are unavailable."
   },
   {
     "path": "/admin/alerts",

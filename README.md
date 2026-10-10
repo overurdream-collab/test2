@@ -74,3 +74,12 @@ validation. See [implementation report](docs/INTEGRATED_CANDIDATE_REPORT.md),
 [Arabic handoff](docs/INTEGRATED_CANDIDATE_HANDOFF_AR.md),
 [security fixes](docs/INTEGRATED_SECURITY_REVIEW.md) and
 [role-based UAT checklist](docs/INTEGRATED_UAT_AR.md). No G0–G9 approval is implied.
+
+### Operational controls and synthetic test tools
+
+See [operational controls](docs/OPERATIONAL_CONTROLS.md) and [retention policy](docs/RETENTION_POLICY.md).
+New dedicated test seed references use `SYN-`; UUID primary keys are retained.
+Seed CLI refuses production and non-`*_e2e` databases. Existing synthetic data is
+not backfilled or relabeled. Production starts with a clean database. Archival is
+local and encrypted; the proposed seven-year policy and any purge remain blocked
+pending institutional approval.

@@ -5,6 +5,13 @@ on:
       - 'mcias/web_workspace/**'
       - 'mcias/workspace_*.py'
       - 'mcias/app.py'
+      - 'mcias/seed/**'
+      - 'mcias/*retention*'
+      - 'mcias/rate_limits.py'
+      - 'mcias/models_operations.py'
+      - 'alembic/**'
+      - 'tests/test_operational*'
+      - 'tests/seed/**'
       - 'tests/test_enterprise_workspace.py'
       - 'tests/frontend/**'
       - 'scripts/*workspace*'
@@ -18,7 +25,7 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/workspace.yml'
   push:
-    branches: [feat/mcias-premium-enterprise, feat/mcias-integrated-candidate]
+    branches: [feat/mcias-premium-enterprise, feat/mcias-integrated-candidate, feat/mcias-operational-controls]
 permissions:
   contents: read
 jobs:
@@ -57,6 +64,21 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: npm ci --ignore-scripts
       - run: npm test && npm run check
+      - name: Dedicated idempotent Seed integration
+        run: |
+          python - <<'PYCODE'
+          import os
+          from sqlalchemy import create_engine, text
+          from sqlalchemy.engine import make_url
+          url = make_url(os.environ['MCIAS_DATABASE_URL'])
+          admin = create_engine(url.set(database='postgres'), isolation_level='AUTOCOMMIT')
+          with admin.connect() as connection:
+              connection.execute(text('CREATE DATABASE mcias_seed_checks_e2e'))
+          admin.dispose()
+          PYCODE
+          export MCIAS_SEED_TEST_DATABASE_URL=postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_seed_checks_e2e
+          MCIAS_E2E_DATABASE_URL="$MCIAS_SEED_TEST_DATABASE_URL" python -m mcias.seed --output .e2e-output/seed-check.json
+          python -m pytest tests/seed -q
       - name: Full combined regression on fresh PostgreSQL
         env:
           MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
@@ -75,6 +97,7 @@ jobs:
           python scripts/check_workspace_browser.py
           python scripts/check_workspace_live.py --base-url http://127.0.0.1:8000
           python scripts/check_integrated_workflow.py --base-url http://127.0.0.1:8000
+          python scripts/check_retention_browser.py --base-url http://127.0.0.1:8000
       - name: Package frontend assets
         run: |
           python -m pip wheel . --no-deps -w dist

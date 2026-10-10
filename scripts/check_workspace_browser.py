@@ -42,7 +42,7 @@ with sync_playwright() as p:
     page.screenshot(path=str(OUTPUT/'institution-ar-light.png'),full_page=True)
     # Every specified route renders an intentional state, including dynamic records.
     for route in routes:
-        path=route['path'].replace(':id',{'claim-detail':'demo-claim-1','user-detail':'synthetic-admin','eligibility':'demo-beneficiary','provider-detail':'SYN-PROVIDER'}.get(route['kind'],'demo-record'))
+        path=route['path'].replace(':id',{'claim-detail':'SYN-demo-claim-1','user-detail':'SYN-synthetic-admin','eligibility':'demo-beneficiary','provider-detail':'SYN-PROVIDER'}.get(route['kind'],'demo-record'))
         navigate(page,path+'?demo=1')
         expect(page.locator('main h1')).to_have_text(route['ar'])
         if route['kind']=='unavailable': expect(page.locator('main')).to_contain_text('قدرة غير متاحة')

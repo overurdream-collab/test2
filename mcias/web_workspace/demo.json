@@ -1,9 +1,9 @@
 {
   "context": {
-    "id": "synthetic-admin",
+    "id": "SYN-synthetic-admin",
     "username": "Demo reviewer",
     "organization": {
-      "id": "demo-organization",
+      "id": "SYN-demo-organization",
       "name": "مؤسسة العرض الاصطناعي / Synthetic institution"
     },
     "roles": [
@@ -44,8 +44,8 @@
   },
   "reports": [
     {
-      "id": "demo-report",
-      "batch_id": "demo-batch",
+      "id": "SYN-demo-report",
+      "batch_id": "SYN-demo-batch",
       "version": 1,
       "fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
       "source_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -67,219 +67,219 @@
   ],
   "report_entries": [
     {
-      "claim_id": "demo-claim-1",
+      "claim_id": "SYN-demo-claim-1",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-2",
+      "claim_id": "SYN-demo-claim-2",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-3",
+      "claim_id": "SYN-demo-claim-3",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-4",
+      "claim_id": "SYN-demo-claim-4",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-5",
+      "claim_id": "SYN-demo-claim-5",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-6",
+      "claim_id": "SYN-demo-claim-6",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-7",
+      "claim_id": "SYN-demo-claim-7",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-8",
+      "claim_id": "SYN-demo-claim-8",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-9",
+      "claim_id": "SYN-demo-claim-9",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "approved",
       "payable": "900.00",
       "hold_reason": null,
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-10",
+      "claim_id": "SYN-demo-claim-10",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "held",
       "payable": null,
       "hold_reason": "awaiting_verified_approval",
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-11",
+      "claim_id": "SYN-demo-claim-11",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "held",
       "payable": null,
       "hold_reason": "awaiting_verified_approval",
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     },
     {
-      "claim_id": "demo-claim-12",
+      "claim_id": "SYN-demo-claim-12",
       "currency": "LYD",
       "claimed": "1000.00",
       "state": "held",
       "payable": null,
       "hold_reason": "awaiting_verified_approval",
-      "audit_snapshot_id": "demo-audit",
-      "governance_case_id": "demo-case"
+      "audit_snapshot_id": "SYN-demo-audit",
+      "governance_case_id": "SYN-demo-case"
     }
   ],
   "catalog": {
     "claims": [
       {
-        "id": "demo-claim-1",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-1",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-001",
         "service_date": "2026-09-01",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-2",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-2",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-002",
         "service_date": "2026-09-02",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-3",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-3",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-003",
         "service_date": "2026-09-03",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-4",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-4",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-004",
         "service_date": "2026-09-04",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-5",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-5",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-005",
         "service_date": "2026-09-05",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-6",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-6",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-006",
         "service_date": "2026-09-06",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-7",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-7",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-007",
         "service_date": "2026-09-07",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-8",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-8",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-008",
         "service_date": "2026-09-08",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-9",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-9",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-009",
         "service_date": "2026-09-09",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-10",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-10",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-010",
         "service_date": "2026-09-10",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-11",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-11",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-011",
         "service_date": "2026-09-11",
         "claimed_amount": "1000.00",
         "currency": "LYD"
       },
       {
-        "id": "demo-claim-12",
-        "batch_id": "demo-batch",
+        "id": "SYN-demo-claim-12",
+        "batch_id": "SYN-demo-batch",
         "claim_reference": "SYN-012",
         "service_date": "2026-09-12",
         "claimed_amount": "1000.00",
@@ -288,7 +288,7 @@
     ],
     "batches": [
       {
-        "id": "demo-batch",
+        "id": "SYN-demo-batch",
         "status": "imported",
         "record_count": 12,
         "imported_count": 12,
@@ -298,7 +298,7 @@
     ],
     "documents": [
       {
-        "id": "demo-document",
+        "id": "SYN-demo-document",
         "status": "extracted",
         "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         "revision_of": null,
@@ -307,15 +307,15 @@
     ],
     "jobs": [
       {
-        "id": "demo-job",
-        "document_id": "demo-document",
+        "id": "SYN-demo-job",
+        "document_id": "SYN-demo-document",
         "status": "extracted",
         "created_at": "2026-09-30T09:00:00Z"
       }
     ],
     "contracts": [
       {
-        "id": "demo-contract",
+        "id": "SYN-demo-contract",
         "provider_code": "SYN-PROVIDER",
         "version": 1,
         "status": "draft",
@@ -325,8 +325,8 @@
     ],
     "audits": [
       {
-        "id": "demo-audit",
-        "claim_id": "demo-claim-1",
+        "id": "SYN-demo-audit",
+        "claim_id": "SYN-demo-claim-1",
         "policy_id": "synthetic-policy",
         "policy_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "created_at": "2026-09-30T10:00:00Z"
@@ -334,15 +334,15 @@
     ],
     "cases": [
       {
-        "id": "demo-case",
-        "claim_id": "demo-claim-1",
-        "audit_snapshot_id": "demo-audit",
+        "id": "SYN-demo-case",
+        "claim_id": "SYN-demo-claim-1",
+        "audit_snapshot_id": "SYN-demo-audit",
         "created_at": "2026-09-30T10:30:00Z"
       }
     ],
     "users": [
       {
-        "id": "synthetic-admin",
+        "id": "SYN-synthetic-admin",
         "username": "Demo reviewer",
         "active": true,
         "created_at": "2026-09-01T10:00:00Z"
@@ -351,7 +351,7 @@
   },
   "tasks": [
     {
-      "id": "demo-task",
+      "id": "SYN-demo-task",
       "code": "provider_hold_rate",
       "version": 1,
       "status": "tested",
@@ -381,8 +381,8 @@
     "no_external_ai": true
   },
   "audit": {
-    "id": "demo-audit",
-    "claim_id": "demo-claim-1",
+    "id": "SYN-demo-audit",
+    "claim_id": "SYN-demo-claim-1",
     "policy_id": "synthetic-policy",
     "policy_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "calculation": {
@@ -420,60 +420,60 @@
           "agent": "eligibility",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "tariff",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "contract",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "exclusion",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "caps",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "cost_sharing",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "duplicates",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         },
         {
           "agent": "evidence",
           "status": "pass",
           "reason": "Synthetic fixture — not a production result",
-          "reference": "demo-document"
+          "reference": "SYN-demo-document"
         }
       ]
     }
   },
   "case": {
-    "id": "demo-case",
-    "claim_id": "demo-claim-1",
-    "audit_snapshot_id": "demo-audit",
+    "id": "SYN-demo-case",
+    "claim_id": "SYN-demo-claim-1",
+    "audit_snapshot_id": "SYN-demo-audit",
     "events": [
       {
-        "id": "demo-event",
+        "id": "SYN-demo-event",
         "version": 1,
         "kind": "propose",
         "actor_id": "synthetic-reviewer",

@@ -20,6 +20,9 @@ app = FastAPI(
     openapi_url=None if os.environ.get("MCIAS_ENVIRONMENT") == "production" else "/openapi.json",
 )
 
+from mcias.rate_limits import rate_limit_middleware
+app.middleware("http")(rate_limit_middleware)
+
 @app.middleware("http")
 async def secure_response_headers(request: Request, call_next):
     response = await call_next(request)
@@ -58,6 +61,9 @@ def get_db(settings: Settings = Depends(get_settings)):
             yield session
     finally:
         engine.dispose()
+
+def get_rate_limit_db():
+    yield from get_db(get_settings())
 
 @app.get("/health/live")
 def live():
@@ -182,3 +188,6 @@ from mcias.workspace_api import router as workspace_api_router
 app.include_router(workspace_api_router)
 from mcias.workspace_web import router as workspace_web_router
 app.include_router(workspace_web_router)
+
+from mcias.retention_api import router as retention_router
+app.include_router(retention_router)

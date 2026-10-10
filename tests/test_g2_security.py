@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.usefixtures("limiter_database")
 """ReaderAgent boundary and security regressions."""
 import io
 import zipfile
