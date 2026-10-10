@@ -198,6 +198,7 @@ def _source_rows(db, actor, report_ids):
 
 def create_run(db, actor, kind, report_ids, parameters=None, task_id=None):
     _authorize(db, actor, "intelligence.run")
+    _authorize(db, actor, "reports.read")
     if kind not in BUILTIN_KINDS or type(parameters) is not dict:
         raise IntelligenceBlocked("unsupported analysis request")
     if kind != "signals" and task_id is not None:
