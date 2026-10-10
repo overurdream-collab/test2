@@ -34,7 +34,11 @@ def fixture():
                        "diagnosis": "synthetic-test-only"},
         source_locator={"kind":"sheet", "row": 7})
     snap = SimpleNamespace(id="s1", organization_id="org1", claim_id="c1",
-        created_at=T, calculation=calc, verification={"status":"verified"})
+        created_at=T, calculation=calc,
+        findings={"agents":[{"agent":agent,"status":"pass"} for agent in
+            ("eligibility","tariff","contract","exclusion","caps",
+             "cost_sharing","duplicates","evidence")]},
+        verification={"status":"verified"})
     case = SimpleNamespace(id="g1", organization_id="org1", claim_id="c1",
         audit_snapshot_id="s1", created_at=T)
     event = SimpleNamespace(id="e2", organization_id="org1", case_id="g1",
@@ -180,3 +184,23 @@ def test_t18_arabic_rtl_workbook_preserves_literal_originals():
     assert raw.cell(2, names["raw_identifier"]).value == "0012300"
     assert raw.cell(2, names["raw_formula"]).value == "=SUM(1,2)"
     assert raw.cell(2, names["raw_formula"]).data_type == "s"
+
+def test_t20_forged_verification_without_all_eight_agents_is_held():
+    batch, claim, snap, case, event = fixture()
+    snap.findings = {"agents":[{"agent":"eligibility","status":"pass"}]}
+    dataset, summary = freeze_batch(batch,[claim],[snap],[case],[event])
+    assert dataset["rows"][0]["state"] == "held"
+    assert summary["by_currency"]["YER"]["payable"] == "0"
+
+def test_t20_forged_total_deduction_with_matching_checksum_is_held():
+    import json
+    from hashlib import sha256
+    batch, claim, snap, case, event = fixture()
+    calc = {**snap.calculation,"total_deduction":"0.00"}
+    payload = {k:v for k,v in calc.items() if k!="fingerprint"}
+    calc["fingerprint"] = sha256(json.dumps(
+        payload,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    snap.calculation = calc
+    dataset, summary = freeze_batch(batch,[claim],[snap],[case],[event])
+    assert dataset["rows"][0]["state"] == "held"
+    assert summary["by_currency"]["YER"]["payable"] == "0"
