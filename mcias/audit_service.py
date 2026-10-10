@@ -43,8 +43,10 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
         raise PolicyBlocked('authorization must match active institutional registry')
     # Re-check durable institutional authorization on every execution,
     # including after a policy grant has been revoked.
-    resolve_grant(db,organization_id=actor.organization_id,
+    registered_grant=resolve_grant(db,organization_id=actor.organization_id,
         policy_fingerprint=fingerprint_policy(policy),policy_id=policy.policy_id)
+    if registered_grant != verified_authorization:
+        raise PolicyBlocked('institutional policy grant mismatch')
     claim=db.scalar(select(ClaimEntry).where(ClaimEntry.id==claim_id,
         ClaimEntry.organization_id==actor.organization_id))
     if claim is None:
