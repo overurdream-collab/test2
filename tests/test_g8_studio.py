@@ -53,7 +53,7 @@ def test_t19_draft_never_activates_without_internal_test_and_independent_review(
     assert evidence.evidence["test_digest"]
     with pytest.raises(IntelligenceBlocked,match="independent"):
         svc.activate_task(db,tester,task.id)
-    with pytest.raises(IntelligenceBlocked,match="T19"):
+    with pytest.raises(IntelligenceBlocked,match="only draft"):
         svc.test_task(db,tester,task.id)
     event=svc.activate_task(db,reviewer,task.id)
     assert event.kind=="activated" and event.version==2
@@ -71,8 +71,10 @@ def test_t19_tampered_evidence_never_enables_run(database,monkeypatch):
     monkeypatch.setattr(svc,"has_permission",lambda *_:True)
     task=svc.create_task(db,creator,"provider_signal",cfg())
     evidence=svc.test_task(db,tester,task.id)
-    # Simulate a corrupt historical JSON payload outside ORM; activation rechecks digest.
-    evidence.evidence={**evidence.evidence,"test_digest":"0"*64}
+    # Simulate a forged read result without attempting a prohibited ORM UPDATE.
+    forged=SimpleNamespace(**{**vars(evidence),
+        "evidence":{**evidence.evidence,"test_digest":"0"*64}})
+    monkeypatch.setattr(svc,"_last_event",lambda *_:forged)
     with pytest.raises(IntelligenceBlocked,match="evidence mismatch"):
         svc.activate_task(db,reviewer,task.id)
     db.rollback()
