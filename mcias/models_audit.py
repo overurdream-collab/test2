@@ -22,3 +22,6 @@ class AuditSnapshot(Base):
 @event.listens_for(AuditSnapshot,"before_delete")
 def immutable_snapshot(*args):
     raise ValueError("audit snapshots are immutable")
+
+# Register institutional policy grant mapping for G5 migrations and service use.
+from mcias.models_audit_policy import AuditPolicyGrant  # noqa: F401
