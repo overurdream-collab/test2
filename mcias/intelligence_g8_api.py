@@ -10,6 +10,7 @@ from mcias.app import get_db
 from mcias.auth import resolve_user
 from mcias.tenant import require_organization
 from mcias.models_g8 import AnalysisTaskVersion, AnalysisTaskEvent, AnalysisRun
+from mcias.intelligence_review_g8 import add_review, reviews_summary
 from mcias.intelligence_g8 import IntelligenceBlocked, SOURCE, DIMENSIONS, INDICATORS
 from mcias.intelligence_service_g8 import (
     create_task, test_task, activate_task, deactivate_task, task_status,
@@ -171,3 +172,28 @@ def run_detail(run_id: str, authorization: str | None = Header(default=None),
     if run is None:
         raise HTTPException(404, "analysis result not found")
     return _execute(db, lambda: _run_details(run) if verify_run(run) else None)
+
+class ReviewRequest(BaseModel):
+    disposition: Literal["false_positive", "needs_followup", "insufficient_evidence"]
+    reason_code: Literal["DATA_QUALITY", "CONTEXT_EXPLAINS", "NOT_REPRODUCIBLE",
+                         "NEEDS_SOURCE_REVIEW", "NEEDS_POLICY_REVIEW", "OTHER_REVIEW"]
+
+@router.post("/runs/{run_id}/signals/{signal_index}/reviews", status_code=201)
+def review_signal(run_id: str, signal_index: int, body: ReviewRequest,
+                  authorization: str | None = Header(default=None),
+                  db: Session = Depends(get_db)):
+    actor = _actor(db, authorization, "intelligence.review")
+    def operation():
+        review = add_review(db, actor, run_id, signal_index,
+                            body.disposition, body.reason_code)
+        return {"id": review.id, "run_id": review.run_id,
+                "signal_index": review.signal_index, "version": review.version,
+                "disposition": review.disposition,
+                "evidence": review.evidence}
+    return _execute(db, operation)
+
+@router.get("/runs/{run_id}/review-summary")
+def signal_review_summary(run_id: str, authorization: str | None = Header(default=None),
+                          db: Session = Depends(get_db)):
+    actor = _actor(db, authorization, "intelligence.read")
+    return _execute(db, lambda: reviews_summary(db, actor, run_id))
