@@ -41,7 +41,10 @@ def append_event(db,actor,case_id,kind,payload,*,evidence_document_id=None):
         if actor.id==case.opened_by or (latest and actor.id==latest.actor_id):
             raise GovernanceBlocked("separation of duties: self approval prohibited")
         snap=db.get(AuditSnapshot,case.audit_snapshot_id)
-        if snap.calculation.get("status")!="calculated" or snap.verification.get("status")!="verified":
+        if (snap is None or snap.organization_id!=case.organization_id
+            or snap.claim_id!=case.claim_id
+            or snap.calculation.get("status")!="calculated"
+            or snap.verification.get("status")!="verified"):
             raise GovernanceBlocked("held or unverified items cannot be approved")
         if latest is None or latest.kind not in {"propose","hold"}:
             raise GovernanceBlocked("proposal required before approval")
