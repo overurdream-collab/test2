@@ -3,6 +3,8 @@ from io import BytesIO
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from typing import Literal
+from mcias.report_pdf_ar_g7 import render_arabic_pdf
 from sqlalchemy.orm import Session
 from mcias.app import get_db
 from mcias.auth import resolve_user
@@ -81,12 +83,13 @@ def download_excel(report_id: str, include_originals: bool = Query(False),
                  "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 @router.get("/snapshots/{report_id}/pdf")
-def download_pdf(report_id: str, authorization: str | None = Header(default=None),
+def download_pdf(report_id: str, lang: Literal["ar", "en"] = Query("ar"),
+                 authorization: str | None = Header(default=None),
                  db: Session = Depends(get_db)):
     actor = _actor(db, authorization, "reports.export")
     report = _report(db, actor, report_id)
     try:
-        data = render_pdf(report)
+        data = render_arabic_pdf(report) if lang == "ar" else render_pdf(report)
     except ReportBlocked as exc:
         raise HTTPException(409, str(exc)) from exc
     return StreamingResponse(BytesIO(data), media_type="application/pdf",
