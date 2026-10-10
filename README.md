@@ -17,3 +17,16 @@ See `docs/IMPLEMENTATION_PLAN.md` for acceptance gates and policy blockers.
 ## G5 → G6 → G7 implementation track
 
 See `docs/G5_G6_G7_ENGINEERING_HANDOFF.md` and `docs/G7_IMPLEMENTATION.md`. Generate only synthetic or institution-authorized development reports. The `/api/v1/reports` endpoints are permission-gated, and original medical columns are denied without individual field permissions. This branch is not a production deployment.
+
+## G7 browser quick start (engineering)
+
+```bash
+python -m pip install -e '.[test]'
+# Configure a local PostgreSQL URL and service credentials, then:
+alembic upgrade head
+uvicorn mcias.app:app --host 127.0.0.1 --port 8000
+```
+
+Go to **http://127.0.0.1:8000/ui/reports**. The right-to-left dashboard requires authenticated institutional users; no sample passwords or synthetic payouts are preloaded. Reports, redacted claim drilldown, the Arabic Excel/PDF exports and beneficiary statements are gated by server permissions. PDF typography requires a locally installed Arabic TTF (optional `MCIAS_ARABIC_FONT_PATH`). **No production enablement** until official gate signoff.
+
+G7 tests: `python -m pytest -q tests/test_g7_reporting.py tests/test_g7_web.py tests/test_g7_integration.py`. Run the PostgreSQL integration suite using `MCIAS_TEST_DATABASE_URL` and GitHub Actions for exact evidence.
