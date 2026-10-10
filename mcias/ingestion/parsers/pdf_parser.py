@@ -17,7 +17,9 @@ def parse(data: bytes) -> Extraction:
             text = page.extract_text() or ""
         except Exception:
             text = ""
-        if not text.strip():
+        if len(text) > 2_000_000:
+            result.quarantined.append(item("page text exceeds limit", "page", index))
+        elif not text.strip():
             result.quarantined.append(item("unreadable or scanned page", "page", index))
         else:
             result.records.append(ExtractedRecord(Locator("page", index), {"text": text}))
