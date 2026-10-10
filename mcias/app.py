@@ -29,7 +29,7 @@ async def secure_response_headers(request: Request, call_next):
     else:
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
     if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/",
-                                        "/api/v1/report-explorer/", "/ui/reports")):
+                                        "/api/v1/report-explorer/", "/api/v1/intelligence/", "/ui/reports")):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response
@@ -162,3 +162,6 @@ app.include_router(reporting_g7_explorer_router)
 
 from mcias.report_web_g7 import router as report_web_g7_router
 app.include_router(report_web_g7_router)
+
+from mcias.intelligence_g8_api import router as intelligence_g8_router
+app.include_router(intelligence_g8_router)
