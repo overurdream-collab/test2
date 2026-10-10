@@ -44,7 +44,8 @@ def test_g9_benchmark_only_synthetic_deterministic_and_no_institutional_sla():
 def test_g9_release_candidate_copies_only_known_artifacts(tmp_path):
     source=tmp_path/"repo"
     for name in ("deploy/Dockerfile","deploy/nginx.conf","deploy/compose.g9.yml",
-                 "docs/G9_RELEASE.md","docs/G0_G8_ACCEPTANCE_TRACKER.md",
+                 "docs/G9_RELEASE.md","docs/G9_OPERATOR_TRAINING_AR.md",
+                 "docs/G9_DISASTER_RECOVERY_AR.md","docs/G0_G9_ACCEPTANCE_TRACKER.md",
                  "GATE_STATUS.md"):
         f=source/name
         f.parent.mkdir(parents=True,exist_ok=True)
@@ -57,7 +58,7 @@ def test_g9_release_candidate_copies_only_known_artifacts(tmp_path):
     head="c"*40
     result=build(source,output,wheels,head)
     assert result["acceptance"]=="OPEN_NOT_AUTHORIZED_FOR_PRODUCTION"
-    assert len(result["artifacts"])==8
+    assert len(result["artifacts"])==10
     assert verify(output)==result
     assert not (output/".env").exists()
     assert not (output/"deploy/private").exists()
