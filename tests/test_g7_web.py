@@ -65,7 +65,7 @@ def test_g7_redacted_drilldown_never_returns_source_or_beneficiary(monkeypatch):
                         lambda *a,**kw:SimpleNamespace(id="user",organization_id="o1"))
     monkeypatch.setattr(explorer,"require_organization",lambda *a,**kw:True)
     db=MagicMock();db.get.return_value=mock_report()
-    result=explorer.entries("r1",limit=10,offset=0,db=db)
+    result=explorer.entries("r1",state=None,currency=None,limit=10,offset=0,db=db)
     assert result["total"]==1
     row=result["items"][0]
     assert row["claimed"]=="100"
@@ -79,7 +79,7 @@ def test_g7_explorer_rejects_cross_organization(monkeypatch):
     monkeypatch.setattr(explorer,"require_organization",lambda *a,**kw:True)
     db=MagicMock();db.get.return_value=mock_report(org="o2")
     with pytest.raises(HTTPException) as error:
-        explorer.entries("r1",limit=10,offset=0,db=db)
+        explorer.entries("r1",state=None,currency=None,limit=10,offset=0,db=db)
     assert error.value.status_code==404
 
 def test_g7_explorer_rejects_tampered_snapshot(monkeypatch):
@@ -90,7 +90,7 @@ def test_g7_explorer_rejects_tampered_snapshot(monkeypatch):
     report.dataset["rows"][0]["claimed"]="999"
     db=MagicMock();db.get.return_value=report
     with pytest.raises(HTTPException) as error:
-        explorer.entries("r1",limit=10,offset=0,db=db)
+        explorer.entries("r1",state=None,currency=None,limit=10,offset=0,db=db)
     assert error.value.status_code==409
 
 def test_g7_local_arabic_font_fails_closed(monkeypatch):
