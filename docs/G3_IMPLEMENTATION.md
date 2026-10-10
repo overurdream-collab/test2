@@ -1,20 +1,26 @@
-# G3 — Reference implementation and acceptance
+# G3 — Reference management implementation and acceptance evidence
 
-## Implemented
-- PostgreSQL/Alembic 0007 for versioned contracts, provider tariffs, beneficiary categories and enrollment intervals.
-- Half-open effective date intervals `[effective_from, effective_until)` and nonnegative NUMERIC tariffs.
-- T04: reject overlapping approved contracts for the same organization/provider.
-- T05: identify retroactive proposed contracts and affected approved contract IDs; never silently overwrite.
-- Draft-to-approved transition requires independently approved written authorization and explicit contract precedence decision. Historical retroactive contracts remain blocked pending documented human impact review.
-- ORM immutability checks for approved contracts and approved tariffs; source of truth remains versioned.
-- Tenant-checked reference lookup and impact read APIs; synthetic T04/T05 regression tests.
+## Executable scope
+- Contract versions and effective periods; provider tariffs with NUMERIC(18,4) and strict currency validation.
+- Beneficiary categories and effective-date enrollments with tenant-scoped eligibility.
+- Migration 0007 reference schema and migration 0008 PostgreSQL GiST exclusion constraints, immutable approved contract/tariff triggers, and cross-tenant enrollment guard.
+- G3 lifecycle endpoints: create draft, attach written authorization, add tariffs, CSV preview/atomic import, create category/enrollment, eligibility, impact analysis, independent precedence/impact reviews, approval, and active-contract lookup.
+- T04 rejects approved overlapping provider contract periods at service and database levels, including concurrent transactions.
+- T05 reports retroactivity and conflicting contract versions; no historical financial adjustment is made. Retroactive non-overlapping contracts need a separate recorded reviewer before activation.
+- Written authorization must come from a distinct, active same-tenant approver; production requires the G1 Ed25519 head-of-organization registry. Precedence policy review must be documented by a separate actor. Approval requires another actor and full RBAC.
+- Approved contracts and tariffs are immutable, revisions are new versions, and all privileged actions generate audit events.
+- CSV tariff import validates every row and either applies all rows atomically or none; original import bytes are not persisted by this reference API. Source-file provenance for approved tariffs must be supplied via the governed G2 pipeline when required by local policy.
 
-## Mandatory unresolved production decisions
-- **BLOCKED:** exact contract precedence across national rules, provider-specific tariffs, exceptions, categories, and effective periods requires documented authorized business decision.
-- **BLOCKED:** historical financial impact of retroactive tariffs cannot be computed until claim matching and deterministic financial engine exist. G3 only identifies affected contract versions.
-- **BLOCKED:** independent head-of-organization approval workflow must be linked to the existing G1 signed external authorization registry and reviewed in a real deployment.
-- **BLOCKED:** human signoff of G1/G2 prerequisite gates is not evidenced; G3 branch is preparatory and remains OPEN.
-- Beneficiary enrollment conflict validation, versioned category governance and performance/negative API tests remain required before G3 acceptance.
+## Production policy blockers
+- A real organization must adopt and sign its own contract precedence policy. Software intentionally does not invent legal/financial precedence.
+- A real written authorization with valid signature, organization head trust registry, and local permissions must be provisioned before production approval.
+- Final monetary impact of retroactive reference changes requires G4/G5 claims and deterministic financial engine; G3 only identifies affected contract versions and requires explicit review.
+- Gate signoff cannot be self-approved by an AI coding agent; G1/G2 acceptance and human G3 review remain prerequisites.
 
-## Evidence
-GitHub branch `feat/g3-reference`; draft PR #3. CI results must be checked against the exact head commit; do not infer acceptance from a passing test suite.
+## Acceptance checks
+- Run `python -m pytest -q` on G3 branch.
+- Run PostgreSQL integration and restore drill against Alembic head `0008_g3_guards`.
+- Run `tests/test_g3_reference.py`, `tests/test_g3_lifecycle.py`, `tests/test_g3_postgres_guards.py`, `tests/test_g3_api_security.py`, and `tests/test_g3_tariff_import.py`.
+- Record CI run, exact head SHA, outcome, approved policy and signoff in gate evidence. A passing CI alone does not mean production accepted.
+
+G3 is a functional implementation candidate; its gate remains OPEN pending external policy, real deployment verification, and human signoff.
