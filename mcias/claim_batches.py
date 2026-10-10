@@ -67,7 +67,7 @@ def preview(db,actor,batch_id,limit=100,offset=0):
 def resume(db,actor,batch_id,chunk_size=100):
     if not actor.active or not actor.organization_id:
         raise BatchConflict("active organization required")
-    batch=db.get(ClaimBatch,batch_id,with_for_update=True)
+    batch=db.scalar(select(ClaimBatch).where(ClaimBatch.id==batch_id, ClaimBatch.organization_id==actor.organization_id).with_for_update())
     if batch is None or batch.organization_id!=actor.organization_id:
         raise BatchConflict("batch not accessible")
     if batch.status=="imported":
@@ -87,6 +87,9 @@ def resume(db,actor,batch_id,chunk_size=100):
     if len(records)!=batch.record_count:
         raise BatchConflict("source record count changed")
     already=set(db.scalars(select(ClaimEntry.extracted_record_id).where(ClaimEntry.batch_id==batch.id)).all())
+    if chunk_size<=0 or chunk_size>1000:
+        raise BatchConflict("invalid chunk size")
+    accepted=0
     rejected=[]
     for record in records:
         if record.id in already:
@@ -96,15 +99,15 @@ def resume(db,actor,batch_id,chunk_size=100):
         except ClaimValidationError as exc:
             rejected.append({"record_id":record.id,"locator":record.locator,"reason":str(exc)})
             continue
-        if chunk_size<=0 or chunk_size>1000:
-            raise BatchConflict("invalid chunk size")
+        if accepted>=chunk_size:
+            break
+        accepted+=1
         db.add(ClaimEntry(organization_id=actor.organization_id,batch_id=batch.id,
             extracted_record_id=record.id,source_locator=record.locator,source_values=record.values,**values))
         batch.imported_count+=1
-        if batch.imported_count%chunk_size==0:
-            batch.status="importing"
-            db.commit()
-    batch.status="review_required" if rejected else "imported"
+    db.flush()
+    batch.imported_count=db.scalar(select(func.count()).select_from(ClaimEntry).where(ClaimEntry.batch_id==batch.id))
+    batch.status="review_required" if rejected else ("imported" if batch.imported_count==batch.record_count else "importing")
     db.add(AuditLog(actor_id=actor.id,action="claim_batch_resumed",resource_type="claim_batch",
         resource_id=batch.id,details={"imported":batch.imported_count,"rejected_count":len(rejected),
                                        "status":batch.status}))
