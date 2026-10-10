@@ -33,7 +33,7 @@ def test_g9_benchmark_only_synthetic_deterministic_and_no_institutional_sla():
     assert first["worst_elapsed_ms"]>=0
     assert first["production_performance_accepted"] is False
     assert first["threshold_status"]=="NO_INSTITUTION_APPROVED_SLA"
-    assert "patient" not in str(first["dataset"])
+    assert first["dataset"] == "synthetic_only_no_patient_data"
     for bad in (0,1,10001):
         with pytest.raises(ValueError):
             fake_rows(bad)
