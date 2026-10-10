@@ -26,6 +26,8 @@ def parse(data: bytes) -> Extraction:
                 continue
             for row_index, values in enumerate(iterator, start=2):
                 result.units_total += 1
+                if result.units_total > 100_000:
+                    raise ValueError("spreadsheet row limit exceeded")
                 if any(cell is not None and getattr(cell, "data_type", None) == "f" for cell in values):
                     result.quarantined.append(item("formula cell", "row", row_index))
                     continue
