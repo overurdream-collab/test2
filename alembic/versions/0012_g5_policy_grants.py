@@ -10,7 +10,7 @@ def upgrade():
     op.create_index('ix_g5_policy_grant_tenant','audit_policy_grants',['organization_id'])
 
     op.execute("""
-    CREATE FUNCTION mcias_g5_grant_guard() RETURNS trigger AS $
+    CREATE FUNCTION mcias_g5_grant_guard() RETURNS trigger AS $body$
     BEGIN
       IF TG_OP = 'DELETE' THEN
         RAISE EXCEPTION 'approval history cannot be deleted';
@@ -32,7 +32,7 @@ def upgrade():
         RAISE EXCEPTION 'signers must be active in the same organization';
       END IF;
       RETURN NEW;
-    END; $ LANGUAGE plpgsql
+    END; $body$ LANGUAGE plpgsql
     """)
     op.execute("CREATE TRIGGER trg_g5_grant_guard BEFORE INSERT OR UPDATE OR DELETE ON audit_policy_grants FOR EACH ROW EXECUTE FUNCTION mcias_g5_grant_guard()")
 
