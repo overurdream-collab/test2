@@ -91,3 +91,7 @@ pending institutional approval.
 ## Bilingual policy and external acceptance pack
 
 [العربية](docs/ACCEPTANCE_PACK_INDEX.md) · [English](docs/ACCEPTANCE_PACK_INDEX_EN.md): 13 proposed financial decisions, deployment checks, external test/report templates, UAT and independent penetration-test scope. All external results/signatures remain unexecuted; these documents do not authorize production.
+
+## Windows 11 / 8 GB synthetic laptop profile
+
+[العربية](docs/WINDOWS_LAPTOP_GUIDE.md) · [English](docs/WINDOWS_LAPTOP_GUIDE_EN.md). Docker Desktop Linux/WSL2 runs PostgreSQL plus one API worker; PowerShell initializes fresh local keys and separate MFA test accounts. Loopback synthetic testing only, with explicit database/runtime separation and no production financial approval.
