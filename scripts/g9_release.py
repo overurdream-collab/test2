@@ -16,7 +16,9 @@ ALLOWED_REPO_FILES = (
     "deploy/nginx.conf",
     "deploy/compose.g9.yml",
     "docs/G9_RELEASE.md",
-    "docs/G0_G8_ACCEPTANCE_TRACKER.md",
+    "docs/G9_OPERATOR_TRAINING_AR.md",
+    "docs/G9_DISASTER_RECOVERY_AR.md",
+    "docs/G0_G9_ACCEPTANCE_TRACKER.md",
     "GATE_STATUS.md",
 )
 
