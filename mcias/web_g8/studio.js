@@ -234,7 +234,7 @@
       ". تنبيه إحصائي وليس تشخيصاً أو اتهاماً. يجب فحص الإيجابيات الكاذبة.","g8-note"));
     area.append(panel);
     if(!out.findings.length)area.append(el("div","لم تظهر إشارات تتجاوز العتبة والعينة المطلوبة. هذا لا يعني غياب المخاطر.","empty-state"));
-    for(const signal of out.findings){
+    for(const [index,signal] of out.findings.entries()){
       const item=el("article",null,"panel g8-signal"),
             head=el("div",null,"g8-result-head");
       head.append(el("h3",(dimensions[signal.dimension]||signal.dimension)+" : "+
@@ -252,8 +252,56 @@
         const block=el("div");
         block.append(el("dt",label),el("dd",val));dl.append(block);
       }
-      item.append(dl);area.append(item);
+      item.append(dl);
+      const form=el("form",null,"g8-inline-form");
+      const state=el("select");
+      for(const [code,label] of [
+        ["needs_followup","تحتاج متابعة"],
+        ["false_positive","إشارة غير صحيحة بعد المراجعة"],
+        ["insufficient_evidence","أدلة غير كافية"]
+      ]) {
+        const option=el("option",label);option.value=code;state.append(option);
+      }
+      const reason=el("select");
+      for(const [code,label] of [
+        ["NEEDS_SOURCE_REVIEW","مراجعة المصدر"],
+        ["DATA_QUALITY","جودة البيانات"],
+        ["CONTEXT_EXPLAINS","السياق يفسر الإشارة"],
+        ["NOT_REPRODUCIBLE","غير قابلة للتكرار"],
+        ["NEEDS_POLICY_REVIEW","مراجعة السياسة"],
+        ["OTHER_REVIEW","مراجعة أخرى"]
+      ]) {
+        const option=el("option",label);option.value=code;reason.append(option);
+      }
+      const button=el("button","تسجيل مراجعة مستقلة","btn btn-outline g8-small-button");
+      button.type="submit";
+      form.append(state,reason,button);
+      form.addEventListener("submit",async event=>{
+        event.preventDefault();button.disabled=true;
+        try{
+          await api("/api/v1/intelligence/runs/"+encodeURIComponent(run.id)+
+            "/signals/"+index+"/reviews",
+            {disposition:state.value,reason_code:reason.value},"POST");
+          warn("تم تسجيل المراجعة كحدث جديد؛ الإصدار القديم لم يتغير.");
+          await loadReviewSummary(run.id,panel);
+        }catch(error){warn(error.message,true);}
+        finally{button.disabled=false;}
+      });
+      item.append(form);area.append(item);
     }
+    void loadReviewSummary(run.id,panel);
+  }
+  async function loadReviewSummary(runId,panel){
+    try{
+      const item=await api("/api/v1/intelligence/runs/"+encodeURIComponent(runId)+"/review-summary");
+      const denominator=item.reviewed_signals;
+      const ratio=item.false_positive_rate_among_reviewed;
+      let title=panel.querySelector(".g8-feedback-summary");
+      if(!title){title=el("p",null,"g8-note g8-feedback-summary");panel.append(title);}
+      title.textContent="المراجعات المستقلة: "+denominator+" / "+item.signal_count+
+        "؛ الإشارات الإيجابية الكاذبة: "+item.by_disposition.false_positive+
+        "؛ نسبتها من المراجَعة فقط: "+(ratio===null?"غير محددة":brief(ratio,8)+"%");
+    }catch(_error){/* review metrics require separate read permission */}
   }
   function renderScenario(run){
     const area=empty("simulationOutput"),out=run.result.output;
