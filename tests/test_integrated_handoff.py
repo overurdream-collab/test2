@@ -54,3 +54,36 @@ def test_handoff_rejects_committed_private_key(checkout):
     with pytest.raises(ReleaseBlocked,match='forbidden'):
         package(root,wheels,output)
     assert not output.exists()
+
+
+def test_handoff_accepts_only_reviewed_public_synthetic_fixture(checkout):
+    from pathlib import Path
+    root,wheels,output=checkout
+    source=Path(__file__).resolve().parents[1]/'mcias/seed/data/workspace-v1.json'
+    target=root/'mcias/seed/data/workspace-v1.json';target.parent.mkdir(parents=True)
+    target.write_bytes(source.read_bytes())
+    subprocess.run(['git','add','.'],cwd=root,check=True)
+    subprocess.run(['git','-c','user.name=Synthetic','-c','user.email=synthetic@example.invalid','commit','-qm','public fixture'],cwd=root,check=True)
+    package(root,wheels,output)
+    with tarfile.open(output/'mcias-source.tar.gz') as archive:
+        assert 'mcias/mcias/seed/data/workspace-v1.json' in archive.getnames()
+
+
+def test_handoff_rejects_unreviewed_public_fixture_content(checkout):
+    root,wheels,output=checkout
+    target=root/'mcias/seed/data/workspace-v1.json';target.parent.mkdir(parents=True)
+    target.write_text('{"private":"SYNTHETIC_UNREVIEWED"}')
+    subprocess.run(['git','add','.'],cwd=root,check=True)
+    subprocess.run(['git','-c','user.name=Synthetic','-c','user.email=synthetic@example.invalid','commit','-qm','unreviewed fixture'],cwd=root,check=True)
+    with pytest.raises(ReleaseBlocked,match='hash review'):
+        package(root,wheels,output)
+
+
+def test_handoff_still_rejects_other_data_paths(checkout):
+    root,wheels,output=checkout
+    target=root/'data/client.json';target.parent.mkdir(parents=True)
+    target.write_text('SYNTHETIC_PRIVATE_TEST')
+    subprocess.run(['git','add','.'],cwd=root,check=True)
+    subprocess.run(['git','-c','user.name=Synthetic','-c','user.email=synthetic@example.invalid','commit','-qm','private fixture'],cwd=root,check=True)
+    with pytest.raises(ReleaseBlocked,match='forbidden'):
+        package(root,wheels,output)

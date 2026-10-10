@@ -23,6 +23,9 @@ def digest(path):
     return result.hexdigest()
 
 
+PUBLIC_SYNTHETIC_FIXTURES = {"mcias/seed/data/workspace-v1.json": "f1275a62d82a2e8cc19c3c1d0185fa47f415f91784c5e338f4ebb94236cce510"}
+
+
 def package(root, wheels, output):
     root = root.resolve()
     if subprocess.check_output(['git','status','--porcelain'],cwd=root,text=True).strip():
@@ -30,6 +33,11 @@ def package(root, wheels, output):
     sha = subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
     names = subprocess.check_output(['git','ls-tree','-r','--name-only',sha],cwd=root,text=True).splitlines()
     for name in names:
+        if name in PUBLIC_SYNTHETIC_FIXTURES:
+            content = subprocess.check_output(["git", "show", sha + ":" + name], cwd=root)
+            if hashlib.sha256(content).hexdigest() != PUBLIC_SYNTHETIC_FIXTURES[name]:
+                raise ReleaseBlocked("Public synthetic fixture changed without hash review")
+            continue
         path = Path(name.lower())
         if (name.lower().endswith(('.key','.pem','.p12','.pfx'))
             or any(part in {'private','uploads','backups','data','.e2e-output','node_modules'} for part in path.parts)
