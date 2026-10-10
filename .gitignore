@@ -10,3 +10,12 @@ __pycache__/
 uploads/
 backups/
 data/
+
+# G9 non-source institutional material and generated release artifacts
+dist/
+deploy/private/
+*.key
+*.p12
+*.pfx
+*.pem
+RECEIPT.json
