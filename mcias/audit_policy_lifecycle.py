@@ -17,6 +17,8 @@ def enroll_grant(db, *, actor, organization_id, policy_id, policy_fingerprint,
     if (approver is None or reviewer is None or approver.id==reviewer.id or not approver.active or not reviewer.active
         or approver.organization_id!=organization_id or reviewer.organization_id!=organization_id):
         raise PolicyBlocked("institutional signers invalid")
+    if not has_permission(db,reviewer,"policies.review"):
+        raise PolicyBlocked("independent policy reviewer permission required")
     try:
         verify_policy_authorization(organization_id=organization_id,
             policy_fingerprint=policy_fingerprint,approver_id=approver_id,
