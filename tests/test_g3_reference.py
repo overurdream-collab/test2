@@ -67,3 +67,26 @@ def test_approved_contract_immutable():
             db.commit()
         db.rollback()
     engine.dispose()
+
+def test_beneficiary_temporal_conflict_and_tenant_category():
+    from mcias.reference import validate_enrollment
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine) as db:
+        org1=Organization(name="org1")
+        org2=Organization(name="org2")
+        db.add_all([org1,org2]);db.flush()
+        category=BeneficiaryCategory(organization_id=org1.id,code="A",description="synthetic")
+        db.add(category);db.flush()
+        current=BeneficiaryEnrollment(organization_id=org1.id,beneficiary_token="opaque-token",
+            category_id=category.id,effective_from=date(2026,1,1),effective_until=date(2026,12,1))
+        db.add(current);db.commit()
+        overlap=BeneficiaryEnrollment(organization_id=org1.id,beneficiary_token="opaque-token",
+            category_id=category.id,effective_from=date(2026,6,1),effective_until=date(2027,1,1))
+        with pytest.raises(ReferenceConflict,match="overlapping"):
+            validate_enrollment(db,overlap)
+        wrong_tenant=BeneficiaryEnrollment(organization_id=org2.id,beneficiary_token="opaque-token",
+            category_id=category.id,effective_from=date(2027,1,1),effective_until=date(2028,1,1))
+        with pytest.raises(ReferenceConflict,match="same organization"):
+            validate_enrollment(db,wrong_tenant)
+    engine.dispose()
