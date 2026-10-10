@@ -53,7 +53,7 @@ def test_retroactive_requires_independent_review(db):
     org,actors,auth=setup_actors(db)
     writer,reviewer,precedence,activator=actors
     contract=create_draft(db,writer,"HOSP-B",date(2026,1,1),date(2027,1,1))
-    attach_authorization(db,writer,contract.id,auth.id)
+    attach_authorization(db,reviewer,contract.id,auth.id)
     approve_precedence_policy(db,precedence,contract.id,"Documented precedence rule for historical service dates")
     with pytest.raises(ReferenceConflict,match="retroactive"):
         approve_contract(db,contract.id,activator,date(2026,10,10),precedence_approved=True)
