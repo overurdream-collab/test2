@@ -20,4 +20,4 @@ where = ["."]
 include = ["mcias*"]
 
 [tool.setuptools.package-data]
-mcias = ["web_g7/*.html", "web_g7/*.css", "web_g7/*.js"]
+mcias = ["web_g7/*.html", "web_g7/*.css", "web_g7/*.js", "web_g8/*.html", "web_g8/*.css", "web_g8/*.js"]
