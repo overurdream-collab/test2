@@ -17,6 +17,8 @@ def parse(data: bytes) -> Extraction:
                 result.units_total += 1
                 result.quarantined.append(item("empty worksheet", "sheet", sheet_index))
                 continue
+            if len(header) > 256:
+                raise ValueError("worksheet column limit exceeded")
             names = [str(v.value).strip() if v.value is not None else "" for v in header]
             if not all(names) or len(names) != len(set(names)):
                 result.units_total += 1
