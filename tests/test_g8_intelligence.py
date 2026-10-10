@@ -162,3 +162,28 @@ def test_g8_frozen_aggregate_tampering_and_bad_original_amounts_denied():
     claims[cid].claimed_amount=Decimal("999")
     with pytest.raises(IntelligenceBlocked,match="provenance"):
         assemble([report],claims)
+
+def test_t15_k_anonymity_applies_to_summary_and_simulation_even_one_claim():
+    rows,_=normalized()
+    rare=rows[:1]
+    summary=aggregate(rare,"provider",5)
+    assert len(summary["groups"])==1
+    group=summary["groups"][0]
+    assert group["suppressed"] and group["count"]==1
+    assert group["claimed"] is None and group["payable"] is None
+    assert group["hold_rate_percent"] is None
+    hypothetical=simulate(rare,"25")
+    assert hypothetical["by_currency"]==[]  # this single synthetic claim is held
+    approved=[row for row in rows if row["state"]=="approved"][:1]
+    result=simulate(approved,"25")
+    assert result["by_currency"][0]["privacy_suppressed"] is True
+    assert result["by_currency"][0]["baseline_payable"] is None
+    assert result["by_currency"][0]["hypothetical_payable"] is None
+
+def test_t15_malformed_configuration_types_fail_closed():
+    for dimension in ({}, [], 1):
+        with pytest.raises(IntelligenceBlocked):
+            validate_config({**configuration(),"dimension":dimension})
+    for metric in ({}, [], 1):
+        with pytest.raises(IntelligenceBlocked):
+            validate_config({**configuration(),"indicator":metric})
