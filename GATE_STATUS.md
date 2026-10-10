@@ -9,9 +9,9 @@ Updated: 2026-10-10. Repository: overurdream-collab/test2.
 | G2 Ingestion | NOT STARTED | ReaderAgent, provenance, quarantine, Palermo-1 | T01–T03 + coverage/OCR | None | Pending |
 | G3 Reference | NOT STARTED | contracts, prices, beneficiaries, temporal versions | T04–T05 | None | Pending |
 | G4 Claims | NOT STARTED | batches, attachments, linkage, missing evidence | T09, T16 + volume | None | Pending |
-| G5 Audit Engine | NOT STARTED | rule engine, 8 agents, Palermo-2 | T08, T09 + reconciliation | None | Pending |
-| G6 Governance | NOT STARTED | approvals, objections, selective re-audit | T10–T12 + separation of duties | None | Pending |
-| G7 Reporting | NOT STARTED | Excel/PDF, dashboard, statements | T13, T18, T20 + reconciliation | None | Pending |
+| G5 Audit Engine | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | rule engine, 8 agents, Palermo-2 | T08, T09 + reconciliation | None | Pending |
+| G6 Governance | ENGINEERING VERIFIED — OPEN / NOT ACCEPTED | approvals, objections, selective re-audit | T10–T12 + separation of duties | None | Pending |
+| G7 Reporting | ENGINEERING IMPLEMENTED IN PART — OPEN / NOT ACCEPTED | Excel/PDF, dashboard, statements | T13, T18, T20 + reconciliation | None | Pending |
 | G8 Intelligence | NOT STARTED | analytics, anomalies, simulations, Analysis Studio | T14, T15, T19 + false positives | None | Pending |
 | G9 Release | NOT STARTED | security, performance, restore, docs, training | full regression + human signature | None | Pending |
 
@@ -57,3 +57,11 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 - Negative tests reject missing trust registry, forged signature, mismatched rule binding and writable registry. API test confirms unsigned activation is denied and rule stays draft.
 - Off-host audit checkpoint signatures and tamper-detection tests are present; external audit sink and its custody are not deployed by CI.
 - **G1 technical acceptance remains OPEN** pending deployment tests of TLS, real head-key custody and authority, actual backup restore on target hardware, and independently controlled audit receipt. Human signoff remains deferred at user's request.
+
+
+## G5–G7 parallel engineering evidence (2026-10-10)
+- Feature branch: `feat/g5-g6-g7-reporting` built from `feat/g6-governance`. Latest recorded successful full three-job CI at commit `f37cb13f14347fc48c97f4a92d9db422cae8f02e`: https://github.com/overurdream-collab/test2/actions/runs/38058656908 (unit + PostgreSQL integration + dependency audit). Subsequent changes must be checked on their own SHA; CI passing on a prior SHA does not prove a later commit.
+- G5: hardened Palermo-2; existing signed policy registry; no policy default activation.
+- G6: granular permission checks and immutable re-audit links with objections. Institution-configurable approval stages and formal signoff are still OPEN.
+- G7: immutable snapshots, Excel/PDF synthetic reports, summary/dashboard API and protected statements; live RTL dashboard UI, approved reporting format, scaled workload and privacy review still OPEN.
+- **Engineering work is not production gate acceptance.** G0 policy pack, earlier gate signatures, reviewer evidence and human organizational authority remain blocking. No production finance rule enabled.
