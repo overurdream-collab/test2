@@ -43,6 +43,8 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
         raise ReferenceConflict("contract not accessible")
     if contract.status != "draft":
         raise ReferenceConflict("only draft contract may be approved")
+    if contract.created_by and contract.created_by == actor.id:
+        raise ReferenceConflict("proposal author cannot approve own contract")
     if not precedence_approved:
         raise ReferenceConflict("contract precedence decision is required")
     authorization = db.get(WrittenAuthorization, contract.authorization_id) if contract.authorization_id else None
@@ -61,7 +63,7 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
         AuditLog.resource_type == "contract_version",
         AuditLog.resource_id == contract.id)).all()
     precedence_reviews = [r for r in reviews if r.action == "contract_precedence_approved"
-                          and r.actor_id not in (actor.id, authorization.approved_by)]
+                          and r.actor_id not in (actor.id, authorization.approved_by, contract.created_by)]
     if not precedence_reviews:
         raise ReferenceConflict("independent documented contract precedence approval required")
     if impact["requires_human_review"]:
