@@ -2,6 +2,7 @@ name: Enterprise workspaces
 on:
   pull_request:
     paths:
+      - 'docs/MCIAS_MASTER_DESIGN_BASELINE*'
       - 'docs/ACCEPTANCE_PACK*'
       - 'docs/policies/**'
       - 'docs/DEPLOYMENT*'

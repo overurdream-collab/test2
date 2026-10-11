@@ -103,3 +103,7 @@ A status may change to ACCEPTED only after all criteria in docs/ACCEPTANCE_CONTR
 ## Acceptance handoff documents
 
 The [Arabic](docs/ACCEPTANCE_PACK_INDEX.md) / [English](docs/ACCEPTANCE_PACK_INDEX_EN.md) pack contains draft financial policies and unexecuted external acceptance plans. No gate status changes or institutional approval are implied.
+
+## Current consolidated engineering reference (2026-10-10)
+
+The [Arabic](docs/MCIAS_MASTER_DESIGN_BASELINE.md) / [English](docs/MCIAS_MASTER_DESIGN_BASELINE_EN.md) master baseline inventories current main at `5c8b63a209e4f44a8faaf9a38a05c81d92512dda`, merged through PR #15. All four main workflows / eight jobs passed at that SHA: [G1–G7](https://github.com/overurdream-collab/test2/actions/runs/38091229475), [G8](https://github.com/overurdream-collab/test2/actions/runs/38091229490), [G9](https://github.com/overurdream-collab/test2/actions/runs/38091229481), [Enterprise](https://github.com/overurdream-collab/test2/actions/runs/38091229496). Earlier branch/PR descriptions above are historical evidence, not the current merge state. Technical main integration was authorized by the repository owner and does not grant institutional acceptance or authorize real-data production. All formal gates remain OPEN / NOT_ACCEPTED; external UAT, penetration testing and institutional signatures remain unexecuted.

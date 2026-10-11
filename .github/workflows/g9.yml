@@ -4,6 +4,7 @@ on:
     branches: [main, feat/main-consolidation, feat/g9-release-hardening]
   pull_request:
     paths:
+      - 'docs/MCIAS_MASTER_DESIGN_BASELINE*'
       - 'docs/ACCEPTANCE_PACK*'
       - 'docs/policies/**'
       - 'docs/DEPLOYMENT*'
