@@ -5,7 +5,7 @@ from mcias.models_reference import BeneficiaryEnrollment, ProviderTariff
 from mcias.models_claims import ClaimAttachment, ClaimEntry
 from mcias.reference import active_contract
 
-AGENTS=("eligibility","tariff","contract","exclusion","caps","cost_sharing","duplicates","evidence")
+AGENTS=("eligibility","contract","tariff","exclusion","caps","cost_sharing","duplicates","evidence")
 
 def inspect_claim(db,claim:ClaimEntry,policy):
     findings=[]
