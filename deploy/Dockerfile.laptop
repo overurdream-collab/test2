@@ -7,8 +7,18 @@ COPY --chown=1900:1900 pyproject.toml ./
 COPY --chown=1900:1900 mcias/ ./mcias/
 # Optional combined CA bundle for the managed build proxy; never retained in layers.
 RUN --mount=type=secret,id=proxy_ca \
+    --mount=type=cache,id=mcias-laptop-pip,target=/root/.cache/pip,sharing=locked \
     if [ -f /run/secrets/proxy_ca ]; then export PIP_CERT=/run/secrets/proxy_ca; fi; \
-    python -m pip install --no-cache-dir . \
+    install_attempt=1; \
+    until python -m pip install --timeout 180 --retries 10 .; do \
+        if [ "$install_attempt" -ge 3 ]; then \
+            echo 'Python dependency installation failed after 3 attempts.' >&2; \
+            exit 1; \
+        fi; \
+        install_attempt=$((install_attempt + 1)); \
+        echo "Retrying Python dependency installation (attempt $install_attempt/3)." >&2; \
+        sleep 10; \
+    done \
     && groupadd --system --gid 1900 mcias \
     && useradd --system --uid 1900 --gid 1900 --home-dir /nonexistent --shell /usr/sbin/nologin mcias \
     && mkdir -p /var/lib/mcias/sources /var/lib/mcias/state \

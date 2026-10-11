@@ -108,6 +108,19 @@ Stop preserves volumes/keys; Start resumes. Do not use down -v or Docker factory
 
 Start Desktop/WSL2/Linux containers before use. For collisions change only port. Build failures need network/trusted certificates/space; never disable TLS. MFA failures need synchronized time/new code. Report failing step/status and Windows/Docker/SHA without .env/secrets/raw credential output. For memory pressure close applications, start with 12 claims and avoid simultaneous OCR/10K load/browser automation. Dense-file workload needs independent sizing/capability review.
 
+### Python dependency download timeout
+
+A `ReadTimeoutError` from `files.pythonhosted.org` during `pip install` means dependency downloading stopped before application startup. The build allows a 180-second read timeout per network wait, 10 connection-level retries and up to 3 complete install attempts with 10 seconds between attempts. This is not a deadline for the entire build. A BuildKit cache outside the image retains completed downloads for reuse; interrupted files are not guaranteed to resume. Certificate and TLS verification remain enabled.
+
+Update the test branch and rerun Start from the project directory, preserving `.env`, volumes and cache:
+
+```powershell
+git pull --ff-only origin feat/windows-laptop-testing
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\laptop.ps1 -Action Start
+```
+
+If local edits prevent the Git update, preserve them instead of resetting them away. Persistent network failure still stops the build after three attempts; share the final error lines to investigate package repository connectivity. This change does not resolve missing connectivity or certificate rejection.
+
 ## 9. Automated verification limits
 
 Local Linux Docker verification covered image build/migrations, restricted runtime DB identity, both MFA accounts, replay denial and API entry of a synthetic draft contract, tariff, category, enrollment and claim. The entered claim survived Stop/Start and repeated setup without reloading the original dataset.
