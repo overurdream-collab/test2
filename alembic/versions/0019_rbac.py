@@ -33,6 +33,10 @@ def upgrade():
 
     op.execute("UPDATE users SET effective_from = created_at::date WHERE effective_from IS NULL")
     op.alter_column("users", "effective_from", nullable=False)
+    op.alter_column(
+        "users", "effective_from",
+        server_default=sa.text("CURRENT_DATE")
+    )
 
     op.create_index("ix_users_status", "users", ["status"])
     op.create_index("ix_users_org_status", "users", ["organization_id", "status"])
@@ -432,38 +436,6 @@ def upgrade():
         FOR EACH ROW EXECUTE FUNCTION mcias_compute_audit_hash();
     """)
 
-    # ============================================================
-    # 9) الفئات الافتراضية (لكل جهة موجودة)
-    # ============================================================
-    op.execute("""
-        INSERT INTO groups (
-            id, organization_id, code, name_ar, name_en,
-            is_system, status, effective_from, created_by
-        )
-        SELECT
-            gen_random_uuid()::text,
-            o.id,
-            g.code,
-            g.name_ar,
-            g.name_en,
-            true,
-            'open',
-            CURRENT_DATE,
-            (SELECT id FROM users WHERE is_super_admin = true LIMIT 1)
-        FROM organizations o
-        CROSS JOIN (VALUES
-            ('admin',              'مدير الجهة',       'Entity Admin'),
-            ('reference_manager',  'مدير المراجع',     'Reference Manager'),
-            ('ingestion_operator', 'مشغل الاستيعاب',   'Ingestion Operator'),
-            ('claims_reviewer',    'مراجع المطالبات',  'Claims Reviewer'),
-            ('claims_approver',    'معتمد المطالبات',  'Claims Approver'),
-            ('auditor',            'مدقق',             'Auditor'),
-            ('reporter',           'معد التقارير',     'Reporter'),
-            ('viewer',             'مشاهد',            'Viewer')
-        ) AS g(code, name_ar, name_en)
-    """)
-
-
 def downgrade():
     for table in ["groups", "group_permissions", "user_groups", "user_permissions", "users"]:
         op.execute(f"DROP TRIGGER IF EXISTS trg_prevent_delete_{table} ON {table}")
@@ -482,6 +454,13 @@ def downgrade():
     op.drop_table("user_groups")
     op.drop_table("group_permissions")
     op.drop_table("groups")
+
+    for index in [
+        "ix_audit_actor_ts", "ix_audit_resource_ts", "ix_audit_action_ts",
+        "ix_audit_category_ts", "ix_audit_result_ts", "ix_audit_org_ts",
+        "ix_audit_request",
+    ]:
+        op.drop_index(index, table_name="audit_log")
 
     for col in [
         "organization_id", "actor_username", "actor_ip", "actor_user_agent",
