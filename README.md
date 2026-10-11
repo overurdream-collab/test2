@@ -95,3 +95,14 @@ pending institutional approval.
 ## Windows 11 / 8 GB synthetic laptop profile
 
 [العربية](docs/WINDOWS_LAPTOP_GUIDE.md) · [English](docs/WINDOWS_LAPTOP_GUIDE_EN.md). Docker Desktop Linux/WSL2 runs PostgreSQL plus one API worker; PowerShell initializes fresh local keys and separate MFA test accounts. Loopback synthetic testing only, with explicit database/runtime separation and no production financial approval.
+
+The laptop test pack uses 24 shared scenario IDs: 20 core checks and four documented scope boundaries. Physical-device results remain NOT_EXECUTED and the merge decision remains HOLD until execution, evidence review and explicit authorization.
+
+| Document | العربية | English |
+|---|---|---|
+| Unified test plan | [الخطة](docs/LAPTOP_TEST_PLAN.md) | [Plan](docs/LAPTOP_TEST_PLAN_EN.md) |
+| Operational runbook | [Runbook](docs/LAPTOP_RUNBOOK.md) | [Runbook](docs/LAPTOP_RUNBOOK_EN.md) |
+| Execution checklist | [قائمة التحقق](docs/LAPTOP_TEST_CHECKLIST.md) | [Checklist](docs/LAPTOP_TEST_CHECKLIST_EN.md) |
+| Results report awaiting execution | [التقرير](docs/LAPTOP_TEST_REPORT.md) | [Report](docs/LAPTOP_TEST_REPORT_EN.md) |
+
+Document preparation does not authorize test execution, input generation, pushing/triggering CI or merging. The report separates previous CI evidence from unexecuted Windows laptop cases.
