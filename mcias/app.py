@@ -41,6 +41,7 @@ async def secure_response_headers(request: Request, call_next):
     else:
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
     if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/",
+                                        "/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/",
                                         "/api/v1/rules/", "/api/v1/workspace/", "/api/v1/claims/", "/api/v1/ingestion/", "/api/v1/reference/", "/api/v1/audit-policies/", "/api/v1/report-explorer/", "/api/v1/intelligence/", "/ui/reports", "/ui/intelligence")):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
@@ -191,3 +192,24 @@ app.include_router(workspace_web_router)
 
 from mcias.retention_api import router as retention_router
 app.include_router(retention_router)
+
+from mcias.api.users_routes import router as rbac_users_router
+from mcias.api.groups_routes import router as rbac_groups_router
+from mcias.api.permissions_routes import router as rbac_permissions_router
+from mcias.api.seed_routes import router as rbac_seed_router
+from mcias.middleware.audit import AuditMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.exception_handlers import request_validation_exception_handler
+
+for router in (rbac_users_router, rbac_groups_router, rbac_permissions_router, rbac_seed_router):
+    app.include_router(router)
+app.add_middleware(AuditMiddleware)
+
+@app.exception_handler(RequestValidationError)
+async def safe_rbac_validation(request: Request, exc: RequestValidationError):
+    if request.url.path.startswith(("/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/")):
+        return JSONResponse(status_code=422, content={"detail": [
+            {key: error[key] for key in ("loc", "msg", "type") if key in error}
+            for error in exc.errors()
+        ]})
+    return await request_validation_exception_handler(request, exc)
