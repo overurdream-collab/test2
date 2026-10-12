@@ -199,6 +199,8 @@ from mcias.api.features_routes import router as features_router
 app.include_router(features_router, prefix="/api/v1")
 from mcias.api.feature_data_routes import router as feature_data_router
 app.include_router(feature_data_router)
+from mcias.api.registry_routes import router as registry_router
+app.include_router(registry_router)
 
 from mcias.api.users_routes import router as rbac_users_router
 from mcias.api.groups_routes import router as rbac_groups_router
@@ -214,7 +216,7 @@ app.add_middleware(AuditMiddleware)
 
 @app.exception_handler(RequestValidationError)
 async def safe_rbac_validation(request: Request, exc: RequestValidationError):
-    if request.url.path.startswith(("/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/", "/api/v1/admin/features", "/api/v1/organizations/", "/api/v1/me/features")):
+    if request.url.path.startswith(("/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/", "/api/v1/admin/features", "/api/v1/organizations/", "/api/v1/me/features", "/api/v1/registry/")):
         return JSONResponse(status_code=422, content={"detail": [
             {key: error[key] for key in ("loc", "msg", "type") if key in error}
             for error in exc.errors()
