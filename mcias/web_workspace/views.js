@@ -26,6 +26,7 @@ import {
   preferences,
 } from "./ui.js";
 import { featuresManagement } from "./feature_management.js";
+import { inputList } from "./input_list.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -59,6 +60,10 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "input-list") {
+    inputList(ctx);
+    return;
+  }
   if (kind === "features-management") {
     featuresManagement(ctx);
     return;

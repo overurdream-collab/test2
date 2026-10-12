@@ -47,6 +47,14 @@
 .feature-branch { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-width: 0; }
 .feature-branch legend { font-weight: 600; padding-inline: 8px; }
 .feature-choice { display: flex; gap: 10px; align-items: center; padding-block: 7px; }
+.intake-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; margin-block: 20px; }
+.intake-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; background: var(--soft); display: grid; gap: 12px; min-width: 0; }
+.intake-card h3 { overflow-wrap: anywhere; }
+.import-row { border-block-end: 1px solid var(--border); padding-block: 12px; }
+.import-row input[type=checkbox] { width: 20px; height: 20px; margin-inline-end: 10px; }
+.nav-tree summary { cursor: pointer; padding: 10px; color: var(--muted); }
+.nav-tree .nav-link { margin-inline-start: 12px; }
+dialog pre, dialog code { overflow-wrap: anywhere; white-space: pre-wrap; }
 .feature-branch input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--blue); margin-inline-end: 8px; }
 :root[data-theme="dark"] {
   --navy: #bfd8ee;

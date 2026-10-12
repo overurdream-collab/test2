@@ -15,7 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
-import { matchRoute, routeVisible } from "./feature_navigation.js";
+import { matchRoute, routeVisible, navigationGroups } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -298,23 +298,9 @@ function render() {
   const scopeRoutes = routes.filter(
     (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id") && routeVisible(r, access),
   );
-  const groups =
-    scope === "admin"
-      ? [
-          [L("المنصة والوصول", "PLATFORM & ACCESS"), 0, 7],
-          [L("البيانات والحوكمة", "DATA & GOVERNANCE"), 7, 14],
-          [L("التحليل والعمليات", "ANALYSIS & OPERATIONS"), 14, 99],
-        ]
-      : [
-          [L("نظرة شاملة", "OVERVIEW"), 0, 3],
-          [L("الرعاية والإنفاق", "CARE & EXPENDITURE"), 3, 12],
-          [L("التدقيق والذكاء", "AUDIT & INTELLIGENCE"), 12, 20],
-          [L("الأدلة والمراجعة", "EVIDENCE & REVIEW"), 20, 99],
-        ];
-  for (const [title, start, end] of groups) {
-    if (!scopeRoutes.slice(start, end).length) continue;
-    nav.append(el("p", title, "nav-heading"));
-    for (const r of scopeRoutes.slice(start, end)) {
+  const groups = navigationGroups(scopeRoutes, scope);
+  function appendRoutes(target, items) {
+    for (const r of items) {
       const a = link("", r.path, "nav-link");
       a.title = L(r.ar, r.en);
       if (route.path === r.path) a.setAttribute("aria-current", "page");
@@ -323,8 +309,19 @@ function render() {
         a.append(el("span", L("مخطط", "Planned"), "nav-state"));
       else if (r.permission && !context.permissions.includes(r.permission))
         a.append(el("span", L("مقيد", "Restricted"), "nav-state"));
-      nav.append(a);
+      target.append(a);
     }
+  }
+  for (const [ar, en, items] of groups) {
+    nav.append(el("p", L(ar, en), "nav-heading"));
+    if (items.every(r => r.kind === "input-list")) {
+      for (const [prefix, arabic, english] of [["inputs", "المدخلات", "Inputs"], ["beneficiaries", "المستفيدون", "Beneficiaries"], ["providers", "مقدمو الخدمة", "Providers"]]) {
+        const children = items.filter(r => r.feature.startsWith(prefix + "."));
+        if (!children.length) continue;
+        const branch = el("details", null, "nav-tree"); branch.open = children.some(r => r.path === route.path);
+        branch.append(el("summary", L(arabic, english))); appendRoutes(branch, children); nav.append(branch);
+      }
+    } else appendRoutes(nav, items);
   }
   if (!scopeRoutes.some(r => r.feature)) nav.append(el("p", L("لا ميزات مفعّلة", "No enabled features"), "nav-heading"));
   nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
