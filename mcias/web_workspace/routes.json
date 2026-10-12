@@ -9,7 +9,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "dashboard.summary"
   },
   {
     "path": "/admin/organizations",
@@ -21,7 +22,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "تثبيت منفصل لكل مؤسسة؛ لا توجد واجهة إدارة مركزية للمؤسسات أو تبديل قواعد البيانات.",
-    "blocker_en": "Separate on-premises installation per organization. A cross-installation tenant registry and switching API are unavailable."
+    "blocker_en": "Separate on-premises installation per organization. A cross-installation tenant registry and switching API are unavailable.",
+    "feature": null
   },
   {
     "path": "/admin/features",
@@ -31,7 +33,8 @@
     "kind": "features-management",
     "permission": "",
     "admin": true,
-    "availability": "available"
+    "availability": "available",
+    "feature": null
   },
   {
     "path": "/admin/users",
@@ -43,7 +46,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "users.list"
   },
   {
     "path": "/admin/roles",
@@ -55,7 +59,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "RBAC مفروض في الخادم؛ لا توجد API لتعديل الأدوار أو منح الصلاحيات.",
-    "blocker_en": "Backend RBAC is enforced. Role editing and permission grant APIs are unavailable."
+    "blocker_en": "Backend RBAC is enforced. Role editing and permission grant APIs are unavailable.",
+    "feature": "users.groups"
   },
   {
     "path": "/admin/permissions",
@@ -67,7 +72,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "users.permissions"
   },
   {
     "path": "/admin/security",
@@ -79,7 +85,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/audit-logs",
@@ -91,7 +98,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "السجلات محفوظة في الخادم؛ واجهة استعراض محكومة وتنقيح الحقول الحساسة لم تُنفّذ.",
-    "blocker_en": "Append-only logging exists. A governed viewer and sensitive-field redaction API are unavailable."
+    "blocker_en": "Append-only logging exists. A governed viewer and sensitive-field redaction API are unavailable.",
+    "feature": "system.audit_log"
   },
   {
     "path": "/admin/data-sources",
@@ -103,7 +111,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/ingestion",
@@ -115,7 +124,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/quarantine",
@@ -127,7 +137,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/reference-data",
@@ -139,7 +150,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "inputs.contracts"
   },
   {
     "path": "/admin/financial-policies",
@@ -151,7 +163,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/policy-approvals",
@@ -163,7 +176,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/ai-agents",
@@ -175,7 +189,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/admin/analysis-tasks",
@@ -187,7 +202,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/admin/rules",
@@ -199,7 +215,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "inputs.regulations"
   },
   {
     "path": "/admin/indicators",
@@ -211,7 +228,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/admin/thresholds",
@@ -223,7 +241,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/admin/workflows",
@@ -235,7 +254,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "أحداث G6 متاحة؛ محرر مسارات الموافقة والتعيين والتصعيد غير متاح.",
-    "blocker_en": "G6 events exist; configurable stages, assignment and escalation APIs are unavailable."
+    "blocker_en": "G6 events exist; configurable stages, assignment and escalation APIs are unavailable.",
+    "feature": null
   },
   {
     "path": "/admin/integrations",
@@ -247,7 +267,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "لا توجد API لإدارة التكاملات؛ إرسال البيانات الطبية خارجيًا غير مسموح.",
-    "blocker_en": "An integration-management API is unavailable. Medical data must remain on premises."
+    "blocker_en": "An integration-management API is unavailable. Medical data must remain on premises.",
+    "feature": null
   },
   {
     "path": "/admin/system-health",
@@ -259,7 +280,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "system.health"
   },
   {
     "path": "/admin/backups",
@@ -271,7 +293,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "أرشفة محلية مشفّرة؛ الحذف الدوري واعتماد سياسة الاحتفاظ غير متاحين.",
-    "blocker_en": "Local encrypted archival; purge and institutional retention approval are unavailable."
+    "blocker_en": "Local encrypted archival; purge and institutional retention approval are unavailable.",
+    "feature": null
   },
   {
     "path": "/admin/alerts",
@@ -283,7 +306,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "الإشارات التحليلية منفصلة عن الإشعارات؛ لا يوجد مركز تنبيهات أو تسليم رسائل.",
-    "blocker_en": "Analysis signals are separate from notifications. An alert inbox and delivery API are unavailable."
+    "blocker_en": "Analysis signals are separate from notifications. An alert inbox and delivery API are unavailable.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/admin/settings",
@@ -295,7 +319,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/institution/dashboard",
@@ -307,7 +332,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "dashboard.summary"
   },
   {
     "path": "/institution/claims",
@@ -319,7 +345,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "claims.list"
   },
   {
     "path": "/institution/claims/batches",
@@ -331,7 +358,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "claims.batches"
   },
   {
     "path": "/institution/beneficiaries",
@@ -343,7 +371,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "beneficiaries.names"
   },
   {
     "path": "/institution/providers",
@@ -355,7 +384,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "providers.services"
   },
   {
     "path": "/institution/hospitals",
@@ -367,7 +397,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "التصنيف الموثوق لمقدمي الخدمة والتحليلات حسب النوع غير متاح.",
-    "blocker_en": "An authoritative provider-type registry and type-specific analytics API are unavailable."
+    "blocker_en": "An authoritative provider-type registry and type-specific analytics API are unavailable.",
+    "feature": "providers.hospitals"
   },
   {
     "path": "/institution/laboratories",
@@ -379,7 +410,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "تحليلات المختبرات تتطلب تصنيف الخدمة والمزود وربط المصادر المعتمد.",
-    "blocker_en": "Laboratory analytics require governed service and provider categorization."
+    "blocker_en": "Laboratory analytics require governed service and provider categorization.",
+    "feature": "providers.labs"
   },
   {
     "path": "/institution/pharmacies",
@@ -391,7 +423,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "لا يوجد سجل صيدليات مصنف أو تحليل صرف دوائي معتمد.",
-    "blocker_en": "A categorized pharmacy registry and dispensing analytics are unavailable."
+    "blocker_en": "A categorized pharmacy registry and dispensing analytics are unavailable.",
+    "feature": "providers.pharmacies"
   },
   {
     "path": "/institution/medications",
@@ -403,7 +436,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "لا يوجد قاموس أدوية أو ربط موثق للتكلفة والاستخدام.",
-    "blocker_en": "Medication reference data and evidence-linked expenditure analytics are unavailable."
+    "blocker_en": "Medication reference data and evidence-linked expenditure analytics are unavailable.",
+    "feature": null
   },
   {
     "path": "/institution/procedures",
@@ -415,7 +449,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "الخادم يدعم رموز خدمات، ولا يوفر قاموس إجراءات أو مؤشر تكلفة سريري.",
-    "blocker_en": "Service codes exist; a procedure dictionary and clinical cost indicator API do not."
+    "blocker_en": "Service codes exist; a procedure dictionary and clinical cost indicator API do not.",
+    "feature": null
   },
   {
     "path": "/institution/utilization",
@@ -427,7 +462,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/insurer-billing",
@@ -439,7 +475,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "يلزم سجل شركات التأمين وحسابات الفوترة وضوابط التسوية المعتمدة.",
-    "blocker_en": "Insurer ledger, billing contracts and approved reconciliation rules are required."
+    "blocker_en": "Insurer ledger, billing contracts and approved reconciliation rules are required.",
+    "feature": null
   },
   {
     "path": "/institution/financial-audit",
@@ -451,7 +488,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "audit.snapshots"
   },
   {
     "path": "/institution/duplicates",
@@ -463,7 +501,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "audit.findings"
   },
   {
     "path": "/institution/anomalies",
@@ -475,7 +514,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/waste-analysis",
@@ -487,7 +527,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "لا توجد سياسة أو مجموعة بيانات مرجعية تسمح بتصنيف الإنفاق كغير ضروري.",
-    "blocker_en": "No approved policy or validated reference dataset supports classifying expenditure as unnecessary."
+    "blocker_en": "No approved policy or validated reference dataset supports classifying expenditure as unnecessary.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/contract-gaps",
@@ -499,7 +540,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "inputs.contracts"
   },
   {
     "path": "/institution/cost-optimization",
@@ -511,7 +553,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/quality",
@@ -523,7 +566,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "مؤشرات جودة الخدمة تتطلب تعريفات ومقامات بيانات معتمدة.",
-    "blocker_en": "Quality indicators need approved definitions and evidence-backed denominators."
+    "blocker_en": "Quality indicators need approved definitions and evidence-backed denominators.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/trends",
@@ -535,7 +579,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/evidence",
@@ -547,7 +592,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/institution/reviews",
@@ -559,7 +605,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "governance.cases"
   },
   {
     "path": "/institution/appeals",
@@ -571,7 +618,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "governance.appeals"
   },
   {
     "path": "/institution/ai-intelligence",
@@ -583,7 +631,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/alerts",
@@ -595,7 +644,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "الإشارات التحليلية منفصلة عن الإشعارات؛ لا يوجد مركز تنبيهات أو تسليم رسائل.",
-    "blocker_en": "Analysis signals are separate from notifications. An alert inbox and delivery API are unavailable."
+    "blocker_en": "Analysis signals are separate from notifications. An alert inbox and delivery API are unavailable.",
+    "feature": "intelligence.analysis"
   },
   {
     "path": "/institution/reports",
@@ -607,7 +657,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": "reports.list"
   },
   {
     "path": "/institution/settings",
@@ -619,7 +670,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/shared/profile",
@@ -631,7 +683,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/shared/notifications",
@@ -643,7 +696,8 @@
     "admin": false,
     "availability": "unavailable",
     "blocker_ar": "لا يوجد مخزن إشعارات أو نظام تسليم رسائل في الخادم.",
-    "blocker_en": "A notification store and message delivery API are unavailable."
+    "blocker_en": "A notification store and message delivery API are unavailable.",
+    "feature": null
   },
   {
     "path": "/shared/help",
@@ -655,7 +709,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "يلزم تطوير API محكومة واختبارات صلاحيات واعتماد مؤسسي.",
-    "blocker_en": "A governed API, negative authorization tests and institutional approval are required."
+    "blocker_en": "A governed API, negative authorization tests and institutional approval are required.",
+    "feature": null
   },
   {
     "path": "/admin/organizations/:id",
@@ -667,7 +722,8 @@
     "admin": true,
     "availability": "unavailable",
     "blocker_ar": "غير متاح في الخادم الحالي.",
-    "blocker_en": "Unavailable in the current backend."
+    "blocker_en": "Unavailable in the current backend.",
+    "feature": null
   },
   {
     "path": "/admin/users/:id",
@@ -679,7 +735,8 @@
     "admin": true,
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
-    "blocker_en": "Unavailable in the current backend."
+    "blocker_en": "Unavailable in the current backend.",
+    "feature": "users.list"
   },
   {
     "path": "/institution/claims/:id",
@@ -691,7 +748,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
-    "blocker_en": "Unavailable in the current backend."
+    "blocker_en": "Unavailable in the current backend.",
+    "feature": "claims.list"
   },
   {
     "path": "/institution/beneficiaries/:id",
@@ -703,7 +761,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
-    "blocker_en": "Unavailable in the current backend."
+    "blocker_en": "Unavailable in the current backend.",
+    "feature": "beneficiaries.names"
   },
   {
     "path": "/institution/providers/:id",
@@ -715,7 +774,8 @@
     "admin": false,
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
-    "blocker_en": "Unavailable in the current backend."
+    "blocker_en": "Unavailable in the current backend.",
+    "feature": "providers.services"
   },
   {
     "path": "/admin/organizations/:id/features",
@@ -725,6 +785,7 @@
     "kind": "features-management",
     "permission": "",
     "admin": true,
-    "availability": "available"
+    "availability": "available",
+    "feature": null
   }
 ]

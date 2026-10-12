@@ -22,6 +22,8 @@ app = FastAPI(
 
 from mcias.rate_limits import rate_limit_middleware
 app.middleware("http")(rate_limit_middleware)
+from mcias.middleware.features import feature_middleware
+app.middleware("http")(feature_middleware)
 
 @app.middleware("http")
 async def secure_response_headers(request: Request, call_next):
@@ -195,6 +197,8 @@ app.include_router(retention_router)
 
 from mcias.api.features_routes import router as features_router
 app.include_router(features_router, prefix="/api/v1")
+from mcias.api.feature_data_routes import router as feature_data_router
+app.include_router(feature_data_router)
 
 from mcias.api.users_routes import router as rbac_users_router
 from mcias.api.groups_routes import router as rbac_groups_router

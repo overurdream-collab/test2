@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { matchRoute, selectionDiff } from "../../mcias/web_workspace/feature_navigation.js";
+import { matchRoute, selectionDiff, routeVisible } from "../../mcias/web_workspace/feature_navigation.js";
 
 test("nested organization feature route captures only one path segment", () => {
   const routes = [{path:"/admin/organizations/:id"}, {path:"/admin/organizations/:id/features"}];
@@ -19,4 +19,13 @@ test("feature diff is unique, sorted and does not mutate the original selection"
 });
 test("unchanged features produce no mutation", () => {
   assert.deepEqual(selectionDiff(["inputs.caps"],["inputs.caps","inputs.caps"]),{grant:[],revoke:[]});
+});
+test("navigation requires both entitlement and permission, default denies and preserves utilities", () => {
+  const route={path:"/institution/claims",feature:"claims.list",permission:"claims.read"};
+  assert.equal(routeVisible(route,{features:[],permissions:["claims.read"]}),false);
+  assert.equal(routeVisible(route,{features:["claims.list"],permissions:[]}),false);
+  assert.equal(routeVisible(route,{features:["claims.list"],permissions:["claims.read"]}),true);
+  assert.equal(routeVisible({...route,admin:true},{features:["claims.list"],permissions:["claims.read"]}),false);
+  assert.equal(routeVisible({...route,admin:true},{super_admin:true}),true);
+  assert.equal(routeVisible({path:"/shared/help"},{}),true);
 });

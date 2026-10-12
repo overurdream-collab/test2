@@ -15,7 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
-import { matchRoute } from "./feature_navigation.js";
+import { matchRoute, routeVisible } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -23,6 +23,13 @@ let routes = [],
   expiryTimer,
   search = "",
   collapsed = false;
+let access = null;
+async function refreshAccess() {
+  access = await api.request("/api/v1/me/features");
+  api.enableFeatureData();
+  context = { ...access.user, organization: access.organization, permissions: access.permissions,
+    roles: access.roles, expires_at: access.expires_at, institutionally_accepted: false, tenant_switching: false };
+}
 const app = document.getElementById("app");
 api.onExpiry = () => {
   signOutLocal();
@@ -53,6 +60,7 @@ function signOutLocal() {
   clearTimeout(expiryTimer);
   api.clear();
   context = null;
+  access = null;
   demo = false;
   for (const id of ["drawer", "confirmation"]) {
     const d = document.getElementById(id);
@@ -182,7 +190,7 @@ function auth() {
         },
       });
       api.setToken(response.access_token);
-      context = await api.request("/api/v1/workspace/context");
+      await refreshAccess();
       const wait = new Date(context.expires_at).getTime() - Date.now();
       if (Number.isFinite(wait))
         expiryTimer = setTimeout(
@@ -288,7 +296,7 @@ function render() {
   const nav = el("nav");
   nav.setAttribute("aria-label", L("الوحدات", "Modules"));
   const scopeRoutes = routes.filter(
-    (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id"),
+    (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id") && routeVisible(r, access),
   );
   const groups =
     scope === "admin"
@@ -304,6 +312,7 @@ function render() {
           [L("الأدلة والمراجعة", "EVIDENCE & REVIEW"), 20, 99],
         ];
   for (const [title, start, end] of groups) {
+    if (!scopeRoutes.slice(start, end).length) continue;
     nav.append(el("p", title, "nav-heading"));
     for (const r of scopeRoutes.slice(start, end)) {
       const a = link("", r.path, "nav-link");
@@ -317,6 +326,7 @@ function render() {
       nav.append(a);
     }
   }
+  if (!scopeRoutes.some(r => r.feature)) nav.append(el("p", L("لا ميزات مفعّلة", "No enabled features"), "nav-heading"));
   nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
   if (context.roles.includes("super_admin"))
     nav.append(
@@ -388,7 +398,7 @@ function render() {
     searchResults.replaceChildren();
     searchResults.hidden = !search;
     if (search) {
-      const results = routes
+      const results = routes.filter(r => routeVisible(r, access))
         .filter(
           (r) =>
             !r.path.includes(":id") &&
@@ -515,7 +525,10 @@ function render() {
         "button",
       ),
     );
-  actions.append(button(L("تحديث", "Refresh"), render, "button", "refresh"));
+  actions.append(button(L("تحديث", "Refresh"), async () => {
+    try { if (!demo) await refreshAccess(); render(); }
+    catch (error) { toast(error.message); }
+  }, "button", "refresh"));
   head.append(actions);
   main.append(head);
   const banner = el("div", null, "banner");
@@ -552,6 +565,9 @@ function render() {
       ),
       badge(route.permission || "super_admin", "warning"),
     );
+  } else if (!routeVisible(route, access) && route.kind !== "missing") {
+    root.append(empty(L("لا ميزات مفعّلة لهذه الصفحة", "This feature is not enabled"),
+      L("تحتاج تفعيل الميزة للجهة وصلاحية مناسبة للمستخدم.", "An organization entitlement and user permission are required."), "security"));
   } else if (route.kind === "missing") {
     root.append(
       empty(
@@ -573,6 +589,7 @@ function render() {
       toggleLanguage,
       toggleTheme,
       signOutLocal,
+      refreshAccess,
     });
   }
   main.append(
@@ -658,6 +675,8 @@ async function start() {
         }).then((r) => r.json());
         api.demo(fixture);
         context = fixture.context;
+        access = {features: routes.map(r => r.feature).filter(Boolean), permissions: context.permissions,
+          super_admin: context.roles.includes("super_admin")};
         demo = true;
       } else
         toast(
