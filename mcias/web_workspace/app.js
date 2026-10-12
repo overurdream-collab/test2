@@ -15,6 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
+import { matchRoute } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -30,17 +31,7 @@ api.onExpiry = () => {
   );
 };
 function routeAt(path) {
-  const exact = routes.find((r) => r.path === path);
-  if (exact) return { route: exact, recordId: null };
-  for (const r of routes.filter((x) => x.path.endsWith("/:id"))) {
-    const prefix = r.path.slice(0, -3);
-    if (path.startsWith(prefix) && !path.slice(prefix.length).includes("/"))
-      return {
-        route: r,
-        recordId: decodeURIComponent(path.slice(prefix.length)),
-      };
-  }
-  return null;
+  return matchRoute(routes, path);
 }
 function navigate(path) {
   if (document.getElementById("drawer").open)
@@ -451,8 +442,9 @@ function render() {
     () => navigate("/shared/profile"),
     "profile-button",
   );
-  profile.prepend(
+  profile.replaceChildren(
     el("span", context.username.slice(0, 2).toUpperCase(), "avatar"),
+    el("span", context.username, "username"),
   );
   topbar.append(
     profile,

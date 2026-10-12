@@ -43,6 +43,11 @@
   --radius: 18px;
   color-scheme: light;
 }
+.feature-tree { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; margin-block: 20px; }
+.feature-branch { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.feature-branch legend { font-weight: 600; padding-inline: 8px; }
+.feature-choice { display: flex; gap: 10px; align-items: center; padding-block: 7px; }
+.feature-branch input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--blue); margin-inline-end: 8px; }
 :root[data-theme="dark"] {
   --navy: #bfd8ee;
   --bg: #0c1524;

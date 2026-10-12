@@ -24,6 +24,16 @@
     "blocker_en": "Separate on-premises installation per organization. A cross-installation tenant registry and switching API are unavailable."
   },
   {
+    "path": "/admin/features",
+    "ar": "ميزات الجهات",
+    "en": "Organization features",
+    "icon": "settings",
+    "kind": "features-management",
+    "permission": "",
+    "admin": true,
+    "availability": "available"
+  },
+  {
     "path": "/admin/users",
     "ar": "المستخدمون",
     "en": "Users",
@@ -706,5 +716,15 @@
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
     "blocker_en": "Unavailable in the current backend."
+  },
+  {
+    "path": "/admin/organizations/:id/features",
+    "ar": "ميزات الجهة",
+    "en": "Organization features",
+    "icon": "settings",
+    "kind": "features-management",
+    "permission": "",
+    "admin": true,
+    "availability": "available"
   }
 ]

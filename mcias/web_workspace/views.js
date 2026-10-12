@@ -25,6 +25,7 @@ import {
   donut,
   preferences,
 } from "./ui.js";
+import { featuresManagement } from "./feature_management.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -58,6 +59,10 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "features-management") {
+    featuresManagement(ctx);
+    return;
+  }
   if (kind === "retention") {
     retention(ctx);
     return;
