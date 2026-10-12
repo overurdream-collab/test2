@@ -38,6 +38,7 @@ PASSWORD = 'synthetic_workflow_password_only'
 
 
 def run(base_url, chromium=None):
+    (ROOT/'.e2e-output').mkdir(exist_ok=True)
     url = os.environ['MCIAS_E2E_DATABASE_URL']
     if not make_url(url).database.endswith('_e2e'):
         raise ValueError('Dedicated *_e2e database required')
@@ -55,6 +56,7 @@ def run(base_url, chromium=None):
         org = Organization(name='SYNTHETIC WORKFLOW ' + unique)
         foreign = Organization(name='SYNTHETIC FOREIGN ' + unique)
         db.add_all([org, foreign]); db.flush()
+        organization_id, foreign_organization_id = org.id, foreign.id
         role = Role(code='workflow_' + unique)
         db.add(role); db.flush()
         for code in permissions:
@@ -104,6 +106,12 @@ def run(base_url, chromium=None):
         def navigate(path):
             page.evaluate('(path)=>{history.pushState({},"",path);dispatchEvent(new PopStateEvent("popstate"));}', path)
             expect(page.locator('main h1')).to_be_visible()
+
+        # Explicit fixture entitlements; runtime/default Seed never grants features.
+        for code in ('dashboard.summary','claims.list','claims.batches','audit.snapshots','governance.cases','reports.list'):
+            request('POST', f'/api/v1/organizations/{organization_id}/features/{code}/grant', expected=201)
+        # Exercise tenant isolation after entitlement, rather than failing earlier.
+        request('POST', f'/api/v1/organizations/{foreign_organization_id}/features/claims.list/grant', expected=201)
 
         def upload(data, filename):
             navigate('/admin/ingestion')

@@ -9,6 +9,8 @@ GRANT INSERT ON public.organization_features TO :"runtime_user";
 GRANT UPDATE (status, effective_to, closed_by, closed_at, close_reason)
     ON public.organization_features TO :"runtime_user";
 GRANT UPDATE (name) ON public.organizations TO :"runtime_user";
+-- Actor row locking also requires an UPDATE privilege on one user column.
+GRANT UPDATE (active) ON public.users TO :"runtime_user";
 COMMIT;
 \else
 \echo 'Runtime role missing; feature grants skipped.'

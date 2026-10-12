@@ -84,7 +84,7 @@ def check_feature(db, org_id, code):
         OrganizationFeature.feature_code == code, *rbac._live(OrganizationFeature, date.today())).limit(1)) is not None
 
 def _actor(db, actor_id, org_id):
-    actor = db.get(User, actor_id)
+    actor = db.scalar(select(User).where(User.id == actor_id).with_for_update().execution_options(populate_existing=True))
     if not is_super_admin(db, actor):
         raise ValueError("MFA-enabled active super_admin required")
     org = db.scalar(select(Organization).where(Organization.id == org_id).with_for_update())

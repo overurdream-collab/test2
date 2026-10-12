@@ -98,6 +98,7 @@ try {
             Invoke-Compose -DockerArguments @('build','api')
             Invoke-Compose -DockerArguments @('up','-d','--wait','db')
             Invoke-Compose -DockerArguments @('run','--rm','--no-deps','setup')
+            Invoke-Compose -DockerArguments @('run','--rm','--no-deps','setup','python','-m','mcias.feature_runtime')
             Invoke-Compose -DockerArguments @('up','-d','--wait','api')
             Invoke-Compose -DockerArguments @('exec','-T','api','python','-m','mcias.seed.laptop','check')
             $portLine = Get-Content -LiteralPath $envPath | Where-Object { $_ -match '^LAPTOP_HTTP_PORT=' }

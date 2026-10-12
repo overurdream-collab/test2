@@ -8,6 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from mcias.models_features import OrganizationFeature
 from mcias.services import feature_service as f
+from mcias.feature_runtime import setup
 
 @pytest.mark.skipif(not os.getenv("MCIAS_RBAC_API_DATABASE_URL"), reason="isolated PostgreSQL RBAC database required")
 def test_feature_runtime_grants_closure_triggers_and_transaction_rollback(api_factory):
@@ -17,12 +18,14 @@ def test_feature_runtime_grants_closure_triggers_and_transaction_rollback(api_fa
         conn.execute(text(f'CREATE ROLE "{role}" NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS'))
         conn.execute(text(f'GRANT USAGE ON SCHEMA public TO "{role}"'))
         conn.execute(text(f'GRANT SELECT ON ALL TABLES IN SCHEMA public TO "{role}"'))
-        conn.execute(text(f'GRANT INSERT ON organization_features, audit_log TO "{role}"'))
-        conn.execute(text(f'GRANT UPDATE (name) ON organizations TO "{role}"'))
-        conn.execute(text(f'GRANT UPDATE (status, effective_to, closed_by, closed_at, close_reason) ON organization_features TO "{role}"'))
+        conn.execute(text(f'GRANT INSERT ON audit_log TO "{role}"'))
+    setup(a.engine,role)
+    setup(a.engine,role)  # repeat provisioning must preserve grants and records
     try:
         with a.engine.connect() as conn:
             conn.execute(text(f'SET ROLE "{role}"'))
+            assert conn.scalar(text("SELECT has_column_privilege(current_user,'users','password_hash','UPDATE')")) is False
+            assert conn.scalar(text("SELECT has_table_privilege(current_user,'organization_features','UPDATE')")) is False
             conn.commit()
             with Session(bind=conn) as db:
                 assert len(f.list_features(db)) == 44

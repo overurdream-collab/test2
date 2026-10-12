@@ -9,6 +9,7 @@ from hashlib import sha256
 import json
 import os
 from uuid import uuid4
+from pathlib import PurePath
 from sqlalchemy import select, text
 from mcias.models import AuditLog, SourceFile
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord
@@ -92,7 +93,7 @@ def _evidence(db, actor, document_id):
     doc = db.get(IngestionDocument, str(document_id))
     if doc is None or doc.organization_id != actor.organization_id or doc.status != "extracted":
         raise ValueError("evidence must be an extracted document from the same organization")
-    return {"document_id":doc.id,"sha256":doc.sha256}
+    return {"document_id":doc.id,"sha256":doc.sha256,"format":PurePath(doc.filename).suffix.lower().lstrip('.')}
 
 def create_record(db, actor, feature, data: RecordCreate, previous_id=None, expected_version=None, source_record_id=None):
     authorize(db, actor, feature, "create")

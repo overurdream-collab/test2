@@ -34,6 +34,8 @@ SCHEMAS = {
     "providers.services": ("record_code", "service_code", "coding_system"),
     "providers.prices": ("record_code", "provider_code", "service_code", "amount", "currency"),
 }
+FIELD_LIMITS = {"record_code":80,"provider_code":80,"contract_number":120,"beneficiary_token":128,
+    "category_code":80,"service_code":100,"currency":3,"document_number":120}
 
 class RecordCreate(Input):
     title: str = Field(min_length=1, max_length=200)
@@ -66,7 +68,7 @@ def validate_values(feature, values):
     if set(values) != expected: raise ValueError("fields must match the intake schema")
     result = {}
     for key, raw in values.items():
-        if not isinstance(raw, str) or not raw.strip() or len(raw) > 200 or any(ord(c) < 32 for c in raw):
+        if not isinstance(raw, str) or not raw.strip() or len(raw) > FIELD_LIMITS.get(key,200) or any(ord(c) < 32 for c in raw):
             raise ValueError("invalid field: " + key)
         value = raw.strip()
         if key in ("amount", "percent"):

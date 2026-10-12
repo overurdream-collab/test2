@@ -3,10 +3,11 @@ from uuid import UUID
 from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import Response
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy.exc import DBAPIError
 from mcias.api import dependencies as deps
 from mcias.api.features_routes import no_store
-from mcias.schemas.registry import RecordCreate, RecordVersion, RecordClose, ImportCommit, SCHEMAS, FIELDS
+from mcias.schemas.registry import RecordCreate, RecordVersion, RecordClose, ImportCommit, SCHEMAS, FIELDS, FIELD_LIMITS
 from mcias.services import registry_service as r
 from mcias.services.feature_service import permitted
 from mcias.ingestion.orchestrator import ingest
@@ -25,7 +26,7 @@ def perform(db,action):
 @router.get("/{feature}/schema")
 def schema(feature:str,actor=Depends(deps.require_auth),db=Depends(deps.get_db)):
     perform(db,lambda:r.authorize(db,actor,feature))
-    return {"feature":feature,"fields":[{"key":key,"ar":FIELDS[key][0],"en":FIELDS[key][1],"type":FIELDS[key][2]} for key in SCHEMAS[feature]],
+    return {"feature":feature,"fields":[{"key":key,"ar":FIELDS[key][0],"en":FIELDS[key][1],"type":FIELDS[key][2],"max_length":FIELD_LIMITS.get(key,200)} for key in SCHEMAS[feature]],
         "permissions":{operation:permitted(db,actor,*(tuple(c[:-5]+'.'+operation for c in r.f.READ_PERMISSIONS[feature] if c.endswith('.read'))+('reference.write',))) for operation in ('create','close')},
         "approval_required":True,"financially_active":False}
 
@@ -64,7 +65,7 @@ async def upload(feature:str,request:Request,filename:str=Query(...,min_length=1
         data.extend(chunk)
         if len(data)>20*1024*1024:raise HTTPException(413,"source exceeds upload limit")
     if not data:raise HTTPException(422,"nonempty source required")
-    return perform(db,lambda:ingest(db,r.store(),actor.organization_id,actor.id,filename,bytes(data)))
+    return await run_in_threadpool(perform,db,lambda:ingest(db,r.store(),actor.organization_id,actor.id,filename,bytes(data)))
 
 @router.get("/{feature}/imports/{document_id}/preview")
 def preview(feature:str,document_id:UUID,actor=Depends(deps.require_auth),db=Depends(deps.get_db)):
@@ -85,5 +86,8 @@ def evidence(feature:str,record_id:UUID,document_id:UUID,actor=Depends(deps.requ
         if not source or source.sha256!=record['evidence']['sha256']:raise ValueError('evidence hash mismatch')
         return r.store().get(source.storage_key,source.sha256)
     data=perform(db,download)
+    doc=db.get(IngestionDocument,str(document_id))
+    extension=Path(doc.filename).suffix.lower()
+    if extension not in ('.csv','.xlsx','.pdf'):extension='.bin'
     return Response(data,media_type='application/octet-stream',headers={'Cache-Control':'no-store',
-        'Content-Disposition':f'attachment; filename="source-{document_id}.bin"','X-Content-Type-Options':'nosniff'})
+        'Content-Disposition':f'attachment; filename="source-{document_id}{extension}"','X-Content-Type-Options':'nosniff'})

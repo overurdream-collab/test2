@@ -25,7 +25,7 @@ export function inputList(ctx) {
     const until = field("intake-to", L("تاريخ النهاية (اختياري)", "Effective to (optional)"), { type: "date", required: false });
     grid.append(title.wrap, from.wrap, until.wrap);
     for (const item of schema.fields) {
-      const control = field(`intake-${item.key}`, L(item.ar, item.en), { maxLength: 200, value: previous?.values?.[item.key] || "" });
+      const control = field(`intake-${item.key}`, L(item.ar, item.en), { maxLength: item.max_length || 200, value: previous?.values?.[item.key] || "" });
       if (item.key === "record_code" && previous) control.input.readOnly = true;
       if (item.key === "currency") control.input.pattern = "[A-Z]{3}";
       if (["amount", "percent"].includes(item.key)) control.input.inputMode = "decimal";
@@ -91,7 +91,8 @@ export function inputList(ctx) {
         body.append(button(L("تنزيل المصدر المرتبط", "Download linked source"), async () => {
           try {
             const blob = await api.request(`${base}/records/${id}/evidence/${record.evidence.document_id}`, { download: true });
-            const url = URL.createObjectURL(blob), anchor = document.createElement("a"); anchor.href = url; anchor.download = `source-${record.evidence.document_id}.bin`;
+            const extension = ["csv","xlsx","pdf"].includes(record.evidence.format) ? record.evidence.format : "bin";
+            const url = URL.createObjectURL(blob), anchor = document.createElement("a"); anchor.href = url; anchor.download = `source-${record.evidence.document_id}.${extension}`;
             anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
           } catch (error) { toast(error.message); }
         }));

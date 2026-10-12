@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "real create, encrypted source, XSS-safe rendering, close and version 3",
+    "CSV preview, human confirmation, persisted intake and exact authorized source download",
+    "all sixteen institution intake routes render operational controls",
+    "Arabic RTL, English LTR, light/dark, desktop/tablet/mobile"
+  ],
+  "page_errors": [],
+  "accessibility_violations": [],
+  "synthetic": true,
+  "actual_http_and_postgresql": true
+}
