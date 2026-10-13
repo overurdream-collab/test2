@@ -15,6 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
+import { matchRoute, routeVisible, navigationGroups, institutionNavigation } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -22,6 +23,14 @@ let routes = [],
   expiryTimer,
   search = "",
   collapsed = false;
+let access = null;
+async function refreshAccess() {
+  access = await api.request("/api/v1/me/features");
+  api.enableFeatureData();
+  context = { ...access.user, organization: access.organization, permissions: access.permissions,
+    roles: access.roles, expires_at: access.expires_at, institutionally_accepted: false, tenant_switching: false };
+  context.institution_admin = access.institution_admin;
+}
 const app = document.getElementById("app");
 api.onExpiry = () => {
   signOutLocal();
@@ -30,17 +39,7 @@ api.onExpiry = () => {
   );
 };
 function routeAt(path) {
-  const exact = routes.find((r) => r.path === path);
-  if (exact) return { route: exact, recordId: null };
-  for (const r of routes.filter((x) => x.path.endsWith("/:id"))) {
-    const prefix = r.path.slice(0, -3);
-    if (path.startsWith(prefix) && !path.slice(prefix.length).includes("/"))
-      return {
-        route: r,
-        recordId: decodeURIComponent(path.slice(prefix.length)),
-      };
-  }
-  return null;
+  return matchRoute(routes, path);
 }
 function navigate(path) {
   if (document.getElementById("drawer").open)
@@ -62,6 +61,7 @@ function signOutLocal() {
   clearTimeout(expiryTimer);
   api.clear();
   context = null;
+  access = null;
   demo = false;
   for (const id of ["drawer", "confirmation"]) {
     const d = document.getElementById(id);
@@ -191,7 +191,7 @@ function auth() {
         },
       });
       api.setToken(response.access_token);
-      context = await api.request("/api/v1/workspace/context");
+      await refreshAccess();
       const wait = new Date(context.expires_at).getTime() - Date.now();
       if (Number.isFinite(wait))
         expiryTimer = setTimeout(
@@ -285,7 +285,7 @@ function render() {
       "strong",
       scope === "admin"
         ? L("الإدارة المركزية", "Central administration")
-        : L("مساحة المؤسسة", "Institution workspace"),
+        : context.institution_admin ? L("مدير الجهة", "Institution administrator") : L("مساحة المؤسسة", "Institution workspace"),
     ),
     el(
       "small",
@@ -297,24 +297,12 @@ function render() {
   const nav = el("nav");
   nav.setAttribute("aria-label", L("الوحدات", "Modules"));
   const scopeRoutes = routes.filter(
-    (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id"),
+    (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id") && routeVisible(r, access),
   );
-  const groups =
-    scope === "admin"
-      ? [
-          [L("المنصة والوصول", "PLATFORM & ACCESS"), 0, 7],
-          [L("البيانات والحوكمة", "DATA & GOVERNANCE"), 7, 14],
-          [L("التحليل والعمليات", "ANALYSIS & OPERATIONS"), 14, 99],
-        ]
-      : [
-          [L("نظرة شاملة", "OVERVIEW"), 0, 3],
-          [L("الرعاية والإنفاق", "CARE & EXPENDITURE"), 3, 12],
-          [L("التدقيق والذكاء", "AUDIT & INTELLIGENCE"), 12, 20],
-          [L("الأدلة والمراجعة", "EVIDENCE & REVIEW"), 20, 99],
-        ];
-  for (const [title, start, end] of groups) {
-    nav.append(el("p", title, "nav-heading"));
-    for (const r of scopeRoutes.slice(start, end)) {
+  const groups = scope === "institution" && context.institution_admin
+    ? institutionNavigation(scopeRoutes) : navigationGroups(scopeRoutes, scope);
+  function appendRoutes(target, items) {
+    for (const r of items) {
       const a = link("", r.path, "nav-link");
       a.title = L(r.ar, r.en);
       if (route.path === r.path) a.setAttribute("aria-current", "page");
@@ -323,10 +311,22 @@ function render() {
         a.append(el("span", L("مخطط", "Planned"), "nav-state"));
       else if (r.permission && !context.permissions.includes(r.permission))
         a.append(el("span", L("مقيد", "Restricted"), "nav-state"));
-      nav.append(a);
+      target.append(a);
     }
   }
-  nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
+  for (const [ar, en, items] of groups) {
+    nav.append(el("p", L(ar, en), "nav-heading"));
+    if (items.every(r => r.kind === "input-list")) {
+      for (const [prefix, arabic, english] of [["inputs", "المدخلات", "Inputs"], ["beneficiaries", "المستفيدون", "Beneficiaries"], ["providers", "مقدمو الخدمة", "Providers"]]) {
+        const children = items.filter(r => r.feature.startsWith(prefix + "."));
+        if (!children.length) continue;
+        const branch = el("details", null, "nav-tree"); branch.open = children.some(r => r.path === route.path);
+        branch.append(el("summary", L(arabic, english))); appendRoutes(branch, children); nav.append(branch);
+      }
+    } else appendRoutes(nav, items);
+  }
+  if (!scopeRoutes.some(r => r.feature)) nav.append(el("p", L("لا ميزات مفعّلة", "No enabled features"), "nav-heading"));
+  if (!context.institution_admin) nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
   if (context.roles.includes("super_admin"))
     nav.append(
       link(
@@ -347,7 +347,8 @@ function render() {
     ),
     el(
       "span",
-      L("G0–G9 غير معتمدة مؤسسيًا", "G0–G9 institutionally unaccepted"),
+      context.institution_admin ? L("صلاحيات الموظفين ضمن نطاق الجهة", "Employee access stays within this organization")
+        : L("G0–G9 غير معتمدة مؤسسيًا", "G0–G9 institutionally unaccepted"),
     ),
   );
   sidebar.append(foot);
@@ -397,7 +398,7 @@ function render() {
     searchResults.replaceChildren();
     searchResults.hidden = !search;
     if (search) {
-      const results = routes
+      const results = routes.filter(r => routeVisible(r, access))
         .filter(
           (r) =>
             !r.path.includes(":id") &&
@@ -451,8 +452,9 @@ function render() {
     () => navigate("/shared/profile"),
     "profile-button",
   );
-  profile.prepend(
+  profile.replaceChildren(
     el("span", context.username.slice(0, 2).toUpperCase(), "avatar"),
+    el("span", context.username, "username"),
   );
   topbar.append(
     profile,
@@ -500,6 +502,7 @@ function render() {
       "div",
       scope === "admin"
         ? L("حوكمة المنصة", "PLATFORM GOVERNANCE")
+        : context.institution_admin ? L("إدارة الجهة", "ORGANIZATION MANAGEMENT")
         : L("ذكاء الرعاية والإنفاق", "CARE & EXPENDITURE INTELLIGENCE"),
       "eyebrow",
     ),
@@ -515,7 +518,7 @@ function render() {
   );
   head.append(heading);
   const actions = el("div", null, "header-actions");
-  if (route.kind === "dashboard")
+  if (route.kind === "dashboard" && !context.institution_admin)
     actions.append(
       link(
         L("التقارير والتصدير", "Reports & export"),
@@ -523,14 +526,17 @@ function render() {
         "button",
       ),
     );
-  actions.append(button(L("تحديث", "Refresh"), render, "button", "refresh"));
+  actions.append(button(L("تحديث", "Refresh"), async () => {
+    try { if (!demo) await refreshAccess(); render(); }
+    catch (error) { toast(error.message); }
+  }, "button", "refresh"));
   head.append(actions);
   main.append(head);
   const banner = el("div", null, "banner");
   banner.append(
     el(
       "span",
-      L(
+      context.institution_admin ? L("بيانات جهتك فقط؛ تُنفَّذ العمليات وفق الصلاحيات الممنوحة.", "Your organization data only; operations follow granted permissions.") : L(
         "قدرات هندسية جزئية؛ جميع بوابات القبول مفتوحة.",
         "Partial engineering capabilities; all acceptance gates remain open.",
       ),
@@ -538,6 +544,7 @@ function render() {
     badge(
       route.kind === "unavailable"
         ? L("غير متاح", "Unavailable")
+        : context.institution_admin ? L("وصول محكوم", "Governed access")
         : L("غير معتمد مؤسسيًا", "Institutionally unaccepted"),
       "warning",
     ),
@@ -560,6 +567,9 @@ function render() {
       ),
       badge(route.permission || "super_admin", "warning"),
     );
+  } else if (!routeVisible(route, access) && route.kind !== "missing") {
+    root.append(empty(L("لا ميزات مفعّلة لهذه الصفحة", "This feature is not enabled"),
+      L("تحتاج تفعيل الميزة للجهة وصلاحية مناسبة للمستخدم.", "An organization entitlement and user permission are required."), "security"));
   } else if (route.kind === "missing") {
     root.append(
       empty(
@@ -581,6 +591,8 @@ function render() {
       toggleLanguage,
       toggleTheme,
       signOutLocal,
+      refreshAccess,
+      visibleRoute: path => { const item = routeAt(path)?.route; return Boolean(item && routeVisible(item, access)); },
     });
   }
   main.append(
@@ -666,6 +678,8 @@ async function start() {
         }).then((r) => r.json());
         api.demo(fixture);
         context = fixture.context;
+        access = {features: routes.map(r => r.feature).filter(Boolean), permissions: context.permissions,
+          super_admin: context.roles.includes("super_admin")};
         demo = true;
       } else
         toast(

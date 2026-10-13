@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 """G3 lifecycle acceptance: authorization, tariffs, eligibility, audit and approval."""
 from datetime import date
 from decimal import Decimal
@@ -28,7 +29,12 @@ def setup_actors(db):
     db.add(source);db.flush()
     authorization=WrittenAuthorization(organization_id=org.id,source_id=source.id,
         approved_by=actors[0].id,approved_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
-    db.add(authorization);db.commit()
+    db.add(authorization);db.flush()
+    from mcias.models import Role,Permission,UserRole,RolePermission
+    role=Role(code='SYN-contract-approver');permission=Permission(code='reference.approve')
+    db.add_all([role,permission]);db.flush()
+    db.add_all([UserRole(user_id=actors[3].id,role_id=role.id),RolePermission(role_id=role.id,permission_id=permission.id)])
+    db.flush();approve_fixture(db,org.id);db.commit()
     return org,actors,authorization
 
 def test_full_authorized_reference_lifecycle(db):

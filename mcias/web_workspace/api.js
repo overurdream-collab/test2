@@ -49,11 +49,14 @@ export class ApiClient {
   #epoch = 0;
   #controllers = new Set();
   #demo = null;
+  #featureData = false;
+  enableFeatureData() { this.#featureData = true; }
   onExpiry = () => {};
   setToken(value) {
     this.#token = value;
   }
   clear() {
+    this.#featureData = false;
     this.#token = null;
     this.#demo = null;
     this.#epoch++;
@@ -79,6 +82,8 @@ export class ApiClient {
         );
       return this.#demoResponse(path);
     }
+    if (this.#featureData && method === "GET" && path.startsWith("/api/v1/workspace/catalog/"))
+      path = path.replace("/api/v1/workspace/catalog/", "/api/v1/feature-data/catalog/");
     const epoch = this.#epoch,
       controller = new AbortController();
     this.#controllers.add(controller);

@@ -1,0 +1,75 @@
+name: Laptop Docker and Windows launcher
+on:
+  pull_request:
+    paths:
+      - 'deploy/*laptop*'
+      - 'mcias/seed/**'
+      - 'scripts/laptop.ps1'
+      - 'tests/test_laptop_setup.py'
+      - 'docs/WINDOWS_LAPTOP*'
+      - '.github/workflows/laptop.yml'
+  push:
+    branches: [main, feat/windows-laptop-testing]
+permissions:
+  contents: read
+jobs:
+  windows-launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Windows PowerShell 5.1 syntax, random secrets and private NTFS ACLs
+        shell: powershell
+        run: |
+          $errors = $null
+          $tokens = $null
+          $ast = [System.Management.Automation.Language.Parser]::ParseFile("$pwd/scripts/laptop.ps1", [ref]$tokens, [ref]$errors)
+          if ($errors.Count -ne 0) { throw 'PowerShell syntax validation failed.' }
+          foreach ($name in @('New-LocalHex','Protect-PrivateFolder','Protect-PrivateFile')) {
+            $definition = $ast.Find({param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $name}, $true)
+            . ([ScriptBlock]::Create($definition.Extent.Text))
+          }
+          $a = New-LocalHex
+          $b = New-LocalHex
+          if ($a -notmatch '^[0-9a-f]{64}$' -or $a -eq $b) { throw 'Random-secret generation failed.' }
+          $privatePath = Join-Path $env:RUNNER_TEMP 'mcias-laptop-acl-check'
+          $envPath = Join-Path $privatePath '.env'
+          New-Item -ItemType Directory -Path $privatePath -Force | Out-Null
+          try {
+            Protect-PrivateFolder
+            [IO.File]::WriteAllText($envPath, 'synthetic ACL test only')
+            Protect-PrivateFile
+            foreach ($path in @($privatePath,$envPath)) {
+              $acl = Get-Acl -LiteralPath $path
+              if (-not $acl.AreAccessRulesProtected) { throw 'Private ACL inheritance is not protected.' }
+              $rules = $acl.GetAccessRules($true,$true,[System.Security.Principal.SecurityIdentifier])
+              if ($rules.Count -ne 3) { throw 'Unexpected private ACL rule count.' }
+            }
+          } finally { Remove-Item -LiteralPath $privatePath -Recurse -Force }
+          Write-Host 'Windows syntax/randomness/private ACL checks passed. No credentials emitted.'
+  docker-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the actual PowerShell launcher with Linux Docker
+        shell: pwsh
+        run: |
+          ./scripts/laptop.ps1 -Action Start -Port 8068
+          $ready = Invoke-RestMethod -Uri http://127.0.0.1:8068/health/ready -TimeoutSec 10
+          if ($ready.status -ne 'ready') { throw 'Published loopback port is unavailable.' }
+      - name: Verify MFA and enter synthetic reference and claim inputs
+        shell: pwsh
+        run: |
+          docker compose --env-file deploy/laptop-private/.env -f deploy/compose.laptop.yml exec -T api python -m mcias.seed.laptop check --verify-mfa --verify-inputs
+          if ($LASTEXITCODE -ne 0) { throw 'MFA/input integration check failed.' }
+      - name: Repeat setup without changing accounts or data
+        shell: pwsh
+        run: |
+          docker compose --env-file deploy/laptop-private/.env -f deploy/compose.laptop.yml run --rm --no-deps setup
+          if ($LASTEXITCODE -ne 0) { throw 'Repeat setup failed.' }
+          ./scripts/laptop.ps1 -Action Check
+          ./scripts/laptop.ps1 -Action Stop
+          ./scripts/laptop.ps1 -Action Start
+      - name: Stop the synthetic local containers
+        if: always()
+        shell: pwsh
+        run: ./scripts/laptop.ps1 -Action Stop

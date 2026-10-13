@@ -1,4 +1,5 @@
 """G8 independent reviewer feedback; records quality of review signals, not fraud."""
+from mcias.services.transaction_lock import lock_record
 import re
 from hashlib import sha256
 from sqlalchemy import select
@@ -19,7 +20,7 @@ def _run(db, actor, run_id, lock=False):
         AnalysisRun.id==run_id,
         AnalysisRun.organization_id==actor.organization_id)
     if lock:
-        query=query.with_for_update()
+        lock_record(db,'analysis_run',actor.organization_id,run_id)
     run=db.scalar(query)
     if run is None:
         raise IntelligenceBlocked("G8 analysis run not accessible")

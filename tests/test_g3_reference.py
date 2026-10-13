@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 """G3 synthetic temporal contract acceptance tests."""
 from datetime import date
 from decimal import Decimal
@@ -45,7 +46,12 @@ def test_unapproved_precedence_or_missing_authorization_blocks_activation():
         user.organization_id=org.id
         proposal=ContractVersion(organization_id=org.id,provider_code="H1",version=1,
             effective_from=date(2027,1,1),effective_until=date(2028,1,1),status="draft")
-        db.add(proposal);db.commit()
+        db.add(proposal);db.flush()
+        from mcias.models import Role,Permission,UserRole,RolePermission
+        role=Role(code='SYN-contract-check');permission=Permission(code='reference.approve')
+        db.add_all([role,permission]);db.flush()
+        db.add_all([UserRole(user_id=user.id,role_id=role.id),RolePermission(role_id=role.id,permission_id=permission.id)])
+        db.flush();approve_fixture(db,org.id);db.commit()
         with pytest.raises(ReferenceConflict,match="precedence"):
             approve_contract(db,proposal.id,user,date(2026,10,10))
         with pytest.raises(ReferenceConflict,match="written authorization"):

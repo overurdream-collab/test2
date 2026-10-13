@@ -3,6 +3,7 @@
 Every re-audit references a separately generated G5 snapshot; never change the
 original claim, audit snapshot or governance decision.
 """
+from mcias.services.transaction_lock import lock_record
 from sqlalchemy import select
 from mcias.models import AuditLog
 from mcias.models_audit import AuditSnapshot
@@ -31,9 +32,10 @@ def open_case(db, actor, snapshot_id):
     if snap is None or snap.organization_id != actor.organization_id:
         raise GovernanceBlocked("audit snapshot not accessible")
     # Avoid multiple independent decisions for an identical G5 snapshot.
+    lock_record(db,'governance_snapshot',actor.organization_id,snap.id)
     existing = db.scalar(select(GovernanceCase).where(
         GovernanceCase.organization_id == actor.organization_id,
-        GovernanceCase.audit_snapshot_id == snap.id).with_for_update())
+        GovernanceCase.audit_snapshot_id == snap.id))
     if existing:
         return existing
     case = GovernanceCase(organization_id=actor.organization_id, claim_id=snap.claim_id,
@@ -62,9 +64,10 @@ def append_event(db, actor, case_id, kind, payload, *, evidence_document_id=None
     if (not actor.active or not actor.organization_id
         or not has_permission(db, actor, permission)):
         raise GovernanceBlocked("governance permission denied")
+    lock_record(db,'governance_case',actor.organization_id,case_id)
     case = db.scalar(select(GovernanceCase).where(
         GovernanceCase.id == case_id, GovernanceCase.organization_id == actor.organization_id
-    ).with_for_update())
+    ))
     if case is None:
         raise GovernanceBlocked("case not accessible")
     latest = db.scalar(select(GovernanceEvent).where(

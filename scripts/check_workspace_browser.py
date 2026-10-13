@@ -84,8 +84,12 @@ with sync_playwright() as p:
         request=route.request;path=request.url.split(args.base_url)[-1];requests.append({'path':path,'method':request.method,'authorization':request.headers.get('authorization')})
         if path=='/api/v1/auth/login':route.fulfill(json={'access_token':'synthetic-browser-session','expires_in':1800});return
         if path=='/api/v1/workspace/context':route.fulfill(json=user);return
+        if path=='/api/v1/me/features':
+            route.fulfill(json={'user':{'id':user['id'],'username':user['username']},'organization':user['organization'],
+                'permissions':user['permissions'],'roles':user['roles'],'expires_at':user['expires_at'],
+                'super_admin':False,'features':['dashboard.summary','claims.list','reports.list']});return
         if path.startswith('/api/v1/report-explorer/snapshots'):route.fulfill(json={'items':fixture['reports'],'has_more':False});return
-        if path.startswith('/api/v1/workspace/catalog/claims'):
+        if path.startswith(('/api/v1/workspace/catalog/claims','/api/v1/feature-data/catalog/claims')):
             claims=json.loads(json.dumps(fixture['catalog']['claims']));claims[0]['claim_reference']='<img src=x onerror=alert(1)>'
             route.fulfill(json={'items':claims,'has_more':False});return
         if path=='/api/v1/auth/logout':route.fulfill(status=204);return

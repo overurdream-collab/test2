@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 import json
 from datetime import datetime, timezone
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -24,6 +25,7 @@ def test_production_requires_valid_head_signature(tmp_path, monkeypatch):
         db.add(approval);db.flush()
         rule=RuleVersion(organization_id=org.id,rule_type="pricing",written_authorization_id=approval.id)
         db.add(rule);db.flush()
+        approve_fixture(db,org.id)
         monkeypatch.setenv("MCIAS_ENVIRONMENT","production")
         monkeypatch.delenv("MCIAS_AUTHORIZATION_REGISTRY",raising=False)
         assert not can_activate_rule(db,actor,rule)

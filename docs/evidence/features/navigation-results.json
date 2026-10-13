@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "default-deny empty navigation",
+    "real grant shows authorized route",
+    "temporal RBAC read bridge works",
+    "revocation blocks direct API and refresh removes route",
+    "no sensitive browser storage"
+  ],
+  "page_errors": [],
+  "synthetic": true,
+  "actual_http_and_postgresql": true
+}

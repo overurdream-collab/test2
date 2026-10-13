@@ -28,3 +28,5 @@ node_modules/
 .e2e-output/
 build/
 *.egg-info/
+
+deploy/laptop-private/

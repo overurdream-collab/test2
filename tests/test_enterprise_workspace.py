@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 """Workspace read-model privacy, tenant isolation, pagination and asset delivery."""
 import hashlib
 from datetime import datetime, timedelta, timezone
@@ -36,6 +37,7 @@ def client():
             db.add(ExtractedSourceRecord(id='record-'+suffix,job_id='job-'+suffix,locator={'row':1},values={'diagnosis':'NEVER-RETURN'}));db.flush()
             db.add(ClaimBatch(id='batch-'+suffix,organization_id='org-'+suffix,ingestion_document_id='doc-'+suffix,created_by='actor' if suffix=='a' else 'other',status='imported',source_sha256=suffix*64,record_count=1,imported_count=1));db.flush()
             db.add(ClaimEntry(id='claim-'+suffix,organization_id='org-'+suffix,batch_id='batch-'+suffix,extracted_record_id='record-'+suffix,source_locator={'row':1},source_values={'diagnosis':'NEVER-RETURN'},claim_reference='SYN-'+suffix,beneficiary_token='PRIVATE-TOKEN',provider_code='PRIVATE-PROVIDER',service_code='PRIVATE-SERVICE',service_date=datetime.now().date(),claimed_amount='0.0100',currency='LYD'))
+        approve_fixture(db)
         db.commit()
     def dependency():
         with Session(engine) as db:
@@ -87,9 +89,11 @@ def test_admin_user_records_need_role_and_permission_and_same_tenant(client):
         db.add(Permission(id='users.read',code='users.read'));db.add(RolePermission(role_id='read-role',permission_id='users.read'));db.commit()
     assert c.get('/api/v1/workspace/catalog/users',headers=HEADERS).status_code==403
     with Session(engine) as db:
-        db.add(Role(id='admin',code='super_admin'));db.add(UserRole(user_id='actor',role_id='admin'));db.commit()
+        # Institution-approved group authority replaces the old role bypass.
+        approve_fixture(db);db.commit()
     r=c.get('/api/v1/workspace/catalog/users',headers=HEADERS)
-    assert r.status_code==200 and len(r.json()['items'])==1
+    assert r.status_code==200 and all(u['organization_id']=='org-a' if 'organization_id' in u else True for u in r.json()['items'])
+    assert all(u['id']!='other' for u in r.json()['items'])
     assert 'password_hash' not in r.text
     assert c.get('/api/v1/workspace/users/other',headers=HEADERS).status_code==404
 
@@ -110,7 +114,7 @@ def test_every_declared_route_serves_public_safe_shell(route):
 
 def test_static_asset_whitelist_and_csp():
     c=TestClient(app)
-    for asset in ['app.js','ui.js','api.js','views.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2']:
+    for asset in ['app.js','ui.js','api.js','views.js','institution.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2']:
         r=c.get('/workspace-assets/'+asset)
         assert r.status_code==200 and r.headers['cache-control']=='no-store'
         assert "style-src 'self'" in r.headers['content-security-policy']
@@ -137,7 +141,7 @@ def test_raw_ingestion_requires_each_explicit_source_field_permission(client):
     with Session(engine) as db:
         code='medical_fields.diagnosis.read'
         db.add(Permission(id=code,code=code));db.flush()
-        db.add(RolePermission(role_id='read-role',permission_id=code));db.commit()
+        db.add(RolePermission(role_id='read-role',permission_id=code));db.flush();approve_fixture(db);db.commit()
     assert c.get(path,headers=HEADERS).json()['records'][0]['values']=={'diagnosis':'NEVER-RETURN'}
     assert c.get('/api/v1/ingestion/jobs/job-b/records',headers=HEADERS).status_code==403
 
@@ -155,7 +159,7 @@ def test_original_proposer_cannot_decide_after_another_reviewer_hold(client,kind
         snap=AuditSnapshot(id='snapshot-a',organization_id='org-a',claim_id='claim-a',policy_id='synthetic',policy_fingerprint='c'*64,calculation={'status':'calculated'},findings={},verification={'status':'verified'},created_by='reviewer')
         db.add(snap);db.flush()
         db.add(GovernanceCase(id='case-a',organization_id='org-a',claim_id='claim-a',audit_snapshot_id=snap.id,opened_by='reviewer'));db.flush()
-        db.add_all([GovernanceEvent(case_id='case-a',organization_id='org-a',version=1,kind='propose',actor_id='actor',snapshot_id=snap.id,payload={}),GovernanceEvent(case_id='case-a',organization_id='org-a',version=2,kind='hold',actor_id='reviewer',snapshot_id=snap.id,payload={})]);db.commit()
+        db.add_all([GovernanceEvent(case_id='case-a',organization_id='org-a',version=1,kind='propose',actor_id='actor',snapshot_id=snap.id,payload={}),GovernanceEvent(case_id='case-a',organization_id='org-a',version=2,kind='hold',actor_id='reviewer',snapshot_id=snap.id,payload={})]);db.flush();approve_fixture(db);db.commit()
     r=c.post('/api/v1/governance/cases/case-a/events',headers=HEADERS,json={'kind':kind,'payload':{}})
     assert r.status_code==403 and 'proposer cannot decide' in r.json()['detail']
     history=c.get('/api/v1/governance/cases/case-a',headers=HEADERS).json()
