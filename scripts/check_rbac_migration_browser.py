@@ -1,6 +1,10 @@
 """Synthetic Chromium -> limited-runtime HTTP -> PostgreSQL RBAC review cycle."""
-import argparse,importlib.util,json,os,time
+import argparse,importlib.util,json,os,sys,time
 from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+# Direct execution starts sys.path in scripts/, not the repository root.
+# Load this checkout and its synthetic fixtures without relying on PYTHONPATH.
+sys.path.insert(0,str(ROOT))
 from uuid import uuid4
 import pytest
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -12,8 +16,6 @@ from mcias.models import User,Role,UserRole,RolePermission,MFAFactor
 from mcias.mfa import generate_totp
 from mcias.services import rbac_provisioning as plans,authorization_service as authority
 from tests.authorization_fixtures import signed_fixture
-
-ROOT=Path(__file__).resolve().parents[1]
 
 def run(base_url,chromium):
     url=os.environ['MCIAS_E2E_DATABASE_URL']
