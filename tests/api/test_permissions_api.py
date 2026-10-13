@@ -2,12 +2,12 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 from mcias.models import Permission
 
-def test_permissions_catalog_is_exactly_approved_94_and_paginated(api):
+def test_permissions_catalog_is_exactly_95_with_existing_profile_and_paginated(api):
     with Session(api.engine) as db:
         db.add(Permission(code="legacy.unapproved.read")); db.commit()
     response = api.client.get("/api/v1/permissions?limit=100", headers=api.headers["admin"])
     assert response.status_code == 200
-    assert len(response.json()["items"]) == 94 and not response.json()["has_more"]
+    assert len(response.json()["items"]) == 95 and not response.json()["has_more"]
     assert all(p["code"] != "legacy.unapproved.read" for p in response.json()["items"])
 
 def test_me_requires_authentication_only_and_describes_own_context(api):

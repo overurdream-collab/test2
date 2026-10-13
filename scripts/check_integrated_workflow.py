@@ -79,6 +79,10 @@ def run(base_url, chromium=None):
         encrypted = AESGCM(bytes.fromhex(os.environ['MCIAS_MFA_ENCRYPTION_KEY'])).encrypt(
             nonce, secret, ids['operator']['id'].encode())
         db.add(MFAFactor(user_id=ids['operator']['id'], encrypted_secret=nonce + encrypted, enabled=True))
+        db.flush()
+        from mcias.seed.authorization import approve_synthetic
+        approve_synthetic(db,organization_id,'development')
+        approve_synthetic(db,foreign.id,'development')
         db.commit()
     checks = []
     errors = []

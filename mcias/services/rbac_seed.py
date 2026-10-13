@@ -1,4 +1,4 @@
-"""Explicit RBAC catalog initialization: 94 permissions and eight tenant groups.
+"""Explicit RBAC catalog initialization: 95 permissions and eight tenant groups.
 
 This is configuration, not synthetic claims or an institutional approval.
 It never assigns memberships or restores grants on existing groups.
@@ -9,8 +9,10 @@ from sqlalchemy import select
 
 from mcias.models import Group, GroupPermission, Organization, Permission
 from mcias.services import rbac_service as rbac
+from mcias.services.authorization_service import allowed_in_group
 
 _CATALOG = {
+    "profile": "read",
     "system": "read configure backup restore audit_log.read audit_log.export health.read feature_flags.manage",
     "organizations": "read create update deactivate features.manage settings.manage",
     "users": "read create update close reopen reset_password mfa.manage permissions.grant permissions.revoke",
@@ -30,6 +32,7 @@ _CATALOG = {
     "retention": "read archive",
 }
 _LABELS = {
+    "profile": ("الملف الشخصي", "Profile"),
     "system": ("النظام", "System"), "organizations": ("الجهات", "Organizations"),
     "users": ("المستخدمون", "Users"), "groups": ("المجموعات", "Groups"),
     "permissions": ("الصلاحيات", "Permissions"), "reference": ("البيانات المرجعية", "Reference data"),
@@ -86,7 +89,7 @@ def get_default_groups():
     codes = [permission["code"] for permission in get_all_permissions()]
     viewer_exclusions = {"reports.medical.read", "reports.beneficiary.read", "reference.beneficiaries.read"}
     definitions = [
-        ("admin", "مدير الجهة", "Entity Admin", [c for c in codes if not c.startswith(("system.", "organizations."))]),
+        ("admin", "مدير الجهة", "Entity Admin", [c for c in codes if allowed_in_group(c,"institution_admin")]),
         ("reference_manager", "مدير المراجع", "Reference Manager", [c for c in codes if c.startswith("reference.")]),
         ("ingestion_operator", "مشغل الاستيعاب", "Ingestion Operator", [c for c in codes if c.startswith("ingestion.")]),
         ("claims_reviewer", "مراجع المطالبات", "Claims Reviewer", ["claims.read", "claims.review", "audit.read", "reports.read"]),
@@ -128,11 +131,13 @@ def seed_organization(db, organization_id, created_by):
                 continue
             group = Group(organization_id=organization_id, code=definition["code"],
                 name_ar=definition["name_ar"], name_en=definition["name_en"], is_system=True,
-                status="open", effective_from=today, version=1, created_by=actor.id)
+                status="open", effective_from=today, version=1, created_by=actor.id,
+                management_scope="institution_admin" if definition["code"]=="admin" else "functional")
             db.add(group)
             db.flush()
             counts["groups_created"] += 1
             for code in definition["permissions"]:
+                if not allowed_in_group(code,group.management_scope):continue
                 permission = catalog[code]
                 record = GroupPermission(organization_id=organization_id, group_id=group.id,
                     permission_id=permission.id, status="open", effective_from=today, version=1, granted_by=actor.id)

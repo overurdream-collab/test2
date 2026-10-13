@@ -48,26 +48,25 @@ def test_user_permissions_returns_effective_catalog(api):
     assert codes == sorted(set(codes)) and "users.read" in codes and "reports.medical.read" not in codes
 
 def test_grant_user_permission_conflict_and_persistence(api):
-    permission_id = api.permissions["claims.read"]
-    path = f"/api/v1/users/{api.ids['none']}/permissions"
-    payload = {"permission_id": permission_id}
-    response = api.client.post(path, json=payload, headers=api.headers["admin"])
-    assert response.status_code == 201, response.text
+    path=f"/api/v1/users/{api.ids['none']}/permissions"
+    payload={'permission_id':api.permissions['claims.read']}
+    assert api.client.post(path,json=payload,headers=api.headers['admin']).status_code==403
+    assert api.client.post(path,json=payload,headers=api.headers['root']).status_code==409
     with Session(api.engine) as db:
-        assert db.get(UserPermission, response.json()["id"]).granted_by == api.ids["admin"]
-    assert api.client.post(path, json=payload, headers=api.headers["admin"]).status_code == 409
+        assert db.scalar(select(UserPermission.id).where(UserPermission.user_id==api.ids['none'])) is None
+
 
 def test_revoke_user_permission_closes_without_delete(api):
-    permission_id = api.permissions["users.read"]
-    path = f"/api/v1/users/{api.ids['none']}/permissions"
-    grant = api.client.post(path, json={"permission_id": permission_id}, headers=api.headers["admin"])
-    assert grant.status_code == 201
-    assert api.client.get("/api/v1/users", headers=api.headers["none"]).status_code == 200
-    response = api.client.post(path + f"/{permission_id}/revoke", json={"reason": "سحب اختباري"}, headers=api.headers["admin"])
-    assert response.status_code == 200 and response.json()["status"] == "closed"
-    assert api.client.get("/api/v1/users", headers=api.headers["none"]).status_code == 403
+    # Historical individual grants remain inspectable and revocable, never active.
+    permission_id=api.permissions['users.read']
     with Session(api.engine) as db:
-        assert db.get(UserPermission, grant.json()["id"]).status == "closed"
+        record=UserPermission(organization_id=api.organization_id,user_id=api.ids['none'],permission_id=permission_id,granted_by=api.ids['root'],effective_from=date.today())
+        db.add(record);db.commit();record_id=record.id
+    assert api.client.get('/api/v1/users',headers=api.headers['none']).status_code==403
+    response=api.client.post(f"/api/v1/users/{api.ids['none']}/permissions/{permission_id}/revoke",json={'reason':'سحب تاريخي'},headers=api.headers['root'])
+    assert response.status_code==200,response.text
+    with Session(api.engine) as db:assert db.get(UserPermission,record_id).status=='closed'
+
 
 def test_group_transfer_is_atomic_if_destination_membership_conflicts(api):
     user_id = api.ids["none"]

@@ -15,7 +15,7 @@ from sqlalchemy import create_engine, event, select
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 from mcias.app import app, get_db
-from mcias.models import Base, Group, MFAFactor, Organization, Permission, Role, SessionToken, User, UserRole
+from mcias.models import UserGroup, Base, Group, MFAFactor, Organization, Permission, Role, SessionToken, User, UserRole
 from mcias.security import hash_password
 from mcias.services.rbac_seed import seed_organization
 from mcias.services.rbac_service import add_user_to_group
@@ -89,8 +89,11 @@ def api_factory(monkeypatch, synthetic_password_hash):
                 seed_organization(db, org.id, ctx.ids["root"])
                 ctx.groups = {g.code: g.id for g in db.scalars(select(Group).where(Group.organization_id == org.id))}
                 ctx.permissions = {p.code: p.id for p in db.scalars(select(Permission))}
-                add_user_to_group(db, ctx.ids["admin"], ctx.groups["admin"], ctx.ids["root"])
-                add_user_to_group(db, ctx.ids["viewer"], ctx.groups["viewer"], ctx.ids["root"])
+                db.add(UserGroup(organization_id=org.id,user_id=ctx.ids["admin"],group_id=ctx.groups["admin"],added_by=ctx.ids["root"],effective_from=date.today()))
+                db.add(UserGroup(organization_id=org.id,user_id=ctx.ids["viewer"],group_id=ctx.groups["viewer"],added_by=ctx.ids["root"],effective_from=date.today()))
+                db.flush()
+                from tests.authorization_fixtures import approve_fixture
+                approve_fixture(db,org.id,ctx.ids["root"])
             db.commit()
 
         def database():

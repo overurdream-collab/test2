@@ -68,25 +68,7 @@ def change_user_group(db, user_id, from_group_id, to_group_id, changed_by, reaso
 
 
 def grant_user_permission(db, user_id, permission_id, granted_by):
-    today = date.today()
-    with rbac._atomic(db):
-        target = db.get(User, user_id)
-        if target is None:
-            raise ValueError("User does not exist")
-        actor = rbac._actor(db, granted_by, target.organization_id, ("users.permissions.grant",), today)
-        user = rbac._user(db, user_id, actor.organization_id, today)
-        rbac._protect_user(db, actor, user)
-        permission = rbac._permission(db, permission_id)
-        rbac._delegate(db, actor, (permission.code,), today)
-        rbac._no_overlap(db, UserPermission, user.organization_id, today,
-                         user_id=user.id, permission_id=permission.id)
-        record = UserPermission(organization_id=user.organization_id, user_id=user.id,
-            permission_id=permission.id, granted_by=actor.id, status="open", effective_from=today, version=1)
-        db.add(record)
-        db.flush()
-        rbac._audit(db, actor, "user_permission.grant", "user_permission", record,
-                    after={"user_id": user.id, "permission_id": permission.id, "status": "open"})
-        return record
+    raise ValueError("Individual functional grants are retired; assign an institution-approved group")
 
 
 def revoke_user_permission(db, user_id, permission_id, closed_by, reason):

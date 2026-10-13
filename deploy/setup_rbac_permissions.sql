@@ -31,6 +31,8 @@ GRANT UPDATE (status, effective_to, closed_by, closed_at, close_reason)
 -- This grant also permits changing the organization name; it grants no id update.
 GRANT UPDATE (name) ON public.organizations TO :"runtime_user";
 
+GRANT SELECT, INSERT ON public.rbac_provisionings, public.rbac_grant_origins TO :"runtime_user";
+
 COMMIT;
 \echo 'RBAC UPDATE permissions granted to' :"runtime_user"
 \else

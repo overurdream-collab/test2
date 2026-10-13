@@ -12,13 +12,14 @@ from cryptography.exceptions import InvalidTag
 import os
 from mcias.security import verify_password, new_session_token, session_not_expired
 from mcias.policy import has_permission
+from mcias.services.authorization_service import live_user
 
 def authenticate(db: Session, username: str, password: str, totp_code: str | None = None):
     identity_hash = hashlib.sha256(username.strip().casefold().encode()).hexdigest()
     if blocked(db, identity_hash):
         raise HTTPException(status_code=429, detail="login temporarily restricted")
     user = db.scalar(select(User).where(User.username == username, User.active.is_(True)))
-    if user is None or not verify_password(password, user.password_hash):
+    if not live_user(user) or not verify_password(password, user.password_hash):
         record_failure(db, identity_hash)
         raise HTTPException(status_code=401, detail="invalid credentials")
     privileged = db.scalar(select(Role.id).join(UserRole, UserRole.role_id == Role.id).where(UserRole.user_id == user.id, Role.code == "super_admin")) is not None
@@ -57,7 +58,7 @@ def resolve_user(db: Session, authorization: str | None):
     if session is None or session.revoked_at is not None or not session_not_expired(session.expires_at):
         raise HTTPException(status_code=401, detail="invalid session")
     user = db.get(User, session.user_id)
-    if user is None or not user.active:
+    if not live_user(user):
         raise HTTPException(status_code=401, detail="invalid session")
     return user, session
 

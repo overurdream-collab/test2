@@ -70,18 +70,26 @@ class AuthorizationIn(BaseModel):
 class ReviewIn(BaseModel):
     rationale: str = Field(min_length=20, max_length=2000)
 
+def _effective_permission(db,user,permission):
+    # Explicit contract-approval code compatibility, within the same group authority.
+    if permission == 'reference.approve':
+        from mcias.services.authorization_service import check_permission_unified
+        if check_permission_unified(db,user,'reference.contracts.approve'):
+            return 'reference.contracts.approve'
+    return permission
+
 def _actor(db, authorization, permission):
     user, _ = resolve_user(db, authorization)
     if not user.organization_id:
         raise HTTPException(403, "organization required")
-    require_organization(db, user, user.organization_id, permission)
+    require_organization(db, user, user.organization_id, _effective_permission(db,user,permission))
     return user
 
 def _contract(db, user, contract_id, permission):
     contract = db.get(ContractVersion, contract_id)
     if contract is None:
         raise HTTPException(404, "contract not found")
-    require_organization(db, user, contract.organization_id, permission)
+    require_organization(db, user, contract.organization_id, _effective_permission(db,user,permission))
     return contract
 
 def _perform(db, operation):

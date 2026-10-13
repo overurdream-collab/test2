@@ -19,7 +19,7 @@ def list_groups(offset: int = Query(0, ge=0), limit: int = Query(25, ge=1, le=10
 @router.post("", response_model=GroupRead, status_code=201)
 def create_group(payload: GroupCreate, actor=Depends(deps.require_permission("groups.create")), db=Depends(deps.get_db)):
     return deps.mutate(db, lambda: groups.create_group(db, actor.organization_id, payload.code,
-        payload.name_ar, actor.id, payload.name_en, payload.description), GroupRead.model_validate)
+        payload.name_ar, actor.id, payload.name_en, payload.description, payload.management_scope), GroupRead.model_validate)
 
 @router.get("/{group_id}", response_model=GroupDetail)
 def get_group(group_id: UUID, member_offset: int = Query(0, ge=0), member_limit: int = Query(25, ge=1, le=100),
@@ -41,7 +41,6 @@ def add_member(group_id: UUID, payload: MemberAdd,
     group = queries.scoped(db, Group, group_id, actor)
     user = queries.scoped(db, User, payload.user_id, actor)
     deps.protect_user(db, actor, user)
-    deps.delegate(db, actor, rbac._group_codes(db, group, date.today()))
     return deps.mutate(db, lambda: rbac.add_user_to_group(db, user.id, group.id, actor.id), UserGroupRead.model_validate)
 
 @router.post("/{group_id}/members/{user_id}/remove", response_model=UserGroupRead)

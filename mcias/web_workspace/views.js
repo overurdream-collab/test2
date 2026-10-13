@@ -25,6 +25,7 @@ import {
   donut,
   preferences,
 } from "./ui.js";
+import { rbacProvisioning } from "./rbac_provisioning.js";
 import { featuresManagement } from "./feature_management.js";
 import { inputList } from "./input_list.js";
 const agentNames = {
@@ -60,6 +61,7 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "rbac-provisioning") { rbacProvisioning(ctx); return; }
   if (kind === "input-list") {
     inputList(ctx);
     return;

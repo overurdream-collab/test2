@@ -216,9 +216,12 @@ app.add_middleware(AuditMiddleware)
 
 @app.exception_handler(RequestValidationError)
 async def safe_rbac_validation(request: Request, exc: RequestValidationError):
-    if request.url.path.startswith(("/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/", "/api/v1/admin/features", "/api/v1/organizations/", "/api/v1/me/features", "/api/v1/registry/")):
+    if request.url.path.startswith(("/api/v1/users", "/api/v1/groups", "/api/v1/permissions", "/api/v1/rbac/", "/api/v1/admin/features", "/api/v1/admin/rbac/", "/api/v1/organizations/", "/api/v1/me/features", "/api/v1/registry/")):
         return JSONResponse(status_code=422, content={"detail": [
             {key: error[key] for key in ("loc", "msg", "type") if key in error}
             for error in exc.errors()
         ]})
     return await request_validation_exception_handler(request, exc)
+
+from mcias.api.rbac_provisioning_routes import router as rbac_provisioning_router
+app.include_router(rbac_provisioning_router)

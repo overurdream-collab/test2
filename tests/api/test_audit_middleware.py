@@ -49,7 +49,7 @@ def test_auxiliary_audit_failure_preserves_original_http_result(api, monkeypatch
         yield
     monkeypatch.setattr(audit, "open_db", unavailable)
     with caplog.at_level(logging.ERROR):
-        response = api.client.post("/api/v1/groups", json={"code": "audit_failure", "name_ar": "اختبار"}, headers=api.headers["admin"])
+        response = api.client.post("/api/v1/groups", json={"code": "audit_failure", "name_ar": "اختبار"}, headers=api.headers["root"])
     assert response.status_code == 201
     assert "HTTP audit persistence unavailable" in caplog.text and "SYN-private-DB-detail" not in caplog.text
 
@@ -60,7 +60,7 @@ def test_failed_business_commit_returns_503_and_rolls_back(api, monkeypatch):
             raise OperationalError("SYN-private-SQL", {}, RuntimeError("SYN-private-DB-detail"))
         return original(db)
     monkeypatch.setattr(Session, "commit", fail_business_commit)
-    response = api.client.post("/api/v1/users", json={"username": "SYN-commit-fails", "password": api.password}, headers=api.headers["admin"])
+    response = api.client.post("/api/v1/users", json={"username": "SYN-commit-fails", "password": api.password}, headers=api.headers["root"])
     assert response.status_code == 503, response.text
     assert "SYN-private" not in response.text
     with Session(api.engine) as db:

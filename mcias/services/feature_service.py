@@ -3,10 +3,10 @@ from datetime import date, datetime, timezone
 from hashlib import sha256
 import json
 from sqlalchemy import func, select
-from mcias.models import AuditLog, Organization, Permission, RolePermission, User, UserRole
+from mcias.models import AuditLog, Organization, User
 from mcias.models_features import FeatureCatalog, OrganizationFeature
 from mcias.services import rbac_service as rbac
-from mcias.policy import has_permission
+from mcias.services.authorization_service import check_permission_unified
 
 READ_PERMISSIONS = {
     "dashboard.summary": ("reports.read",),
@@ -36,16 +36,12 @@ def is_super_admin(db, user):
 
 def permitted(db, user, *codes):
     return rbac._live_user(user, date.today()) and any(
-        rbac.check_permission(db, user.id, code) or has_permission(db, user, code) for code in codes)
+        check_permission_unified(db, user, code) for code in codes)
 
 def permission_codes(db, user):
-    if not rbac._live_user(user, date.today()):
-        return []
-    ids = rbac.list_user_permissions(db, user.id)
-    current = set(db.scalars(select(Permission.code).where(Permission.id.in_(ids))))
-    current.update(db.scalars(select(Permission.code).join(RolePermission).join(UserRole,
-        UserRole.role_id == RolePermission.role_id).where(UserRole.user_id == user.id)))
-    return sorted(current)
+    from mcias.services.authorization_service import permission_codes as current_codes
+    return current_codes(db,user)
+
 
 def list_features(db):
     return list(db.scalars(select(FeatureCatalog).order_by(FeatureCatalog.display_order, FeatureCatalog.code)))

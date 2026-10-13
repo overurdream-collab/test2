@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 from datetime import datetime, timezone
 from decimal import Decimal
 import pytest
@@ -31,7 +32,7 @@ def test_t06_exclusion_edit_default_deny(db):
 
 def test_t07_activation_requires_written_authorization(db):
     org, user, source = setup(db)
-    role = Role(code="super_admin")
+    role = Role(code="functional-activator")
     permission = Permission(code="rules.activate")
     db.add_all([role, permission]); db.flush()
     db.add_all([UserRole(user_id=user.id, role_id=role.id), RolePermission(role_id=role.id, permission_id=permission.id)])
@@ -45,6 +46,7 @@ def test_t07_activation_requires_written_authorization(db):
     approver = User(username="org-head-test", password_hash="test-only", organization_id=org.id)
     db.add(approver); db.flush()
     approval.approved_by = approver.id
+    approve_fixture(db,org.id)
     assert can_activate_rule(db, user, rule)
     approver.active = False
     db.flush()

@@ -149,6 +149,7 @@ class Group(Base):
     name_en: Mapped[str | None] = mapped_column(String(200), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_system: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"), nullable=False)
+    management_scope: Mapped[str] = mapped_column(String(30), default='functional', server_default='functional', nullable=False)
     status: Mapped[str] = mapped_column(String(20), default="open", server_default="open", nullable=False)
     effective_from: Mapped[date] = mapped_column(Date, nullable=False)
     effective_to: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -160,6 +161,7 @@ class Group(Base):
     close_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     __table_args__ = (
         Index("ix_groups_org", "organization_id"),
+        CheckConstraint("management_scope IN ('functional','institution_admin')", name='ck_group_management_scope'),
         Index("ix_groups_status", "status"),
         UniqueConstraint("organization_id", "code", "effective_from", name="uq_groups_org_code_from"),
         CheckConstraint("status IN ('open', 'closed')", name="ck_groups_status"),

@@ -73,6 +73,7 @@ def grant_runtime(engine, password):
         connection.exec_driver_sql('GRANT CONNECT ON DATABASE mcias_laptop_e2e TO laptop_runtime')
         connection.exec_driver_sql('GRANT USAGE ON SCHEMA public TO laptop_runtime')
         connection.exec_driver_sql('GRANT SELECT ON ALL TABLES IN SCHEMA public TO laptop_runtime')
+        import mcias.models_authorization  # reviewed grant inserts
         import mcias.models_g8  # register all intelligence insert grants
         import mcias.models_operations  # register limiter inserts before granting
         import mcias.models_audit_policy
@@ -110,6 +111,9 @@ def setup(env):
                     actor=db.get(User,item['id'])
                     if not actor or actor.organization_id!=seed['organization_id'] or not verify_password(item['password'],actor.password_hash):
                         raise ValueError('private credentials do not match seeded accounts; do not overwrite keys/state')
+                from mcias.seed.authorization import approve_synthetic
+                approve_synthetic(db,seed['organization_id'],'development')
+                db.commit()
                 return {'status':'READY','synthetic':True,'reused':True}
             if db.get(User,identifier('laptop-admin')):
                 raise ValueError('account exists without private state; operator recovery required')
@@ -138,6 +142,8 @@ def setup(env):
                     'totp_secret_base32':base64.b32encode(secret).decode().rstrip('=')})
             db.add(AuditLog(actor_id=accounts[0]['id'],action='synthetic_laptop_bootstrap',resource_type='test_environment',details={'synthetic':True}))
             db.flush()
+            from mcias.seed.authorization import approve_synthetic
+            approve_synthetic(db,seed['organization_id'],'development')
             private_json(state,{'synthetic':True,'organization_id':seed['organization_id'],'accounts':accounts})
             db.commit()
         return {'status':'READY','synthetic':True,'reused':False}

@@ -14,7 +14,8 @@ from mcias.models import (
     AuditLog, Group, GroupPermission, MFAFactor, Permission, Role,
     User, UserGroup, UserPermission, UserRole,
 )
-from mcias.policy import has_permission as _legacy_permission
+from mcias.services import authorization_service as authority
+from mcias.models_authorization import RbacGrantOrigin, RbacProvisioning
 
 
 def _live(model, today):
@@ -41,45 +42,18 @@ def _atomic(db):
         raise ValueError("RBAC conflict: duplicate, overlapping period or invalid reference") from exc
 
 
-def _permission_query(user, today):
-    individual = select(UserPermission.permission_id).where(
-        UserPermission.user_id == user.id,
-        UserPermission.organization_id == user.organization_id,
-        *_live(UserPermission, today),
-    )
-    grouped = select(GroupPermission.permission_id).join(
-        Group, Group.id == GroupPermission.group_id,
-    ).join(UserGroup, UserGroup.group_id == Group.id).where(
-        UserGroup.user_id == user.id,
-        UserGroup.organization_id == user.organization_id,
-        Group.organization_id == user.organization_id,
-        GroupPermission.organization_id == user.organization_id,
-        *_live(UserGroup, today), *_live(Group, today), *_live(GroupPermission, today),
-    )
-    return individual.union(grouped)
-
-
 def _owns(db, user, code, today):
-    if not _live_user(user, today) or not user.organization_id:
-        return False
-    return db.scalar(select(Permission.id).where(
-        Permission.code == code, Permission.id.in_(_permission_query(user, today)),
-    ).limit(1)) is not None
+    return authority.check_permission_unified(db, user, code)
 
 
 def check_permission(db, user_id, permission_code):
-    """Check only current individual/group grants, with all tenant links bound."""
-    return _owns(db, db.get(User, user_id), permission_code, date.today())
+    return authority.check_permission_unified(db, db.get(User, user_id), permission_code)
 
 
 def list_user_permissions(db, user_id):
-    today = date.today()
-    user = db.get(User, user_id)
-    if not _live_user(user, today) or not user.organization_id:
-        return []
-    return list(db.scalars(select(Permission.id).where(
-        Permission.id.in_(_permission_query(user, today)),
-    ).distinct().order_by(Permission.id)))
+    user=db.get(User,user_id)
+    codes=authority.permission_codes(db,user)
+    return list(db.scalars(select(Permission.id).where(Permission.code.in_(codes)).order_by(Permission.id)))
 
 
 def _super_role(db, user):
@@ -98,10 +72,10 @@ def _actor(db, actor_id, organization_id, permissions, today):
     actor = db.scalar(select(User).where(User.id == actor_id).with_for_update())
     if not _live_user(actor, today) or not organization_id or actor.organization_id != organization_id:
         raise ValueError("An active, effective actor in the same organization is required")
-    if _technical_admin(db, actor):
+    if not permissions and _technical_admin(db, actor):
         return actor
     for code in permissions:
-        if not (_owns(db, actor, code, today) or _legacy_permission(db, actor, code)):
+        if not (_owns(db, actor, code, today)):
             raise ValueError("Actor lacks required permission: " + code)
     return actor
 
@@ -144,7 +118,7 @@ def _delegate(db, actor, codes, today):
         if code.startswith(("system.", "organizations.")):
             raise ValueError("Platform permissions cannot be assigned to institutional users or groups")
         if not technical_admin and not (
-            _owns(db, actor, code, today) or _legacy_permission(db, actor, code)
+            _owns(db, actor, code, today)
         ):
             raise ValueError("Actor cannot delegate a permission they do not hold: " + code)
 
@@ -203,21 +177,7 @@ def _audit(db, actor, action, resource_type, record, before=None, after=None):
 
 
 def grant_permission_to_group(db, group_id, permission_id, granted_by):
-    today = date.today()
-    with _atomic(db):
-        group = _group(db, group_id, today)
-        actor = _actor(db, granted_by, group.organization_id, ("groups.permissions.grant",), today)
-        permission = _permission(db, permission_id)
-        _delegate(db, actor, (permission.code,), today)
-        _no_overlap(db, GroupPermission, group.organization_id, today,
-                    group_id=group.id, permission_id=permission.id)
-        record = GroupPermission(organization_id=group.organization_id, group_id=group.id,
-            permission_id=permission.id, effective_from=today, status="open", version=1, granted_by=actor.id)
-        db.add(record)
-        db.flush()
-        _audit(db, actor, "group_permission.grant", "group_permission", record,
-               after={"group_id": group.id, "permission_id": permission.id, "status": "open"})
-        return record
+    raise ValueError("Group configuration requires an institution-signed provisioning plan")
 
 
 def revoke_permission_from_group(db, group_id, permission_id, closed_by, reason):
@@ -241,12 +201,24 @@ def add_user_to_group(db, user_id, group_id, added_by):
         actor = _actor(db, added_by, group.organization_id, ("groups.members.add",), today)
         user = _user(db, user_id, group.organization_id, today)
         _protect_user(db, actor, user)
-        _delegate(db, actor, _group_codes(db, group, today), today)
+        if not authority.institution_admin(db,actor):
+            raise ValueError("Only institution administration can assign approved functional groups")
+        if actor.id == user.id:
+            raise ValueError("Self-assignment is forbidden")
+        if authority.technical_identity(db,user):
+            raise ValueError("Technical accounts cannot receive functional memberships")
+        candidates=list(db.scalars(select(RbacProvisioning).where(RbacProvisioning.organization_id==group.organization_id).order_by(RbacProvisioning.created_at.desc())))
+        provision=next((p for p in candidates if authority.valid_provisioning(p) and any(g['id']==group.id and g['scope']==group.management_scope for g in p.manifest.get('groups',[]))),None)
+        if provision is None:
+            raise ValueError("Group has no trusted institutional approval")
         _no_overlap(db, UserGroup, group.organization_id, today, user_id=user.id, group_id=group.id)
         record = UserGroup(organization_id=group.organization_id, user_id=user.id, group_id=group.id,
             effective_from=today, status="open", version=1, added_by=actor.id)
         db.add(record)
         db.flush()
+        db.add(RbacGrantOrigin(organization_id=group.organization_id,provisioning_id=provision.id,
+            user_group_id=record.id,actor_id=actor.id,source_type='institution_assignment',
+            source_reference={'group_id':group.id,'user_id':user.id}))
         _audit(db, actor, "user_group.add", "user_group", record,
                after={"user_id": user.id, "group_id": group.id, "status": "open"})
         return record

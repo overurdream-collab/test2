@@ -17,7 +17,8 @@ with sync_playwright() as pw:
     admin=next(g for g in groups if g['code']=='admin')
     root=request.get(args.base_url+'/api/v1/me/features',headers=fixture['headers']['root']).json()['user']
     membership=request.post(args.base_url+f"/api/v1/groups/{admin['id']}/members",headers=fixture['headers']['root'],data={'user_id':root['id']})
-    assert membership.status in (200,201,409)
+    # Technical administrators cannot assign themselves functional memberships.
+    assert membership.status==403
     page=browser.new_page(viewport={'width':1440,'height':1000});page.on('pageerror',lambda error:errors.append(str(error)))
     page.goto(args.base_url+'/institution/providers/hospitals')
     page.get_by_label('اسم المستخدم',exact=True).fill(fixture['username']);page.get_by_label('كلمة المرور',exact=True).fill(fixture['password'])

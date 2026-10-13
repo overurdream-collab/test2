@@ -35,6 +35,7 @@ services:
       MCIAS_STORAGE_KEY: ${LAPTOP_STORAGE_KEY:?required}
       MCIAS_STORAGE_DIR: /var/lib/mcias/sources
       MCIAS_LAPTOP_STATE_DIR: /var/lib/mcias/state
+      MCIAS_RBAC_TRUST_REGISTRY: /var/lib/mcias/state/synthetic-rbac-trust.json
       MCIAS_ENABLE_UI_DEMO: 'true'
       MCIAS_MALWARE_SCAN: disabled
       MCIAS_RELEASE_COMMIT: ${LAPTOP_RELEASE_COMMIT:?required}

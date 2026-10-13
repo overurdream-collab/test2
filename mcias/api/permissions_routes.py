@@ -19,8 +19,7 @@ def list_permissions(offset: int = Query(0, ge=0), limit: int = Query(25, ge=1, 
 @router.get("/me", response_model=PermissionContext)
 def my_permissions(request: Request, actor=Depends(deps.require_auth), db=Depends(deps.get_db)):
     effective_ids = rbac.list_user_permissions(db, actor.id)
-    permissions = list(db.scalars(select(Permission).where(Permission.id.in_(effective_ids),
-        Permission.code.in_(queries.CATALOG_CODES)).order_by(Permission.code)))
+    permissions = list(db.scalars(select(Permission).where(Permission.id.in_(effective_ids)).order_by(Permission.code)))
     roles = list(db.scalars(select(Role.code).join(UserRole, UserRole.role_id == Role.id).where(
         UserRole.user_id == actor.id).distinct().order_by(Role.code)))
     return PermissionContext(user=UserRead.model_validate(actor), permission_ids=[p.id for p in permissions],

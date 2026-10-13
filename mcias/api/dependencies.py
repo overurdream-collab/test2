@@ -2,14 +2,8 @@ from datetime import date
 from fastapi import Depends, Header, HTTPException, Request
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from mcias.auth import resolve_user
-from mcias.policy import has_permission
+from mcias.services.authorization_service import check_permission_unified
 from mcias.services import rbac_service as rbac
-
-TECHNICAL_RBAC = frozenset({
-    "users.read", "users.create", "users.close", "users.permissions.grant", "users.permissions.revoke",
-    "groups.read", "groups.create", "groups.close", "groups.members.add", "groups.members.remove",
-    "groups.permissions.grant", "groups.permissions.revoke", "permissions.read",
-})
 
 def open_db():
     # Deferred import keeps standalone router imports free of app/router cycles.
@@ -37,10 +31,8 @@ def require_auth(request: Request, authorization: str | None = Header(default=No
 
 def require_permission(*codes):
     def guard(actor=Depends(require_auth), db=Depends(get_db)):
-        if rbac._technical_admin(db, actor) and all(code in TECHNICAL_RBAC for code in codes):
-            return actor
         for code in codes:
-            if not (rbac.check_permission(db, actor.id, code) or has_permission(db, actor, code)):
+            if not check_permission_unified(db, actor, code):
                 raise HTTPException(403, "permission denied")
         return actor
     return guard

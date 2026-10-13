@@ -6,7 +6,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from sqlalchemy import select
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import Session
-from mcias.models import MFAFactor
+from datetime import date
+from mcias.models import MFAFactor, UserGroup
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -26,6 +27,10 @@ def run(base_url,chromium):
             factor=db.scalar(select(MFAFactor).where(MFAFactor.user_id==actor.ids['root']))
             nonce=os.urandom(12)
             factor.encrypted_secret=nonce+AESGCM(server_key).encrypt(nonce,actor.mfa_secret,actor.ids['root'].encode())
+            db.add(UserGroup(organization_id=actor.organization_id,user_id=actor.ids['root'],group_id=actor.groups['admin'],added_by=actor.ids['root'],effective_from=date.today()))
+            db.flush()
+            from tests.authorization_fixtures import approve_fixture
+            approve_fixture(db,actor.organization_id,actor.ids['root'])
             db.commit()
         fixture={'username':actor.root_username,'password':actor.password,'organization_id':actor.organization_id,
             'other_organization_id':actor.other_organization_id,'headers':actor.headers,'mfa_secret':actor.mfa_secret.hex()}

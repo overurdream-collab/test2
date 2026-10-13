@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -54,6 +55,7 @@ def test_t07_requires_distinct_active_approver(env):
         authorization = WrittenAuthorization(organization_id=org.id, source_id=source.id, approved_by=actor.id, approved_at=datetime.now(timezone.utc))
         db.add(authorization); db.flush()
         db.get(RuleVersion, rule_id).written_authorization_id = authorization.id
+        approve_fixture(db)
         db.commit()
     token = client.post("/api/v1/auth/login", json={"username":"operator","password":"synthetic-long-password"}).json()["access_token"]
     h = {"Authorization":"Bearer "+token}
@@ -63,6 +65,7 @@ def test_t07_requires_distinct_active_approver(env):
         approver = User(username="approver", password_hash="synthetic-only", organization_id=org.id)
         db.add(approver); db.flush()
         db.query(WrittenAuthorization).first().approved_by = approver.id
+        approve_fixture(db)
         db.commit()
     response = client.post(f"/api/v1/rules/{rule_id}/activate", headers=h)
     assert response.status_code == 200
@@ -94,6 +97,7 @@ def test_production_api_denies_unsigned_rule_activation(env, monkeypatch):
         approval = WrittenAuthorization(organization_id=org.id, source_id=source.id, approved_by=head.id, approved_at=datetime.now(timezone.utc))
         db.add(approval); db.flush()
         db.get(RuleVersion, rule_id).written_authorization_id = approval.id
+        approve_fixture(db)
         db.commit()
     monkeypatch.setenv("MCIAS_ENVIRONMENT", "production")
     monkeypatch.delenv("MCIAS_AUTHORIZATION_REGISTRY", raising=False)

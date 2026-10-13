@@ -11,6 +11,7 @@ def setup(engine, runtime_user):
         role=connection.dialect.identifier_preparer.quote_identifier(runtime_user)
         connection.exec_driver_sql(f'GRANT SELECT ON feature_catalog, organization_features TO {role}')
         connection.exec_driver_sql(f'GRANT INSERT ON organization_features TO {role}')
+        connection.exec_driver_sql(f'GRANT SELECT, INSERT ON rbac_provisionings, rbac_grant_origins TO {role}')
         for table in ('users','groups','group_permissions','user_groups','user_permissions','organization_features'):
             columns='status, effective_to, closed_by, closed_at, close_reason'+(', active' if table=='users' else '')
             connection.exec_driver_sql(f'GRANT UPDATE ({columns}) ON {table} TO {role}')

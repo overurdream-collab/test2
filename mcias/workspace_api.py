@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from mcias.app import get_db
 from mcias.auth import resolve_user, require_permission
 from mcias.tenant import require_organization
-from mcias.models import Organization, User, Role, Permission, UserRole, RolePermission
+from mcias.models import Organization, User, Role, UserRole
 from mcias.models_claims import ClaimBatch, ClaimEntry
 from mcias.models_ingestion import IngestionDocument, IngestionJob
 from mcias.models_reference import ContractVersion
@@ -27,8 +27,8 @@ def context(authorization: str | None = Header(default=None), db: Session = Depe
     actor, session = resolve_user(db, authorization)
     require_permission(db, actor, "profile.read")
     organization = db.get(Organization, actor.organization_id) if actor.organization_id else None
-    permissions = db.scalars(select(Permission.code).join(RolePermission).join(
-        UserRole, UserRole.role_id == RolePermission.role_id).where(UserRole.user_id == actor.id).distinct()).all()
+    from mcias.services.authorization_service import permission_codes
+    permissions = permission_codes(db,actor)
     return {"id": actor.id, "username": actor.username,
             "organization": {"id": organization.id, "name": organization.name} if organization else None,
             "roles": role_codes(db, actor), "permissions": sorted(permissions),
@@ -54,9 +54,6 @@ def catalog(kind: str, limit: int = Query(25, ge=1, le=100), offset: int = Query
     if kind not in CATALOG:
         raise HTTPException(404, "unsupported catalog")
     model, permission, fields = CATALOG[kind]
-    if kind == "users" and "super_admin" not in role_codes(db, actor):
-        require_permission(db, actor, "workspace.super_admin")
-        raise HTTPException(403, "super admin required")
     require_organization(db, actor, actor.organization_id, permission)
     query = select(model).where(model.organization_id == actor.organization_id)
     order = [model.created_at.desc(), model.id.desc()] if hasattr(model, "created_at") else [model.id]
@@ -94,9 +91,6 @@ def demo_availability():
 def user_detail(user_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     actor, _ = resolve_user(db, authorization)
     require_organization(db, actor, actor.organization_id, 'users.read')
-    if 'super_admin' not in role_codes(db, actor):
-        require_permission(db, actor, 'workspace.super_admin')
-        raise HTTPException(403, 'super admin required')
     user = db.scalar(select(User).where(User.id == user_id, User.organization_id == actor.organization_id))
     if user is None:
         raise HTTPException(404, 'user not found')

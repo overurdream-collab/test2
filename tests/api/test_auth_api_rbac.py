@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 from datetime import date, datetime, timedelta, timezone
 import time
 import pytest
@@ -57,7 +58,8 @@ def test_privileged_account_cannot_be_managed_by_institution_admin(api):
 
 def test_delegation_cannot_escalate_or_assign_platform_permissions(api):
     with Session(api.engine) as db:
-        grant_user_permission(db, api.ids["limited"], api.permissions["users.permissions.grant"], api.ids["root"])
+        with pytest.raises(ValueError,match="Individual functional grants"):
+            grant_user_permission(db, api.ids["limited"], api.permissions["users.permissions.grant"], api.ids["root"])
         db.commit()
     path = f"/api/v1/users/{api.ids['limited']}/permissions"
     assert api.client.post(path, json={"permission_id": api.permissions["claims.approve"]}, headers=api.headers["limited"]).status_code == 403
@@ -68,7 +70,8 @@ def test_future_group_grants_are_checked_before_delegation(api):
     group = api.client.post("/api/v1/groups", json={"code": "future_grants", "name_ar": "فئة مستقبلية"}, headers=api.headers["root"])
     assert group.status_code == 201
     with Session(api.engine) as db:
-        grant_user_permission(db, api.ids["limited"], api.permissions["groups.members.add"], api.ids["root"])
+        with pytest.raises(ValueError,match="Individual functional grants"):
+            grant_user_permission(db, api.ids["limited"], api.permissions["groups.members.add"], api.ids["root"])
         db.add(GroupPermission(organization_id=api.organization_id, group_id=group.json()["id"],
             permission_id=api.permissions["claims.approve"], effective_from=date.today() + timedelta(days=1), granted_by=api.ids["root"]))
         db.commit()

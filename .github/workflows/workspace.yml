@@ -57,6 +57,7 @@ jobs:
       MCIAS_BOOTSTRAP_TOKEN: synthetic_browser_tests_only
       MCIAS_ENABLE_UI_DEMO: 'true'
       MCIAS_ENVIRONMENT: development
+      MCIAS_RBAC_TRUST_REGISTRY: /tmp/mcias-synthetic-rbac-trust.json
       MCIAS_STORAGE_DIR: .e2e-output/integrated-sources
       MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
       MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
@@ -113,6 +114,7 @@ jobs:
           python scripts/check_workspace_live.py --base-url http://127.0.0.1:8000
           python scripts/check_retention_browser.py --base-url http://127.0.0.1:8000
           python scripts/check_feature_system.py --base-url http://127.0.0.1:8000
+          python scripts/check_rbac_migration_browser.py --base-url http://127.0.0.1:8000
       - name: Package frontend assets
         run: |
           python -m pip wheel . --no-deps -w dist
