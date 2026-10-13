@@ -67,9 +67,20 @@ def test_failed_business_commit_returns_503_and_rolls_back(api, monkeypatch):
         assert db.scalar(select(User.id).where(User.username == "SYN-commit-fails")) is None
         assert db.scalar(select(AuditLog.id).where(AuditLog.action == "user.create")) is None
 
-def test_rate_limiter_still_enforces_429_and_access_audit(api):
+def test_rate_limiter_still_enforces_429_and_access_audit(api, monkeypatch):
+    from datetime import datetime, timedelta, timezone
+    from mcias import rate_limits
+    original = rate_limits.check_limits
+    instant = [datetime.now(timezone.utc).replace(second=15, microsecond=0)]
+    def fixed_window(*args, **kwargs):
+        return original(*args, now=instant[0], **kwargs)
+    # Keep requests in one minute even when CI crosses a wall-clock boundary.
+    # Authentication, atomic counters and audit persistence remain real.
+    monkeypatch.setattr(rate_limits, "check_limits", fixed_window)
     for _ in range(100):
         assert api.client.get("/api/v1/permissions/me", headers=api.headers["none"]).status_code == 200
     response = api.client.get("/api/v1/permissions/me", headers=api.headers["none"])
     assert response.status_code == 429 and int(response.headers["retry-after"]) >= 1
     assert any(r.error_code == "HTTP_429" for r in http_events(api))
+    instant[0] += timedelta(minutes=1)
+    assert api.client.get("/api/v1/permissions/me", headers=api.headers["none"]).status_code == 200
