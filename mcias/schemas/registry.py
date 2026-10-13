@@ -10,6 +10,7 @@ FIELDS = {
     "record_code": ("رمز السجل", "Record code", "text"),
     "provider_code": ("رمز مقدم الخدمة", "Provider code", "text"),
     "contract_number": ("رقم العقد", "Contract number", "text"),
+    "insurer_code": ("رمز شركة التأمين", "Insurance company code", "text"),
     "beneficiary_token": ("معرّف المستفيد", "Beneficiary token", "text"),
     "category_code": ("رمز الفئة", "Category code", "text"),
     "service_code": ("رمز الخدمة", "Service code", "text"),
@@ -22,6 +23,7 @@ FIELDS = {
 }
 SCHEMAS = {
     "inputs.contracts": ("record_code", "provider_code", "contract_number"),
+    "inputs.insurers": ("record_code", "insurer_code", "contract_number"),
     "inputs.regulations": ("record_code", "document_number"),
     "inputs.exceptions": ("record_code", "scope"),
     "inputs.approvals": ("record_code", "document_number"),
@@ -35,6 +37,7 @@ SCHEMAS = {
     "providers.prices": ("record_code", "provider_code", "service_code", "amount", "currency"),
 }
 FIELD_LIMITS = {"record_code":80,"provider_code":80,"contract_number":120,"beneficiary_token":128,
+    "insurer_code":80,
     "category_code":80,"service_code":100,"currency":3,"document_number":120}
 
 class RecordCreate(Input):

@@ -20,7 +20,7 @@ def engine():
 
 def test_migrations_reach_mfa_revision(engine):
     with engine.connect() as conn:
-        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0022_rbac_authority"
+        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0023_insurer_intake"
         assert conn.execute(text("select to_regclass('public.mfa_factors')")).scalar_one() is not None
         required_columns = {
             "users": {

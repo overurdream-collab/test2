@@ -28,6 +28,7 @@ import {
 import { rbacProvisioning } from "./rbac_provisioning.js";
 import { featuresManagement } from "./feature_management.js";
 import { inputList } from "./input_list.js";
+import { institutionOverview, institutionUsers } from "./institution.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -61,6 +62,8 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "institution-users") { institutionUsers(ctx); return; }
+  if (kind === "dashboard" && ctx.context.institution_admin && !ctx.demo) { institutionOverview(ctx); return; }
   if (kind === "rbac-provisioning") { rbacProvisioning(ctx); return; }
   if (kind === "input-list") {
     inputList(ctx);

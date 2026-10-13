@@ -7,6 +7,7 @@ from mcias.api import dependencies as deps, queries
 from mcias.models import Organization
 from mcias.schemas.common import Close, Input
 from mcias.services import feature_service as features
+from mcias.services.authorization_service import institution_admin
 
 def no_store(response: Response):
     response.headers["Cache-Control"] = "no-store"
@@ -15,7 +16,7 @@ def no_store(response: Response):
 router = APIRouter(tags=["Organization features"], dependencies=[Depends(no_store)])
 
 class FeatureBatch(Input):
-    codes: list[str] = Field(max_length=33)
+    codes: list[str] = Field(max_length=34)
     expected_revision: str = Field(pattern=r"^[a-f0-9]{64}$")
     reason: str = Field(default="", max_length=2000)
 
@@ -79,6 +80,7 @@ def batch(org_id: UUID, payload: FeatureBatch, actor=Depends(admin), db=Depends(
 def mine(request: Request, response: Response, actor=Depends(deps.require_auth), db=Depends(deps.get_db)):
     response.headers["Cache-Control"] = "no-store"
     return {"organization_id": actor.organization_id, "features": features.get_visible_features(db, actor),
+        "institution_admin": institution_admin(db, actor),
         "permissions": features.permission_codes(db, actor), "super_admin": features.is_super_admin(db, actor),
         "expires_at": request.state.rbac_session_expires_at,
         "user": {"id": actor.id, "username": actor.username},

@@ -47,3 +47,18 @@ export function navigationGroups(routes, scope) {
   if (intake.length) groups.splice(scope === "admin" ? 1 : 1, 0, ["المدخلات والبيانات", "Inputs and data", intake]);
   return groups.filter(g => g[2].length);
 }
+
+// A focused institutional menu: seven sections, operational pages only.
+export function institutionNavigation(routes) {
+  const pages = routes.filter(route => route.kind !== "unavailable" && !route.path.includes(":id"));
+  const paths = list => pages.filter(route => list.includes(route.path));
+  return [
+    ["الرئيسية", "Home", paths(["/institution/dashboard"])],
+    ["المدخلات والبيانات", "Inputs and data", pages.filter(route => route.kind === "input-list")],
+    ["المطالبات والدفعات", "Claims and batches", paths(["/institution/claims", "/institution/claims/batches"])],
+    ["التدقيق والمراجعة", "Audit and review", paths(["/institution/financial-audit", "/institution/duplicates", "/institution/reviews", "/institution/appeals"])],
+    ["التحليلات", "Analytics", paths(["/institution/ai-intelligence", "/institution/anomalies", "/institution/trends", "/institution/cost-optimization"])],
+    ["التقارير", "Reports", paths(["/institution/reports"])],
+    ["مستخدمو الجهة", "Institution users", paths(["/institution/users"])],
+  ].filter(group => group[2].length);
+}

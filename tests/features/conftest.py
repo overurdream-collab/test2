@@ -21,5 +21,9 @@ def features_api(api_factory):
     with Session(api.engine) as db:
         for row in migration._catalog_rows():
             db.add(FeatureCatalog(**row))
+        spec = importlib.util.spec_from_file_location('insurer_catalog_fixture', _root / 'alembic/versions/0023_insurer_intake.py')
+        insurer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(insurer)
+        db.add(FeatureCatalog(**insurer.FEATURE))
         db.commit()
     return api

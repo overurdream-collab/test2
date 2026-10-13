@@ -66,7 +66,7 @@ with sync_playwright() as pw:
     for route in [r for r in routes if r['kind']=='input-list' and r['path'].startswith('/institution/')]:
         navigate(route['path']);expect(page.locator('main h1')).to_have_text(route['ar'])
         expect(page.get_by_role('button',name='إضافة جديد',exact=True)).to_be_visible()
-    checks.append('all sixteen institution intake routes render operational controls')
+    checks.append('all seventeen institution intake routes render operational controls')
     navigate('/institution/providers/hospitals');expect(page.locator('.intake-card').first).to_be_visible()
     page.screenshot(path=str(out/'intake-ar-light.png'),full_page=True)
     if Path(args.axe).is_file():

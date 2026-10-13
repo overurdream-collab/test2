@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { matchRoute, selectionDiff, routeVisible, navigationGroups } from "../../mcias/web_workspace/feature_navigation.js";
+import { matchRoute, selectionDiff, routeVisible, navigationGroups, institutionNavigation } from "../../mcias/web_workspace/feature_navigation.js";
 
 test("nested organization feature route captures only one path segment", () => {
   const routes = [{path:"/admin/organizations/:id"}, {path:"/admin/organizations/:id/features"}];
@@ -36,4 +36,14 @@ test("navigation requires both entitlement and permission, default denies and pr
 test("institution navigation puts intake before claims and does not depend on array offsets", () => {
   const routes=[{feature:"claims.list"},{kind:"input-list",feature:"inputs.contracts"},{feature:"dashboard.summary"}];
   assert.deepEqual(navigationGroups(routes,"institution").map(g=>g[1]),["Home","Inputs and data","Claims and batches"]);
+});
+
+test("institution admin has seven ordered sections without planned pages or duplicate analytics", () => {
+  const paths=["dashboard","claims","claims/batches","reviews","ai-intelligence","reports","users"];
+  const routes=paths.map(path=>({path:"/institution/"+path,kind:"available"}));
+  routes.push({path:"/institution/inputs/insurers",kind:"input-list"},
+    {path:"/institution/quality",kind:"unavailable"}, {path:"/institution/settings",kind:"settings"});
+  const groups=institutionNavigation(routes.reverse());
+  assert.deepEqual(groups.map(g=>g[0]),["الرئيسية","المدخلات والبيانات","المطالبات والدفعات","التدقيق والمراجعة","التحليلات","التقارير","مستخدمو الجهة"]);
+  assert.equal(groups.flatMap(g=>g[2]).some(r=>r.kind==="unavailable"||r.kind==="settings"),false);
 });

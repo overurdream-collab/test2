@@ -45,7 +45,7 @@ def test_0022_upgrade_downgrade_upgrade_preserves_original_records(monkeypatch,p
             with engine.connect() as conn:
                 for table,original in before.items():assert conn.scalar(text('SELECT json_agg(t) FROM '+table+' t'))==original
         with engine.connect() as conn:
-            assert conn.scalar(text('SELECT version_num FROM alembic_version'))=='0022_rbac_authority'
+            assert conn.scalar(text('SELECT version_num FROM alembic_version'))=='0023_insurer_intake'
             assert conn.scalar(text('SELECT count(*) FROM rbac_provisionings'))==0
             assert conn.scalar(text('SELECT count(*) FROM rbac_grant_origins'))==0
     finally:

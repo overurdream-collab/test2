@@ -111,8 +111,11 @@ def setup(env):
                     actor=db.get(User,item['id'])
                     if not actor or actor.organization_id!=seed['organization_id'] or not verify_password(item['password'],actor.password_hash):
                         raise ValueError('private credentials do not match seeded accounts; do not overwrite keys/state')
+                from mcias.seed.institution import ensure_admin
+                updated = ensure_admin(db, seed['organization_id'], saved['accounts'], env, ADMIN_PERMISSIONS)
                 from mcias.seed.authorization import approve_synthetic
                 approve_synthetic(db,seed['organization_id'],'development')
+                if updated: private_json(state, saved)
                 db.commit()
                 return {'status':'READY','synthetic':True,'reused':True}
             if db.get(User,identifier('laptop-admin')):
@@ -142,6 +145,8 @@ def setup(env):
                     'totp_secret_base32':base64.b32encode(secret).decode().rstrip('=')})
             db.add(AuditLog(actor_id=accounts[0]['id'],action='synthetic_laptop_bootstrap',resource_type='test_environment',details={'synthetic':True}))
             db.flush()
+            from mcias.seed.institution import ensure_admin
+            ensure_admin(db, seed['organization_id'], accounts, env, ADMIN_PERMISSIONS)
             from mcias.seed.authorization import approve_synthetic
             approve_synthetic(db,seed['organization_id'],'development')
             private_json(state,{'synthetic':True,'organization_id':seed['organization_id'],'accounts':accounts})
@@ -195,7 +200,8 @@ def check(env, *, verify_mfa=False, verify_inputs=False):
         if path.is_symlink(): raise ValueError('symbolic private state')
         accounts=json.loads(path.read_text())['accounts']
         for account in accounts:
-            name='admin' if account['username']=='SYN-laptop-admin' else 'reviewer'
+            name={'SYN-laptop-admin':'admin', 'SYN-laptop-reviewer':'reviewer',
+                  'SYN-laptop-institution-admin':'institution_admin'}[account['username']]
             try:
                 payload={key:account[key] for key in ('username','password')}
                 try:
@@ -208,8 +214,11 @@ def check(env, *, verify_mfa=False, verify_inputs=False):
                 token=request('/api/v1/auth/login',payload)[1]['access_token']
                 context=request('/api/v1/workspace/context',token=token)[1]
                 permissions=set(context['permissions'])
-                separated=(('governance.approve' not in permissions and 'super_admin' in context['roles'])
-                    if name=='admin' else ('governance.propose' not in permissions and 'governance.approve' in permissions))
+                if name=='admin': separated='governance.approve' not in permissions and 'super_admin' in context['roles']
+                elif name=='reviewer': separated='governance.propose' not in permissions and 'governance.approve' in permissions
+                else:
+                    from mcias.services.authorization_service import FINANCIAL_APPROVALS
+                    separated=context.get('institution_admin') and 'super_admin' not in context['roles'] and not FINANCIAL_APPROVALS.intersection(permissions)
                 separated=separated and not any(p.startswith('medical_fields.') for p in permissions)
                 try:
                     request('/api/v1/auth/login',payload)
@@ -217,8 +226,15 @@ def check(env, *, verify_mfa=False, verify_inputs=False):
                 except HTTPError as exc: replay_denied=exc.code==401
                 try:
                     request('/api/v1/workspace/catalog/users',token=token)
-                    admin_access=name=='admin'
+                    admin_access=name in ('admin','institution_admin')
                 except HTTPError as exc: admin_access=name=='reviewer' and exc.code==403
+                if name=='institution_admin':
+                    overview=request('/api/v1/institution/overview',token=token)[1]
+                    names=request('/api/v1/registry/beneficiaries.names/records',token=token)[1]
+                    directory=request('/api/v1/institution/users',token=token)[1]
+                    controls.append({'control':'institution_dashboard_and_inputs','status':'PASS' if
+                        all(m['status']=='available' for m in overview['metrics'].values()) and isinstance(names['items'],list)
+                        and any(u['id']==account['id'] for u in directory['items']) else 'BLOCKED'})
                 if verify_inputs and name=='admin':
                     suffix=secrets.token_hex(6)
                     contract=request('/api/v1/reference/contracts',{'provider_code':'SYN-LAP-'+suffix,

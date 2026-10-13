@@ -11,6 +11,7 @@ from mcias.services.authorization_service import check_permission_unified
 READ_PERMISSIONS = {
     "dashboard.summary": ("reports.read",),
     "inputs.contracts": ("reference.contracts.read", "reference.read"),
+    "inputs.insurers": ("reference.contracts.read", "reference.read"),
     "inputs.regulations": ("reference.coverage.read", "reference.read"),
     "inputs.exceptions": ("reference.exceptions.read", "reference.read"),
     "inputs.approvals": ("reference.contracts.read", "reference.read"),

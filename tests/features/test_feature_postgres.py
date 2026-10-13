@@ -28,7 +28,7 @@ def test_feature_runtime_grants_closure_triggers_and_transaction_rollback(api_fa
             assert conn.scalar(text("SELECT has_table_privilege(current_user,'organization_features','UPDATE')")) is False
             conn.commit()
             with Session(bind=conn) as db:
-                assert len(f.list_features(db)) == 44
+                assert len(f.list_features(db)) == 45
                 row = f.grant_feature(db, a.organization_id, "inputs.contracts", a.ids["root"])
                 db.commit()
                 record_id = row.id

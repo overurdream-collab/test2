@@ -15,7 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
-import { matchRoute, routeVisible, navigationGroups } from "./feature_navigation.js";
+import { matchRoute, routeVisible, navigationGroups, institutionNavigation } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -29,6 +29,7 @@ async function refreshAccess() {
   api.enableFeatureData();
   context = { ...access.user, organization: access.organization, permissions: access.permissions,
     roles: access.roles, expires_at: access.expires_at, institutionally_accepted: false, tenant_switching: false };
+  context.institution_admin = access.institution_admin;
 }
 const app = document.getElementById("app");
 api.onExpiry = () => {
@@ -284,7 +285,7 @@ function render() {
       "strong",
       scope === "admin"
         ? L("الإدارة المركزية", "Central administration")
-        : L("مساحة المؤسسة", "Institution workspace"),
+        : context.institution_admin ? L("مدير الجهة", "Institution administrator") : L("مساحة المؤسسة", "Institution workspace"),
     ),
     el(
       "small",
@@ -298,7 +299,8 @@ function render() {
   const scopeRoutes = routes.filter(
     (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id") && routeVisible(r, access),
   );
-  const groups = navigationGroups(scopeRoutes, scope);
+  const groups = scope === "institution" && context.institution_admin
+    ? institutionNavigation(scopeRoutes) : navigationGroups(scopeRoutes, scope);
   function appendRoutes(target, items) {
     for (const r of items) {
       const a = link("", r.path, "nav-link");
@@ -324,7 +326,7 @@ function render() {
     } else appendRoutes(nav, items);
   }
   if (!scopeRoutes.some(r => r.feature)) nav.append(el("p", L("لا ميزات مفعّلة", "No enabled features"), "nav-heading"));
-  nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
+  if (!context.institution_admin) nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
   if (context.roles.includes("super_admin"))
     nav.append(
       link(
@@ -345,7 +347,8 @@ function render() {
     ),
     el(
       "span",
-      L("G0–G9 غير معتمدة مؤسسيًا", "G0–G9 institutionally unaccepted"),
+      context.institution_admin ? L("صلاحيات الموظفين ضمن نطاق الجهة", "Employee access stays within this organization")
+        : L("G0–G9 غير معتمدة مؤسسيًا", "G0–G9 institutionally unaccepted"),
     ),
   );
   sidebar.append(foot);
@@ -499,6 +502,7 @@ function render() {
       "div",
       scope === "admin"
         ? L("حوكمة المنصة", "PLATFORM GOVERNANCE")
+        : context.institution_admin ? L("إدارة الجهة", "ORGANIZATION MANAGEMENT")
         : L("ذكاء الرعاية والإنفاق", "CARE & EXPENDITURE INTELLIGENCE"),
       "eyebrow",
     ),
@@ -514,7 +518,7 @@ function render() {
   );
   head.append(heading);
   const actions = el("div", null, "header-actions");
-  if (route.kind === "dashboard")
+  if (route.kind === "dashboard" && !context.institution_admin)
     actions.append(
       link(
         L("التقارير والتصدير", "Reports & export"),
@@ -532,7 +536,7 @@ function render() {
   banner.append(
     el(
       "span",
-      L(
+      context.institution_admin ? L("بيانات جهتك فقط؛ تُنفَّذ العمليات وفق الصلاحيات الممنوحة.", "Your organization data only; operations follow granted permissions.") : L(
         "قدرات هندسية جزئية؛ جميع بوابات القبول مفتوحة.",
         "Partial engineering capabilities; all acceptance gates remain open.",
       ),
@@ -540,6 +544,7 @@ function render() {
     badge(
       route.kind === "unavailable"
         ? L("غير متاح", "Unavailable")
+        : context.institution_admin ? L("وصول محكوم", "Governed access")
         : L("غير معتمد مؤسسيًا", "Institutionally unaccepted"),
       "warning",
     ),
@@ -587,6 +592,7 @@ function render() {
       toggleTheme,
       signOutLocal,
       refreshAccess,
+      visibleRoute: path => { const item = routeAt(path)?.route; return Boolean(item && routeVisible(item, access)); },
     });
   }
   main.append(

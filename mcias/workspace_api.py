@@ -27,11 +27,12 @@ def context(authorization: str | None = Header(default=None), db: Session = Depe
     actor, session = resolve_user(db, authorization)
     require_permission(db, actor, "profile.read")
     organization = db.get(Organization, actor.organization_id) if actor.organization_id else None
-    from mcias.services.authorization_service import permission_codes
+    from mcias.services.authorization_service import permission_codes, institution_admin
     permissions = permission_codes(db,actor)
     return {"id": actor.id, "username": actor.username,
             "organization": {"id": organization.id, "name": organization.name} if organization else None,
             "roles": role_codes(db, actor), "permissions": sorted(permissions),
+            "institution_admin": institution_admin(db, actor),
             "expires_at": session.expires_at, "institutionally_accepted": False,
             "tenant_switching": False}
 

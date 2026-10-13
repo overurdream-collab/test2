@@ -8,10 +8,10 @@ from mcias.services import feature_service as f
 
 def test_catalog_and_tree(features_api):
     with Session(features_api.engine) as db:
-        assert len(f.list_features(db)) == 44
+        assert len(f.list_features(db)) == 45
         tree = f.list_feature_tree(db)
         assert len(tree) == 11
-        assert sum(len(n["children"]) for n in tree) == 33
+        assert sum(len(n["children"]) for n in tree) == 34
 
 def test_grant_has_version_and_audit_without_commit(features_api):
     a = features_api
@@ -67,7 +67,7 @@ def test_visible_is_entitlement_intersection_permission(features_api):
         assert f.get_visible_features(db, admin) == ["inputs.contracts"]
         assert f.get_visible_features(db, none) == []
         assert f.get_visible_features(db, db.get(User, a.ids["other"])) == []
-        assert len(f.get_visible_features(db, db.get(User, a.ids["root"]))) == 33
+        assert len(f.get_visible_features(db, db.get(User, a.ids["root"]))) == 34
 
 def test_inactive_users_and_role_flag_do_not_bypass(features_api):
     a = features_api

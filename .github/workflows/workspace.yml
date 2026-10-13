@@ -115,13 +115,14 @@ jobs:
           python scripts/check_retention_browser.py --base-url http://127.0.0.1:8000
           python scripts/check_feature_system.py --base-url http://127.0.0.1:8000
           python scripts/check_rbac_migration_browser.py --base-url http://127.0.0.1:8000
+          python scripts/check_institution_browser.py --base-url http://127.0.0.1:8000
       - name: Package frontend assets
         run: |
           python -m pip wheel . --no-deps -w dist
           python - <<'PY'
           import glob,zipfile
           with zipfile.ZipFile(glob.glob('dist/mcias-*.whl')[0]) as wheel:
-              for name in ('index.html','app.js','api.js','ui.js','views.js','feature_navigation.js','feature_management.js','input_list.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2','fonts/PLEX-OFL.txt'):
+              for name in ('index.html','app.js','api.js','ui.js','views.js','institution.js','rbac_provisioning.js','feature_navigation.js','feature_management.js','input_list.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2','fonts/PLEX-OFL.txt'):
                   assert 'mcias/web_workspace/'+name in wheel.namelist(), name
           PY
       - name: Build portable source and runtime wheelhouse

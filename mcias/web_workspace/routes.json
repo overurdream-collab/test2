@@ -324,8 +324,8 @@
   },
   {
     "path": "/institution/dashboard",
-    "ar": "الملخص التنفيذي",
-    "en": "Executive overview",
+    "ar": "الرئيسية",
+    "en": "Home",
     "icon": "dashboard",
     "kind": "dashboard",
     "permission": "reports.read",
@@ -1145,10 +1145,10 @@
     "ar": "مستخدمو الجهة",
     "en": "Institution users",
     "icon": "security",
-    "kind": "users",
+    "kind": "institution-users",
     "permission": "users.read",
     "admin": false,
-    "availability": "partial",
+    "availability": "available",
     "feature": "users.list"
   },
 {
@@ -1160,5 +1160,27 @@
   "permission": "groups.permissions.grant",
   "admin": true,
   "availability": "available"
-}
+},
+  {
+    "path": "/institution/inputs/insurers",
+    "ar": "شركات التأمين وعقودها",
+    "en": "Insurance companies and contracts",
+    "icon": "claims",
+    "kind": "input-list",
+    "permission": "",
+    "admin": false,
+    "availability": "available",
+    "feature": "inputs.insurers"
+  },
+  {
+    "path": "/admin/inputs/insurers",
+    "ar": "شركات التأمين وعقودها",
+    "en": "Insurance companies and contracts",
+    "icon": "claims",
+    "kind": "input-list",
+    "permission": "",
+    "admin": true,
+    "availability": "available",
+    "feature": "inputs.insurers"
+  }
 ]

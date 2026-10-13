@@ -55,15 +55,17 @@ Port persists in configuration. Later change only LAPTOP_HTTP_PORT before restar
 
 ## 4. Credentials/MFA
 
+The update adds `SYN-laptop-institution-admin` alongside the existing technical admin and reviewer, with a locally generated password and MFA shown below. Use it for the seven-section institution workspace and five live indicators. Existing credentials and test data are preserved. See [institution workspace details](INSTITUTION_ADMIN_WORKSPACE.md) and [Codex laptop handoff](CODEX_LAPTOP_HANDOFF_AR.md).
+
 Use a private unrecorded console:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\laptop.ps1 -Action Credentials
 ```
 
-Returns SYN-laptop-admin/SYN-laptop-reviewer random passwords and each totp_secret_base32. Manually enroll in an Authenticator with six-digit, 30-second TOTP. Enable automatic phone/Windows time. Login with password/code; used codes cannot be replayed. Never share/screenshot/publish output. Accounts receive no medical-field grants or production financial execution/approval permissions.
+Returns SYN-laptop-admin/SYN-laptop-reviewer/SYN-laptop-institution-admin random passwords and each totp_secret_base32. Manually enroll in an Authenticator with six-digit, 30-second TOTP. Enable automatic phone/Windows time. Login with password/code; used codes cannot be replayed. Never share/screenshot/publish output. Accounts receive no medical-field grants or production financial execution/approval permissions.
 
-A limited synthetic reader is used by automated smoke checks; never use that account in real operation. Admin/reviewer private state resides in Docker state volume with mode 0600, not a shared Windows folder.
+A limited synthetic reader is used by automated smoke checks; never use that account in real operation. Private account state resides in Docker state volume with mode 0600, not a shared Windows folder.
 
 ## 5. Local checks
 

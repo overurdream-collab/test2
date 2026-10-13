@@ -114,7 +114,7 @@ def test_every_declared_route_serves_public_safe_shell(route):
 
 def test_static_asset_whitelist_and_csp():
     c=TestClient(app)
-    for asset in ['app.js','ui.js','api.js','views.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2']:
+    for asset in ['app.js','ui.js','api.js','views.js','institution.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2']:
         r=c.get('/workspace-assets/'+asset)
         assert r.status_code==200 and r.headers['cache-control']=='no-store'
         assert "style-src 'self'" in r.headers['content-security-policy']
