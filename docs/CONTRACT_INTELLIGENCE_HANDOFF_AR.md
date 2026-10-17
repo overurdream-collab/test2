@@ -64,3 +64,8 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 ### C14 — diagnostic differentiation
 - C13 deterministic 30-case gold-anchoring suite passed as part of G1–G7 (run 39065318369), not AI benchmark. C14 test-only script forces at least one structured proposal in ALL four SYN model prompts (including adversarial negative), while source validator stays strict and false-positive gate is explicit. No production runtime or signed finance changes.
 - Retrieve C14 exact GitHub Actions output: how many candidates generated, how many quarantined, TP/FP/FN on verified source anchors, any model/timeouts and artifact hashes. Do NOT use forced-nonempty metrics as normal model-selection accuracy. Next: assess more capable model or two-stage classifier+extractor; expand 20+ real-structure SYN documents and local Arabic OCR.
+
+
+### C15 date lineage
+- Open mcias/contract_intelligence.py `validate_candidates` and tests/test_contract_intelligence.py: for PDF/image, verify date inside quote; for sheet/row, permit date in same persisted G2 record fields. Unknown or inferred effective date must not silently authorize tariff version.
+- Run targeted pytest + full CI and inspect C14 forced model experiment before applying any other changes. No actual contract data/public runner use, no main merge, production, signatures, A1 or financial rule activation.

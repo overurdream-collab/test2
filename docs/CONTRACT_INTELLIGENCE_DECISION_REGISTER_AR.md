@@ -25,3 +25,7 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 ## CID-007 — 2026-10-17 — EXPERIMENT: force candidate in test harness only
 - The optional-empty JSON grammar produced only `{"clauses":[]}` on both Qwen3-0.6B and Qwen3-1.7B when reading three verifiable SYN examples. For diagnosis only, require at least one candidate for ALL sources including the negative injection, without conditional use of known gold labels. Evaluate model capacity to fill the 11 typed fields; count quarantined candidates and fail if any negative is incorrectly source-verified. This DOES NOT authorize forcing candidates in institutional production, relaxing G2 quotes, or generating executable finance rules.
 - Test result remains PENDING on C14 SHA; compare to pinned historical model runs, then decide suitable real-model serving pipeline with larger corpus. Binding safety CID-003 remains unchanged.
+
+
+## CID-008 — 2026-10-17 — Binding fail-closed effective date provenance
+- ISO date syntax and existence somewhere on the PDF page are insufficient proof of an individual clause's temporal validity. For PDF/image require date in the exact quoted passage; for Excel table allow same row separate cell; inferred/cross-paragraph date gets needs_human_review. It is intentionally conservative and may block valid header-based dates until an independently reviewed reference relationship is implemented. No AI discretion to choose another period; G3/G5 historical financial authority untouched. C15 tests and CI PENDING.

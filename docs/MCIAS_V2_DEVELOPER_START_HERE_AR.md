@@ -182,3 +182,7 @@ New Alembic head `0020_contract_proposals`; candidate/review/promotion tables ar
 
 ### C8 candidate review UI and synthetic model evaluation
 The existing `/admin/reference-data` drawer now offers local AI preview or server-side saved extraction, and a separate authorized viewer/reviewer for source-anchored proposals. Review UI requires reference.read+ingestion.read; independent accepted/rejected decisions require reference.approve; separately authorized editors can promote accepted complete terms only to ReferencePoint `draft`. For real model proof, `scripts/contract_ai_benchmark.py` uses official pinned Qwen3-0.6B revision and local loopback /v1/chat/completions on a free public GitHub standard runner (synthetic cases only); reports TP/FP/FN, precision/recall, FPR and output SHA. Never send real records to GH Actions, and do not conflate this 4-text benchmark with Arabic OCR or production acceptance. Check exact C8 CI first; no G3/G5 activation.
+
+
+### C15 verified date evidence (PENDING_CI)
+For AI proposals, service-effective `effective_from` and `effective_until` are not trusted solely because they have valid ISO syntax. On PDF/image source locators, the date must appear verbatim within `original_clause_text` (same quote); dates elsewhere on that page are not provenance. XLSX/CSV same source record may hold a date in a separate column of the same row. Missing/inconsistent evidence is `needs_human_review` and cannot enter promotion to active finance. Changes only mcias/contract_intelligence.py and tests; G3/G5 remain authoritative and unchanged.

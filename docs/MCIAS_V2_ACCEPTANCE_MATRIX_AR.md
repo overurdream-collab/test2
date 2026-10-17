@@ -116,3 +116,12 @@
 | CI-C13-04 | 20+ actual contract files with Arabic OCR + table model predictions and gold metrics | NOT_MEASURED |
 | CI-C13-05 | Enterprise rate limiter / browser combined suite on exact SHA | FAIL at d33c245 (1 rate limit test), rerun requested |
 | CI-C13-06 | Production financial activation approved/signed independently | BLOCKED_INSTITUTION |
+
+
+### C15 date source contract
+| ID | Gate | State |
+|---|---|---|
+| CI-C15-01 | Date elsewhere on same PDF page cannot authorize an unrelated quoted tariff | IMPLEMENTED_NOT_TESTED |
+| CI-C15-02 | Date from same XLSX row is permitted if other source fields match | IMPLEMENTED_NOT_TESTED |
+| CI-C15-03 | Purely invented dates cause needs_human_review | IMPLEMENTED_NOT_TESTED |
+| CI-C15-04 | Real-world cross-referenced header/annex date provenance workflow | PARTIAL / MANUAL_REVIEW |

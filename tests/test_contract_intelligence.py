@@ -137,3 +137,44 @@ def test_page_with_two_prices_cannot_anchor_wrong_price_to_other_clause():
                                  model_id="SYN-model", model_revision="SYN-revision")[0]
     assert "numeric_not_in_source" in output["validation_errors"]
     assert output["evidence_status"] == "needs_human_review"
+
+
+def test_pdf_date_from_another_clause_cannot_anchor_tariff():
+    batch = make_source_blocks([{
+        "id":"SYN-MULTI-PAGE",
+        "locator":{"kind":"page","index":3},
+        "values":{"text":"H1 CONSULT 5000 YER. Another unrelated clause 2026-01-01 to 2027-01-01."}
+    }])
+    proposed=proposal(record_id="SYN-MULTI-PAGE", quote="H1 CONSULT 5000 YER",
+                      effective_from="2026-01-01", effective_until="2027-01-01")
+    found=validate_candidates([proposed],batch,source_sha256=DIGEST,
+                              model_id="SYN",model_revision="SYN")[0]
+    assert "effective_start_not_in_source" in found["validation_errors"]
+    assert "effective_end_not_in_source" in found["validation_errors"]
+    assert found["evidence_status"]=="needs_human_review"
+    assert found["status"]=="DRAFT_ONLY"
+
+
+def test_excel_dates_may_be_in_separate_cells_on_exact_same_source_row():
+    batch=make_source_blocks([{
+        "id":"SYN-SHEET-R2",
+        "locator":{"kind":"sheet","index":1,"row":2},
+        "values":{"provider":"H2","service":"CONSULT","amount":"7000",
+                  "currency":"YER","valid_from":"2026-01-01","valid_until":"2027-01-01"}
+    }])
+    proposed=proposal(record_id="SYN-SHEET-R2",quote="7000",logical_key="H2:CONSULT",
+                      provider_code="H2",amount="7000",effective_from="2026-01-01",
+                      effective_until="2027-01-01")
+    found=validate_candidates([proposed],batch,source_sha256=DIGEST,
+                              model_id="SYN",model_revision="SYN")[0]
+    assert found["validation_errors"]==[]
+    assert found["evidence_status"]=="verified_source_anchor"
+    assert found["source_locator"]["row"]==2
+
+
+def test_invented_future_period_without_any_source_cell_stays_on_hold():
+    proposed=proposal(effective_from="2044-01-01",effective_until="2045-01-01")
+    found=check([proposed])[0]
+    assert "effective_start_not_in_source" in found["validation_errors"]
+    assert "effective_end_not_in_source" in found["validation_errors"]
+    assert found["evidence_status"]=="needs_human_review"

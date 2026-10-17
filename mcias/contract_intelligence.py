@@ -165,6 +165,18 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         except ValueError:
             start = end = None
             errors.append("invalid_effective_date")
+        if block:
+            # A model-inferred date elsewhere on a PDF page must never
+            # authorize the validity period of an unrelated quoted clause.
+            locator_kind = block["locator"]["kind"]
+            if locator_kind in {"page", "image"}:
+                date_evidence = (quote,) if isinstance(quote, str) else ()
+            else:
+                # Excel: a different cell is valid only within the SAME row.
+                date_evidence = tuple(block["fields"].values())
+            for label, value in (("start", start), ("end", end)):
+                if value and not any(value in part for part in date_evidence):
+                    errors.append("effective_" + label + "_not_in_source")
         if not start:
             errors.append("missing_effective_from")
         dedup_key = (repr(section), repr(key), repr(provider), repr(service))
