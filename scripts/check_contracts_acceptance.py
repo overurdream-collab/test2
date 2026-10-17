@@ -1,0 +1,128 @@
+"""DG-001 contracts-only browser acceptance. No mocks, no demo, fail closed."""
+import json, os, time, traceback
+from pathlib import Path
+from uuid import uuid4
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from playwright.sync_api import sync_playwright, expect
+from mcias.models import Organization, User, Role, Permission, RolePermission, UserRole, MFAFactor
+from mcias.security import hash_password
+from mcias.mfa import generate_totp
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+OUT=Path(".e2e-output/contracts-acceptance")
+OUT.mkdir(parents=True,exist_ok=True)
+results={"scope":"contracts-only","synthetic":True,"import":"BLOCKED","add":"BLOCKED","edit":"BLOCKED","rbac":"BLOCKED","evidence":[]}
+password="synthetic_contract_only_pass"
+dburl=os.environ["MCIAS_E2E_DATABASE_URL"]
+assert dburl.split("/")[-1].endswith("_e2e"), "Only test PostgreSQL allowed"
+assert os.environ["MCIAS_ENVIRONMENT"]=="development"
+engine=create_engine(dburl)
+tag=uuid4().hex[:10]
+secrets={label:os.urandom(20) for label in ('writer','reader')}
+with Session(engine) as db:
+    org=Organization(name="SYN CONTRACTS "+tag)
+    db.add(org); db.flush()
+    role=Role(code="contract_writer_"+tag)
+    readonly=Role(code="contract_reader_"+tag)
+    db.add_all([role,readonly]); db.flush()
+    for code in ["profile.read","reference.read","reference.write","ingestion.read","ingestion.upload"]:
+        perm=db.scalar(select(Permission).where(Permission.code==code))
+        if perm is None:
+            perm=Permission(code=code); db.add(perm); db.flush()
+        db.add(RolePermission(role_id=role.id,permission_id=perm.id))
+        if code in ("profile.read","reference.read"):
+            db.add(RolePermission(role_id=readonly.id,permission_id=perm.id))
+    admin=db.scalar(select(Role).where(Role.code=="super_admin"))
+    if admin is None:
+        admin=Role(code="super_admin"); db.add(admin); db.flush()
+    users={}
+    for label,assigned in [("writer",role),("reader",readonly)]:
+        user=User(organization_id=org.id,username="syn-"+label+"-"+tag,password_hash=hash_password(password))
+        db.add(user); db.flush()
+        db.add(UserRole(user_id=user.id,role_id=assigned.id))
+        db.add(UserRole(user_id=user.id,role_id=admin.id))
+        users[label]=user.username
+        # Both synthetic accounts hold super_admin; real auth requires MFA for each.
+        if label in secrets:
+            nonce=os.urandom(12)
+            encrypted=AESGCM(bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])).encrypt(nonce,secrets[label],user.id.encode())
+            db.add(MFAFactor(user_id=user.id,encrypted_secret=nonce+encrypted,enabled=True))
+    db.commit()
+
+def record(page,name):
+    page.screenshot(path=str(OUT/(name+".png")),full_page=True)
+    results["evidence"].append(name+".png")
+
+def login(page,label):
+    page.goto("http://127.0.0.1:8000/login")
+    page.get_by_label("اسم المستخدم",exact=True).fill(users[label])
+    page.get_by_label("كلمة المرور",exact=True).fill(password)
+    page.get_by_label("رمز التحقق (إلزامي للإدارة)",exact=True).fill(generate_totp(secrets[label],int(time.time())//30))
+    with page.expect_response(lambda response: response.url.endswith("/api/v1/auth/login")) as auth:
+        page.get_by_role("button",name="تسجيل الدخول بأمان",exact=True).click()
+    assert auth.value.status == 200, "Actual login rejected: HTTP " + str(auth.value.status)
+    assert auth.value.json().get("access_token"), "Login response has no session token"
+    expect(page.get_by_role("heading",name="مرحبًا بك في MCIAS")).not_to_be_visible(timeout=12000)
+    # Session bearer token is MEMORY-ONLY: page.goto would reload and erase it.
+    page.evaluate('''() => {
+        history.pushState({}, "", "/admin/input-register");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+    }''')
+    expect(page.get_by_role("button",name="العقود",exact=True)).to_be_visible(timeout=12000)
+    record(page,"00-contracts-authenticated-"+label)
+
+try:
+    with sync_playwright() as pw:
+        browser=pw.chromium.launch()
+        page=browser.new_page(viewport={"width":1440,"height":950})
+        try:
+            login(page,"writer")
+            for name in ("استيراد ملف (رفع المصدر)","إضافة","تعديل"):
+                expect(page.get_by_role("button",name=name,exact=True)).to_be_visible()
+            record(page,"01-contracts-controls")
+            # Unauthorized operator must not be allowed to mutate.
+            other=browser.new_page()
+            try:
+                login(other,"reader")
+                for name in ("استيراد ملف (رفع المصدر)","إضافة","تعديل"):
+                    expect(other.get_by_role("button",name=name,exact=True)).to_be_disabled()
+                record(other,"02-reader-denied")
+                results["rbac"]="PASS"
+            finally: other.close()
+            # G2 import: original synthetic PDF, exact extraction + HUMAN preview required.
+            from reportlab.pdfgen import canvas
+            synthetic=OUT/"synthetic-contract.pdf"
+            c=canvas.Canvas(str(synthetic))
+            c.drawString(50,750,"SYNTHETIC CONTRACT PROVIDER SYN_H1")
+            c.drawString(50,725,"Service SYN_001 Price 125.00 USD effective 2026-11-01")
+            c.save()
+            page.get_by_role("button",name="استيراد ملف (رفع المصدر)",exact=True).click()
+            expect(page.locator("#drawer")).to_be_visible()
+            page.locator("#drawer input[type=file]").set_input_files(str(synthetic))
+            page.get_by_role("button",name="رفع الملف",exact=True).click()
+            expect(page.locator("#drawer")).to_contain_text("document",timeout=15000)
+            record(page,"03-upload-result")
+            # Gate: source-manifest alone is insufficient. Require actual extracted
+            # candidate fields, editable human preview and confirm before creation.
+            preview=page.locator("#drawer [data-testid='g2-contract-fields-preview']")
+            expect(preview).to_be_visible(timeout=10000)
+            expect(preview).to_contain_text("SYN_001")
+            expect(page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True)).to_be_visible()
+            record(page,"04-g2-human-preview")
+            results["import"]="PASS"
+            # Next steps executed only after import acceptance gate passes.
+            # A real add/edit test must subsequently verify DB records and version chain.
+            raise AssertionError("Add/Edit PostgreSQL roundtrip is not yet implemented in this strict acceptance harness; no PASS allowed")
+        finally:
+            try: record(page,"99-last-browser-state")
+            except Exception: pass
+            browser.close()
+except Exception as exc:
+    results["failure"]=type(exc).__name__+": "+str(exc)[:1000]
+    results["traceback"]=traceback.format_exc()[-2500:]
+    print(json.dumps(results,ensure_ascii=False,indent=2))
+    (OUT/"results.json").write_text(json.dumps(results,ensure_ascii=False,indent=2))
+    raise
+finally:
+    engine.dispose()
