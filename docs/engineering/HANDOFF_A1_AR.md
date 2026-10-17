@@ -103,3 +103,7 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 
 ## توقف المرحلة 1 — ربط رسوم G3 / ReferencePoint مشروط لا يُخمن
 تم فحص `mcias/models_reference.py` وملفات `mcias/models_reference_points.py` و`mcias/reference_points.py` من Draft PR #22 عند SHA `b694a2a1603a9a4c6d7af26ed56035b1a28b0166`؛ **لا يوجد حتى الآن حقل معتمد يربط بند `fee` بسعر وحدة ورسوم العقد، هوية العقد، وحالة اعتماد مؤسسي موقّع مع مصدر إلزامي**. لا تغيّر A1 production أو تضف استنتاج رسوم من `ProviderTariff` أو `ReferencePoint.section=tariffs`. أُضيف اختبار صريح يجبر هذا الامتناع ويثبت حالات ثلاث بمرجع عقدي اصطناعي. استأنف أولًا من التحقق من CI على SHA الجديد، ثم من مواصفة/اعتماد تخزين هذه المرجعيات في فرع تكامل مستقل، بعد مراجعة PR22 وموافقة مالك السياسة؛ لا تنتقل للمرحلة الثانية.
+
+
+## مرحلة 1 — الفصل الآلي بين تعرفة الخدمة ورسوم الفاتورة
+بعد تطبيق `approved_contract_fee_clause`، يصدر تشخيص G3 الآن `additional_fee_authority=NOT_ESTABLISHED` عند وجود بند `fee`، حتى إن كانت تعرفة خدمة G3 تاريخية صالحة. اختبارات `test_approved_g3_service_tariff_cannot_authorize_itemized_fee` و`test_legacy_service_only_invoice_does_not_invent_missing_fee_clause` تغطي جانبي التفريق. لا تفعل رسوم معتمدة تلقائيًا أو تدّع ربط PR22؛ تحقق من CI على SHA الجديد أولًا.

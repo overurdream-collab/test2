@@ -313,6 +313,7 @@ def test_legacy_service_only_invoice_does_not_invent_missing_fee_clause(tmp_path
         claim,_,_=_claim(db,store,org,actor)
         preview=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-service-only-fee-gate")
         assert "approved_contract_fee_clause" not in preview["missing_evidence"]
+        assert "additional_fee_authority" not in preview["g3_historical_diagnostic"]
         assert preview["financial_decision"]=="NOT_AUTHORIZED"
     finally:
         db.close();engine.dispose()
@@ -336,6 +337,8 @@ def test_approved_g3_service_tariff_cannot_authorize_itemized_fee(tmp_path):
         db.commit()
         state=build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-g3-fee")
         assert state["g3_reference"]["status"]=="REFERENCE_ONLY_UNIT_UNPROVEN"
+        assert state["g3_reference"]["additional_fee_authority"]=="NOT_ESTABLISHED"
+        assert state["g3_reference"]["additional_fee_reason"]=="G3_provider_tariff_is_not_approved_fee_clause"
         assert state["snapshot"].contracts==[]
         assert "approved_contract_fee_clause" in state["snapshot"].missing_evidence
         output=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-g3-fee-preview")

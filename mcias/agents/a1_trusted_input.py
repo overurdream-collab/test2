@@ -311,7 +311,13 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
         })
     except ValueError as exc:
         raise A1SourceBlocked("invalid_unverified_invoice_fields") from exc
-    return {"snapshot":snapshot,"g3_reference":_g3_historical_reference(db,claim),
+    g3_reference=_g3_historical_reference(db,claim)
+    if any(line.kind=="fee" for line in snapshot.invoice.items):
+        # G3 ProviderTariff has no fee-kind, contractual fee-clause or unit
+        # authorization. Even a valid historical service tariff is NOT a fee grant.
+        g3_reference["additional_fee_authority"]="NOT_ESTABLISHED"
+        g3_reference["additional_fee_reason"]="G3_provider_tariff_is_not_approved_fee_clause"
+    return {"snapshot":snapshot,"g3_reference":g3_reference,
             "status":"READ_ONLY_VERIFIED_CSV_NO_UNIT_AUTHORITY"}
 
 def preview_a1_from_g4(db,actor,claim_id,store,*,run_id):

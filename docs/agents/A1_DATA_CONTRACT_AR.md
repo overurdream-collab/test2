@@ -60,3 +60,7 @@ python -m pytest -q
 **لا يمكن إثبات وجود ترخيص رسوم إضافية مؤسسي فعّال من المخطط الحالي.** G3: `ContractVersion` له مقدم الخدمة والفترة والحالة لكنه لا يحمل `allowed_fees` أو موضع بند تفويض رسم؛ `ProviderTariff` له `service_code,amount,currency` ولا يصلح لاستنتاج رسم إداري أو `unit_price`. سجل `ReferencePoint` في PR #22 (غير مدمج) يملك `section/provider_code/service_code/amount/period/source_document_id/source_sha256/source_locator` لكن **المصدر اختياري**، ولا يوجد تمييز `fee` موثق أو ربط مضمون بـ `ContractVersion.id`. الواجهة والقواعد تصرحان بأن البنود موازية لـG3، وproduction approval موقوف حتى توفر توقيع مرتبط بالبند. لذلك لا نُدخل ReferencePoint في عقود A1 ولا نستنتج أن `section=tariffs` تصريح برسوم.
 
 اختبارات إضافية: `test_fee_allowance_requires_exhaustive_policy_or_sourced_clause` (اصطناعي: رسوم مدرجة/غير مدرجة/ناقصة مصدر) و`test_approved_g3_service_tariff_cannot_authorize_itemized_fee` (G2 أصل مشفر، G4 ومطالبة، تعرفة G3 تاريخية موجودة ومع ذلك يبقى missing approved_contract_fee_clause والقرار NOT_AUTHORIZED). لا يوجد ادعاء بفحص تعاقد مؤسسي حقيقي أو دمج PR #22.
+
+
+## تشخيص تعرفة G3 مع رسوم الفاتورة
+إذا كان في الفاتورة المستخرجة والمثبتة بند صريح `item_kind=fee`، يضيف A1 إلى `g3_historical_diagnostic` الحقلين `additional_fee_authority=NOT_ESTABLISHED` و`additional_fee_reason=G3_provider_tariff_is_not_approved_fee_clause`. لا تتغير حالة التعرفة الأصلية، ولا تُضاف موافقة أو قيمة رسم، ولا تعني `REFERENCE_ONLY_UNIT_UNPROVEN` أن بند رسوم مسموح به. غياب بند fee لا يولد تشخيص رسوم؛ لا ربط تلقائي بـPR22 أو وثيقة مؤسسة.
