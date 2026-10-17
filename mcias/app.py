@@ -41,7 +41,7 @@ async def secure_response_headers(request: Request, call_next):
     else:
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
     if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/",
-                                        "/api/v1/rules/", "/api/v1/workspace/", "/api/v1/claims/", "/api/v1/ingestion/", "/api/v1/reference/", "/api/v1/audit-policies/", "/api/v1/report-explorer/", "/api/v1/intelligence/", "/ui/reports", "/ui/intelligence")):
+                                        "/api/v1/rules/", "/api/v1/workspace/", "/api/v1/claims/", "/api/v1/ingestion/", "/api/v1/reference/", "/api/v1/audit-policies/", "/api/v1/report-explorer/", "/api/v1/intelligence/", "/api/v1/reference-points", "/api/v1/audit-outcomes/", "/ui/reports", "/ui/intelligence")):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response
@@ -156,6 +156,12 @@ app.include_router(ingestion_router)
 
 from mcias.reference_api import router as reference_router
 app.include_router(reference_router)
+
+from mcias.reference_points_api import router as reference_points_router
+app.include_router(reference_points_router)
+
+from mcias.claim_outcomes_api import router as claim_outcomes_router
+app.include_router(claim_outcomes_router)
 
 from mcias.claims_api import router as claims_router
 app.include_router(claims_router)
