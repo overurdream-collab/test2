@@ -1,0 +1,90 @@
+{
+  "schema_version": "mcias-engineering-handoff-1.0",
+  "project": "MCIAS v2.0",
+  "scope": "A1 InvoiceIntegrity only",
+  "status": "TESTED_SYNTHETIC_READY_FOR_INDEPENDENT_REVIEW",
+  "institution_accepted": false,
+  "production_deployed": false,
+  "ai_inference_proven": true,
+  "repo": "overurdream-collab/test2",
+  "branch": "feat/mcias-a1-invoice-integrity",
+  "draft_pr_url": "https://github.com/overurdream-collab/test2/pull/20",
+  "architecture_draft_url": "https://github.com/overurdream-collab/test2/pull/19",
+  "main_baseline_sha": "b69defa2f621458ef44d790b510840307a81009a",
+  "last_verified_a1_code_sha": "1ef2ede25ee123c5d9d353bca1c452837d730874",
+  "traceability_cutoff_sha": "1ef2ede25ee123c5d9d353bca1c452837d730874",
+  "latest_head": "RESOLVE_WITH_git_rev_parse_HEAD",
+  "documentary_evidence": [
+    "docs/engineering/TRACEABILITY_POLICY_AR.md",
+    "docs/engineering/worklogs/A1_2026-10-17.md",
+    "docs/engineering/HANDOFF_A1_AR.md",
+    "docs/agents/A1_EVIDENCE_REPORT_20261017.md"
+  ],
+  "metrics": {
+    "targeted_tests": {
+      "passed": 43,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39053124523"
+    },
+    "deterministic": {
+      "cases": 18,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tn": 2,
+      "abstentions": 9
+    },
+    "ai_model": {
+      "id": "Qwen3-8B-GGUF/Q4_K_M",
+      "real_inference": true,
+      "weights_sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+      "cases": 36,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 26,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39051968767",
+      "caution": "Synthetic post-fix retest; NOT a fresh expert-blind evaluation"
+    },
+    "ai_initial_holdout_failed": {
+      "cases": 26,
+      "tp": 8,
+      "fp": 2,
+      "fn": 0,
+      "tn": 16,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39051176994"
+    },
+    "existing_g5_comparator": {
+      "cases": 6,
+      "a1": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "g5_nonzero_deduction_proxy": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 1,
+        "tn": 3
+      },
+      "caution": "Common synthetic policy subset; no end-to-end institutional G5 metric"
+    }
+  },
+  "traceability_ci": "https://github.com/overurdream-collab/test2/actions/runs/39055359875",
+  "traceability_ci_result": "PASS",
+  "open_blockers": [
+    "Independent blind reviewer-labelled medical billing dataset",
+    "Authorized G3/G4 itemized mapping with proven unit semantics",
+    "Independent Palermo verification of raw bytes, attested source and quotes",
+    "Institutional review, security and production approvals"
+  ],
+  "non_negotiable": [
+    "no patient PHI",
+    "no paid APIs",
+    "no production or main changes",
+    "no A2",
+    "no autonomous rejection, approval or deduction"
+  ],
+  "next_step": "Verify new PR HEAD CI, update same-commit journal for every new action, commission independent A1 technical review",
+  "note": "State is a dated snapshot; use GitHub HEAD and workflow results for fresh facts."
+}
