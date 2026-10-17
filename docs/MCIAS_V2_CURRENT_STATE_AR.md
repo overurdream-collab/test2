@@ -51,3 +51,8 @@
 - Existing G2 imports and ReferencePoint still work as baseline claimed by earlier PR22 CI; no assertion of success at this new SHA until CI verified.
 - Next task: create actual source-anchored candidate extractor/validator with synthetic tests after research, then local LLM inference with version capture; keep proposals draft-only. No A1, merge, deployment or G3/G5 modifications.
 - Resume: git switch feat/mcias-contract-intelligence; read CONTRACT_INTELLIGENCE_HANDOFF_AR.md and DG-001; every next commit updates this section and journal atomically.
+
+### Contract Intelligence C1 — evidence gate (commit following R0)
+- Added isolated pure advisory evidence validator and local-only OpenAI-compatible HTTP transport, NOT connected to API, UI, database or ReaderAgent yet. Every response remains DRAFT_ONLY. No model weights/runtime installed, real inference NOT_RUN. Unit tests and CI on this commit PENDING_CI.
+- Files: mcias/contract_intelligence.py, tests/test_contract_intelligence.py; no migration/G3/G5 changes.
+- Next: inspect exact GitHub CI at HEAD, fix tests, then connect G2 persisted source records under RBAC and add draft-only proposal persistence; do not activate financial rules.

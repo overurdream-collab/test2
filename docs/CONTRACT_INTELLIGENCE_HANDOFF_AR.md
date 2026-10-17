@@ -9,3 +9,6 @@
 5. Real model is NOT_RUN. No model version/weights/hash, benchmark, accuracy metric or GPU availability has been established. Have on-prem isolated runtime approved before using any live institution input.
 ## Invariants
 Never merge or deploy, pay for models, expose PHI, change main, update approved financial history, call G5 directly from LLM, create A1, approve points without institutional bound signature. Each commit must contain 8 HANDOFF fields + CURRENT_STATE and developer/acceptance updates if applicable; CI on exact SHA, PENDING_CI otherwise. Handoff must state precise remaining work.
+
+## C1 first code commit
+Review mcias/contract_intelligence.py and tests/test_contract_intelligence.py; check actual GitHub Actions. The model endpoint is deliberately only 127.0.0.1/localhost with /v1/chat/completions; no runtime configured so real Qwen inference is NOT_RUN. Next must connect G2 record/job tenant-scoped API and preserve field-level permissions, then begin true model benchmarking. No ReferencePoint inserted automatically.

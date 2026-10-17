@@ -159,3 +159,9 @@ python -m pytest -q tests/test_g5_agent_order.py tests/test_g5_engine.py
 - أي قرار قانوني/طبي/مالي غير محسوم يأخذ `HOLD` أو `HUMAN_REVIEW`. كل مطالبة قديمة تُراجع بقواعد **تاريخ الخدمة** وتحفظ بصمة النسخة في تقرير التدقيق.
 - لا تغيّر G3 وG5 ليقبلا مصادر جديدة بسهولة على حساب `policy_fingerprint` والتفويض، ولا تعِد كتابة اللقطات القديمة.
 - قوائم TODO الحقيقية موثقة في سجل التنفيذ؛ وجود الشاشة لا يعني اكتمال خدمة استخراج العقود أو الاعتماد الإنتاجي أو وكلاء A1–A5.
+
+
+## Contract Intelligence: new evidence gate on child PR #23
+- mcias/contract_intelligence.py: make_source_blocks() reads existing G2 ExtractedSourceRecord shapes; validate_candidates() rejects unsupported locator/quote/numeric/date/tenant-independent identity at pure layer and returns **DRAFT_ONLY** records; infer_local() opens explicit localhost-only OpenAI-compatible POST, no external proxy or cloud fallback, requires model id+revision.
+- There is **no live API or UI integration yet** and **no real model inference**. API must enforce organization scope plus RBAC/field-level access prior to using G2 records; never hand public model data.
+- tests/test_contract_intelligence.py: positive/negative synthetic anchors, wrong provider, OCR price mismatch, prompt injection as untrusted content, SSRF and unavailable inference. Read exact CI status before claiming any pass.

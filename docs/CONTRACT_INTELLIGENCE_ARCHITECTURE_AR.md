@@ -16,3 +16,6 @@ G2 POST upload → IngestionDocument (org / SHA256) → IngestionJob + Extracted
 - Security: SSRF prevention on localhost inference URL (allowlist fixed operator config); no external proxy, no PHI logs; prompt data fenced as UNTRUSTED; parse JSON strict schema, size/time limits; fail closed; limit files/pages, authorization, row-level tenant filter.
 ## Test inventory
 Data: Arabic 10p, English, bilingual, native+scan PDF, XLSX three providers, amendment, stale billing, no date, OCR error, prompt injection, duplicate, model timeout, auth, no activation, PG concurrency/immutability, browser a11y, precision/recall. **Not executed as a suite yet**.
+
+## C1 code reality
+mcias/contract_intelligence.py is pure validation + local HTTP transport only, not a backend route. It uses record_id/locator/fields supplied by G2 after future authorization; output status forced DRAFT_ONLY. It does not persist candidate data nor call G3/G5. NOTE: CSV row locator is not currently included in accepted type set except row; read API adapter must preserve G2 kind exactly.

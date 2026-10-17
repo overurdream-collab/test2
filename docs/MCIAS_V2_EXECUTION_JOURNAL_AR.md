@@ -153,3 +153,14 @@
 - Risks: no Arabic OCR accuracy, no on-prem model runtime, no provenance-validation implementation. Licenses for model weights may restrict commercial deployment. GitHub report initially is not functional contract-agent delivery.
 - Next: Implement synthetic corpus + quote/locator validator on feat/mcias-contract-intelligence, and log a new HANDOFF in same Commit; then run targeted tests and attach Actions evidence.
 - Handoff: Open docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; read DG-001 and CURRENT_STATE; preserve current PR #22 financial authority, no merge or A1.
+
+
+### HANDOFF-20261017-005
+- Scope: Added pure bounded Contract Intelligence anchor validator and local-only OpenAI-compatible model transport; synthetic unit tests. No endpoint, database migration, approved reference mutation, G3/G5 or AI-agent A1.
+- Why: Following completed Research R0, implement minimum new MCIAS-specific evidence and typing gap; reuse G2 original locators and avoid parser rewrite; CID-001/002/003.
+- Files: mcias/contract_intelligence.py; tests/test_contract_intelligence.py; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md; docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_ARCHITECTURE_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: python -m pytest -q tests/test_contract_intelligence.py (intended CI; not executed on this repo locally because git clone blocked by DNS). The unavailable runtime probe is an EXPECTED negative test, not real AI inference.
+- Result: PENDING_CI / NOT_RUN local targeted repo test. No real Qwen execution and no measured extraction precision or recall.
+- Risks: potential Python/CI regression pending test, parser may not carry granular text spans; model without explicit local runtime remains unavailable; unauthenticated use prohibited because module not exposed yet.
+- Next: Verify GitHub Actions results on exact commit and repair any failure with new DG-001 event; then wire permissioned G2 document-only preview API.
+- Handoff: inspect PR #23 HEAD, tests/test_contract_intelligence.py and module; run pytest with -q then follow docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; do not merge.

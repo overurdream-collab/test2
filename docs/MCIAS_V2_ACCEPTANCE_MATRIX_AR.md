@@ -57,3 +57,13 @@
 - بند جديد صادر بعد تاريخ الخدمة لا يُغيّر نتيجة لقطات G5 السابقة.
 - بند جديد متعارض مع G3 أو أي بند نصي غير مفسر يعلق النتيجة ويظهر مرجعها في اللقطة وفي ملف نتائج التدقيق.
 - أي AI لا يملك سلطة تحويل `HOLD` إلى قبول أو رفض، ولا تغيير `policy_fingerprint`.
+
+
+### Contract Intelligence addendum — feature branch PR #23
+| ID | Gate | Status | Evidence |
+|---|---|---|---|
+| CI-01 | Source quote locator and numeric validator (pure module) | IMPLEMENTED_NOT_TESTED | mcias/contract_intelligence.py; tests/test_contract_intelligence.py, PENDING_CI |
+| CI-02 | On-prem model HTTP transport configured locally | IMPLEMENTED_NOT_TESTED transport only | no configured runtime or live inference |
+| CI-03 | Tenant-scoped API, persistent proposal, reviewer UI | NOT_IMPLEMENTED | No routes or migration on C1 |
+| CI-04 | Synthetic Arabic/English/OCR dataset and Precision/Recall | NOT_IMPLEMENTED | no model inference / reference gold |
+| CI-05 | Typed approved financial compiler and signature | NOT_IMPLEMENTED / BLOCKED_INSTITUTION | G3/G5 authority preserved |
