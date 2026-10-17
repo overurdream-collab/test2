@@ -8,6 +8,7 @@ import os
 def migration_database_url():
     return os.environ.get('MCIAS_TEST_DATABASE_URL') or Settings().database_url
 from mcias.models import Base
+from mcias import models_reference_points  # noqa: F401 - migration metadata
 config = context.config
 if config.config_file_name:
     fileConfig(config.config_file_name)
