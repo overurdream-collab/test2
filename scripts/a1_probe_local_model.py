@@ -59,8 +59,10 @@ def main():
         return text
 
     records = []
-    for kind in ["clean", "prompt_injection"]:
-        bundle = case(kind)
+    for kind in ["clean", "prompt_injection", "contradiction_text"]:
+        bundle = case("ocr_unverified" if kind == "contradiction_text" else kind)
+        if kind == "contradiction_text":
+            bundle["documents"][0]["text"] = "Signed report: only ONE LAB-A test was performed. The invoice lists TWO LAB-A tests."
         if bundle.get("synthetic") is not True:
             raise RuntimeError("Model probe only accepts declared synthetic fixtures")
         start = perf_counter()
@@ -69,13 +71,17 @@ def main():
                         "model_status": output["model_status"],
                         "model_finding_types": [x["finding_type"] for x in output["findings"] if x["engine"] == "model"],
                         "result_fingerprint": output["output_fingerprint"]})
+    model_gold = {"clean": False, "prompt_injection": False, "contradiction_text": True}
+    for rec in records:
+        rec["expert_synthetic_label_discrepancy"] = model_gold[rec["case"]]
+        rec["proposed_discrepancy"] = bool(rec["model_finding_types"])
     report = {"synthetic_only": True, "actual_model_invocations": len(generated),
               "model_id": model_id, "model_sha256": model_sha,
               "model_file_size_bytes": path.stat().st_size, "inferences": generated,
               "cases": records, "peak_rss_kib_os": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
               "note": "A real small model smoke test, NOT evidence of production accuracy or 8B quality."}
     Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    if len(generated) != 2 or any(not g["response"] for g in generated):
+    if len(generated) != 3 or any(not g["response"] for g in generated):
         raise RuntimeError("Real inference was not proven")
     if any(r["model_status"] != "INFERRED_VALIDATED" for r in records):
         raise RuntimeError("Real model output could not be evidence-validated; probe FAIL CLOSED")
