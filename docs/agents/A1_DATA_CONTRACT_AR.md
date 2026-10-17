@@ -64,3 +64,11 @@ python -m pytest -q
 
 ## تشخيص تعرفة G3 مع رسوم الفاتورة
 إذا كان في الفاتورة المستخرجة والمثبتة بند صريح `item_kind=fee`، يضيف A1 إلى `g3_historical_diagnostic` الحقلين `additional_fee_authority=NOT_ESTABLISHED` و`additional_fee_reason=G3_provider_tariff_is_not_approved_fee_clause`. لا تتغير حالة التعرفة الأصلية، ولا تُضاف موافقة أو قيمة رسم، ولا تعني `REFERENCE_ONLY_UNIT_UNPROVEN` أن بند رسوم مسموح به. غياب بند fee لا يولد تشخيص رسوم؛ لا ربط تلقائي بـPR22 أو وثيقة مؤسسة.
+
+
+## Gate مقرر بعد فحص G3 + PR22 + PR23 (2026-10-18)
+الحكم: **BLOCKED_MISSING_SIGNED_CONTRACT_FEE_REFERENCE**. المرجع الحالي لا يعطي في سجل واحد `organization_id, provider_code, contract_version_id, fee_code, unit, unit_price, currency, effective_from, effective_until, clause_document_id, clause_sha256, clause_locator, independent_signed_approval`. `ProviderTariff` تعرفة خدمة لا سماح برسم. `ReferencePoint` في Draft PR22 موازٍ وغير مدمج، `source_document_id` اختياري ولا يحمل FK للعقد أو نوع fee أو الوحدة أو الاعتماد المرتبط بالتوقيع. `Contract Intelligence` في Draft PR23 يصدر `DRAFT_ONLY` أو بنود مراجَعة إلى مسودة غير فعالة، وليس اعتمادًا ماليًا. لا ترقِّ بنود AI أو تعرفة G3 إلى `allowed_fees`.
+
+أصغر تغيير مستقبلي مقترح **بعد موافقة حوكمة المؤسسة**: إضافة تمثيل append-only لملحق رسوم مرتبط صراحةً بإصدار العقد وفترة سريانه، والمزود ورمز الرسم ووحدته وسعره وعملته وموضع بند موثَّق ببصمة بايتات الأصل، واعتماد مستقل **موقع مرتبط بهذا البند والإصدار**، مع فحوص تعارض وفترات `[from,until)` وتعدد المستندات/الأولوية. لا تشغيل للسجل حتى توقيعه واختباره، ولا يغير هذا الفرع G3/G5 أو PR22/23.
+
+اختبار انحدار إضافي: `test_expired_sourced_fee_contract_cannot_authorize_fee`، مع الاختبارات القائمة للحالات `legit_fee` و`fee` والمرجع الناقص، والتي تثبت سلوكًا على بيانات اصطناعية فقط.

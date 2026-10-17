@@ -107,3 +107,7 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 
 ## مرحلة 1 — الفصل الآلي بين تعرفة الخدمة ورسوم الفاتورة
 بعد تطبيق `approved_contract_fee_clause`، يصدر تشخيص G3 الآن `additional_fee_authority=NOT_ESTABLISHED` عند وجود بند `fee`، حتى إن كانت تعرفة خدمة G3 تاريخية صالحة. اختبارات `test_approved_g3_service_tariff_cannot_authorize_itemized_fee` و`test_legacy_service_only_invoice_does_not_invent_missing_fee_clause` تغطي جانبي التفريق. لا تفعل رسوم معتمدة تلقائيًا أو تدّع ربط PR22؛ تحقق من CI على SHA الجديد أولًا.
+
+
+## استلام دورة مرجع الرسوم — رفض التفعيل لغياب الصلاحية
+آخر فحص: G3 `ProviderTariff` تعرفة خدمة، ولا توجد جهة رسوم مصدقة؛ PR22 ReferencePoint مصدره اختياري ولا FK لإصدار العقد/نوع رسم/وحدة/توقيع بند؛ PR23 Contract Intelligence مصدره `DRAFT_ONLY` ولا يروّج إلى اعتماد مالي. أبقِ `approved_contract_fee_clause` و`additional_fee_authority=NOT_ESTABLISHED`، ولا تفتح `allowed_fees` لمدخلات غير مصدقة. اختبار expiration الاصطناعي الجديد في `tests/test_a1_invoice_integrity.py`. تحقق من CI عند آخر SHA ثم توقف ضمن المرحلة الأولى لحين مواصفة واعتماد المؤسسة. لا دمج أو بدء Palermo.

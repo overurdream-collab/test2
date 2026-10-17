@@ -286,3 +286,15 @@ def test_fee_allowance_requires_exhaustive_policy_or_sourced_clause():
                for f in unknown["findings"])
     assert not any(f["finding_type"] == "UNJUSTIFIED_FEE"
                    for f in unknown["findings"])
+
+
+def test_expired_sourced_fee_contract_cannot_authorize_fee():
+    """An otherwise cited fee is not authorized after contract end date."""
+    b=case("legit_fee")
+    b["contracts"][0]["effective_until"]=b["claim"]["service_date"]
+    result=analyze(b)
+    assert result["finding_status"]=="INSUFFICIENT_EVIDENCE"
+    assert any(f["finding_type"]=="CONTRACT_REFERENCE" and
+               "unique_effective_contract" in f["missing_evidence"]
+               for f in result["findings"])
+    assert not any(f["finding_type"]=="PRICE_OVERCHARGE" for f in result["findings"])
