@@ -2896,6 +2896,7 @@ function inputClauseWorkspace(ctx) {
   const tabs = el("div", null, "input-tabs"), content = el("div");
   const fileArea = el("div", null, "input-actions");
   let selected = "contracts";
+  let selectedRecord = null;
   for (const [section, ar, en] of clauseSections) {
     const tab = button(L(ar, en), () => draw(section), "button input-tab");
     tab.dataset.section = section;
@@ -2909,12 +2910,26 @@ function inputClauseWorkspace(ctx) {
       tab.setAttribute("aria-pressed", String(tab.dataset.section === section));
     fileArea.replaceChildren();
     content.replaceChildren();
-    fileArea.append(
-      actionButton(ctx, L("إضافة ملف", "Upload file"), "ingestion.upload", () => uploadClauseSource(ctx, section), "button"),
-      actionButton(ctx, L("إضافة بند جديد", "New clause"), "reference.write",
-        () => openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button"),
-      button(L("تحديث السجل", "Refresh list"), () => load(0), "button"),
-    );
+    selectedRecord = null;
+    const importAction = actionButton(ctx, L("استيراد ملف (رفع المصدر)", "Import file (source upload)"),
+      "ingestion.upload", () => uploadClauseSource(ctx, section), "button");
+    const addAction = actionButton(ctx, L("إضافة", "Add"), "reference.write",
+      () => openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button");
+    const editAction = actionButton(ctx, L("تعديل", "Edit"), "reference.write",
+      () => {
+        if (!selectedRecord || selectedRecord.section !== section) return;
+        openDrawer(L("إصدار بديل مع حفظ الأصل", "Create replacement version"),
+          clauseDraftForm(ctx, section, selectedRecord));
+      }, "button");
+    editAction.disabled = true;
+    fileArea.setAttribute("role", "group");
+    fileArea.setAttribute("aria-label", L("إجراءات هذا القسم", "Section actions"));
+    fileArea.append(importAction, addAction, editAction);
+    const hint = el("p", L(
+      "اختر «عرض الدليل» من صف موجود لتفعيل التعديل. رفع الملف لا يعني اكتمال استخراج البنود أو اعتمادها.",
+      "Select View evidence on a record to enable Edit. Upload alone does not extract or approve clauses."
+    ), "chart-note");
+    content.append(hint);
     const note = el("p", L(
       "جميع البنود المستخرجة أو المدخلة يدويًا تبقى مسودات حتى موافقة مستقلة. أسعار الخدمات يجب أن ترتبط برمز مقدم الخدمة المحدد.",
       "Imported and manually entered clauses remain drafts until independent approval. Tariffs require their own provider code."
@@ -2923,6 +2938,8 @@ function inputClauseWorkspace(ctx) {
     const listTarget = el("div");
     content.append(listTarget);
     function load(offset = 0) {
+      selectedRecord = null;
+      editAction.disabled = true;
       void fetchPanel(ctx, listTarget,
         "/api/v1/input-clauses/sections/" + section + "?limit=50&offset=" + offset,
         data => {
@@ -2932,6 +2949,8 @@ function inputClauseWorkspace(ctx) {
             hasMore: (data.items || []).length === 50,
             onPage: load,
             open: record => {
+              selectedRecord = {...record, section};
+              editAction.disabled = ctx.demo || !allowed(ctx, "reference.write");
               const drawer = el("div");
               drawer.append(details(record));
               const actions = el("div", null, "actions");
