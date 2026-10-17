@@ -66,3 +66,5 @@ python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3
 مرجع XLSX الجديد: يستعمل G2 file_scanner وisolated_parse في عملية محدودة ومقارنة البايتات ثم الصفوف؛ راجع tests/test_a1_trusted_input.py؛ PDF/OCR ما زال غير مؤهل للمقارنة المالية. لا مصدر لتوثيق تنفيذ الخدمة أو وحدة التعرفة.
 
 تطوير فحص Duplicate (فقط داخل A1): إذا استُخدم موضع الصف الأصلي نفسه مع نفس الكميات/القيم في بندين مختلفين، يصدر POTENTIAL_INTERNAL_DUPLICATE للمراجعة بلا توفير مالي مرشح؛ تكرار service_code على صفين مستقلين لا يعد تكرارًا.
+
+أمان HTTP: App security middleware يفرض Cache-Control: no-store على جميع المسارات /api/v1/a1/، واختبار مثبت ضمن tests/test_a1_preview_http.py. CI الخاص بـA1 يشمل اختبارات G2/G4 adapter وHTTP إلى جانب القواعد والنموذج الحقيقي.

@@ -6,6 +6,8 @@ on:
       - "mcias/agents/**"
       - "tests/a1/**"
       - "tests/test_a1_invoice_integrity.py"
+      - "tests/test_a1_trusted_input.py"
+      - "tests/test_a1_preview_http.py"
       - "scripts/*a1*.py"
       - ".github/workflows/a1-invoice-integrity.yml"
   workflow_dispatch:
@@ -29,7 +31,7 @@ jobs:
       - name: Install existing MCIAS test dependencies
         run: python -m pip install -e '.[test]'
       - name: Run A1 safety, precision, and evidence tests
-        run: python -m pytest tests/test_a1_invoice_integrity.py -q
+        run: python -m pytest tests/test_a1_invoice_integrity.py tests/test_a1_trusted_input.py tests/test_a1_preview_http.py -q
       - name: Evaluate hand-labeled synthetic cases
         run: python -m scripts.evaluate_a1 --output a1-results.json
       - name: Compare A1 and existing G5 Decimal engine on compatible synthetic claims

@@ -38,6 +38,7 @@ def test_real_g2_g4_preview_http_works_only_for_authorized_user(tmp_path,monkeyp
             monkeypatch.setattr(a1_api,"resolve_user",lambda db,authorization:(actor,None))
             passed=client.get("/api/v1/a1/claims/"+claim.id+"/preview")
             assert passed.status_code==200,passed.text
+            assert passed.headers.get("cache-control")=="no-store"
             j=passed.json()
             assert j["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
             assert j["financial_decision"]=="NOT_AUTHORIZED"
