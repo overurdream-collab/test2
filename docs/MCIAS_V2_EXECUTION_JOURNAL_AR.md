@@ -37,6 +37,11 @@
 | E14 | اختبارات HTTP وعزل المؤسسات | `test_reference_points_http_security.py` | منع مستخدم للقراءة من الكتابة أو رؤية مؤسسة ثانية | CI G1–G7 |
 | E15 | ضبط التصنيف عند وجود بند معتمد غير مفسر | `claim_outcomes.py`, `test_reference_points_and_outcomes.py` | لا تتخطّى تقارير `HUMAN_REVIEW` التناقض | اختبار negative |
 | E16 | إنشاء مرجع المطور ومصفوفة قبول | `MCIAS_V2_DEVELOPER_START_HERE_AR.md`, `MCIAS_V2_ACCEPTANCE_MATRIX_AR.md`, هذا الملف | يُمكن الاستلام من GitHub دون قراءة سجل محادثة | مراجعة الوثائق عبر PR |
+| E17 | اختبار تكامل G5 الموقع فعليًا | `tests/test_g5_agent_order.py` | policy حتمي موقع اصطناعيًا + مرجع موافقات غير مفسر → `AuditSnapshot.calculation.status=held` وPalermo held وHUMAN_REVIEW | `test_run_audit_immutable_snapshot_captures_reference_block` |
+| E18 | حماية PostgreSQL من إدراج معتمد بالقوة | `0019_reference_points.py` | أول إدخال لا بد أن يكون `draft`، حتى لو تجاوز ORM | اختبار `test_reference_points_postgres.py` |
+| E19 | اختبار SQL مباشر أمام الـtrigger | `tests/test_reference_points_postgres.py` | يحاول INSERT approved وUPDATE وDELETE ثم يثبت بقاء الأصل | PostgreSQL CI |
+| E20 | تسليم مواصفة مرحلة الذكاء التعاقدي | `MCIAS_CONTRACT_INTELLIGENCE_AND_RULE_COMPILER_SPEC_AR.md` | مواصفة مفصلة للتنفيذ الآمن دون ادعاء أن المستخرج AI يعمل | مراجعة بنود المواصفة |
+
 
 ### حوادث اختبار تم إصلاحها أثناء التطوير
 - أول CI بعد migration فشل لأن فحوص G9 وG5/G6/G7 القديمة كانت مثبتة على `0018_claim_query_indexes`; حُدّثت إلى `0019_reference_points`. هذه مشكلة توقع نسخة، لا مشكلة في عقد المستخدم.
@@ -45,7 +50,17 @@
 - اكتشاف حدّ pagination: التصفية بتاريخ الخدمة يجب أن تسبق `limit/offset`. صُحّحت وحُددت حدود مقبولة.
 - فحص ملف `REJECTED_RULE_CERTAIN`: لا يكفي أن يدّعي الوكيل `fail_confirmed` ما لم تكن حالة Palermo `verified`; جرى حجب التصنيف القاطع عند غياب هذا الإثبات.
 
-## 3. الأدلة الآلية السابقة التي تحققت بالفعل
+## 3. الأدلة الآلية المثبتة على قاعدة الكود قبل آخر وثائق التسليم
+
+النسخة `4d9f689623ac25511df9ba8b8aa2fc8057a6fb5f` (وتشمل جسر البنود، ربطه بـG5، اختبار الاعتماد الموقع والحماية على PostgreSQL) اجتازت:
+- [G1–G7](https://github.com/overurdream-collab/test2/actions/runs/39054804583): **success**.
+- [G8](https://github.com/overurdream-collab/test2/actions/runs/39054804495): **success**.
+- [G9](https://github.com/overurdream-collab/test2/actions/runs/39054804532): **success**.
+- [Enterprise workspaces/browser](https://github.com/overurdream-collab/test2/actions/runs/39054804546): **success**.
+
+**ملحوظة:** هذه النتائج تخص SHA المبين أعلاه. أُضيفت بعدها ملفات توثيق وربط README دون تغييرات وظيفية؛ يجب فحص CI لآخر SHA قبل الدمج. لا تمثل الاختبارات تصريح تشغيل إنتاجي.
+
+## 3.1 الأدلة الآلية السابقة التي تحققت بالفعل
 
 قبل دمج جسر القواعد الأخير، نجحت على نسخة PR #22 السابقة SHA `b4db3781a040b4c62ad67ac689de79ac0d8430f6` أربع مجموعات:
 - G1–G7: https://github.com/overurdream-collab/test2/actions/runs/39051386987
