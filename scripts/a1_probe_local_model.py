@@ -31,10 +31,13 @@ def main():
         info = api.model_info(repo, files_metadata=False)
         revision = info.sha
         filenames = sorted(p.rfilename for p in info.siblings
-                           if p.rfilename.lower().endswith(".gguf") and "q4_k_m" in p.rfilename.lower())
-        if len(filenames) != 1:
-            raise RuntimeError("Expected exactly one Q4_K_M GGUF from official Qwen repo: " + repr(filenames))
-        filename = filenames[0]
+                           if p.rfilename.lower().endswith(".gguf"))
+        preferred = [p for p in filenames if "q4_k_m" in p.lower()]
+        if not preferred:
+            preferred = [p for p in filenames if "q8_0" in p.lower()]
+        if len(preferred) != 1:
+            raise RuntimeError("Could not resolve a unique official Qwen GGUF: " + repr(filenames))
+        filename = preferred[0]
         path = Path(hf_hub_download(repo_id=repo, filename=filename, revision=revision))
     if not path or not path.is_file():
         raise RuntimeError("No downloaded/local GGUF model available; cannot claim AI inference.")
