@@ -5,6 +5,8 @@
 **Agent architecture:** [Draft PR #19](https://github.com/overurdream-collab/test2/pull/19).  
 **Status:** NOT production-approved. No real medical records, paid services or unauthorized deployment.
 
+**MANDATORY DG-001:** Every functional/doc/config change MUST be one atomic Git commit with a new structured `### HANDOFF-YYYYMMDD-NNN` entry in `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md` (Scope, Why, Files, Tests, Result, Risks, Next, Handoff), AND an updated `docs/MCIAS_V2_CURRENT_STATE_AR.md`. See [full documentation policy](DOCUMENTATION_GOVERNANCE_AR.md). No undocumented commit; do not claim CI PASS before evidence. This is machine-checked on PRs.
+
 ## Mandatory reading order
 
 1. [Arabic start-here architecture & API guide](MCIAS_V2_DEVELOPER_START_HERE_AR.md)

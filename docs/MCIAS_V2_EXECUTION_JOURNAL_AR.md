@@ -109,3 +109,14 @@
 ## 7. قاعدة التوثيق عند كل تغيير مستقبلي
 
 أضف سطرًا جديدًا إلى جدول E00–En لهذه الخطوة: **الهدف، الملف، التغيير، السلوك، السيناريو الموجب والسالب، رابط Commit SHA، رابط GitHub Actions، حالة الاعتماد**. حدّث `MCIAS_V2_DEVELOPER_START_HERE_AR.md` و`MCIAS_V2_ACCEPTANCE_MATRIX_AR.md` إذا تغيرت وظيفة أو تم إغلاق فجوة. يحتفظ GitHub بتاريخ commits، لكن هذا السجل يفسر **لماذا** تغير السلوك وما الذي يثبت صحته. لا تدمج حالة «النجاح الهندسي» مع «الاعتماد المؤسسي».
+
+
+### HANDOFF-20261017-001
+- Scope: إنشاء سياسة توثيق DG-001 وإلزام كل تغيير جديد بسجل تنفيذ ونقطة استئناف محدثة، وإضافة فحص CI وقالب PR وفهرسة من README؛ لا تعديل في محرك المطالبات.
+- Why: طلب صاحب المشروع سياسة دائمة لكل حفظ أو تعديل لتسليم المشروع لأي مبرمج أو Codex دون فقدان السياق أو سوء تفسير حالة التطوير.
+- Files: docs/DOCUMENTATION_GOVERNANCE_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; scripts/check_documentation_governance.py; tests/test_documentation_governance.py; .github/workflows/documentation-governance.yml; .github/PULL_REQUEST_TEMPLATE.md; README.md; docs/CODEX_MCIAS_V2_EXECUTION_HANDOFF.md.
+- Tests: python -m unittest tests/test_documentation_governance.py ; python scripts/check_documentation_governance.py --base b69defa2f621458ef44d790b510840307a81009a --head HEAD --legacy-cutoff 8bdb43fd467f5766ecaa8cbc48f379dea99e17cb ; GitHub Actions CI for exact HEAD.
+- Result: PENDING_CI — لم تصدر نتيجة الاختبارات الجديدة عند كتابة هذا الحدث؛ لا يُنقل نجاح سابق إليه.
+- Risks: الفحص الآلي يحكم على محتوى Commit بعد إرساله، ولا يمنع دمجًا إن لم يُضف إلى Required Checks في إعدادات حماية main؛ تطبيق الإلزام التاريخي يبدأ بعد Legacy Cutoff ولا يمحو Commits السابقة.
+- Next: التحقق من GitHub Actions على Commit السياسة، وفحص حماية main ثم جعل حالة Documentation governance / enforce إلزامية بعد مراجعة الصلاحيات والموافقة المناسبة.
+- Handoff: ابدأ من README ثم DG-001 ثم CURRENT STATE؛ كل Commit جديد يضيف حدث HANDOFF بالحقول الثمانية ويعدل CURRENT STATE معه في Commit ذري.

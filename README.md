@@ -1,5 +1,7 @@
 # MCIAS v2.0
 
+**التوثيق إلزامي عند كل تغيير:** [DG-001](docs/DOCUMENTATION_GOVERNANCE_AR.md) · [الحالة الحالية لاستئناف العمل](docs/MCIAS_V2_CURRENT_STATE_AR.md). يمنع إهمال سجل التنفيذ أو تحديث حالة المشروع عند حفظ أي تعديل جديد.
+
 ## MCIAS v2.0 — authoritative implementation handoff (PR #22, DRAFT)
 
 **For any new engineer, Codex or reviewer, start here:**
