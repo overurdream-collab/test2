@@ -46,7 +46,7 @@ CASES=[
   "gold":[]},
 ]
 
-def main(output):
+def main(output, cases=None):
     os.environ["HF_HUB_DISABLE_TELEMETRY"]="1"
     # Alternative fully instruction-tuned Apache-2.0 model, test only; same schema and validation.
     torch.set_num_threads(2)
@@ -97,9 +97,10 @@ def main(output):
     entries=[]
     tp=fp=fn=negative_fp=total_proposed=quarantined=0
     try:
-        for case in CASES:
-            blocks=make_source_blocks([{"id":case["id"],"locator":{"kind":"page","index":1},
-                                       "values":{"text":case["source"]}}])
+        for case in (CASES if cases is None else cases):
+            blocks=make_source_blocks([{"id":case["id"],
+                                       "locator":case.get("locator", {"kind":"page","index":1}),
+                                       "values":case.get("values", {"text":case["source"]})}])
             request_start=monotonic()
             error=None
             proposals=[]
@@ -143,7 +144,7 @@ def main(output):
         "true_positives":tp,"false_positives":fp,"false_negatives":fn,
         "precision":tp/(tp+fp) if tp+fp else None,
         "recall":tp/(tp+fn) if tp+fn else None,
-        "false_positive_cases":negative_fp,"negative_cases":sum(not c["gold"] for c in CASES),
+        "false_positive_cases":negative_fp,"negative_cases":sum(not c["gold"] for c in (CASES if cases is None else cases)),
         "false_positive_rate":negative_fp/sum(not c["gold"] for c in CASES),
         "total_proposals":total_proposed,"quarantined_candidates":quarantined,
         "total_elapsed_seconds":round(monotonic()-started,1),"cases":entries,
@@ -162,5 +163,7 @@ def main(output):
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",default="contract-model-benchmark.json")
+    parser.add_argument("--cases-file",default=None)
     args=parser.parse_args()
-    main(args.output)
+    cases=json.loads(Path(args.cases_file).read_text(encoding="utf-8")) if args.cases_file else None
+    main(args.output,cases)

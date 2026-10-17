@@ -563,3 +563,14 @@
 - Risks: A model output itself can vary across reruns; read C30 actual generated case metrics and quarantine from finished Qwen logs, not historical corrected results.
 - Next: Inspect exact C30 SHA 8 workflows and read real pretrained CPU Qwen log. If more failures, isolate and report, do not silently move to another feature.
 - Handoff: PR23 draft, no production/main, A1, PHI, money rules or paid services.
+
+
+### HANDOFF-20261018-015 — C31 independent SYN evaluation, pending exact-SHA CI
+- Scope: New independent 6-case dataset plus fixture integrity and adversarial source tests. Benchmark accepts optional `--cases-file`, original default C30 corpus unchanged. New free CPU workflow runs actual pinned Qwen model on new data only. No application/source validator/security/financial modifications.
+- Why: C31 proposes/executes a NEW isolated synthetic model diagnostic corpus (six distinct cases including AR, EN, mixed two providers, two synthetic sheet rows, and one injection negative). The C30 baseline remains unchanged; existing 4-case metrics TP3 FP0 FN0 are NOT comparable directly to the new corpus. No new source validation or financial authority changes. New model run and public CI must be measured on exact new SHA; cannot claim extraction quality before complete.
+- Files: `scripts/contract_ai_benchmark.py`, `tests/fixtures/contract_independent_synthetic.json`, `tests/test_contract_independent_synthetic.py`, `.github/workflows/contract-ai-independent.yml`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: Fixture tests and CI model inference PENDING_CI, not run locally. Prior C30 real Qwen PASS TP3 FP0 FN0 on previous four-case corpus, no inference implication for this suite.
+- Result: IMPLEMENTED_PENDING_CI; never portray old metrics as new corpus outcome.
+- Risks: new corpus uses synthetic sheet-row text and two-provider cases with forced-nonempty schema; multi-provider case may expose model recall issues, deliberately not loosen gates.
+- Next: Check CI on C31 exact SHA, inspect raw inference TP/FP/FN by case, report fail modes only before considering changes. Never run money authorization, PHI or production.
+- Handoff: PR23 remains Draft, no merge/deploy/paid services, A1–A5 excluded.
