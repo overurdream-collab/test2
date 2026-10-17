@@ -1,0 +1,71 @@
+name: A1 InvoiceIntegrity synthetic validation
+
+on:
+  push:
+    branches:
+      - feat/mcias-a1-invoice-integrity
+    paths:
+      - "mcias/agents/**"
+      - "tests/a1/**"
+      - "tests/test_a1_invoice_integrity.py"
+      - "scripts/*a1*.py"
+      - ".github/workflows/a1-invoice-integrity.yml"
+  pull_request:
+    paths:
+      - "mcias/agents/**"
+      - "tests/a1/**"
+      - "tests/test_a1_invoice_integrity.py"
+      - "scripts/*a1*.py"
+      - ".github/workflows/a1-invoice-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install existing MCIAS test dependencies
+        run: python -m pip install -e '.[test]'
+      - name: Run A1 safety, precision, and evidence tests
+        run: python -m pytest tests/test_a1_invoice_integrity.py -q
+      - name: Evaluate hand-labeled synthetic cases
+        run: python -m scripts.evaluate_a1 --output a1-results.json
+      - name: Save real measurements as test artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a1-deterministic-metrics
+          path: a1-results.json
+          if-no-files-found: ignore
+
+  open-weight-inference:
+    needs: synthetic-rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install isolated free local model dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "llama-cpp-python>=0.3.9,<1" "huggingface_hub>=0.30,<2"
+      - name: Real Qwen3 0.6B CPU inference on synthetic text
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+        run: python -m scripts.a1_probe_local_model --download-public-model --output a1-real-model-evidence.json
+      - name: Preserve inference transcript and model fingerprint
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a1-real-model-inference
+          path: a1-real-model-evidence.json
+          if-no-files-found: ignore
