@@ -71,3 +71,5 @@
 | CI-06 | RBAC + tenant + per-field gate preview API | IMPLEMENTED_NEEDS_CI | tests/test_contract_intelligence_api.py, 7 synthetic unit/HTTP scenarios; PENDING_CI |
 | CI-07 | Preview button linked into existing bilingual workspace | IMPLEMENTED_NEEDS_UAT | mcias/web_workspace/reference_points_view.js; model unconfigured by default |
 | CI-08 | Redirect-proof local inference | IMPLEMENTED_NEEDS_CI | numeric loopback only + HTTP no-follow; test setup pending |
+
+| CI-09 | Actual synthetic PDF two pages + XLSX H1/H2/H3 + scanned quarantine + injection-as-text | IMPLEMENTED_NEEDS_CI | tests/test_contract_documents.py, PENDING_CI, not AI inference |

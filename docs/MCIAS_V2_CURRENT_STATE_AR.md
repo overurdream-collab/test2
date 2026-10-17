@@ -65,3 +65,6 @@
 ### C2 adverse-test fix / HANDOFF-007
 - On C2 SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212: Governance Actions 39059261519 PASS, G9 Actions 39059261517 PASS, G1–G7 Actions 39059261540 FAIL (unit: 1 failed 389 passed 20 skipped); root cause LLM returned list as provider_code, causing TypeError in evidence validator. PostgreSQL job and dependency audit passed. C2 not marked fully passing.
 - This fix checks invalid provider/service types safely, and requires numeric value inside the actual quoted clause, not elsewhere on same page. New SHA CI PENDING_CI. Next: inspect new CI. No real Qwen, no production activation.
+
+### Contract C4 real synthetic files
+- Added tests/test_contract_documents.py: exercises existing G2 on PDF native 2 pages (source page indices), XLSX three providers H1/H2/H3 with rows, OCR-disabled scanned PDF quarantine, and a prompt-bearing PDF treated as untrusted data. New SHA CI PENDING_CI; earlier C3 f1586d401e49577f767ef72d70237eda0f36973d G1–G7/G9/DG passed. No model inference or accuracy measurement; typed rule compiler still NOT IMPLEMENTED. Do not merge.

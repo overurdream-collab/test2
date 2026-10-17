@@ -186,3 +186,14 @@
 - Risks: Local LLM unconfigured; quote precision in Arabic and OCR untested, malformed nested responses can remain problematic; human reviewer required. No historical version changes.
 - Next: Check unit, PG, security, browser, governance actions on this exact head SHA; record results and implement remaining review/persistence only if green.
 - Handoff: git switch feat/mcias-contract-intelligence; read test failure logs from 39059261540 and added adversarial tests; follow docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; avoid A1, main and production.
+
+
+### HANDOFF-20261017-008
+- Scope: Added synthetic real-source G2 file reader integration tests: two-page PDF, XLSX three providers, scanned PDF without OCR quarantined, and instruction-bearing PDF treated as text. No model, API, database, G3/G5, rule or A1 changes.
+- Why: Research-first R0 and C1-3 validated data shapes; this tests actual existing pypdf/openpyxl G2 source paths rather than faked extracted records.
+- Files: tests/test_contract_documents.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md.
+- Tests: python -m pytest -q tests/test_contract_documents.py (new and not locally run in repository). Previous C3 commit f1586d401e49577f767ef72d70237eda0f36973d: GitHub Actions G1-G7 https://github.com/overurdream-collab/test2/actions/runs/39059432403 PASS, G9 https://github.com/overurdream-collab/test2/actions/runs/39059432394 PASS, Documentation governance https://github.com/overurdream-collab/test2/actions/runs/39059432745 PASS.
+- Result: PENDING_CI for this new SHA; source parser tests are not real AI inference and not measured clause extraction accuracy.
+- Risks: Arabic/OCR confidence, table layout and multi-file amendments untested; no persistent proposals, typed compiler or signed rule activation; missing model runtime.
+- Next: Check exact SHA CI for G1-G9/browser/docs; fix regressions atomically, then proceed to typed diagnostic compiler and real local model benchmark.
+- Handoff: See docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md, run tests/test_contract_documents.py and all CI on exact SHA; remain Draft PR #23, no merge.

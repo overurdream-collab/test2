@@ -28,3 +28,6 @@ Added synthetic tests/test_contract_intelligence_api.py with user permissions, c
 
 ## CI failure and correction C2→C3
 At SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212, G1-G7 run https://github.com/overurdream-collab/test2/actions/runs/39059261540 unit job failed test_malformed_model_json_types_are_reviewed_not_executed: TypeError for list-valued provider_code. 389 passed / 20 skipped / 1 failed, postgres-integration and dependency audit successful. Governance and G9 PASS. New code type-checks provider/service and ties numeric value to the candidate quote (not page). Additional negative test for two prices on the same page. New SHA PENDING_CI.
+
+### Source-level tests C4
+- Added four synthetic file reader cases in tests/test_contract_documents.py using reportlab/Pillow/openpyxl output read through actual G2 ReaderAgent. Native PDF page and XLSX row mapping, scanned page quarantine, source prompt-as-text. This does not prove Arabic OCR, Qwen3 inference, clause precision/recall or production safety. New SHA PENDING_CI.
