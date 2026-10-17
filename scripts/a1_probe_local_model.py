@@ -51,7 +51,7 @@ def main():
         result = llm.create_chat_completion(
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": "/no_think\n" + input_text}],
-            max_tokens=220, temperature=0.0)
+            max_tokens=220, temperature=0.0, response_format={"type": "json_object"})
         text = result["choices"][0]["message"].get("content") or ""
         usage = result.get("usage", {})
         generated.append({"response": text[:3000], "usage": usage,
@@ -74,9 +74,11 @@ def main():
               "model_file_size_bytes": path.stat().st_size, "inferences": generated,
               "cases": records, "peak_rss_kib_os": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
               "note": "A real small model smoke test, NOT evidence of production accuracy or 8B quality."}
+    Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     if len(generated) != 2 or any(not g["response"] for g in generated):
         raise RuntimeError("Real inference was not proven")
-    Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    if any(r["model_status"] != "INFERRED_VALIDATED" for r in records):
+        raise RuntimeError("Real model output could not be evidence-validated; probe FAIL CLOSED")
     print(json.dumps({k: v for k, v in report.items() if k != "inferences"}, ensure_ascii=False))
 
 
