@@ -5,7 +5,7 @@ No production documents, tokens, external model API or financial rule activation
 """
 import argparse
 from datetime import datetime, timezone
-from scripts.contract_benchmark_scoring import count_matches
+from contract_benchmark_scoring import count_matches
 from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path

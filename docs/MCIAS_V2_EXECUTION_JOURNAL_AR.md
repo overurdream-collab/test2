@@ -552,3 +552,14 @@
 - Risks: 3 SYN positives/1 negative and forced candidate generation do not show real-world accuracy. Decimal comparison affects scoring only; cannot rescue failed validation or incorrectly verified identity.
 - Next: Inspect exact-SHA isolated scoring CI and seven prior suites and real Qwen; record actual CI and TP/FP/FN. Do not start new independent corpus before closure.
 - Handoff: Draft PR23 latest HEAD, check GitHub Actions for latest SHA. No production/main merge, paid services, real patient data or financial execution.
+
+
+### HANDOFF-20261018-014 — C30 direct script-mode import correction
+- Scope: ONE import-line change in SYN benchmark and narrow script-path import smoke in existing Decimal scoring workflow. No model inference, scoring logic, source validation or financial code altered.
+- Why: C29 functional SHA `cf7c26d2f688f6e6524e33686f3f6572d109b8f4`: seven original CI families except real Qwen passed, including Decimal test, DG-001, LMFE, G1–G9 and Enterprise. Qwen run https://github.com/overurdream-collab/test2/actions/runs/39076416659 FAILED before inference, traceback `ModuleNotFoundError: No module named 'scripts'` from `python scripts/contract_ai_benchmark.py` direct execution. Python sets sys.path[0] to scripts/, not repository root. New C30 changes just benchmark scorer import to `from contract_benchmark_scoring import count_matches`; existing test module still imports `scripts.contract_benchmark_scoring` from project-root pytest as before. Added no-model script-path import smoke under the dedicated Decimal CI, and retained the actual real CPU Qwen benchmark workflow to test complete startup. No model/gates/scoring changes.
+- Files: `scripts/contract_ai_benchmark.py`, `.github/workflows/contract-benchmark-scoring.yml`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: Previous C29 Qwen failed before generating any output (do NOT report TP/FP/FN for C29); previous scoring/DG/LMFE/system/Enterprise PASS. New exact C30 SHA workflow metrics and full CI PENDING_CI, no local model tests claimed.
+- Result: IMPLEMENTED_PENDING_CI. Numeric regression remains 7000 == 7000.00 and 7000 != 7001, identity never relaxed.
+- Risks: A model output itself can vary across reruns; read C30 actual generated case metrics and quarantine from finished Qwen logs, not historical corrected results.
+- Next: Inspect exact C30 SHA 8 workflows and read real pretrained CPU Qwen log. If more failures, isolate and report, do not silently move to another feature.
+- Handoff: PR23 draft, no production/main, A1, PHI, money rules or paid services.

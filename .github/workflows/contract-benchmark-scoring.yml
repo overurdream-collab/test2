@@ -27,3 +27,18 @@ jobs:
         run: python -m pip install 'pytest>=8,<9'
       - name: Verify Decimal equality and strict tariff identity without model
         run: python -m pytest -q --noconftest tests/test_contract_benchmark_scoring.py
+      - name: Verify direct script-mode scoring import without loading Qwen
+        run: |
+          python - <<'PY'
+          import ast
+          import subprocess
+          import sys
+          from pathlib import Path
+          benchmark = Path('scripts/contract_ai_benchmark.py')
+          script = ast.parse(benchmark.read_text(encoding='utf-8'))
+          imports = [node for node in script.body if isinstance(node, ast.ImportFrom) and node.module == 'contract_benchmark_scoring']
+          assert len(imports) == 1
+          # Isolate only stdlib/scorer import from the complete benchmark, under the same script sys.path[0].
+          command = [sys.executable, '-c', "import sys; sys.path.insert(0, 'scripts'); from contract_benchmark_scoring import count_matches; assert count_matches({('tariffs','H2:CONSULT','7000')},{('tariffs','H2:CONSULT','7000.00')}) == (1,0,0); assert count_matches({('tariffs','H2:CONSULT','7000')},{('tariffs','H2:CONSULT','7001')}) == (0,1,1)"]
+          subprocess.run(command, check=True)
+          PY
