@@ -22,3 +22,6 @@ mcias/contract_intelligence.py is pure validation + local HTTP transport only, n
 
 ## C2 live boundaries
 HTTP preview at /api/v1/contract-intelligence/documents/{document_id}/preview only. source selection is tenant- and permission-scoped; G2 field-level control is reused. model is loopback-only, optional runtime required. Preview results in memory and response with exact G2 locator; bad OCR forces human review. No background job or persistent proposal; human must independently create ReferencePoint via separate existing UI, institution-level signed approval still missing. No G3/G5 changes.
+
+### C5 rule AST whitelist
+The typed compiler only constructs inert ASTs from separately approved, source SHA bound ReferencePoint, whose numeric types allow tariffs/cost_sharing comparisons in diagnostics. No execution in audit_service or G3/G5, no `eval`, no SQL or payment. This is NOT institution-signature-bound activation or a complete compiler for exclusions/approvals/duration. Unknown clauses are blocked.

@@ -21,3 +21,6 @@ Fixes failing G1-G7 unit on 1d84f576: provider_code list caused TypeError. Newly
 
 ### Resume C4
 - Run python -m pytest -q tests/test_contract_documents.py alongside tests/test_contract_intelligence.py and tests/test_contract_intelligence_api.py. Exact CI required; if PDF parser test fails inspect source MIME/file_scanner limits before altering G2. No institutional data, no new parser. Next typed rules and real local model inference.
+
+### C5 resume
+Read mcias/contract_rule_compiler.py + tests/test_contract_rule_compiler.py and check HEAD CI. Diagnostic compiler never executes financial policy. Next a local model real inference with weight/model revision and replayable samples, then persistent proposals and independent human review; no activation.

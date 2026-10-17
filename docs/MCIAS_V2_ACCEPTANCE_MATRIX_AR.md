@@ -73,3 +73,5 @@
 | CI-08 | Redirect-proof local inference | IMPLEMENTED_NEEDS_CI | numeric loopback only + HTTP no-follow; test setup pending |
 
 | CI-09 | Actual synthetic PDF two pages + XLSX H1/H2/H3 + scanned quarantine + injection-as-text | IMPLEMENTED_NEEDS_CI | tests/test_contract_documents.py, PENDING_CI, not AI inference |
+
+| CI-10 | Type whitelist for tariffs/copay, source/date/tenant scope, forged AST guard | IMPLEMENTED_NEEDS_CI | mcias/contract_rule_compiler.py tests/test_contract_rule_compiler.py; DIAGNOSTIC_ONLY, never financial authority |

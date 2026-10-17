@@ -197,3 +197,14 @@
 - Risks: Arabic/OCR confidence, table layout and multi-file amendments untested; no persistent proposals, typed compiler or signed rule activation; missing model runtime.
 - Next: Check exact SHA CI for G1-G9/browser/docs; fix regressions atomically, then proceed to typed diagnostic compiler and real local model benchmark.
 - Handoff: See docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md, run tests/test_contract_documents.py and all CI on exact SHA; remain Draft PR #23, no merge.
+
+
+### HANDOFF-20261017-009
+- Scope: Add only inert typed diagnostic compiler for approved-source tariffs and copay with provenance/fingerprint, historic validity, tenant/provider/currency and explicit data mismatch. Test negative unknown/unsigned/forged terms. No integration into finance/Palermo audit execution, no database or A1.
+- Why: Research R0 and CID-003: only whitelisted provable terms compile as non-executable diagnostic; ambiguous legal/medical terms blocked, source versions immutable. Reuse reference_rule_bridge for actual G3/G5 authority.
+- Files: mcias/contract_rule_compiler.py; tests/test_contract_rule_compiler.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md; docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_ARCHITECTURE_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: python -m pytest -q tests/test_contract_rule_compiler.py (GitHub Actions expected); no local repo clone. Earlier C3 SHA f1586d4 governance and G1-G7/G9 passed; C4 SHA 39350aee CI must be checked separately.
+- Result: PENDING_CI for this typed compiler commit, not a claimed pass; real Qwen inference NOT_RUN; precision/recall NOT_MEASURED.
+- Risks: Caller-supplied financial reference values are NOT proof they are signed, so module never activates rules; signature-bound institutional authorization is missing. No production payment/rejection operations.
+- Next: Inspect exact current SHA CI; record any failing test with a new DG-001 event; then benchmark real local model and implement proposal persistence and reviewer workflows.
+- Handoff: Read typed compiler module/tests then Contract Intelligence handoff; keep financial G3/G5 bridge unchanged, no merge, no production.

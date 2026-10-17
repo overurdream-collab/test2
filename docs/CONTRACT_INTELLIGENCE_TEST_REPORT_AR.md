@@ -31,3 +31,6 @@ At SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212, G1-G7 run https://github.com/ov
 
 ### Source-level tests C4
 - Added four synthetic file reader cases in tests/test_contract_documents.py using reportlab/Pillow/openpyxl output read through actual G2 ReaderAgent. Native PDF page and XLSX row mapping, scanned page quarantine, source prompt-as-text. This does not prove Arabic OCR, Qwen3 inference, clause precision/recall or production safety. New SHA PENDING_CI.
+
+### C5 typed compiler tests PENDING_CI
+tests/test_contract_rule_compiler.py covers permitted tariff and copay, before/end-exclusive date, provider/tenant mismatch, unsigned draft and missing source, untyped exclusion, forged AST fingerprint, NaN. All new SHA tests pending CI. No financial activation or model inference, no precision/recall.

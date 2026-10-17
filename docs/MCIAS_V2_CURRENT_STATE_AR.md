@@ -68,3 +68,6 @@
 
 ### Contract C4 real synthetic files
 - Added tests/test_contract_documents.py: exercises existing G2 on PDF native 2 pages (source page indices), XLSX three providers H1/H2/H3 with rows, OCR-disabled scanned PDF quarantine, and a prompt-bearing PDF treated as untrusted data. New SHA CI PENDING_CI; earlier C3 f1586d401e49577f767ef72d70237eda0f36973d G1–G7/G9/DG passed. No model inference or accuracy measurement; typed rule compiler still NOT IMPLEMENTED. Do not merge.
+
+### C5 typed diagnostic compiler
+- Added mcias/contract_rule_compiler.py (new SHA CI PENDING_CI). Only approved source-anchored tariff/copay references convert to inert typed AST with fingerprint; comparisons to supplied G3/G5 values report CONSISTENT/CONFLICT/NOT_APPLICABLE/INDETERMINATE, not deductions or payment decisions. No signed execution authority, no production activation and no integration into G5. No real model inference. Next verify exact CI and move to real LLM benchmark/proposal review.
