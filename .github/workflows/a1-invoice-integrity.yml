@@ -19,6 +19,10 @@ on:
       - ".github/workflows/a1-invoice-integrity.yml"
   workflow_dispatch:
 
+concurrency:
+  group: a1-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
