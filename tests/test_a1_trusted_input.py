@@ -316,3 +316,31 @@ def test_legacy_service_only_invoice_does_not_invent_missing_fee_clause(tmp_path
         assert preview["financial_decision"]=="NOT_AUTHORIZED"
     finally:
         db.close();engine.dispose()
+
+
+def test_approved_g3_service_tariff_cannot_authorize_itemized_fee(tmp_path):
+    """G3 ProviderTariff.amount is not an approved contract fee schedule."""
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        _historical(db,org)
+        claim,_,_=_claim(db,store,org,actor,invoice=False,amount="25")
+        csv=(
+            "line_item_id,service_code,unit,quantity,unit_price,line_total,"
+            "invoice_total,claim_reference,provider_code,currency,item_kind\n"
+            f"SYN-L1,CONSULT,visit,2,10,20,25,{claim.claim_reference},H1,YER,service\n"
+            f"SYN-F1,ADMIN,fee,1,5,5,25,{claim.claim_reference},H1,YER,fee\n"
+        ).encode()
+        doc,_=_document(db,store,org,"g3_not_fee_approval.csv",csv)
+        db.add(ClaimAttachment(organization_id=org.id,claim_id=claim.id,
+            ingestion_document_id=doc.id,document_sha256=doc.sha256,linked_by=actor.id))
+        db.commit()
+        state=build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-g3-fee")
+        assert state["g3_reference"]["status"]=="REFERENCE_ONLY_UNIT_UNPROVEN"
+        assert state["snapshot"].contracts==[]
+        assert "approved_contract_fee_clause" in state["snapshot"].missing_evidence
+        output=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-g3-fee-preview")
+        assert output["financial_decision"]=="NOT_AUTHORIZED"
+        assert output["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
+        assert "approved_contract_fee_clause" in output["missing_evidence"]
+    finally:
+        db.close();engine.dispose()

@@ -263,3 +263,26 @@ def test_sourced_approved_fee_remains_advisory_clean():
     result = analyze(case("legit_fee"))
     assert result["finding_status"] == "PASS"
     assert not any(f["finding_type"] == "FEE_CONTRACT_AUTHORITY" for f in result["findings"])
+
+
+def test_fee_allowance_requires_exhaustive_policy_or_sourced_clause():
+    """Three synthetic contract cases; none constitutes live G3 authorization."""
+    allowed = analyze(case("legit_fee"))
+    assert allowed["finding_status"] == "PASS"
+    assert not any(f["finding_type"] in ("UNJUSTIFIED_FEE", "FEE_CONTRACT_AUTHORITY")
+                   for f in allowed["findings"])
+
+    absent_from_exhaustive = analyze(case("fee"))
+    assert absent_from_exhaustive["finding_status"] == "REVIEW"
+    assert any(f["finding_type"] == "UNJUSTIFIED_FEE"
+               and f["finding_status"] == "REVIEW"
+               for f in absent_from_exhaustive["findings"])
+
+    missing_clause = case("legit_fee")
+    missing_clause["contracts"][0]["allowed_fees"][0].pop("source")
+    unknown = analyze(missing_clause)
+    assert unknown["finding_status"] == "INSUFFICIENT_EVIDENCE"
+    assert any(f["finding_type"] == "FEE_CONTRACT_AUTHORITY"
+               for f in unknown["findings"])
+    assert not any(f["finding_type"] == "UNJUSTIFIED_FEE"
+                   for f in unknown["findings"])

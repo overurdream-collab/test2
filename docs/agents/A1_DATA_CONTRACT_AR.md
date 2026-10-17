@@ -54,3 +54,9 @@ python -m pytest -q
 
 ## G2/G4 إلى A1 — الإفصاح المحدد عن رسوم بلا تفويض G3
 عند ظهور بند موثَّق من الصف الأصلي بنوع `fee`، يضيف المحوّل `approved_contract_fee_clause` إلى `missing_evidence`؛ ويظهر النقص كذلك في `review_packet`. لا يستنبط المحول الموافقة من `ProviderTariff.amount` الذي يفتقر لوحدة وبند رسم مصدق، ولا يغيّر `contracts=[]` أو قرار `NOT_AUTHORIZED`. لا ينشئ نقص بند رسوم في فواتير الخدمات وحدها. إثبات الإشارة باختبار CSV مشفر وباختبار سلبي للخدمات فقط.
+
+
+## قرار مرحلة 1 بشأن G3 وReferencePoint — 2026-10-18
+**لا يمكن إثبات وجود ترخيص رسوم إضافية مؤسسي فعّال من المخطط الحالي.** G3: `ContractVersion` له مقدم الخدمة والفترة والحالة لكنه لا يحمل `allowed_fees` أو موضع بند تفويض رسم؛ `ProviderTariff` له `service_code,amount,currency` ولا يصلح لاستنتاج رسم إداري أو `unit_price`. سجل `ReferencePoint` في PR #22 (غير مدمج) يملك `section/provider_code/service_code/amount/period/source_document_id/source_sha256/source_locator` لكن **المصدر اختياري**، ولا يوجد تمييز `fee` موثق أو ربط مضمون بـ `ContractVersion.id`. الواجهة والقواعد تصرحان بأن البنود موازية لـG3، وproduction approval موقوف حتى توفر توقيع مرتبط بالبند. لذلك لا نُدخل ReferencePoint في عقود A1 ولا نستنتج أن `section=tariffs` تصريح برسوم.
+
+اختبارات إضافية: `test_fee_allowance_requires_exhaustive_policy_or_sourced_clause` (اصطناعي: رسوم مدرجة/غير مدرجة/ناقصة مصدر) و`test_approved_g3_service_tariff_cannot_authorize_itemized_fee` (G2 أصل مشفر، G4 ومطالبة، تعرفة G3 تاريخية موجودة ومع ذلك يبقى missing approved_contract_fee_clause والقرار NOT_AUTHORIZED). لا يوجد ادعاء بفحص تعاقد مؤسسي حقيقي أو دمج PR #22.
