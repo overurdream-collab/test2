@@ -14,6 +14,7 @@ from statistics import mean
 
 from mcias.agents.invoice_integrity import analyze
 from tests.a1.model_cases import CASES, model_case
+from tests.a1.holdout_cases import HOLDOUT, holdout_case
 
 
 def stream_sha256(path):
@@ -70,20 +71,23 @@ def main():
         return raw
 
     rows = []
-    for name, truth, *_ in CASES:
-        bundle, expected = model_case(name)
+    for cohort, name, truth, bundle_factory in (
+        [("development", item[0], item[1], model_case) for item in CASES] +
+        [("holdout", item[0], item[1], holdout_case) for item in HOLDOUT]
+    ):
+        bundle, expected = bundle_factory(name)
         assert expected == truth and bundle.get("synthetic") is True
         start = perf_counter()
         output = analyze(bundle, model=call_model, model_id=f"{model_id}@sha256:{model_sha}")
         findings = [x for x in output["findings"] if x["engine"] == "model"]
         predicted = bool(findings)
-        row = {"case": name, "human_synthetic_gold_conflict": truth,
+        row = {"cohort": cohort, "case": name, "human_synthetic_gold_conflict": truth,
                "predicted_conflict": predicted, "model_status": output["model_status"],
                "model_findings": findings, "input_fingerprint": output["input_fingerprint"],
                "output_fingerprint": output["output_fingerprint"],
                "elapsed_seconds": round(perf_counter()-start, 4)}
         rows.append(row)
-        print(json.dumps({"case": name, "truth": truth, "predicted": predicted,
+        print(json.dumps({"cohort": cohort, "case": name, "truth": truth, "predicted": predicted,
                           "status": output["model_status"], "elapsed_seconds": row["elapsed_seconds"]}), flush=True)
     tp = sum(x["human_synthetic_gold_conflict"] and x["predicted_conflict"] for x in rows)
     tn = sum(not x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in rows)
@@ -91,21 +95,34 @@ def main():
     fn = sum(x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in rows)
     p = tp/(tp+fp) if tp+fp else 0
     recall = tp/(tp+fn) if tp+fn else 0
+    def metrics(dataset):
+        tp_n = sum(x["human_synthetic_gold_conflict"] and x["predicted_conflict"] for x in dataset)
+        tn_n = sum(not x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in dataset)
+        fp_n = sum(not x["human_synthetic_gold_conflict"] and x["predicted_conflict"] for x in dataset)
+        fn_n = sum(x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in dataset)
+        return {"TP": tp_n, "TN": tn_n, "FP": fp_n, "FN": fn_n,
+                "precision": tp_n/(tp_n+fp_n) if tp_n+fp_n else 0,
+                "recall": tp_n/(tp_n+fn_n) if tp_n+fn_n else 0,
+                "cases": len(dataset)}
+    holdout = metrics([x for x in rows if x["cohort"] == "holdout"])
+    development = metrics([x for x in rows if x["cohort"] == "development"])
     report = {"status": "EXPERIMENTAL_NOT_PRODUCTION_ACCEPTED", "model_id": model_id,
               "model_sha256": model_sha, "model_bytes": path.stat().st_size,
-              "ground_truth_file": "tests/a1/model_cases.py::CASES",
+              "ground_truth_file": ["tests/a1/model_cases.py::CASES", "tests/a1/holdout_cases.py::HOLDOUT"],
               "model_real_inferences": len(generated), "metrics": {"TP":tp,"FP":fp,"FN":fn,"TN":tn,
                  "precision":p,"recall":recall, "case_count":len(rows),
                  "mean_claim_seconds":mean(x["elapsed_seconds"] for x in rows),
                  "peak_process_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss},
+              "development_metrics": development, "holdout_metrics": holdout,
               "rows": rows, "raw_model_generations": generated,
               "note": "Tiny manually labeled synthetic corpus; independent institutional accuracy gate remains OPEN"}
     Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(json.dumps({"model_id": model_id, "metrics": report["metrics"], "report_file": args.output}), flush=True)
-    if len(generated) != len(CASES) or any(x["model_status"] != "INFERRED_VALIDATED" for x in rows):
+    print(json.dumps({"model_id": model_id, "metrics": report["metrics"], "holdout_metrics": holdout,
+                      "development_metrics": development, "report_file": args.output}), flush=True)
+    if len(generated) != len(CASES) + len(HOLDOUT) or any(x["model_status"] != "INFERRED_VALIDATED" for x in rows):
         raise RuntimeError("AI evidence-validated inference gate FAILED")
-    if p < .9 or recall < .9:
-        raise RuntimeError("EXPERIMENTAL AI detection gate FAILED; do not mark as successful")
+    if holdout["precision"] < .9 or holdout["recall"] < .9:
+        raise RuntimeError("HOLDOUT AI detection quality gate FAILED; do not mark as successful")
 
 
 if __name__ == "__main__":
