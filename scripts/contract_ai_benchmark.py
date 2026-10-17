@@ -5,6 +5,7 @@ No production documents, tokens, external model API or financial rule activation
 """
 import argparse
 from datetime import datetime, timezone
+from scripts.contract_benchmark_scoring import count_matches
 from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -116,7 +117,7 @@ def main(output):
                    and not p["validation_errors"]]
             predicted={(p["section"],p["logical_key"],p["amount"]) for p in valid}
             gold={(x[0],x[1],x[2]) for x in case["gold"]}
-            a,b,c=len(gold & predicted),len(predicted-gold),len(gold-predicted)
+            a,b,c=count_matches(gold, predicted)
             tp+=a; fp+=b; fn+=c
             total_proposed+=len(proposals); quarantined+=len(proposals)-len(valid)
             if not gold and predicted: negative_fp+=1
