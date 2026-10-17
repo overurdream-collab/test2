@@ -21,11 +21,17 @@ def classify(findings, verification, calculation):
         return REVIEW, "audit_checks_missing"
     if any(not isinstance(f, dict) for f in agents):
         return REVIEW, "malformed_audit_finding"
+    # A purported deterministic rejection must also pass independent Palermo
+    # reconciliation. Existing Palermo-2 holds non-pass findings, so these
+    # remain human-review cases until a dedicated verified-failure path exists.
     for finding in agents:
-        if (finding.get("status") == "fail_confirmed"
-            and finding.get("evidence_confirmed") is True
-            and finding.get("source_reference")):
-            return REJECTED, str(finding.get("reason") or "confirmed_rule_failure")[:160]
+        if finding.get("status") == "fail_confirmed":
+            if (finding.get("evidence_confirmed") is True
+                and finding.get("source_reference")
+                and isinstance(verification, dict)
+                and verification.get("status") == "verified"):
+                return REJECTED, str(finding.get("reason") or "confirmed_rule_failure")[:160]
+            return REVIEW, "confirmed_failure_requires_independent_verification"
     for finding in agents:
         if finding.get("agent") == "evidence" and finding.get("status") == "hold":
             return MISSING, "required_evidence_missing"
