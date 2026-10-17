@@ -101,6 +101,8 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
         "Each quote must be an exact substring of a supplied text and source_id must match. "
         "Empty list is allowed. No other keys."
     )
+    codes = {line.get("code") for line in bundle["invoice"].get("items", [])
+             if isinstance(line, dict) and isinstance(line.get("code"), str) and line.get("code")}
     try:
         raw = model(instruction, canonical({"invoice_lines": [
             {"code": item.get("code"), "unit": item.get("unit"),
@@ -120,6 +122,7 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
             sid, quote, explanation = (entry.get(k) for k in ("source_id", "exact_quote", "explanation"))
             if (isinstance(sid, str) and sid in texts and isinstance(quote, str)
                 and len(quote) >= 8 and len(quote) <= 500 and quote in texts[sid]
+                and any(code in quote for code in codes)
                 and isinstance(explanation, str) and 0 < len(explanation) <= 500):
                 signals.append(_finding("DOCUMENT_CONTRADICTION", "REVIEW",
                     explanation, [allowed_sources[sid]], origin="model"))
