@@ -28,7 +28,7 @@ CLAUSE_SCHEMA={"type":"object","additionalProperties":False,"required":["clauses
       "record_id":{"type":"string"},"quote":{"type":"string"},
       "section":{"type":"string","enum":["contracts","providers","beneficiaries","cost_sharing","categories","exclusions","approvals","tariffs"]},
       "rule_type":{"type":"string","enum":["text","amount","percentage","count","exclusion","approval","duration"]},
-      "logical_key":{"type":"string"},"amount":{"type":["string","null"]},
+      "logical_key":{"type":"string"},"amount":{"type":["string","null"],"pattern":"^[0-9]+(\\.[0-9]{1,4})?$"},
       "provider_code":{"type":["string","null"]},"service_code":{"type":["string","null"]},
       "currency":{"type":["string","null"]},"effective_from":{"type":["string","null"]},
       "effective_until":{"type":["string","null"]}}}}}}

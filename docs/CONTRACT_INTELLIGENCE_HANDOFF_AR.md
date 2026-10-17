@@ -110,3 +110,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C24 completed measurement / next narrow iteration
 - Actual C24 `a3123b93db394fd3c0b61edd1ee946adcfe8a79a` all 6 GitHub workflows PASS. Real Qwen2.5 generated 4 SYN proposals: TP1 FP0 FN2, unchanged recall33.3%, 3 quarantined; Arabic candidate amount `20%` invalid, mixed H2 logical_key `H2:H2_CONSULT` wrong, injection quarantined. Log https://github.com/overurdream-collab/test2/actions/runs/39071874325. Keep old failed historical results; do not mark model accepted. Next developer examines existing LM Format Enforcer schema's amount:string and possible typed decimal constraint, while preserving strict `_numeric`/source and only one further change after research/tests. PR22/23 Draft, no patient data or G3/G5 finance, production or A1.
+
+
+### C25 resume — format constraint trial
+- At baseline documentation SHA d81a78790b11e23e7b866973d1b80b4347461d83, C24 real model recalled 1/3 (TP1 FP0 FN2). C25 experiment constrains `amount` to numeric string or null **only within SYN Qwen benchmark**; standalone syntax test covers percent suffix and date-like strings. All new-SHA CI and real pretrained model quality PENDING_CI. If pinned LMFE pattern handling errors or negative cases worsen, record failure without weakening source validation. Do not touch application model gateway, human review, G3/G5 or A1. Continue at latest PR23 SHA.
