@@ -198,7 +198,7 @@ def as_dict(point, effective_until=None):
         "version":point.version,"title":point.title,"clause_text":point.clause_text,
         "rule_type":point.rule_type,"provider_code":point.provider_code,
         "service_code":point.service_code,
-        "amount":str(point.amount) if point.amount is not None else None,
+        "amount":format(point.amount, ".4f") if point.amount is not None else None,
         "currency":point.currency, "effective_from":point.effective_from.isoformat(),
         "effective_until":end.isoformat(),"status":point.status,
         "source_document_id":point.source_document_id,"source_sha256":point.source_sha256,
