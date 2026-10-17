@@ -241,3 +241,14 @@
 - Risks: CPU model downloads may fail or exceed runner time, weak model may not generate valid JSON, and four SYN examples cannot certify Arabic/OCR/legal accuracy. UI needs authorized independent browser UAT. No automatic financial activation.
 - Next: Inspect Actions for exact C8 SHA, collect actual pretrained model output hashes and metrics or record measured blocker, then expand gold corpus and Arabic PDF/OCR benchmark; maintain no PHI and no prod costs.
 - Handoff: Check PR23 C8 CI and job artifact; code only in branch, no main merge or A1. Run python scripts/contract_ai_benchmark.py --output /tmp/mcias-syn-contract-ai.json on isolated local CPU with pinned transformers/torch/accelerate. Review source model license and data privacy in decision register.
+
+
+### HANDOFF-20261017-013
+- Scope: Make real-model benchmark fail rather than report successful when model outputs yield zero usable clauses, and include safe truncated completions of four exclusively synthetic prompts to diagnose invalid JSON. No production model, API or financial behavior altered.
+- Why: C8 at SHA b20e5c2045d449c17ca3cc930efa0397bcea0ef9: pretrained Qwen3-0.6B (pinned c1899de...) **actually generated** 4 outputs via loopback Transformers; however `infer_local` rejected all JSON/model responses, yielding TP=0, FP=0, FN=3, Recall=0.0, Precision=undefined. GitHub benchmark run 39063356685 succeeded at the infrastructure layer but NOT at clause accuracy; should be explicitly FAIL as functional gate until improved. Other C8 CI: DG 39063356625, G1–G7 39063356576, G8 39063356628, G9 39063356604, Enterprise 39063356580 success.
+- Files: scripts/contract_ai_benchmark.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: Real GitHub Actions run https://github.com/overurdream-collab/test2/actions/runs/39063356685; pinned PyTorch 2.7.1+cpu/Transformers 4.57.1, 4 SYN source snippets, generated 4 completions in 90.7 s; measured zero accepted clauses. Next-run functional failure expected at zero Recall. All new SHA checks PENDING_CI.
+- Result: Infra REAL_MODEL_GENERATION=PASS; functional clause extraction FAIL (Recall 0/3); C9 PENDING_CI. No claim Precision=100%; undefined because zero accepted positives.
+- Risks: Disclosure of generated previews is only acceptable because all 4 prompts and responses are explicitly synthetic public text, never real patient/contract data. Small model may lack reliable JSON output. No thresholds fabricated.
+- Next: Read generated synthetic completion previews in C9 CI, diagnose/repair prompt or parser without removing source-location/numeric validation; re-run real model and benchmark before accepting.
+- Handoff: PR23 branch; find benchmark job, exact SHA, response previews in logs/artifact; no main merge, real PHI or A1. Preserve DG-001.

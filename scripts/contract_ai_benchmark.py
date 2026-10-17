@@ -58,7 +58,8 @@ def main(output):
                 completion=tokenizer.decode(generated[0,tokens.shape[-1]:],
                                             skip_special_tokens=True)
                 inference_calls.append({"output_sha256":sha256(completion.encode()).hexdigest(),
-                                        "tokens":int(generated.shape[-1]-tokens.shape[-1])})
+                                        "tokens":int(generated.shape[-1]-tokens.shape[-1]),
+                                        "synthetic_completion_preview":completion[:2000]})
                 reply=json.dumps({"choices":[{"message":{"content":completion}}]},ensure_ascii=False).encode()
                 self.send_response(200)
                 self.send_header("Content-Type","application/json")
@@ -126,6 +127,8 @@ def main(output):
     print(json.dumps(result,ensure_ascii=False,indent=2),flush=True)
     if result["generated_output_count"]==0:
         raise SystemExit("FAIL: no pretrained model generation was executed")
+    if result["recall"] == 0:
+        raise SystemExit("FAIL: real model generated text but no source-backed contract clause passed validation")
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()

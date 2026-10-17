@@ -36,3 +36,7 @@ C6 SHA 88ec7edb had FAIL on tests due mock-auth fixture and migration head; see 
 
 ### C8 handoff — real pretrained proof and human UI
 The `reference_points_view.js` drawer now supports persisted /extract and a separate review/propose UI for users having `reference.read` + `ingestion.read`, and `reference.approve` for human review. Branch C8 adds `scripts/contract_ai_benchmark.py` and `.github/workflows/contract-ai-benchmark.yml` for local loopback Qwen3-0.6B model, pinned SHA, 4 synthetic cases and measured evidence. Inspect exact Actions before saying any model run passed. Hosted public standard GitHub runners are free; no external sensitive records or financial activation. If the synthetic benchmark fails, record model loading or malformed-JSON error and continue only with evidence. Expand Arabic/scanned/Excel gold corpus before complete acceptance. Do not merge or start A1.
+
+
+### C9 actual pretrained model blocker
+C8 real Qwen3-0.6B generated 4 outputs but zero source-verified clauses: TP0 FP0 FN3, Recall0, Precision undefined (Action run 39063356685). Diagnose as model JSON schema mismatch, not a working functional agent. C9 script adds safe previews of *synthetic-only* outputs and fails the quality job when zero useful clauses. Fetch new benchmark logs/artifact; update reporting with raw evidence. Never send real insurance files to a public runner. Remaining: prompt/schema correction, repeatable real inference, larger 20+ contracts, Arabic OCR, review UAT, signatures, no main merge or A1.
