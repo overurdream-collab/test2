@@ -120,3 +120,8 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 - C22 code+all eight fields+CURRENT_STATE were committed atomically at df5cb1f919769a0d461a777c291725b87952dabf but DG-001 run https://github.com/overurdream-collab/test2/actions/runs/39067815796 **FAIL**: inline subtitle after HANDOFF-20261017-026 did not match a bare heading; historical rewrite prohibited.
 - C23 alters only strict heading regex to accept an optional description after a punctuation separator, retaining same-commit gate and **all eight required fields**. Added positive annotated header with complete fields and negative absent-field and malformed-heading tests. Governance full-history CI on new SHA PENDING; no bypass, no claimed pass yet.
 - C22 real Qwen2.5 benchmark run https://github.com/overurdream-collab/test2/actions/runs/39067815748 was in progress when C23 started. No model extraction success or Recall metric is assumed for C22/C23 without actual logs.
+
+
+### C24 — Arabic copay source guidance (PENDING_CI)
+- Previous exact 21e4f39694037871e00f9259b1e29407d9216633: six GitHub workflows reported SUCCESS; real pinned Qwen2.5-1.5B SYN forced-minItems diagnostic run https://github.com/overurdream-collab/test2/actions/runs/39068088874: TP=1, FP=0, FN=2, recall=33.3%, precision=100% on one accepted output. Arabic copay and H2 mixed tariff not recalled. No normal candidate-selection quality claim.
+- C24 adds literal-source Arabic copay percentage mapping to existing model system prompt and one mocked local transport assertion; source validator and model benchmark corpus unchanged. Actual new SHA model TP/FP/FN and regressions PENDING_CI; no guaranteed accuracy improvement or financial activation.

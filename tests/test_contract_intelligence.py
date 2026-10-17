@@ -200,6 +200,10 @@ def test_llm_contract_prompt_contains_no_hardcoded_provider_tariff_example(monke
     for contaminated in ("P7:XRAY","1200","2030-01-01","2031-01-01"):
         assert contaminated not in instructions
     assert "provider_code" in instructions and "source" in instructions
+    assert "نسبة تحمل المريض" in instructions
+    assert "explicit percentage" in instructions
+    assert "without the % sign" in instructions
+    assert "never use a date as amount" in instructions
 
 
 def test_pdf_provider_from_another_clause_must_not_validate_this_tariff():

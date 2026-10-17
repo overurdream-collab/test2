@@ -102,3 +102,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 ### C23 governance repair and current blockers
 - C22 SHA df5cb1f919769a0d461a777c291725b87952dabf has DG FAIL at 39067815796 solely due strict heading grammar despite eight required fields. C23 updates parser and tests to support `### HANDOFF-ID — description` but no exemption: 8 fields, original commit trace and CURRENT_STATE required. Inspect exact C23 DG-001 run before proceeding; do not rewrite C22 SHA or force push.
 - C22 opt-in model benchmark local CPU 180s versus production default 30s, real model quality still unproven pending full Actions. Read model-run logs, preserve false-positive guards; no PHI, merge, G3/G5 signed activation, production model or A1.
+
+
+### C24 precise handoff — 2026-10-18
+- PR23 child of unmerged PR22; C23 head 21e4f39694037871e00f9259b1e29407d9216633 all six workflows success, yet real Qwen2.5 forced SYN extraction TP1 FP0 FN2. C24 prompt-only Arabic patient copay percentage-from-source cue plus mock test in one DG-001 atomic commit. Source gate untouched. Check latest head + CI and actual model case metrics before second code change; not approved for production/main/G3/G5/A1.

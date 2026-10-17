@@ -262,7 +262,7 @@ def infer_local(blocks, *, endpoint, model_id, model_revision, timeout=30):
         "service_code must be literal identifiers inside the quote; logical_key is "
         "provider_code followed by colon followed by service_code. "
         "Amount must be the decimal number actually in quote; currency must be explicitly present. "
-        "For cost sharing: section=cost_sharing, rule_type=percentage, "
+        "For Arabic patient copayment wording (نسبة تحمل المريض / نسبة التحمل) or English copay, only when an explicit percentage is quoted: section=cost_sharing, rule_type=percentage; copy the literal percentage digits into amount without the % sign, never use a date as amount. "
         "logical_key=copay_percent; use null for provider_code, service_code and currency "
         "unless those identities are explicitly supported by this one clause. "
         "For dates, copy ISO YYYY-MM-DD only if present in the SAME quoted clause. "

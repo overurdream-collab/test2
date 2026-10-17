@@ -161,3 +161,7 @@
 | CI-C22-03 | 20 binary synthetic source reader documents + 20 text anchors/10 adversarial validator cases | EXISTING (regular C21 CI PASS); not AI precision/recall |
 | CI-C22-04 | Measured human-reviewed bilingual, Arabic OCR 20+ doc model Precision/Recall | NOT_MEASURED |
 | CI-C22-05 | Institutional signed financial execution or PR merge | BLOCKED_NO_AUTHORIZATION |
+
+
+### C24 Contract AI Arabic copay
+- Prompt-only explicit source-copay guidance + mocked HTTP instructions regression: IMPLEMENTED_PENDING_CI. Pinned model TP/FP/FN after C24: NOT_MEASURED; preceding forced SYN baseline TP1 FP0 FN2. Real bilingual quality, signed finance and independent institution acceptance remain BLOCKED.

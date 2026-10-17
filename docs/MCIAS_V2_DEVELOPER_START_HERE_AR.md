@@ -197,3 +197,7 @@ Never accept a tariff candidate if its provider/service/currency appears on the 
  
 ### C22 — opt-in local CPU benchmark timeout (DG-001, PENDING_CI)
 `infer_local(..., timeout=30)` retains original production default, loopback-only URL, no proxies/redirects and all source validators. Explicit caller may pass up to 180 seconds for isolated CPU inference evaluation; values outside 1–180 are rejected. Production `mcias/contract_intelligence_api.py` calls without a timeout argument (30s). Only `scripts/contract_ai_benchmark.py` opts into 180 and reports the selected deadline. Test `python -m pytest -q tests/test_contract_intelligence.py` then exact GitHub CI/real pretrained benchmark; no production model enabled or protected approval changed. C21 baseline model did not return before 60s; do not claim C22 model extraction success without metrics.
+
+
+### C24 Contract AI bilingual prompt guidance
+- Local model instructions recognize explicitly quoted Arabic `نسبة تحمل المريض`/`نسبة التحمل` copayment wording and copy the percentage digits from the same quoted clause, never from effective dates. This changes prompt guidance only. Existing source/identity/numeric/date validation, draft approval, tenant security and signed financial authority unchanged. Real model quality at C24 PENDING_CI; see test report.
