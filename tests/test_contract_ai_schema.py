@@ -15,8 +15,8 @@ def test_diagnostic_model_decimal_amount_schema_without_percent_sign():
     schema = ast.literal_eval(assignment.value)
     clauses = schema["properties"]["clauses"]
     amount = clauses["items"]["properties"]["amount"]
-    assert amount["type"] == ["string", "null"]
-    pattern = amount["pattern"]
+    assert amount["anyOf"][1] == {"type": "null"}
+    pattern = amount["anyOf"][0]["pattern"]
     assert re.fullmatch(pattern, "20")
     assert re.fullmatch(pattern, "5000")
     assert re.fullmatch(pattern, "7000")

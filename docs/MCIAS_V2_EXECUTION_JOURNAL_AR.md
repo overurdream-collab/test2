@@ -483,3 +483,14 @@
 - Risks: ASCII test isolates amount only and cannot validate Arabic Unicode compatibility. Investigate Unicode separately only in a later authorized cycle.
 - Next: Inspect no-model probe and `20` vs `20%` results. Decide whether the schema itself needs correction only after actual result.
 - Handoff: Open PR23 latest HEAD and workflow Contract LMFE schema runtime probe; do not modify financial/source gates or activate AI.
+
+
+### HANDOFF-20261018-008 — C26 proved nullable pattern bypass; one constrained branch fix
+- Scope: After direct pinned LMFE runtime reproduction, change only SYN benchmark `amount` schema representation from `type:[string,null]+pattern` to `anyOf:[typed patterned string, typed null]` and align two regression tests. Source validator, AI API, quote/dates/identity, human review, signed G3/G5 remain unchanged. No model was needed to prove defect.
+- Why: Exact no-model runtime probe https://github.com/overurdream-collab/test2/actions/runs/39073665424 with LMFE 0.11.2 accepted whole synthetic JSON with `amount="20%"` as can_end=True despite anchored numeric pattern; also accepted `20` and nullable path. This proves C25 union schema pattern not enforced in its tested configuration; does not yet prove anyOf fix until new exact-SHA CI.
+- Files: `scripts/contract_ai_benchmark.py`, `tests/test_contract_ai_schema.py`, `tests/test_contract_lmfe_runtime.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: First runtime probe 39073517388 FAIL due unrelated conftest SQLAlchemy missing; second 39073594944 FAIL due pre-amount Unicode fixture; third 39073665424 FAIL correctly exposed actual invalid `20%` accepted. New exact-SHA parser test and full CI PENDING_CI; model recall improvement not claimed.
+- Result: ONE_BENCHMARK_SCHEMA_FIX_PENDING_CI. Strict `_numeric` validator has not changed; any unsupported syntax is still quarantined.
+- Risks: LMFE may also ignore patterns nested in anyOf; if so, do not claim fix or relax evidence check. Forced-nonempty benchmark is diagnostic, not production efficacy. No PHI.
+- Next: Check dedicated no-model `Contract LMFE schema runtime probe` exact SHA; if it rejects `20%` and admits `20`/null, inspect standard CI and actual Qwen output. If still fails, record precise failure and halt further functional edits this cycle.
+- Handoff: Open PR23 new SHA and dedicated probe run, inspect test `tests/test_contract_lmfe_runtime.py`. No merge/production/finance/A1.

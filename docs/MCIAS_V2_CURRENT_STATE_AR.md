@@ -203,3 +203,7 @@
 
 ### C26 isolated runtime test — ASCII fixture pending
 - No-model pinned LMFE run 39073594944 reached parser but rejected Arabic quote at character 49 before checking amount. Fixed test fixture ONLY to ASCII text for the amount-pattern investigation. This does not establish Arabic parsing quality; new SHA exact CI pending. No schema/application changes.
+
+
+### C26 confirmed runtime nullable regex bypass / attempted anyOf fix (PENDING_CI)
+- Pinned LMFE 0.11.2 no-model runtime run 39073665424 accepted `20%` with C25 `type=[string,null]` + `pattern`. This is a genuine constraint bypass for the tested schema, unlike prior harness failures. One SYN benchmark-only fix switches to explicit `anyOf` patterned string/null and updates tests, keeping source validation unchanged. New exact-SHA CI PENDING_CI; no production model or inference improvement asserted.

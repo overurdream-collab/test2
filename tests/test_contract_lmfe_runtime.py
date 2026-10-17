@@ -44,8 +44,8 @@ def candidate(amount):
 def test_lmfe_enforces_nullable_decimal_pattern_on_actual_c25_schema():
     schema = actual_c25_schema()
     amount = schema["properties"]["clauses"]["items"]["properties"]["amount"]
-    assert amount["type"] == ["string", "null"]
-    assert amount["pattern"] == r"^[0-9]+(\.[0-9]{1,4})?$"
+    assert amount["anyOf"][1] == {"type": "null"}
+    assert amount["anyOf"][0] == {"type": "string", "pattern": r"^[0-9]+(\.[0-9]{1,4})?$"}
     for value in ("20", "20.5", "5000", None):
         ok, *details = accepts(schema, candidate(value))
         assert ok, (value, details)

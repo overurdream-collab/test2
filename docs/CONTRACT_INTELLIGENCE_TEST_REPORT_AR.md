@@ -150,3 +150,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C26 second failure — unicode fixture before amount
 - Runtime test run https://github.com/overurdream-collab/test2/actions/runs/39073594944 failed on input Arabic character before numeric field; amount pattern not tested. Synthetic runtime fixture narrowed to ASCII quote without modifying schema or production. New SHA PENDING_CI.
+
+
+### C26 actual LMFE parser defect and anyOf trial
+- Third no-model runtime run https://github.com/overurdream-collab/test2/actions/runs/39073665424: `20` accepted, `20%` **also accepted** with C25 nullable union + pattern, proven at full parser `can_end()`, so earlier benchmark regex did not act as safety filter. One benchmark-only schema adjustment isolates `pattern` inside string branch of `anyOf`, keeping null branch; new parser regression and real model quality PENDING_CI. No source validator relaxation.

@@ -130,3 +130,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C26 exact parser isolation
 - Previous run 39073594944 showed non-ASCII quote rejection at offset 49 before `amount`; use new ASCII-only synthetic quote in dedicated parser test to isolate pattern behavior. Do not draw conclusion on nullable pattern until fresh CI result.
+
+
+### C26 single schema remediation checkpoint
+- Isolated no-model run 39073665424 proved C25 LMFE nullable-union amount `pattern` accepts `20%`, contrary to intent. SYN-only schema changed to `anyOf` explicit patterned string and null; two regression tests updated. Inspect next exact SHA parser CI BEFORE calling fix successful. All core source provenance/financial/reviewer guards unchanged; no extra feature allowed.
