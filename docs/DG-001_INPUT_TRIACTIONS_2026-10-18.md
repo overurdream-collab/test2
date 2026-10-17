@@ -33,3 +33,14 @@ Static repository source assertions added to `tests/frontend/input-triactions.te
 
 ## No-go gates
 Do not approve or merge until all 24 real flows pass and upload preview/validate exists. Do not deploy absent explicit user approval.
+
+## Contracts-only follow-up — 2026-10-18
+Scope deliberately restricted to **contracts**. Commit `39ef76e59a60009f46a0867983c749670b8dcd58` adds an explicit button to read the existing G2 ingestion source manifest after uploading a contract, when the upload service returns a syntactically valid document identifier. This is a **source-manifest inspection**, NOT extraction of structured contract terms, a contract preview/validation workflow, or successful contract persistence. No contract is automatically activated.
+The prior branch already exposes Add via the section-specific `/api/v1/input-clauses/points` request, Edit by `replaces_id`, plus separate G3 contract draft POST. These are not equivalent data models and must not be conflated without source inspection and contract identification/version rules.
+
+Acceptance still blocked:
+- G2 contract-specific parsing and field-level source-linked candidate extraction/validation not demonstrated.
+- No actual synthetic PDF/XLSX ingestion run or quarantine/negative examples.
+- No browser end-to-end role matrix, PostgreSQL roundtrip, immutable original/version history verification or screenshot evidence.
+- CI run status not certified by this documentation.
+Do not claim Import/Add/Edit works. Do not extend to seven other sections, merge to main, or deploy.
