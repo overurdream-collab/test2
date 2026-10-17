@@ -19,8 +19,15 @@ def classify(findings, verification, calculation):
     agents = findings.get("agents", []) if isinstance(findings, dict) else []
     if not isinstance(agents, list) or len(agents) != 8:
         return REVIEW, "audit_checks_missing"
-    if any(not isinstance(f, dict) for f in agents):
-        return REVIEW, "malformed_audit_finding"
+    if (any(not isinstance(f, dict) for f in agents)
+        or {f.get("agent") for f in agents} != {
+            "eligibility", "contract", "tariff", "exclusion",
+            "caps", "cost_sharing", "duplicates", "evidence"
+        }):
+        return REVIEW, "malformed_or_duplicated_audit_findings"
+    reference = findings.get("reference_reconciliation")
+    if isinstance(reference, dict) and reference.get("status") != "pass":
+        return REVIEW, "temporal_reference_reconciliation_pending"
     # A purported deterministic rejection must also pass independent Palermo
     # reconciliation. Existing Palermo-2 holds non-pass findings, so these
     # remain human-review cases until a dedicated verified-failure path exists.
@@ -67,6 +74,10 @@ def classify_claims(claims, audit_snapshots):
             "outcome": category, "reason": reason,
             "audit_snapshot_id": snap.id if snap else "",
             "policy_fingerprint": snap.policy_fingerprint if snap else "",
+            "reference_versions": ";".join(
+                str(p.get("point_id", "")) + "@v" + str(p.get("version", ""))
+                for p in (snap.findings.get("reference_reconciliation") or {}).get("points", [])
+            ) if snap and isinstance(snap.findings, dict) else "",
             "review_state": "PROPOSED_NOT_FINAL",
         })
     return output
@@ -74,7 +85,7 @@ def classify_claims(claims, audit_snapshots):
 
 FIELDS = ("claim_id", "claim_reference", "provider_code", "service_date",
           "claimed_amount", "currency", "outcome", "reason",
-          "audit_snapshot_id", "policy_fingerprint", "review_state")
+          "audit_snapshot_id", "policy_fingerprint", "reference_versions", "review_state")
 
 
 def export_csv(rows, outcome):
