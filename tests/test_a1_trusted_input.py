@@ -7,6 +7,9 @@ from datetime import date
 from hashlib import sha256
 from decimal import Decimal
 from pathlib import Path
+from io import BytesIO
+from openpyxl import Workbook
+from mcias.ingestion.parsers import excel_parser
 
 import pytest
 from sqlalchemy import create_engine
@@ -22,7 +25,7 @@ from mcias.storage import EncryptedStore
 from mcias.ingestion.parsers import csv_parser
 from mcias.ingestion.provenance import locator_dict
 from mcias.agents.a1_trusted_input import (A1Input,A1AccessDenied,A1SourceBlocked,
-    SCHEMA_VERSION, REQUIRED_SENSITIVE, build_a1_snapshot,preview_a1_from_g4)
+    SCHEMA_VERSION, REQUIRED_SENSITIVE, REQUIRED_LINE, build_a1_snapshot,preview_a1_from_g4)
 
 def _setup(tmp_path):
     engine=create_engine("sqlite+pysqlite:///:memory:", connect_args={"check_same_thread":False}, poolclass=StaticPool)
@@ -54,7 +57,7 @@ def _document(db,store,org,filename,data):
                      manifest={"complete":True})
     db.add(job);db.flush()
     rows=[]
-    extraction=csv_parser.parse(data)
+    extraction=excel_parser.parse(data) if filename.lower().endswith(".xlsx") else csv_parser.parse(data)
     for raw in extraction.records:
         row=ExtractedSourceRecord(job_id=job.id,locator=locator_dict(raw.locator),
                                   values=raw.values,confidence=100)
@@ -207,5 +210,29 @@ def test_h1_h2_half_open_tariffs_but_no_invented_unit_authority(tmp_path):
             assert ref["status"]=="REFERENCE_ONLY_UNIT_UNPROVEN"
             assert result["snapshot"].contracts==[]
             assert "approved_unit_mapping" in result["snapshot"].missing_evidence
+    finally:
+        db.close();engine.dispose()
+
+
+def test_actual_xlsx_invoice_matches_encrypted_original_with_sheet_row(tmp_path):
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        claim,_,_=_claim(db,store,org,actor,invoice=False)
+        book=Workbook()
+        sheet=book.active
+        sheet.append(list(REQUIRED_LINE))
+        sheet.append(["SYN-L1","CONSULT","visit","2","10","20","20",
+                      claim.claim_reference,"H1","YER"])
+        buffer=BytesIO()
+        book.save(buffer)
+        book.close()
+        doc,_=_document(db,store,org,"invoice.xlsx",buffer.getvalue())
+        db.add(ClaimAttachment(organization_id=org.id,claim_id=claim.id,
+                  ingestion_document_id=doc.id,document_sha256=doc.sha256,linked_by=actor.id))
+        db.commit()
+        result=build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-xlsx")
+        assert len(result["snapshot"].invoice.items)==1
+        assert result["snapshot"].invoice.items[0].source.locator=="xlsx:sheet:1:row:2"
+        assert len(result["snapshot"].source_verifications)==2
     finally:
         db.close();engine.dispose()

@@ -1,4 +1,4 @@
-"""A1 P0: read-only G4/G2 trusted CSV input, original byte evidence and G3 diagnostic.
+"""A1 P0: read-only G4/G2 trusted CSV/XLSX input, original byte evidence and G3 diagnostic.
 
 No client-supplied tenant, document attestation, synthetic flags or unit prices
 can create financial authority. PDF/XLSX and ambiguous sources fail closed.
@@ -151,12 +151,18 @@ def _verify_csv_source(db,store,organization_id,document_id,expected_sha=None):
         raise A1SourceBlocked("original_bytes_not_verified") from exc
     if type(data) is not bytes or sha256(data).hexdigest()!=doc.sha256:
         raise A1SourceBlocked("original_bytes_sha256_mismatch")
-    if len(data)>20*1024*1024 or not doc.filename.lower().endswith(".csv"):
-        raise A1SourceBlocked("format_not_independently_verified")
+    from mcias.ingestion.file_scanner import identify, UnsafeDocument
     try:
-        extraction=csv_parser.parse(data)
-    except (UnicodeDecodeError,ValueError) as exc:
-        raise A1SourceBlocked("source_reparse_invalid") from exc
+        kind=identify(data,doc.filename)
+        if kind=="csv":
+            extraction=csv_parser.parse(data)
+        elif kind=="xlsx":
+            from mcias.ingestion.isolated_parser import isolated_parse
+            extraction=isolated_parse(kind,data)
+        else:
+            raise A1SourceBlocked("format_not_itemizable")
+    except (UnsafeDocument,UnicodeDecodeError,ValueError,OSError,RuntimeError) as exc:
+        raise A1SourceBlocked("original_reparse_invalid_or_unsafe") from exc
     if not extraction.complete or extraction.quarantined or not (0<len(extraction.records)<=1000):
         raise A1SourceBlocked("incomplete_original_rows")
     persisted=db.scalars(select(ExtractedSourceRecord).where(
@@ -179,9 +185,15 @@ def _verify_csv_source(db,store,organization_id,document_id,expected_sha=None):
     return {"document":doc,"records":persisted}
 
 def _ref(doc,locator):
-    if not isinstance(locator,dict) or locator.get("kind")!="row" or not isinstance(locator.get("row"),int):
-        raise A1SourceBlocked("invalid_csv_row_location")
-    return {"document_id":doc.id,"sha256":doc.sha256,"locator":"csv:row:"+str(locator["row"])}
+    if not isinstance(locator,dict) or not isinstance(locator.get("row"),int) or locator["row"]<1:
+        raise A1SourceBlocked("invalid_tabular_row_location")
+    if locator.get("kind")=="row":
+        loc="csv:row:"+str(locator["row"])
+    elif locator.get("kind")=="sheet" and isinstance(locator.get("index"),int) and locator["index"]>0:
+        loc="xlsx:sheet:"+str(locator["index"])+":row:"+str(locator["row"])
+    else:
+        raise A1SourceBlocked("unsupported_tabular_locator")
+    return {"document_id":doc.id,"sha256":doc.sha256,"locator":loc}
 
 def _g3_historical_reference(db,claim):
     contracts=db.scalars(select(ContractVersion).where(
