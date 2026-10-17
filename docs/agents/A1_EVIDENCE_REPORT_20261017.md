@@ -109,3 +109,84 @@ and common expert-adjudicated corpus. No fabricated baseline scores.
 - Scoped CI: .github/workflows/a1-invoice-integrity.yml
 - Design notes: docs/agents/A1_INVOICE_INTEGRITY.md
 - Draft PR: https://github.com/overurdream-collab/test2/pull/20
+
+
+---
+
+## 2026-10-17 follow-up: TRUE Qwen3-8B, blinded-then-policy-hardened comparison
+
+Do not overwrite the failure measurements above. They led to a necessary
+*independent source-attestation guard*; a model-generated exact quote was
+demonstrably insufficient to prove that a source was trusted.
+
+**Actual model:** official Qwen/Qwen3-8B-GGUF Q4_K_M
+- revision: 7c41481f57cb95916b40956ab2f0b139b296d974
+- file: Qwen3-8B-Q4_K_M.gguf
+- SHA256: d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785
+- file size: 5,027,783,488 bytes
+- model runs on GitHub's free public-repository Ubuntu CPU runner; no GPU paid
+  endpoint and no patient claims or external inference service.
+
+**Initial 8B development experiment**, source code before the source-attestation
+guard: 10 synthetic samples, TP=2/FP=0/FN=0/TN=8, precision=1.0,
+recall=1.0, mean 5.98529s per request and 9,255,344 KiB peak process
+RSS. Raw generations and weight checksum in CI artifact:
+https://github.com/overurdream-collab/test2/actions/runs/39050642975
+
+**First 26-case holdout experiment (important FAILED qualification run)**:
+TP=8, FP=2, FN=0, TN=16; precision 8/(8+2)=0.8, recall 8/(8+0)=1.0.
+False positives were cases "bill_summary_only" (unverified billing note) and
+"label_not_instruction" (injected instructions in text). Initial 10 cases
+remained TP=2/FP=0/FN=0/TN=8. Total 36: TP=10, FP=2, FN=0, TN=24;
+precision 10/12=0.8333, recall=1.0. Gate appropriately failed:
+https://github.com/overurdream-collab/test2/actions/runs/39051176994
+
+**Corrective design:** require a trusted attested source record and matching
+service code, real source quote, explicit performed-service verb, quantity
+literal contained in that quote, invoice line ID, and amount/quantity mismatch.
+Independently record rejected model signals. Reject unverified OCR, copied
+invoice notes, unsigned drafts and injected commands as evidence supporting
+a REVIEW finding. This is a deterministic **evidence validation** layer,
+not a substitute for LLM extraction from genuine service narratives.
+Source attestation is supplied by the **trusted upstream snapshot provider**;
+this standalone prototype cannot cryptographically prove it. No claim
+rejections or deductions are generated.
+
+Fixture source-attestation metadata was authored separately from labels:
+trusted sources exist in both positive and negative scenarios.
+Original positive/negative reference labels were **NOT changed**. Structured
+quantity facts were removed from textual LLM fixtures so the positive signal
+requires actual model text interpretation rather than reusing quantity rules.
+
+**Post-fix evaluation** (note: this is a regression set previously inspected,
+*not a second independent blind holdout*): 36 synthetic model invocations;
+total TP=10/FP=0/FN=0/TN=26, precision=1.0, recall=1.0.
+26-case subset: TP=8/FP=0/FN=0/TN=18.
+Mean measured end-to-end per-case model inference 8.7753s; peak process
+RSS 10,148,124 KiB (~9.68 GiB); 16 GB CPU runner.
+The model is authentic and responses are recorded in CI artifacts.
+https://github.com/overurdream-collab/test2/actions/runs/39051968767
+
+**Post-fix deterministic tests**: 42 passed. Rules-only benchmark 18 cases:
+TP=7/FP=0/FN=0/TN=2 and 9 abstentions; mean 0.1143ms/case, p95
+0.1546ms/case, peak RSS 19,736 KiB (metrics exclude ingestion and I/O).
+G1–G7 existing regression suite passed in GitHub Actions at the same
+source-code head. Real LLM evaluation and rules evaluation are NOT conflated.
+
+**Unresolved / MUST NOT CALL PRODUCTION-READY**:
+- Expert-reviewed blind dataset from independent medical bill audit specialists
+  with adjudication of contracts, OCR variance and multilingual bills. The
+  synthetic result does NOT measure real-world PPV or sensitivity.
+- The trusted G3/G4 itemized invoice/contract adapter must be built and
+  unit semantics explicitly approved; no guessed unit prices. Current G5
+  checkers are not a same-input line-item comparator, so no fabricated
+  G5 Precision/Recall baseline is claimed.
+- Attestation metadata and stored file SHA-256 must be independently verified
+  by Palermo-1/2 against immutable input bytes; typed text quotes alone are
+  not cryptographic proof. Integration deliberately outside A1 scope.
+- Full institutional human-review gates, authorization, privacy and
+  separate approval before any financial consequence or main merge.
+
+**Disposition:** A1 is a functioning **synthetic-only proof of concept**
+with REAL Qwen3-8B inference and validated code path, but is not institution-
+accepted. The draft PR must remain unmerged. No A2 work performed.
