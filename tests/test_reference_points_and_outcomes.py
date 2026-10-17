@@ -61,7 +61,8 @@ def test_all_four_classification_branches():
     f["agents"][0]["status"] = "fail_confirmed"
     f["agents"][0]["evidence_confirmed"] = True
     f["agents"][0]["source_reference"] = "authoritative-registry:version-1"
-    assert classify(f, {}, {})[0] == REJECTED
+    assert classify(f, {}, {})[0] == REVIEW
+    assert classify(f, {"status": "verified"}, {})[0] == REJECTED
     del f["agents"][0]["source_reference"]
     assert classify(f, {}, {})[0] == REVIEW
 
