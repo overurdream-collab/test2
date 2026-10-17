@@ -190,7 +190,8 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         # Never repair a wrong provider/service or an unsupported quote.
         if (section == "tariffs" and errors == ["tariff_identity_incomplete"]
                 and isinstance(provider, str) and isinstance(service, str)
-                and isinstance(currency, str) and kind == "amount"):
+                and isinstance(currency, str) and kind == "amount"
+                and key == provider + ":" + provider + "_" + service):
             key = provider + ":" + service
             if _CODE.fullmatch(key):
                 errors.clear()

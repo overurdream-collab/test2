@@ -516,3 +516,14 @@
 - Risks: Small synthetic benchmark may not capture actual OCR/multi-provider ambiguity; only a fully validated candidate is eligible. No automatic approval or financial execution.
 - Next: Verify exact C28 G1-G7/G8/G9/Enterprise/DG/LMFE CI and actual Qwen TP/FP/FN; if any regression, stop and repair within DG-001.
 - Handoff: Reopen PR23 latest HEAD, read C28 tests and `mcias/contract_intelligence.py`, compare to C27 benchmark 39074039943; no main merge, production, A1 or paid service.
+
+
+### HANDOFF-20261018-011 — C28 narrow duplicate-prefix correction after negative regression
+- Scope: Tighten C28 key correction to the exact demonstrable duplicated-provider pattern `provider:provider_service` only, after every other independent evidence check passed. Add test that a genuinely conflicting key `H1:XRAY` remains quarantined. No AI model prompt, G2/G3/G5 financial rule, tenant, review or production change.
+- Why: C28 SHA 827a73a2464b5c1f91aaa5c594bfdfa19315291b G1–G7 Actions https://github.com/overurdream-collab/test2/actions/runs/39074933268 FAIL 1 of 470 tests: `test_contract_gold_battery.py::wrong_key` found `H1:XRAY` incorrectly canonicalized to H1:CONSULT. This must remain rejected. Original C28 469 passed, 22 skipped, PostgreSQL and dependency audit passed. Other workflows: DG 39074933256 PASS, LMFE 39074933308 PASS, G8 39074933133 PASS, G9 39074933129 PASS; Enterprise and real Qwen were in progress at inspection.
+- Files: `mcias/contract_intelligence.py`, `tests/test_contract_intelligence.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: Prior G1–G7 FAIL exact linked run, negative gold regression preserved; new exact SHA targeted/general CI and real pretrained model PENDING_CI (NOT_RUN locally). Do not count prior CI as proof of new fix.
+- Result: IMPLEMENTED_PENDING_CI. No arbitrary key replacement: only repeated-provider prefix is canonicalized if all other source checks passed.
+- Risks: Other erroneous logical keys remain quarantined and require human correction, intentionally conservative; small SYN corpus cannot certify clinical production. No merge/deploy.
+- Next: Inspect new SHA G1–G7 and negative gold case, Enterprise and Qwen TP/FP/FN; if failed, stop and document. No further functional change until resolved.
+- Handoff: PR23 latest SHA, run `python -m pytest -q tests/test_contract_intelligence.py tests/test_contract_gold_battery.py`, then full CI; compare Qwen experiment 39074933192. Never approve AI clauses automatically.

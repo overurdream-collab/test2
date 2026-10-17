@@ -163,3 +163,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 ### C28 — canonical tariff logical key (new SHA PENDING_CI)
 - C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
 - New validation branch allows exactly one existing error: model logical_key mismatch for otherwise completely verified tariff; replaces with deterministic provider:service. Every other validation error still quarantines. Real model and all CI on C28 have not yet been observed.
+
+
+### C28 discovered regression and narrow follow-up
+- G1-G7 run https://github.com/overurdream-collab/test2/actions/runs/39074933268 FAIL `wrong_key` adversarial case: H1:XRAY unexpectedly accepted after overbroad model-key replacement. Narrow now to exact duplicate-prefix `H2:H2_CONSULT` shape (generic provider:provider_service) with all source checks successful. Added H1:XRAY quarantine test; exact-new-SHA CI PENDING. No model accuracy claim pending real output.

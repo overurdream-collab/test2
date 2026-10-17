@@ -216,3 +216,7 @@
 ### C28 — safe derivation of verified tariff logical_key (PENDING_CI)
 - C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
 - One source-validator change rebuilds malformed redundant tariff key as provider:service only when no other error exists except the key mismatch and provider/service and amount/date/quote are verified. No acceptance of unverified codes. Tests added for good H2 and wrong provider, wrong service, unsupported price/quote. New exact-SHA CI/real Qwen pending. No financial activation.
+
+
+### C28 correction after CI failure (PENDING_CI)
+- C28 827a73a2464b5c1f91aaa5c594bfdfa19315291b G1–G7 FAIL 1 negative gold case: wrong logical_key `H1:XRAY` was too broadly rewritten. Restrict deterministic repair to `provider:provider_service`, independent source checks fully valid, and add explicit negative test. New exact-SHA CI pending. Previous failure retained, no G3/G5 changes.

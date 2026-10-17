@@ -300,3 +300,10 @@ def test_wrong_tariff_quote_or_amount_cannot_be_automatically_repaired():
     assert "quote_not_in_source" in out["validation_errors"]
     assert "numeric_not_in_source" in out["validation_errors"]
     assert out["evidence_status"] == "needs_human_review"
+
+
+def test_other_wrong_tariff_key_remains_quarantined():
+    out = check([proposal(logical_key="H1:XRAY")])[0]
+    assert "tariff_identity_incomplete" in out["validation_errors"]
+    assert out["evidence_status"] == "needs_human_review"
+    assert out["status"] == "DRAFT_ONLY"
