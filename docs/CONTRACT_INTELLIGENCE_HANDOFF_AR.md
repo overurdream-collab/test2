@@ -106,3 +106,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C24 precise handoff — 2026-10-18
 - PR23 child of unmerged PR22; C23 head 21e4f39694037871e00f9259b1e29407d9216633 all six workflows success, yet real Qwen2.5 forced SYN extraction TP1 FP0 FN2. C24 prompt-only Arabic patient copay percentage-from-source cue plus mock test in one DG-001 atomic commit. Source gate untouched. Check latest head + CI and actual model case metrics before second code change; not approved for production/main/G3/G5/A1.
+
+
+### C24 completed measurement / next narrow iteration
+- Actual C24 `a3123b93db394fd3c0b61edd1ee946adcfe8a79a` all 6 GitHub workflows PASS. Real Qwen2.5 generated 4 SYN proposals: TP1 FP0 FN2, unchanged recall33.3%, 3 quarantined; Arabic candidate amount `20%` invalid, mixed H2 logical_key `H2:H2_CONSULT` wrong, injection quarantined. Log https://github.com/overurdream-collab/test2/actions/runs/39071874325. Keep old failed historical results; do not mark model accepted. Next developer examines existing LM Format Enforcer schema's amount:string and possible typed decimal constraint, while preserving strict `_numeric`/source and only one further change after research/tests. PR22/23 Draft, no patient data or G3/G5 finance, production or A1.
