@@ -108,12 +108,13 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
         if (doc.get("tenant_id") == bundle["tenant_id"]
             and _ref(doc.get("source")) and isinstance(doc.get("text"), str)
             and doc.get("kind") == "service_record"):
-            excerpts.append({"source_id": doc["source"]["document_id"], "text": doc["text"][:2500]})
+            excerpts.append({"source_id": doc["source"]["document_id"], "text": doc["text"][:2500],
+                             "attested_source": doc.get("attested") is True})
     if not excerpts:
-        return [], "SKIPPED_NO_TEXT"
+        return [], "SKIPPED_NO_TEXT", 0
     source_ids = [x["source_id"] for x in excerpts]
     if len(source_ids) != len(set(source_ids)):
-        return [], "MODEL_SOURCE_AMBIGUOUS"
+        return [], "MODEL_SOURCE_AMBIGUOUS", 0
 
     instruction = (
         "You are a specialized, conservative evidence reader for medical INVOICE quantity inconsistencies. "
@@ -138,7 +139,7 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
         {"line_item_id": x.get("id"), "service_code": x.get("code"),
          "unit": x.get("unit"), "billed_quantity": x.get("quantity")}
         for x in invoice_lines], "source_texts": excerpts}
-    by_id = {x.get("id"): x for x in invoice_lines}
+    by_id = {x.get("id"): x for x in invoice_lines if isinstance(x.get("id"), str)}
     try:
         raw = model(instruction, canonical(payload))
         if not isinstance(raw, str) or len(raw) > 16000:
@@ -147,19 +148,23 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
         if not isinstance(response, dict) or not isinstance(response.get("signals"), list):
             raise ValueError("model schema invalid")
         signals = []
+        rejected = 0
         texts = {x["source_id"]: x["text"] for x in excerpts}
+        trusted_source_ids = {x["source_id"] for x in excerpts if x["attested_source"]}
         for entry in response["signals"][:8]:
             if not isinstance(entry, dict):
+                rejected += 1
                 continue
             sid, lid, quote, explanation = (entry.get(k) for k in
                 ("source_id", "line_item_id", "exact_quote", "explanation"))
             asserted = decimal(entry.get("reported_quantity"))
             item = by_id.get(lid) if isinstance(lid, str) else None
             if item is None or asserted is None:
+                rejected += 1
                 continue
             billed = decimal(item.get("quantity"))
             code = item.get("code")
-            if (isinstance(sid, str) and sid in texts and isinstance(quote, str)
+            if (isinstance(sid, str) and sid in trusted_source_ids and isinstance(quote, str)
                 and 8 <= len(quote) <= 500 and quote in texts[sid]
                 and isinstance(code, str) and code and code in quote
                 and _ACTION_WORD.search(quote)
@@ -172,9 +177,11 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
                 signals[-1]["supporting_quote"] = quote
                 signals[-1]["source_reported_quantity"] = str(asserted)
                 signals[-1]["billed_quantity"] = str(billed)
-        return signals, "INFERRED_VALIDATED"
+            else:
+                rejected += 1
+        return signals, "INFERRED_VALIDATED", rejected
     except (ValueError, TypeError, KeyError, OSError, TimeoutError):
-        return [], "MODEL_OUTPUT_INVALID"
+        return [], "MODEL_OUTPUT_INVALID", 0
 
 
 def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = None):
@@ -315,13 +322,13 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
         findings.append(_finding("CLAIM_INVOICE_MISMATCH", "REVIEW",
             f"Claim amount {claimed} differs from invoice {stated}.",
             [x for x in (claim_ref, inv_ref) if x], amount=abs(claimed - stated)))
-    model_findings, model_state = ([], "NOT_CONFIGURED")
+    model_findings, model_state, rejected_signals = ([], "NOT_CONFIGURED", 0)
     if model is not None:
         if bundle.get("synthetic") is not True:
             raise ValueError("experimental A1 model accepts synthetic records only")
         if not model_id or not isinstance(model_id, str):
             raise ValueError("model_id required when model is provided")
-        model_findings, model_state = _model_review(bundle, model, sources)
+        model_findings, model_state, rejected_signals = _model_review(bundle, model, sources)
     findings.extend(model_findings)
     for f in findings:
         f.update(tenant_id=tenant, run_id=bundle["run_id"], claim_id=claim["id"],
@@ -334,6 +341,7 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
     output = dict(tenant_id=tenant, run_id=bundle["run_id"], claim_id=claim["id"],
                   agent_id=AGENT_ID, agent_version=AGENT_VERSION, ruleset_version=RULESET_VERSION,
                   model_id=model_id, model_version=model_id, model_status=model_state,
+                  model_rejected_signals=rejected_signals,
                   finding_status=status, findings=findings, currency=currency,
                   human_review_required=status != "PASS", policy_version=c.get("version") if c else None,
                   input_fingerprint=digest(original), created_at=datetime.now(timezone.utc).isoformat(),
