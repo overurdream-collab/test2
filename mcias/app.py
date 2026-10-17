@@ -41,7 +41,7 @@ async def secure_response_headers(request: Request, call_next):
     else:
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
     if request.url.path.startswith(("/api/v1/auth/", "/api/v1/reports/", "/api/v1/governance/", "/api/v1/audits/",
-                                        "/api/v1/rules/", "/api/v1/workspace/", "/api/v1/claims/", "/api/v1/ingestion/", "/api/v1/reference/", "/api/v1/audit-policies/", "/api/v1/report-explorer/", "/api/v1/intelligence/", "/ui/reports", "/ui/intelligence")):
+                                        "/api/v1/rules/", "/api/v1/workspace/", "/api/v1/claims/", "/api/v1/ingestion/", "/api/v1/reference/", "/api/v1/input-clauses/", "/api/v1/audit-triage/", "/api/v1/audit-policies/", "/api/v1/report-explorer/", "/api/v1/intelligence/", "/ui/reports", "/ui/intelligence")):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response
@@ -191,3 +191,9 @@ app.include_router(workspace_web_router)
 
 from mcias.retention_api import router as retention_router
 app.include_router(retention_router)
+
+# Governed input-point register and review-only four-way audit exports.
+from mcias.input_clause_api import router as input_clause_router
+app.include_router(input_clause_router)
+from mcias.audit_triage_api import router as audit_triage_router
+app.include_router(audit_triage_router)
