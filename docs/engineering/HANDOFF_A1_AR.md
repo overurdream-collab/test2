@@ -68,3 +68,5 @@ python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3
 تطوير فحص Duplicate (فقط داخل A1): إذا استُخدم موضع الصف الأصلي نفسه مع نفس الكميات/القيم في بندين مختلفين، يصدر POTENTIAL_INTERNAL_DUPLICATE للمراجعة بلا توفير مالي مرشح؛ تكرار service_code على صفين مستقلين لا يعد تكرارًا.
 
 أمان HTTP: App security middleware يفرض Cache-Control: no-store على جميع المسارات /api/v1/a1/، واختبار مثبت ضمن tests/test_a1_preview_http.py. CI الخاص بـA1 يشمل اختبارات G2/G4 adapter وHTTP إلى جانب القواعد والنموذج الحقيقي.
+
+Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها المطَبّعة بيانات صف G2 الأصلية حرفيًا/عددياً؛ تراجع الاختبارات tests/test_a1_trusted_input.py::test_g4_normalized_claim_amount_cannot_diverge_from_original_source. صلاحيات source medical_fields تغطي G4 fields والـinvoice.

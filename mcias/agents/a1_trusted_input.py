@@ -17,13 +17,14 @@ from mcias.models_claims import ClaimEntry, ClaimBatch, ClaimAttachment
 from mcias.models_reference import ContractVersion, ProviderTariff
 from mcias.ingestion.parsers import csv_parser
 from mcias.policy import has_permission
+from mcias.claim_normalization import FIELDS as G4_ORIGINAL_FIELDS, normalize
 from mcias.agents.invoice_integrity import analyze
 
 SCHEMA_VERSION="mcias.a1.input.v1"
 REQUIRED_LINE=("line_item_id","service_code","unit","quantity","unit_price",
                "line_total","invoice_total","claim_reference","provider_code","currency")
 REQUIRED_FIELDS=("claims.read","ingestion.read")
-REQUIRED_SENSITIVE=tuple("medical_fields."+f+".read" for f in REQUIRED_LINE)
+REQUIRED_SENSITIVE=tuple("medical_fields."+f+".read" for f in dict.fromkeys((*REQUIRED_LINE,*G4_ORIGINAL_FIELDS)))
 
 class A1AccessDenied(ValueError):
     pass
@@ -236,6 +237,13 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
     record=[r for r in source["records"] if r.id==claim.extracted_record_id]
     if len(record)!=1 or record[0].values!=claim.source_values or record[0].locator!=claim.source_locator:
         raise A1SourceBlocked("claim_not_equal_original_record")
+    try:
+        original=normalize(record[0].values)
+    except ValueError as exc:
+        raise A1SourceBlocked("original_claim_normalization_invalid") from exc
+    for field in G4_ORIGINAL_FIELDS:
+        if getattr(claim,field)!=original[field]:
+            raise A1SourceBlocked("normalized_G4_claim_field_changed")
     claim_ptr=_ref(source["document"],record[0].locator)
     attachments=db.scalars(select(ClaimAttachment).where(
         ClaimAttachment.organization_id==org,ClaimAttachment.claim_id==claim.id)).all()

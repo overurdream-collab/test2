@@ -36,3 +36,7 @@ python -m pytest -q
 
 ## XLSX (مع إثبات البايتات)
 يقبل adapter الآن CSV وXLSX الأصلية فقط: يمر ملف XLSX أولاً عبر G2 file_scanner ثم G2 isolated_parse المحدود (عملية منفصلة)، ثم يطابق كل صف وموقع sheet/row مع ExtractedSourceRecord ويحفظ بصمة البايتات. الصيغ والحجر والمحتوى غير الآمن تفشل مغلقة. PDF/image OCR غير مؤكد البنود؛ لا دعم مالي مفترض. الاختبار: test_actual_xlsx_invoice_matches_encrypted_original_with_sheet_row (synthetic).
+
+
+## تحقق مستقل من المطالبة نفسها
+يُعاد تطبيع صف المطالبة الأصلي المحمي بواسطة G4 claim_normalization.normalize، ثم يُقارن بكل حقول ClaimEntry (provider, service, date, original amount/currency, beneficiary token, claim_reference)، وليس SHA الملف وحده؛ أي اختلاف مباشر في قاعدة بيانات الاختبار يُوقف A1 قبل التحليل. صلاحيات الحقول تشمل أعمدة G4 الأصلية كذلك. اختبار synthetic يستخدم UPDATE في SQLite مؤقتة للتحقق من guard، لا يتصل بقاعدة حقيقية.

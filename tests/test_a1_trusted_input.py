@@ -12,7 +12,7 @@ from openpyxl import Workbook
 from mcias.ingestion.parsers import excel_parser
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
@@ -234,5 +234,21 @@ def test_actual_xlsx_invoice_matches_encrypted_original_with_sheet_row(tmp_path)
         assert len(result["snapshot"].invoice.items)==1
         assert result["snapshot"].invoice.items[0].source.locator=="xlsx:sheet:1:row:2"
         assert len(result["snapshot"].source_verifications)==2
+    finally:
+        db.close();engine.dispose()
+
+
+def test_g4_normalized_claim_amount_cannot_diverge_from_original_source(tmp_path):
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        claim,_,_=_claim(db,store,org,actor)
+        # Attacker-like direct SQL modification on an ephemeral synthetic SQLite
+        # database deliberately bypasses the ORM guard to test A1 independence.
+        db.execute(text("UPDATE claim_entries SET claimed_amount = :amount WHERE id = :id"),
+                   {"amount": "999.0000", "id": claim.id})
+        db.commit()
+        db.expire_all()
+        with pytest.raises(A1SourceBlocked,match="normalized_G4_claim_field_changed"):
+            build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-altered-claim")
     finally:
         db.close();engine.dispose()
