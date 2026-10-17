@@ -25,6 +25,8 @@ import {
   donut,
   preferences,
 } from "./ui.js";
+import { referencePointsView } from "./reference_points_view.js";
+import { auditOutcomesView } from "./audit_outcomes_view.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -1288,7 +1290,11 @@ function catalog(ctx) {
     );
   }
   if (kind === "contracts") {
+    referencePointsView(ctx);
     referenceForms(ctx);
+  }
+  if (kind === "batches") {
+    auditOutcomesView(ctx);
   }
   if (kind === "users")
     root.append(
