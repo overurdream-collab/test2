@@ -101,7 +101,11 @@ def _model_review(bundle, model: Callable, allowed_sources: dict):
         "Empty list is allowed. No other keys."
     )
     try:
-        raw = model(instruction, canonical(excerpts))
+        raw = model(instruction, canonical({"invoice_lines": [
+            {"code": item.get("code"), "unit": item.get("unit"),
+             "quantity": item.get("quantity"), "line_total": item.get("line_total")}
+            for item in bundle["invoice"].get("items", []) if isinstance(item, dict)
+        ], "source_texts": excerpts}))
         if not isinstance(raw, str) or len(raw) > 16000:
             raise ValueError("model response invalid")
         response = json.loads(raw)
