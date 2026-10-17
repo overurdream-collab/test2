@@ -191,7 +191,7 @@ def test_llm_contract_prompt_contains_no_hardcoded_provider_tariff_example(monke
         def open(self, request, timeout=None):
             seen["body"] = json.loads(request.data.decode("utf-8"))
             return io.BytesIO(json.dumps({
-                "choices":[{"message":{"content":json.dumps({"clauses":[]})}}
+                "choices":[{"message":{"content":json.dumps({"clauses":[]})}}]
             }).encode("utf-8"))
     monkeypatch.setattr(module,"build_opener",lambda *args:OnlyLocalFakeOpener())
     infer_local(blocks(),endpoint="http://127.0.0.1:16393/v1/chat/completions",

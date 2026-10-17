@@ -136,3 +136,8 @@
 - C14 real Qwen3-1.7B forced-candidate benchmark https://github.com/overurdream-collab/test2/actions/runs/39065549717 FAIL with TP0 FP0 FN3: four proposals generated but every proposal copied provider/service identity P7:XRAY from fixed sample in system prompt; all quarantined by independent source validator. No production AI acceptance.
 - C15 SHA b677f6ccb4fd4a10554dc261c813cfb89c91a04d CI: DG 39065759302 PASS, G1–G7 39065759298 FAIL with two test fixtures (old XLSX row omitted date and reviewer sample invented end date); G8 39065759371 PASS, G9 39065759314 PASS, Enterprise 39065759329 FAIL from same regression. Strict source-date rule remains binding.
 - C16 replaces hardcoded prompt example with **schema descriptions only**, and updates synthetic XLSX source row and reviewer document quotation to support legitimate effective dates. Adds test preventing future sample-value contamination. Exact new SHA all CI and actual Qwen model retest PENDING, not proof of functional success. No main changes, merger, on-prem model activation or A1.
+
+
+### C17 prompt regression-test syntax fix (PENDING_CI)
+- C16 SHA c1de2fa2e9e26a2a9da695e6397cab8df8c418eb introduced a missing `]}` bracket in new synthetic local-response test, so G1–G7 unit CI run 39066030984 FAILED during collection with SyntaxError before checking the actual prompt. C17 fixes ONLY the test response list; no changes to actual model or financial rules. All C17 SHA CI PENDING.
+- C16 real model benchmark and remaining CI results must be reviewed at actual SHAs; no automatic completed claim, no merge/production/A1.

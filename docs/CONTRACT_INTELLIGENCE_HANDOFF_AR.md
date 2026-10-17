@@ -74,3 +74,7 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 ### C16 resumption — example contamination and grounded dates
 - C14 real Qwen diagnostic all 4 generated candidates copied P7:XRAY from system-prompt sample and got quarantined (run 39065549717). C15 stricter date proof rightly exposed two bad synthetic fixtures, causing G1–G7/Enterprise failures (run 39065759298). C16 removes prompt sample constants and corrects test *source quote and row* (not validator). Check new full CI and real model errors/TP/FP/FN.
 - Review mcias/contract_intelligence.py, tests/test_contract_intelligence.py, tests/test_contract_intelligence_api.py. Do not re-introduce numeric/provider examples into system instruction; do not drop source date validation. No production, main/merge, A1 or model-specific financial authority.
+
+
+### C17 resume
+- Latest C16 unittest regression was SyntaxError at fake local model JSON `choices` list (Actions run 39066030984), not a production code import issue. New C17 fix is test-only. Review exact C17 G1–G7, G8, G9, Enterprise and model bench results after commit; preserve strict source date evidence and no hardcoded system-prompt tariff identities. Continue only Draft PR23, no main merge, deployment or A1.

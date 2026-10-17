@@ -329,3 +329,14 @@
 - Risks: An example-free prompt may still lead to empty arrays or invented fields, especially with 1.7B small model. Local benchmark forced-candidate mode is experimental and cannot justify autonomous production extraction. Stricter source dates can require manual correction of genuine header/annex conditions. No real contracts/patients transmitted.
 - Next: Verify C16 exact-sha unit/PostgreSQL/browser and real model TP/FP/FN/quarantined counts. If model still underperforms, test better local open model/two-stage extraction with 20+ gold documents while never weakening source verification. Remain Draft PR23, no merge, deployment, G3/G5 modifications or A1.
 - Handoff: Read test report, state, new prompt/test diff; run `pytest -q tests/test_contract_intelligence.py tests/test_contract_intelligence_api.py tests/test_contract_gold_battery.py` + PostgreSQL CI; inspect GitHub benchmark logs and continue DG-001.
+
+
+### HANDOFF-20261017-021
+- Scope: C17 — repair one missing closing list bracket in a **synthetic-only test double** added by C16; do not change application model prompt, source validator, financial rules, authorizations, migrations, production or A1.
+- Why: C16 SHA c1de2fa2e9e26a2a9da695e6397cab8df8c418eb G1–G7 unit job https://github.com/overurdream-collab/test2/actions/runs/39066030984 failed during Python test collection with SyntaxError (test_contract_intelligence.py closing '}' did not match opening '[' near line 194). Failure came from new fake local HTTP response JSON syntax. This is not model quality proof. Other C16 workflows, including actual Qwen and browser, had not completed when C17 was authored.
+- Files: tests/test_contract_intelligence.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: C16 G1–G7 unit FAIL due SyntaxError; C17 new full GitHub Actions, specific `python -m pytest -q tests/test_contract_intelligence.py` and governance to run on exact new SHA. NOT_RUN locally: no repository clone via DNS.
+- Result: C16 FAIL unit, C17 PENDING_CI; no passed tests assigned to new code.
+- Risks: Existing model still may generate wrong provider/amount; synthetic fake response does not prove real model quality. CI may uncover further issues after Python parses. No G3/G5 or financial activation changes.
+- Next: Check C17 exact SHA CI and real model run. Fix any functional evidence issues with a new documented commit. Preserve earlier failed logs and do not merge PR23.
+- Handoff: Continue PR23 child; run test_contract_intelligence, test_contract_intelligence_api and full PostgreSQL/Enterprise, then inspect benchmark. Do not start A1, deploy or activate financial rules.
