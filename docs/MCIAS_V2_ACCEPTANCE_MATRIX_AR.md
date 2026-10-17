@@ -22,7 +22,7 @@
 | REF-09 | مقدم خدمة مستقل | مستشفى H1 بسعرين بحسب التاريخ وH2 بسعر ثالث ثابت | IMPLEMENTED_AND_TESTED | اختبارات تكامل `reference_rule_bridge` |
 | REF-10 | العملة وDecimal | اختلاف عملة أو سعر G3/G5 والبند الجديد يسبب حجزًا | IMPLEMENTED_AND_TESTED | `reference_rule_bridge.py` و`audit_engine.py`؛ اختبار G3/G5 قائم |
 | REF-11 | غياب المصدر | عند عدم وجود بند جديد لا نستبدل G3 أو نخترع تعرفة | IMPLEMENTED_AND_TESTED | `reference_rule_bridge.py`؛ تكامل G5 |
-| REF-12 | شروط نصية | «العلاج خارج الدولة غير مشمول» لا يُحوّل إلى خصم بالـLLM | IMPLEMENTED_AND_TESTED | يُعاد `uncompiled_exclusions_point`/مراجعة حسب النوع |
+| REF-12 | شروط نصية | «العلاج خارج الدولة غير مشمول» لا يُحوّل إلى خصم تلقائي دون حقل بلد الخدمة | PARTIAL | المنطق الحالي يضع بنود الاستثناء غير المعروفة في مراجعة؛ الاختبار المتكامل يغطي الموافقات المسبقة غير المفسرة، لا هذا المثال السريري حرفيًا |
 | REF-13 | نطاق الفئة | ربط الفئات والمستفيدين بدليل عضوية مكتمل ومعتمد | PARTIAL | G3 يدعم أهلية زمنية؛ إثبات اكتمال القائمة غير منفذ |
 | REF-14 | التحقق المستقل | لا حساب إذا تعارضت المدخلات؛ Palermo يفحص الأرقام والبصمة | IMPLEMENTED_AND_TESTED | `audit_service.py`, `palermo2.py`; ملحق الأدلة `reference_reconciliation` |
 | REF-15 | رفض قطعي | عدم وجود شخص **بسجل مستفيدين كامل رسميًا** → رفض مثبت | NOT_IMPLEMENTED | G5 يضع `hold` عند الغياب؛ لا يُعد الفشل قطعيًا |
@@ -40,7 +40,10 @@
 | REF-27 | كلفة وفورات معتمدة | حساب المسترد/الموفر الفعلي دون ازدواج | NOT_IMPLEMENTED | لا يُستنتج من الملفات الأربعة |
 | REF-28 | التزام إنتاجي | توقيع المؤسسة وخصوصية بيانات وشهادات تشغيل | BLOCKED_INSTITUTION | G0–G9 مفتوحة |
 | REF-29 | تزامن وسباق | قفل البند على PostgreSQL عند التعديل ورفض تداخل الفترات | PARTIAL | advisory lock / unique؛ اختبار تنافس متعدد الاتصالات لا يزال مطلوبًا |
-| REF-30 | عرض كثيف | تاريخ سريان يُرشح قبل pagination، وتجاوز 100 نقطة منطبقة يحجز | IMPLEMENTED_AND_TESTED | `reference_points.py`, `reference_rule_bridge.py`؛ اختبار حمل كبير إضافي مطلوب |
+| REF-30 | عرض كثيف | تاريخ سريان يُرشح قبل pagination، وتجاوز 100 نقطة منطبقة يحجز | PARTIAL | التنفيذ موجود، لكن اختبار ضغط/ترقيم يتجاوز 100 بند لا يزال مطلوبًا |
+
+| REF-31 | حماية SQL المباشر | منع INSERT approved وUPDATE/DELETE عبر PostgreSQL trigger | IMPLEMENTED_AND_TESTED | `test_reference_points_postgres.py` على PostgreSQL وليس ORM فقط |
+| REF-32 | تكامل سياسة موقعة | صلاحية G5 مستقلة وصحيحة، لكن شرط موافقة مسبقة غير مفسر → HOLD دون خصومات | IMPLEMENTED_AND_TESTED | `test_run_audit_immutable_snapshot_captures_reference_block`، بصمة السياسة وPalermo وفئة REVIEW |
 
 ## معايير الخروج قبل الدمج إلى main
 1. جميع GitHub Actions عند **آخر SHA** ناجحة، وتشمل الوحدة وPostgreSQL وواجهة المؤسسة وG8 وG9 والأمن.
