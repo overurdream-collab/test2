@@ -78,3 +78,6 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 
 ### C17 resume
 - Latest C16 unittest regression was SyntaxError at fake local model JSON `choices` list (Actions run 39066030984), not a production code import issue. New C17 fix is test-only. Review exact C17 G1–G7, G8, G9, Enterprise and model bench results after commit; preserve strict source date evidence and no hardcoded system-prompt tariff identities. Continue only Draft PR23, no main merge, deployment or A1.
+
+### C18 next resume — timing test and actual model blocker
+C17 real-model run 39066166029 FAIL: four source-unverified proposals, wrong IDs and missing numeric values, Recall0/3; example contamination fixed but pretrained extraction still unusable. All G1–G9 regular tests and governance PASS, Enterprise 39066166119 FAIL one intermittent wall-minute-rollover limit test. C18 test-only fix pins rate-limit now while still executing actual middleware; CI on new SHA PENDING. Inspect current PR23 head, all C18 Actions, then resume rigorous real-model/source tests. Never use private data or bypass signed G3/G5 controls, no merge or A1.

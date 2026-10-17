@@ -340,3 +340,14 @@
 - Risks: Existing model still may generate wrong provider/amount; synthetic fake response does not prove real model quality. CI may uncover further issues after Python parses. No G3/G5 or financial activation changes.
 - Next: Check C17 exact SHA CI and real model run. Fix any functional evidence issues with a new documented commit. Preserve earlier failed logs and do not merge PR23.
 - Handoff: Continue PR23 child; run test_contract_intelligence, test_contract_intelligence_api and full PostgreSQL/Enterprise, then inspect benchmark. Do not start A1, deploy or activate financial rules.
+
+
+### HANDOFF-20261017-022
+- Scope: C18 — make the existing G9/Enterprise browser-combined rate-limiter regression deterministic by pinning its synthetic 60-second rate-limit window via monkeypatch of `check_limits(now=...)` inside the one test; all real middleware, user/IP quotas, forwarded-header rejection, 429 Retry-After, RBAC, storage and financial rules are untouched.
+- Why: Enterprise workflows on C12 SHA d33c245251d956e98de7c582c75a95fc8a372735 and C17 SHA 3ee1d648e530086b153354688377b48a37f76055 intermittently FAILED `test_middleware_returns_429_retry_after_and_ignores_forwarded_headers`: 100 requests followed by one expectation 429 occasionally crossed a real minute boundary, causing a legal quota reset and 200 response. Prior exact-job rerun succeeded, indicating timing dependence, not a proven limiter exploit. This test must not depend on wall-clock scheduling under load.
+- Files: tests/test_operational_controls.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: Prior C17 G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39066166064 PASS, G8 39066166028 PASS, G9 39066166072 PASS, governance 39066166099 PASS; Enterprise 39066166119 FAIL (one rate limit test). C18 new full G1–G9 + Enterprise + DG CI PENDING_CI; dedicated `pytest -q tests/test_operational_controls.py` recommended.
+- Result: C17 Enterprise FAIL as observed; C18 fix PENDING_CI. Rate limiter actual protection is unchanged and no tests bypass auth; fixed time applies only inside a synthetic test fixture.
+- Risks: Timed quotas still rely on clock windows in production by design; changes to window policy require separate approved engineering work. C17 real Qwen3 model bench result pending, and 20+ actual scanned contract benchmarks incomplete.
+- Next: Confirm Enterprise pass on C18 exact SHA and inspect model result separately. Do not hide previous failure; keep review and model quality blockers explicit. Never merge PR23, deploy, activate finance or start A1.
+- Handoff: Draft PR23 child of PR22; run tests/test_operational_controls.py under combined suites, check CI and append next DG-001 event if further regression. No production data or expense.

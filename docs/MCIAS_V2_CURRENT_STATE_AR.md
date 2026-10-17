@@ -141,3 +141,7 @@
 ### C17 prompt regression-test syntax fix (PENDING_CI)
 - C16 SHA c1de2fa2e9e26a2a9da695e6397cab8df8c418eb introduced a missing `]}` bracket in new synthetic local-response test, so G1–G7 unit CI run 39066030984 FAILED during collection with SyntaxError before checking the actual prompt. C17 fixes ONLY the test response list; no changes to actual model or financial rules. All C17 SHA CI PENDING.
 - C16 real model benchmark and remaining CI results must be reviewed at actual SHAs; no automatic completed claim, no merge/production/A1.
+
+### C17 measured model / C18 minute-boundary limiter-test fix (PENDING_CI)
+- Exact C17 SHA 3ee1d648e530086b153354688377b48a37f76055: DG 39066166099 PASS; G1–G7 39066166064 PASS; G8 39066166028 PASS; G9 39066166072 PASS; Enterprise 39066166119 FAIL one rate-limit timing test; real pinned Qwen3-1.7B forced-nonempty diagnostic 39066166029 FAIL: four nonempty JSON proposals, ALL quarantined due wrong service/logical key or null amount, TP0 FP0 FN3, Recall0%, precision undefined. No model approval.
+- C18 pinning 60-second rate-limit clock in test fixture only, so 101 sequential requests no longer cross a real minute rollover. Production middleware untouched. C18 CI PENDING; stronger real model/20+ actual-file gold/Arabic OCR/signatures still open. No merge, deployment or A1.
