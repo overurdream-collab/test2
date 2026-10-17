@@ -16,7 +16,7 @@
 | A1 internal same-source invoice row duplication | TESTED_SYNTHETIC_ADVISORY | potential duplicate REVIEW only, no calculated savings |
 | A1 read-only HTTP preview | TESTED_SYNTHETIC | disabled by default, prohibited in production, protected by bearer/RBAC/no-store |
 | G6/G7 provisional review_packet and four-way code | INTERFACE_ONLY | only HUMAN_REVIEW/MISSING_ATTACHMENTS; no final approval or G7 realized savings |
-| G8/Enterprise and G9 regression | VERIFY_EXACT_SHA | CI links below |
+| G8/Enterprise and G9 regression | VERIFIED_SYNTHETIC_AT_F4729B1 | G9 CI 39065561710; Enterprise CI 39065561658. These verify code tests, not production acceptance. |
 | Independent clinician-labelled new blind gold, Arabic/English OCR PDF | NOT_DONE | cannot infer clinical accuracy from curated 36-case retest |
 | Institution signed acceptance, production deployment, main merge | BLOCKED_BY_APPROVAL | explicitly prohibited in current assignment |
 
@@ -38,3 +38,19 @@ PR #22 (https://github.com/overurdream-collab/test2/pull/22) يحدد DG-001 وC
 3. Palermo مستقل يؤكد bytes/quote/clinical attestation؛ لا يكفي وجود النص أو علم attested مقدم من جهة غير مصادَق عليها.
 4. Golden blind مستقلة من مراجعي فواتير مستقلين على PDF/OCR عربي/إنجليزي وبنود كثيرة؛ احسب TP/FP/FN/TN والموارد.
 5. بعد تقنين PR22/23، اكمل G5 المالي المعتمد وG6 قرار المراجع وG7 التقرير ثم UAT؛ لا دمج أو نشر دون موافقة صريحة.
+
+
+## تحقق الاستئناف المربوط بآخر HEAD سابق (f4729b109f5e22a85ebb7a55192858b530a9e60d)
+
+تم فحص `main` وتبيّن بقاؤه على `b69defa2f621458ef44d790b510840307a81009a`. PR #20 Draft غير مدمج، وPR #22 وPR #23 Draft غير مدمجين. أحدث تغيير وظيفي A1 في `0962b54a896c572fc8db9d74d6d33cb044d25601`؛ آخر تعديل لاحق حتى هذه النقطة `f4729b1` وثائقي فقط.
+
+| فحص HEAD نفسه | نتيجة مؤكدة | الرابط |
+|---|---|---|
+| A1 pytest | 57 passed, 1 warning | https://github.com/overurdream-collab/test2/actions/runs/39065561792 |
+| نموذج Qwen3-8B حقيقي | 36 اصطناعية، TP10 FP0 FN0 TN26، mean 9.51933s، RSS 9299580KiB | https://github.com/overurdream-collab/test2/actions/runs/39065561792 |
+| G1–G7 عام | unit: 405 passed, 19 skipped; PostgreSQL integration/dependency audit successful | https://github.com/overurdream-collab/test2/actions/runs/39065561669 |
+| Enterprise/Browser | 423 passed, 1 skipped; browser job successful | https://github.com/overurdream-collab/test2/actions/runs/39065561658 |
+| G9 | security and postgres jobs successful | https://github.com/overurdream-collab/test2/actions/runs/39065561710 |
+| Traceability | 0 violations across 14 required commits; four self-tests pass | https://github.com/overurdream-collab/test2/actions/runs/39065561665 |
+
+**التصنيف:** اكتمال اختبارات الفرع التجريبية = `TESTED_SYNTHETIC` فقط. لا PDF/OCR blind من مراجعين، لا unit financial authority G3/G5، لا Palermo مستقل لتوثيق تقديم خدمة فعلية، ولا موافقة دمج/إنتاج. هذا القسم نتيجة فحص مستقلة؛ لم يُشغّل المساعد اختبارات محلية جديدة ولم يغيّر المدخلات الاصطناعية.

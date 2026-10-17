@@ -1,6 +1,6 @@
 # A1 DATA CONTRACT — الربط المرحلي مع G2/G4
-**الحالة:** P0 تجريبي/قراءة فقط. **النسخة:** mcias.a1.input.v1.
-التنفيذ: mcias/agents/a1_trusted_input.py. لا API منشورة ولا تشغيل على مطالبات حقيقية، ولا نقل PHI أو اعتماد إنتاجي.
+**الحالة:** P0 تجريبي/قراءة فقط، CSV وXLSX موثقان صناعيًا، واجهة GET Preview معطلة افتراضيًا ومحظورة في الإنتاج. **النسخة:** mcias.a1.input.v1.
+التنفيذ: mcias/agents/a1_trusted_input.py. لا API إنتاجية مفعلة ولا تشغيل على مطالبات حقيقية، ولا نقل PHI أو اعتماد إنتاجي.
 
 ## ما ثبت من فحص نماذج النظام
 ClaimEntry يخزن خدمة واحدة ومبلغًا إجماليًا. ProviderTariff.amount بلا unit ولا يمكن اعتباره سعر وحدة. ReferencePoint وContract Intelligence في PR #22/#23 غير مدمجين ولم يثبت توقيعهم كسياسة مالية. لا يخترع الوكيل وحدة أو تقسيمًا للمبلغ.
@@ -16,13 +16,13 @@ ClaimEntry يخزن خدمة واحدة ومبلغًا إجماليًا. Provide
 
 ## سلسلة المصدر الفعلية
 G4 ClaimEntry + ClaimBatch → G2 IngestionDocument/SourceFile/EncryptedStore → SHA-256 من بايتات الأصل → إعادة قراءة CSV بـG2 csv_parser.parse → مطابقة كل صف وموضع بمستند G2 ExtractedSourceRecord → ربط ClaimAttachment بفاتورة CSV بمفاتيح claim_reference/provider/currency → A1Input.model_validate → analyze بدون نموذج AI.
-إذا كانت الفاتورة PDF/XLSX/صورة أو ناقصة أو متعددة نسخ أو تحوي حقلًا غير موثق، يرجع تعليق/نقص أدلة؛ لا يدّعي دعمها في هذه المرحلة. لا تسجل تسوية مالية.
+إذا كانت الفاتورة PDF/صورة أو ناقصة أو متعددة نسخ أو تحوي حقلًا غير موثق، يرجع تعليق/نقص أدلة؛ لا يدّعي دعمها في هذه المرحلة. لا تسجل تسوية مالية.
 
 ## الصلاحيات
 يجب أن يكون actor من جلسة خادمية حقيقية وactive ومن نفس مؤسسة ClaimEntry؛ requires claims.read وingestion.read وصلاحيات medical_fields.<column>.read لكل عمود مقروء. لا يسمح للمستدعي باختيار org_id. لا تستخدم attested=True من العميل.
 
 ## مفتوح
-Palermo تحقق مصدر تنفيذ الخدمات الطبية والصفحات العربية/OCR، معاملة XLSX/PDF بأدلة byte-level، وحدة تعرفة مؤسسية وربط G5 الموقّع وPR22/PR23/G6/G7 لم تستكمل. لا تثبت وثائق أو اختبارات هذا الفرع استخدامًا إنتاجيًا.
+Palermo تحقق مستقل من مصدر تنفيذ الخدمات الطبية والصفحات العربية/OCR وPDF، اعتماد وحدة تعرفة مؤسسية وربط G5 الموقّع وPR22/PR23/G6/G7 لم تستكمل. XLSX أثبتت فنيًا على عينات اصطناعية ولا تعني التحقق السريري أو قبول مستندات حقيقية. لا تثبت وثائق أو اختبارات هذا الفرع استخدامًا إنتاجيًا.
 
 ## أوامر
 python -m pytest -q tests/test_a1_trusted_input.py tests/test_a1_invoice_integrity.py
