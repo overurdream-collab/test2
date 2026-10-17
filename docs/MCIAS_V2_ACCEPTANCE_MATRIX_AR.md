@@ -105,3 +105,14 @@
 | CI-C10-03 | Injection source never becomes financially executable even with valid JSON | Source validator only; real adversarial C10 PENDING_CI |
 | CI-C10-04 | Raw PostgreSQL updates and deletions forbidden on proposal, review and promotion | IMPLEMENTED_NOT_TESTED |
 | CI-C10-05 | 20+ synthetic real PDFs/OCR/XLSX gold, Precision/Recall and independent clinical/legal review | NOT_COMPLETE |
+
+
+### C13 gold corpus and C12 objective evaluation
+| ID | Acceptance check | Status |
+|---|---|---|
+| CI-C13-01 | Twenty SYN exact quotes across all eight contract/reference sections | IMPLEMENTED_NOT_TESTED |
+| CI-C13-02 | Ten adversarial corruptions rejected as source-unverified | IMPLEMENTED_NOT_TESTED |
+| CI-C13-03 | Pinned Qwen3-1.7B obtains any source-backed clause in four-SYN CPU trial | FAIL at d33c245: TP0 FP0 FN3 / Recall0 / Precision undefined |
+| CI-C13-04 | 20+ actual contract files with Arabic OCR + table model predictions and gold metrics | NOT_MEASURED |
+| CI-C13-05 | Enterprise rate limiter / browser combined suite on exact SHA | FAIL at d33c245 (1 rate limit test), rerun requested |
+| CI-C13-06 | Production financial activation approved/signed independently | BLOCKED_INSTITUTION |

@@ -53,3 +53,9 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 ### C12 next action
 - C11 real-model evidence at SHA bee37b2d: JSON correct but every valid synthetic source returned zero clauses; Actions 39064533187 functional FAIL (TP=0, FP=0, FN=3). The new C12 source-only benchmark compares Qwen3-1.7B official revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e without modifying application runtime/finance.
 - Inspect Contract AI real-model synthetic benchmark Actions on new SHA, capture actual model load/memory errors if any and full TP/FP/FN/response SHA. All work on Draft PR23 child of unmerged PR22; no PHI/public uploads, paid servers, merge, production, A1 or automatic finance.
+
+
+### C13 resumption
+- Exact C12 1.7B benchmark run 39064879988 was an evidence-backed **FAIL**: 4 empty structured outputs, TP0 FP0 FN3. Avoid classifying 0 FP with no model positives as success.
+- New `tests/test_contract_gold_battery.py`: 20 positive synthetic source snippets spanning eight categories and 10 intentionally invalid updates; run `pytest -q tests/test_contract_gold_battery.py` as unit tests. This verifies only quote/type/dates/provider checks, not actual AI extraction or OCR.
+- Enterprise run 39064879967 failed a rate-limit check; rerun requested and investigation open. Fetch fresh branch head and checks before proceeding. Remaining: actual validated clauses from pretrained model, large document gold, Arabic OCR and signature-bound institutional UAT. No merge/main/production/A1.
