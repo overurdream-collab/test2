@@ -19,3 +19,7 @@
 `python -m pytest -q tests/test_a1_fee_reference_contract.py`
 
 جميع الاختبارات اصطناعية؛ لا رسوم فعلية أو بيانات مرضى أو سير دفع.
+
+
+## مطابقة للقراءة فقط
+تقدم `ReadOnlyContractAnchor` هوية نسخة عقد G3 المقروءة ومصدر بند الرسم. `match_proposed_fee_read_only` تقارن المؤسسة ومقدم الخدمة ومعرف العقد وإصداره والحالة approved والفترة نصف المفتوحة وموضع المصدر وبصمته. حتى `matching=true` يعيد `signature_verification=NOT_VERIFIED` و`financial_authority=NOT_AUTHORIZED`. لا دليل على صحة توقيع مؤسسي أو بايتات الأصل، ولا استعلام أو كتابة قاعدة بيانات ولا ربط تلقائي بـ PR22/23.

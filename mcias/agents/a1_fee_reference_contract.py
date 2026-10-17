@@ -64,3 +64,39 @@ class ProposedAdditionalFeeReference(Strict):
         if self.effective_from >= self.effective_until:
             raise ValueError("fee validity must use a nonempty half-open interval")
         return self
+
+class ReadOnlyContractAnchor(Strict):
+    organization_id: str = Field(min_length=1)
+    provider_code: str = Field(min_length=1)
+    contract_version_id: str = Field(min_length=1)
+    contract_version: int = Field(ge=1)
+    contract_status: Literal["approved", "draft"]
+    effective_from: date
+    effective_until: date
+    clause_source: FeeSource
+
+
+class FeeMatchResult(Strict):
+    matching: bool
+    reasons: tuple[str, ...]
+    signature_verification: Literal["NOT_VERIFIED"] = "NOT_VERIFIED"
+    financial_authority: Literal["NOT_AUTHORIZED"] = "NOT_AUTHORIZED"
+
+
+def match_proposed_fee_read_only(proposal: ProposedAdditionalFeeReference,
+                                 anchor: ReadOnlyContractAnchor, *, service_date: date) -> FeeMatchResult:
+    """Structural comparison, not cryptographic or financial authorization."""
+    reasons = []
+    for name in ("organization_id", "provider_code", "contract_version_id", "contract_version"):
+        if getattr(proposal, name) != getattr(anchor, name):
+            reasons.append(name + "_mismatch")
+    if anchor.contract_status != "approved":
+        reasons.append("contract_not_approved")
+    if not (anchor.effective_from <= service_date < anchor.effective_until
+            and proposal.effective_from <= service_date < proposal.effective_until):
+        reasons.append("not_effective_on_service_date")
+    if proposal.effective_from < anchor.effective_from or proposal.effective_until > anchor.effective_until:
+        reasons.append("fee_period_outside_contract")
+    if proposal.clause_source != anchor.clause_source:
+        reasons.append("clause_source_mismatch")
+    return FeeMatchResult(matching=not reasons, reasons=tuple(reasons))

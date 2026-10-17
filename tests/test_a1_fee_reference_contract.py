@@ -84,3 +84,50 @@ def test_missing_signature_remains_draft_only():
     proposal = ProposedAdditionalFeeReference.model_validate(data)
     assert proposal.review_status == "DRAFT_ONLY"
     assert proposal.financial_authority == "NOT_AUTHORIZED"
+
+def anchor(**changes):
+    from mcias.agents.a1_fee_reference_contract import ReadOnlyContractAnchor
+    p = payload()
+    fields = {name: p[name] for name in (
+        "organization_id", "provider_code", "contract_version_id", "contract_version",
+        "effective_from", "effective_until", "clause_source")}
+    fields["contract_status"] = "approved"
+    fields.update(changes)
+    return ReadOnlyContractAnchor.model_validate(fields)
+
+
+def test_read_only_match_remains_unauthorized_even_if_identical():
+    from mcias.agents.a1_fee_reference_contract import match_proposed_fee_read_only
+    p = ProposedAdditionalFeeReference.model_validate(payload())
+    r = match_proposed_fee_read_only(p, anchor(), service_date=date(2026, 6, 1))
+    assert r.matching is True and r.reasons == ()
+    assert r.signature_verification == "NOT_VERIFIED"
+    assert r.financial_authority == "NOT_AUTHORIZED"
+
+
+@pytest.mark.parametrize("changes,at,reason", [
+    ({"provider_code": "OTHER"}, date(2026, 6, 1), "provider_code_mismatch"),
+    ({"organization_id": "OTHER"}, date(2026, 6, 1), "organization_id_mismatch"),
+    ({"contract_version_id": "OTHER"}, date(2026, 6, 1), "contract_version_id_mismatch"),
+    ({"contract_version": 3}, date(2026, 6, 1), "contract_version_mismatch"),
+    ({"contract_status": "draft"}, date(2026, 6, 1), "contract_not_approved"),
+    ({}, date(2027, 1, 1), "not_effective_on_service_date"),
+])
+def test_read_only_match_mismatch_and_expiry(changes, at, reason):
+    from mcias.agents.a1_fee_reference_contract import match_proposed_fee_read_only
+    r = match_proposed_fee_read_only(
+        ProposedAdditionalFeeReference.model_validate(payload()), anchor(**changes), service_date=at)
+    assert r.matching is False and reason in r.reasons
+    assert r.signature_verification == "NOT_VERIFIED"
+    assert r.financial_authority == "NOT_AUTHORIZED"
+
+
+def test_read_only_match_wrong_clause_or_overbroad_fee_period():
+    from mcias.agents.a1_fee_reference_contract import match_proposed_fee_read_only
+    p = ProposedAdditionalFeeReference.model_validate(payload())
+    source = {**payload()["clause_source"], "sha256": "c" * 64}
+    r = match_proposed_fee_read_only(p, anchor(clause_source=source), service_date=date(2026, 6, 1))
+    assert not r.matching and "clause_source_mismatch" in r.reasons
+    r = match_proposed_fee_read_only(
+        p, anchor(effective_from=date(2026, 2, 1)), service_date=date(2026, 6, 1))
+    assert not r.matching and "fee_period_outside_contract" in r.reasons
