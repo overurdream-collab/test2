@@ -1,91 +1,111 @@
-"""Run REAL offline open-weight inference on synthetic A1 records only.
+"""Execute real, local open-weight Qwen3-8B inference on synthetic A1 fixtures.
 
-Not a mock. Requires a locally installed llama_cpp backend and GGUF weights.
-Optional download is explicit, exclusively for public MODEL weights; no patient data
-or claim payloads are transmitted. Output records actual inference provenance.
+No paid inference endpoints or external claim payloads. Model WEIGHTS alone
+are downloaded from official Qwen repository. Ground truth is authored by
+humans in separate tests/a1/model_cases.py and never sent to the model.
 """
 import argparse
 from hashlib import sha256
 import json
-import os
+from pathlib import Path
 import resource
 from time import perf_counter
-from pathlib import Path
+from statistics import mean
 
 from mcias.agents.invoice_integrity import analyze
-from tests.a1.synthetic_cases import case
+from tests.a1.model_cases import CASES, model_case
+
+
+def stream_sha256(path):
+    checksum = sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(4 * 1024 * 1024), b""):
+            checksum.update(block)
+    return checksum.hexdigest()
+
+
+def download_official_weights(repo):
+    from huggingface_hub import HfApi, hf_hub_download
+    if repo not in {"Qwen/Qwen3-8B-GGUF", "Qwen/Qwen3-4B-GGUF"}:
+        raise ValueError("Only approved official public Qwen repos accepted")
+    info = HfApi().model_info(repo, files_metadata=False)
+    revision = info.sha
+    filenames = [p.rfilename for p in info.siblings if p.rfilename.lower().endswith(".gguf")]
+    preferred = sorted(p for p in filenames if p.lower().endswith("-q4_k_m.gguf"))
+    if len(preferred) != 1:
+        raise RuntimeError("Cannot resolve a single Q4_K_M official model file: " + repr(preferred))
+    path = Path(hf_hub_download(repo_id=repo, filename=preferred[0], revision=revision))
+    return path, f"{repo}@{revision}/{preferred[0]}"
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model-file", default="")
+    ap.add_argument("--model-file", default="", help="Use independently obtained GGUF")
     ap.add_argument("--download-public-model", action="store_true")
+    ap.add_argument("--repo", default="Qwen/Qwen3-8B-GGUF")
     ap.add_argument("--output", default="a1-real-model-evidence.json")
     args = ap.parse_args()
-    repo, revision, filename = None, None, None
-    path = Path(args.model_file) if args.model_file else None
-    if args.download_public_model:
-        from huggingface_hub import HfApi, hf_hub_download
-        repo = "Qwen/Qwen3-0.6B-GGUF"
-        api = HfApi()
-        info = api.model_info(repo, files_metadata=False)
-        revision = info.sha
-        filenames = sorted(p.rfilename for p in info.siblings
-                           if p.rfilename.lower().endswith(".gguf"))
-        preferred = [p for p in filenames if "q4_k_m" in p.lower()]
-        if not preferred:
-            preferred = [p for p in filenames if "q8_0" in p.lower()]
-        if len(preferred) != 1:
-            raise RuntimeError("Could not resolve a unique official Qwen GGUF: " + repr(filenames))
-        filename = preferred[0]
-        path = Path(hf_hub_download(repo_id=repo, filename=filename, revision=revision))
-    if not path or not path.is_file():
-        raise RuntimeError("No downloaded/local GGUF model available; cannot claim AI inference.")
+    if bool(args.model_file) == bool(args.download_public_model):
+        raise ValueError("Specify one of --model-file and --download-public-model")
+    path, model_id = (download_official_weights(args.repo)
+                      if args.download_public_model else (Path(args.model_file), args.model_file))
+    if not path.is_file():
+        raise RuntimeError("Model weights unavailable: no claim of AI success")
     from llama_cpp import Llama
-    model_sha = sha256(path.read_bytes()).hexdigest()
-    model_id = (repo + "@" + revision + "/" + filename) if repo else path.name + "@sha256:" + model_sha
-    llm = Llama(model_path=str(path), n_ctx=2048, n_threads=2, n_gpu_layers=0,
-                verbose=False)
+    model_sha = stream_sha256(path)
+    print(f"LOCAL_MODEL_LOADED repo={model_id} sha256={model_sha} size_bytes={path.stat().st_size}", flush=True)
+    model = Llama(model_path=str(path), n_ctx=4096, n_threads=4, n_batch=256,
+                  n_gpu_layers=0, use_mmap=True, verbose=False, seed=42)
     generated = []
-    def local_model(system, input_text):
-        result = llm.create_chat_completion(
+    def call_model(system, input_text):
+        start = perf_counter()
+        response = model.create_chat_completion(
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": "/no_think\n" + input_text}],
-            max_tokens=220, temperature=0.0, response_format={"type": "json_object"})
-        text = result["choices"][0]["message"].get("content") or ""
-        usage = result.get("usage", {})
-        generated.append({"response": text[:3000], "usage": usage,
-                          "finish_reason": result["choices"][0].get("finish_reason")})
-        return text
+            max_tokens=320, temperature=0.0, response_format={"type": "json_object"})
+        raw = response["choices"][0]["message"].get("content") or ""
+        generated.append({"raw_response": raw[:6000], "usage": response.get("usage", {}),
+                          "finish_reason": response["choices"][0].get("finish_reason"),
+                          "generation_seconds": round(perf_counter() - start, 4)})
+        return raw
 
-    records = []
-    for kind in ["clean", "prompt_injection", "contradiction_text"]:
-        bundle = case("ocr_unverified" if kind == "contradiction_text" else kind)
-        if kind == "contradiction_text":
-            bundle["documents"][0]["text"] = "Signed report: only ONE LAB-A test was performed. The invoice lists TWO LAB-A tests."
-        if bundle.get("synthetic") is not True:
-            raise RuntimeError("Model probe only accepts declared synthetic fixtures")
+    rows = []
+    for name, truth, *_ in CASES:
+        bundle, expected = model_case(name)
+        assert expected == truth and bundle.get("synthetic") is True
         start = perf_counter()
-        output = analyze(bundle, model=local_model, model_id=model_id)
-        records.append({"case": kind, "latency_seconds": round(perf_counter()-start, 4),
-                        "model_status": output["model_status"],
-                        "model_finding_types": [x["finding_type"] for x in output["findings"] if x["engine"] == "model"],
-                        "result_fingerprint": output["output_fingerprint"]})
-    model_gold = {"clean": False, "prompt_injection": False, "contradiction_text": True}
-    for rec in records:
-        rec["expert_synthetic_label_discrepancy"] = model_gold[rec["case"]]
-        rec["proposed_discrepancy"] = bool(rec["model_finding_types"])
-    report = {"synthetic_only": True, "actual_model_invocations": len(generated),
-              "model_id": model_id, "model_sha256": model_sha,
-              "model_file_size_bytes": path.stat().st_size, "inferences": generated,
-              "cases": records, "peak_rss_kib_os": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
-              "note": "A real small model smoke test, NOT evidence of production accuracy or 8B quality."}
+        output = analyze(bundle, model=call_model, model_id=f"{model_id}@sha256:{model_sha}")
+        findings = [x for x in output["findings"] if x["engine"] == "model"]
+        predicted = bool(findings)
+        row = {"case": name, "human_synthetic_gold_conflict": truth,
+               "predicted_conflict": predicted, "model_status": output["model_status"],
+               "model_findings": findings, "input_fingerprint": output["input_fingerprint"],
+               "output_fingerprint": output["output_fingerprint"],
+               "elapsed_seconds": round(perf_counter()-start, 4)}
+        rows.append(row)
+        print(json.dumps({"case": name, "truth": truth, "predicted": predicted,
+                          "status": output["model_status"], "elapsed_seconds": row["elapsed_seconds"]}), flush=True)
+    tp = sum(x["human_synthetic_gold_conflict"] and x["predicted_conflict"] for x in rows)
+    tn = sum(not x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in rows)
+    fp = sum(not x["human_synthetic_gold_conflict"] and x["predicted_conflict"] for x in rows)
+    fn = sum(x["human_synthetic_gold_conflict"] and not x["predicted_conflict"] for x in rows)
+    p = tp/(tp+fp) if tp+fp else 0
+    recall = tp/(tp+fn) if tp+fn else 0
+    report = {"status": "EXPERIMENTAL_NOT_PRODUCTION_ACCEPTED", "model_id": model_id,
+              "model_sha256": model_sha, "model_bytes": path.stat().st_size,
+              "ground_truth_file": "tests/a1/model_cases.py::CASES",
+              "model_real_inferences": len(generated), "metrics": {"TP":tp,"FP":fp,"FN":fn,"TN":tn,
+                 "precision":p,"recall":recall, "case_count":len(rows),
+                 "mean_claim_seconds":mean(x["elapsed_seconds"] for x in rows),
+                 "peak_process_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss},
+              "rows": rows, "raw_model_generations": generated,
+              "note": "Tiny manually labeled synthetic corpus; independent institutional accuracy gate remains OPEN"}
     Path(args.output).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    if len(generated) != 3 or any(not g["response"] for g in generated):
-        raise RuntimeError("Real inference was not proven")
-    if any(r["model_status"] != "INFERRED_VALIDATED" for r in records):
-        raise RuntimeError("Real model output could not be evidence-validated; probe FAIL CLOSED")
-    print(json.dumps({k: v for k, v in report.items() if k != "inferences"}, ensure_ascii=False))
+    print(json.dumps({"model_id": model_id, "metrics": report["metrics"], "report_file": args.output}), flush=True)
+    if len(generated) != len(CASES) or any(x["model_status"] != "INFERRED_VALIDATED" for x in rows):
+        raise RuntimeError("AI evidence-validated inference gate FAILED")
+    if p < .9 or recall < .9:
+        raise RuntimeError("EXPERIMENTAL AI detection gate FAILED; do not mark as successful")
 
 
 if __name__ == "__main__":
