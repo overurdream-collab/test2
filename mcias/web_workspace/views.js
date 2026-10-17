@@ -58,6 +58,10 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === "input-register") {
+    inputClauseWorkspace(ctx);
+    return;
+  }
   if (kind === "retention") {
     retention(ctx);
     return;
@@ -1287,6 +1291,9 @@ function catalog(ctx) {
       ),
     );
   }
+  if (kind === "batches") {
+    batchFourFileExports(ctx);
+  }
   if (kind === "contracts") {
     referenceForms(ctx);
   }
@@ -1899,6 +1906,13 @@ function lookup(ctx) {
   }
 }
 function referenceForms(ctx) {
+  if (ctx.scope === "admin") {
+    const p=panel(L("إدارة بنود جميع المدخلات", "Versioned input clauses"),
+      L("استعراض بنود العقود ومقدمي الخدمة والتحمل والفئات والاستثناءات والموافقات والتعرفة بتاريخها وإصداراتها.",
+        "Manage individual clauses and provider tariffs by effective date and immutable history."));
+    p.append(link(L("فتح سجل البنود", "Open clause registry"), "/admin/input-register", "button"));
+    ctx.root.append(p);
+  }
   if (ctx.scope !== "admin") {
     const card = panel(
       L("المزود والعقد الساري", "Provider active contract"),
@@ -2857,6 +2871,188 @@ function runResult(ctx, run) {
     );
   }
   return n;
+}
+
+/* Insurance input sections: the displayed clause is a documented contractual point,
+   not an inferred diagnosis or a replacement for institution-approved G3 policy. */
+const clauseSections = [
+  ["contracts", "العقود", "Contracts"],
+  ["providers", "مقدمو الخدمة", "Providers"],
+  ["copays", "نسب التحمل", "Cost sharing"],
+  ["categories", "الفئات", "Categories"],
+  ["exclusions", "الاستثناءات", "Exclusions"],
+  ["approvals", "الموافقات", "Approvals"],
+  ["tariffs", "الأسعار والتعرفة", "Provider tariffs"],
+];
+function inputClauseWorkspace(ctx) {
+  const root = ctx.root;
+  const intro = panel(
+    L("سجل المدخلات المعتمدة بإصداراتها", "Versioned insurance input registry"),
+    L("كل قسم يحتوي بنوده الفعلية؛ التعديل ينشئ إصدارًا جديدًا دون حذف الماضي. هذه السجلات لا تفعّل محرك G5 قبل ربط واعتماد السياسة المؤسسية.",
+      "Each section holds its actual clauses. Edits create new versions. This catalog does not activate G5 financial policy."),
+    "policy",
+  );
+  const tabs = el("div", null, "input-tabs"), content = el("div");
+  const fileArea = el("div", null, "input-actions");
+  let selected = "contracts";
+  for (const [section, ar, en] of clauseSections) {
+    const tab = button(L(ar, en), () => draw(section), "button input-tab");
+    tab.dataset.section = section;
+    tabs.append(tab);
+  }
+  intro.append(tabs, fileArea, content);
+  root.append(intro);
+  function draw(section) {
+    selected = section;
+    for (const tab of tabs.children)
+      tab.setAttribute("aria-pressed", String(tab.dataset.section === section));
+    fileArea.replaceChildren();
+    content.replaceChildren();
+    fileArea.append(
+      actionButton(ctx, L("إضافة ملف", "Upload file"), "ingestion.upload", () => uploadClauseSource(ctx, section), "button"),
+      actionButton(ctx, L("إضافة بند جديد", "New clause"), "reference.write",
+        () => openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button"),
+      button(L("تحديث السجل", "Refresh list"), () => load(0), "button"),
+    );
+    const note = el("p", L(
+      "جميع البنود المستخرجة أو المدخلة يدويًا تبقى مسودات حتى موافقة مستقلة. أسعار الخدمات يجب أن ترتبط برمز مقدم الخدمة المحدد.",
+      "Imported and manually entered clauses remain drafts until independent approval. Tariffs require their own provider code."
+    ), "chart-note");
+    content.append(note);
+    const listTarget = el("div");
+    content.append(listTarget);
+    function load(offset = 0) {
+      void fetchPanel(ctx, listTarget,
+        "/api/v1/input-clauses/sections/" + section + "?limit=50&offset=" + offset,
+        data => {
+          table(listTarget, data.items || [], {
+            columns: ["logical_key", "clause_text", "provider_code", "effective_from", "effective_until", "version", "status"],
+            offset,
+            hasMore: (data.items || []).length === 50,
+            onPage: load,
+            open: record => {
+              const drawer = el("div");
+              drawer.append(details(record));
+              const actions = el("div", null, "actions");
+              actions.append(actionButton(ctx, L("تعديل البند — إصدار جديد", "Revise as new version"),
+                "reference.write", () =>
+                  openDrawer(L("إصدار بديل مع حفظ الأصل", "Create replacement version"),
+                    clauseDraftForm(ctx, section, record)), "button"));
+              if (record.status === "draft")
+                actions.append(actionButton(ctx, L("طلب اعتماد مستقل", "Independent activation"),
+                  "reference.approve", () =>
+                    openDrawer(L("اعتماد بند موثق", "Governed clause activation"),
+                      operation(ctx, L("اعتماد الإصدار", "Activate version"),
+                        L("يتطلب تفويضًا كتابيًا ساريًا وهوية مراجع مختلفة عن المنشئ والمفوض.",
+                          "Requires a written authorization and independent approver."),
+                        [{name: "authorization_id", label: L("معرف التفويض الكتابي", "Written authorization ID"), maxLength: 36}],
+                        "reference.approve", v => ctx.api.request(
+                          "/api/v1/input-clauses/points/" + safeId(record.id) + "/activate",
+                          {method: "POST", body: v}), {confirmation:true})), "button"));
+              drawer.append(actions);
+              openDrawer(L("سجل البند التاريخي", "Historical clause detail"), drawer);
+            },
+          });
+          if (!data.items?.length) listTarget.append(empty(
+            L("لم تُسجل بنود في هذا القسم بعد", "No clauses yet"),
+            L("يمكنك رفع الملف أولًا، ثم إنشاء مسودة موثقة بمصدرها.",
+              "Upload the source first, then create a source-linked draft."),
+            "policy"));
+        });
+    }
+    load();
+  }
+  draw(selected);
+}
+function clauseDraftForm(ctx, section, previous = null) {
+  const tariff = section === "tariffs";
+  const fields = [
+    {name:"logical_key", label:L(tariff ? "رمز الخدمة" : "معرف البند", tariff ? "Service code" : "Clause key"),
+      value:previous?.logical_key || "", maxLength:100, pattern:"[A-Za-z0-9_.:-]+"},
+    {name:"clause_text", label:L("النص الأصلي للبند أو الشرط", "Actual approved contract clause text"),
+      type:"textarea", value:previous?.clause_text || "", maxLength:2000},
+    {name:"provider_code", label:L("رمز مقدم الخدمة (للأسعار إلزامي)", "Provider code (required for tariffs)"),
+      value:previous?.provider_code || "", required:tariff, maxLength:80, pattern:"[A-Za-z0-9_.:-]*"},
+    {name:"insurer_code", label:L("رمز شركة التأمين إن وجد", "Insurer code when applicable"),
+      value:previous?.insurer_code || "", required:false, maxLength:80, pattern:"[A-Za-z0-9_.:-]*"},
+    {name:"effective_from", label:L("تاريخ بداية السريان", "Effective from"), type:"date", value:""},
+    {name:"effective_until", label:L("نهاية السريان (اختياري)", "Effective until (optional)"), type:"date", required:false},
+    {name:"source_document_id", label:L("معرف الملف المستورد (اختياري)", "Uploaded source document ID (optional)"),
+      value:previous?.source_document_id || "", maxLength:36, required:false},
+  ];
+  if(tariff) fields.push(
+    {name:"amount", label:L("السعر", "Amount"), pattern:"[0-9]+(\\.[0-9]{1,4})?", maxLength:30},
+    {name:"currency", label:L("رمز العملة ISO", "ISO currency"), pattern:"[A-Z]{3}", maxLength:3});
+  return operation(ctx, previous ? L("إنشاء إصدار بديل", "Create replacement") : L("تسجيل مسودة بند", "Create clause draft"),
+    L("لا يغيّر الإصدار الجديد الأصل، ولا يفعل تلقائيًا. لا تُدخل بيانات مرضى أو تعليمات حرّة للتنفيذ.",
+      "New versions preserve the original, remain drafts and cannot execute free-form instructions."),
+    fields, "reference.write", data => {
+      const value = tariff
+        ? {service_code:data.logical_key, amount:data.amount, currency:data.currency}
+        : {text:data.clause_text};
+      return ctx.api.request("/api/v1/input-clauses/points",{
+        method:"POST",body:{
+          section,logical_key:data.logical_key,clause_text:data.clause_text,
+          provider_code:data.provider_code || "",insurer_code:data.insurer_code || "",
+          structured_value:value,effective_from:data.effective_from,
+          effective_until:data.effective_until || null,
+          source_document_id:data.source_document_id || null,
+          replaces_id:previous?.id || null,
+          source_locator:{},
+        }});
+    });
+}
+function uploadClauseSource(ctx, section) {
+  const pane = panel(L("إضافة ملف مدخلات", "Upload input source"),
+    L("يرفع الملف إلى مخزن الاستيراد الآمن الموجود؛ الاستخراج الذكي للبنود لا يزال بحاجة تطوير، ولا يحدث تفعيل تلقائي.",
+      "Uploads to existing secured ingestion. Automated clause extraction is not activated; no policy change occurs."));
+  const f = field("source", L("PDF أو Excel أو CSV أو صورة", "PDF, Excel, CSV or image"), {type:"file"});
+  f.input.accept=".pdf,.xlsx,.csv,.png,.jpg,.jpeg";
+  const submit = actionButton(ctx,L("رفع الملف", "Upload file"),"ingestion.upload",async () => {
+    const file=f.input.files?.[0];
+    if(!file || !file.size || file.size>20*1024*1024) {
+      result.replaceChildren(errorState(new Error(L("اختر ملفًا حتى 20 MiB","Choose file up to 20 MiB"))));return;
+    }
+    result.replaceChildren(loading());
+    try {
+      const response=await ctx.api.request("/api/v1/ingestion/uploads?filename="+encodeURIComponent(file.name),
+        {method:"POST", body:file, raw:true});
+      result.replaceChildren(details(response),el("p", L(
+        "راجع حالة الاستخراج والحجر، ثم أدخل البنود في القسم المناسب باستخدام معرف المستند.",
+        "Review extraction/quarantine status, then add source-linked clauses in the proper section."
+      )));
+    }catch(e){result.replaceChildren(errorState(e));}
+  },"button primary");
+  const result=el("div");result.setAttribute("aria-live","polite");
+  pane.append(f.wrap,submit,result);
+  openDrawer(L("ملفات قسم المدخلات", "Input files") + " — " + section,pane);
+}
+function batchFourFileExports(ctx) {
+  const card=panel(L("تقسيم المطالبات إلى أربعة ملفات", "Four-file claim triage"),
+    L("ملفات تدقيق استشارية مبنية على لقطات G5؛ لا يُصدر النظام موافقات صرف أو رفضًا قانونيًا.",
+      "Review-only classification of G5 snapshots, not payment approval or a binding rejection."));
+  const bid=field("batch_id",L("معرف دفعة المطالبات","Batch ID"),{maxLength:36});
+  const controls=el("div",null,"actions"),output=el("div");
+  controls.append(actionButton(ctx,L("فحص التصنيف","Inspect counts"),"reports.read",async()=>{
+    output.replaceChildren(loading());
+    try{const data=await ctx.api.request("/api/v1/audit-triage/batches/"+safeId(bid.input.value)+"/summary");
+      output.replaceChildren(details(data));}catch(e){output.replaceChildren(errorState(e));}
+  }));
+  const groups=[
+    ["REJECTED_RULE_CERTAIN",L("المرفوضة قطعياً","Confirmed rule rejections")],
+    ["ACCEPTED_RULES",L("المقبولة تدقيقيًا","Rules passed")],
+    ["MISSING_ATTACHMENTS",L("مرفقات ناقصة","Missing attachments")],
+    ["HUMAN_REVIEW",L("تدقيق بشري","Human review")]
+  ];
+  for(const [group,label] of groups){
+    controls.append(actionButton(ctx,label,"reports.read",async()=>{
+      try{await ctx.api.download("/api/v1/audit-triage/batches/"+safeId(bid.input.value)+
+        "/files/"+group+".csv","mcias_"+group.toLowerCase()+".csv");}
+      catch(e){output.replaceChildren(errorState(e));}
+    }));
+  }
+  card.append(bid.wrap,controls,output);
+  ctx.root.append(card);
 }
 
 function retention(ctx) {

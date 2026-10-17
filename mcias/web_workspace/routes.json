@@ -706,5 +706,17 @@
     "availability": "partial",
     "blocker_ar": "غير متاح في الخادم الحالي.",
     "blocker_en": "Unavailable in the current backend."
+  },
+  {
+    "path": "/admin/input-register",
+    "ar": "سجل بنود المدخلات",
+    "en": "Insurance input clause registry",
+    "icon": "policy",
+    "kind": "input-register",
+    "permission": "reference.read",
+    "admin": true,
+    "availability": "partial",
+    "blocker_ar": "مسودات وإصدارات موثقة؛ تفعيل القواعد التشغيلية عبر G3/G5 يحتاج قبولًا مؤسسيًا.",
+    "blocker_en": "Versioned clause drafts; executable G3/G5 policy linkage requires institutional acceptance."
   }
 ]

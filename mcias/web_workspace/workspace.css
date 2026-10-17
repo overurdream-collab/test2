@@ -1421,3 +1421,10 @@ dialog::backdrop {
 .auth-aside .eyebrow {
   color: #a2e6dc;
 }
+
+/* Contractual points, not generic medical procedure labels. */
+.input-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 16px; }
+.input-tab { border:1px solid var(--border); background:var(--surface); border-radius:12px; padding:9px 13px; }
+.input-tab[aria-pressed="true"] { background:var(--soft); border-color:var(--teal); color:var(--teal-text); font-weight:700; }
+.input-actions { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+@media (max-width:760px) { .input-actions .button { flex:1 1 140px; } .input-tabs .button { flex:1 1 110px; } }
