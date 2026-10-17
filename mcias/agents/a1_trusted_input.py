@@ -304,7 +304,9 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
                 "original_sha256_verified":True,"extracted_rows_equal_original":True}
                 for x in [source]+(candidates if len(candidates)==1 else [])],
             "missing_evidence":["approved_unit_mapping","verified_signed_G5_policy",
-                                "attested_performed_service_quantity",*sorted(set(missing))],
+                                "attested_performed_service_quantity",
+                                *(["approved_contract_fee_clause"] if any(item["kind"]=="fee" for item in items) else []),
+                                *sorted(set(missing))],
             "contracts":[],"documents":[]
         })
     except ValueError as exc:

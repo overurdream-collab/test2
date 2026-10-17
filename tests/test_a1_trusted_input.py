@@ -280,6 +280,7 @@ def test_original_invoice_explicit_fee_kind_is_preserved_without_financial_autho
         preview=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-fee-preview")
         assert preview["financial_decision"]=="NOT_AUTHORIZED"
         assert "approved_unit_mapping" in preview["missing_evidence"]
+        assert "approved_contract_fee_clause" in preview["missing_evidence"]
         assert preview["review_packet"]["financial_decision_authorized"] is False
     finally:
         db.close();engine.dispose()
@@ -302,5 +303,16 @@ def test_invalid_declared_fee_kind_fails_closed_not_silently_service(tmp_path):
         assert "invalid_invoice_row" in result["missing_evidence"]
         assert result["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
         assert result["financial_decision"]=="NOT_AUTHORIZED"
+    finally:
+        db.close();engine.dispose()
+
+
+def test_legacy_service_only_invoice_does_not_invent_missing_fee_clause(tmp_path):
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        claim,_,_=_claim(db,store,org,actor)
+        preview=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-service-only-fee-gate")
+        assert "approved_contract_fee_clause" not in preview["missing_evidence"]
+        assert preview["financial_decision"]=="NOT_AUTHORIZED"
     finally:
         db.close();engine.dispose()
