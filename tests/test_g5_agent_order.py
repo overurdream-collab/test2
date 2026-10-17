@@ -126,3 +126,42 @@ def test_inspect_claim_returns_eight_ordered_findings(
     assert findings["contract"]["reference"] == (contract.id if contract else None)
     assert findings["eligibility"]["reference"] == (enrollment.id if enrollment else None)
     assert findings["evidence"]["reference"] == ([attachment.id] if attachment else [])
+
+
+
+def test_approved_uncompiled_reference_point_blocks_even_8_clean_checks(agent_database):
+    """Real G5 SQL check must respect new temporal-reference hold, not fake pass."""
+    from mcias.models_reference_points import ReferencePoint
+    db, actor, document, second_record, claim = agent_database
+    category = BeneficiaryCategory(organization_id=claim.organization_id,
+        code="SYN-CAT", description="Synthetic eligible category")
+    contract = ContractVersion(organization_id=claim.organization_id,
+        provider_code=claim.provider_code, version=1, status="approved",
+        effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1))
+    db.add_all([category, contract])
+    db.flush()
+    db.add_all([
+        BeneficiaryEnrollment(organization_id=claim.organization_id,
+            beneficiary_token=claim.beneficiary_token, category_id=category.id,
+            effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1)),
+        ProviderTariff(contract_id=contract.id, service_code=claim.service_code,
+            amount=Decimal("100"), currency="YER"),
+        ClaimAttachment(organization_id=claim.organization_id, claim_id=claim.id,
+            ingestion_document_id=document.id, document_sha256=document.sha256,
+            linked_by=actor.id),
+        ReferencePoint(organization_id=claim.organization_id, section="approvals",
+            logical_key="SYN-prior-approval", version=1, title="Prior approval",
+            clause_text="Synthetic approval required on this service",
+            rule_type="approval", provider_code=claim.provider_code,
+            service_code=claim.service_code, effective_from=date(2026, 1, 1),
+            effective_until=date(2027, 1, 1), status="approved",
+            created_by=actor.id, approved_by=actor.id),
+    ])
+    db.flush()
+    policy = SimpleNamespace(approved=True, policy_id="SYN-approved",
+        tariff=Decimal("100"), copay_percent=Decimal("20"), exclusion=Decimal("0"))
+    checks = inspect_claim(db, claim, policy)
+    assert all(f["status"] == "pass" for f in checks["findings"])
+    assert checks["reference_reconciliation"]["status"] == "hold"
+    assert "uncompiled_approvals_point" in checks["reference_reconciliation"]["unresolved"]
+    assert checks["review_required"] is True
