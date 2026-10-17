@@ -61,7 +61,7 @@ On the **target host**, with its intended runtime-only PostgreSQL user, after pr
 python -m mcias.preflight_g9 --check-database
 ```
 
-The JSON response never prints passwords, full connection URIs, raw keys, patient data or institution identifiers. It checks production bootstrap disabled, PostgreSQL runtime credentials present, migration at `0018_claim_query_indexes`, runtime account not superuser/owner/DDL creator, no UPDATE or DELETE permission on `audit_log`, non-writable institution authorization registry and trusted SAN certificate with more than 30 days before expiry. The certificate's hostname and local path come from `MCIAS_TLS_HOST` and `MCIAS_TLS_CERT_PATH`.
+The JSON response never prints passwords, full connection URIs, raw keys, patient data or institution identifiers. It checks production bootstrap disabled, PostgreSQL runtime credentials present, migration at `0019_reference_points`, runtime account not superuser/owner/DDL creator, no UPDATE or DELETE permission on `audit_log`, non-writable institution authorization registry and trusted SAN certificate with more than 30 days before expiry. The certificate's hostname and local path come from `MCIAS_TLS_HOST` and `MCIAS_TLS_CERT_PATH`.
 
 Exit code `2` means engineering checks are blocked. Even if it exits `0`, the response always shows `production_accepted: false` because a separate signed institutional gate and other controls are required.
 
