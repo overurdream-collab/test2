@@ -37,6 +37,16 @@ HOLDOUT = (
 )
 
 
+# Source authenticity is authored separately from positive/negative discrepancy labels.
+# Billing notes, unverified drafts and injected strings are NOT attested proof.
+TRUSTED_SOURCE_CASES = frozenset({
+    "final_one_vs_two", "two_vs_four", "zero_vs_one", "two_vs_three",
+    "one_vs_three", "three_vs_one", "one_done_two_ordered", "four_vs_five",
+    "all_two_done", "one_ordered_two_done", "correction_to_two",
+    "two_vs_order_three", "arabic_same", "duplicate_in_voice",
+    "negative_three_ordered",
+})
+
 def holdout_case(name):
     matched = [x for x in HOLDOUT if x[0] == name]
     if len(matched) != 1:
@@ -47,5 +57,7 @@ def holdout_case(name):
     item["quantity"] = billed
     item["line_total"] = bundle["invoice"]["stated_total"] = bundle["claim"]["amount"] = str(int(billed)*10)
     bundle["documents"][0]["text"] = note
+    bundle["documents"][0]["attested"] = name in TRUSTED_SOURCE_CASES
+    bundle["documents"][0]["items"] = []  # only documentary free text; no deterministic quantity facts
     bundle["run_id"] = "synthetic-holdout-" + name
     return bundle, label
