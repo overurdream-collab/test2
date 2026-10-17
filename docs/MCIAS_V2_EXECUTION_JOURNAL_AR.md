@@ -142,3 +142,14 @@
 - Risks: سياق GitHub Actions ليس حماية دمج تلقائية ما لم تكن الحالة Required في Rulesets؛ الاتصال الحالي لا يملك إذن قراءة إعدادات branch protection (403)، ولا يوجد تصريح بأن main محمي.
 - Next: مسؤول GitHub يفعّل Required Checks على main بعد مراجعة المسودة؛ المراجع الفني يتحقق من PR #22 ثم يقرر الدمج، دون تغييرات مالية إنتاجية.
 - Handoff: ابدأ من README وDG-001 وCURRENT_STATE، واتبع تعليمات Codex. أفضل دليل ناجح مثبت هو SHA المذكور أعلاه، مع التمييز بينه وبين أي Commits لاحقة.
+
+
+### HANDOFF-20261017-004
+- Scope: Research First stage for Contract Intelligence. Created 5 dedicated documents on new child branch; compared 6 OSS tools, audited existing G2 source parser and ReferencePoint; no application code/migration/UI behavior changed.
+- Why: User mandatory research before programming and DG-001 instant handoff; decisions CID-001 to CID-004.
+- Files: docs/CONTRACT_INTELLIGENCE_OPEN_SOURCE_RESEARCH_AR.md; docs/CONTRACT_INTELLIGENCE_ARCHITECTURE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; docs/CONTRACT_INTELLIGENCE_DECISION_REGISTER_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md.
+- Tests: Local synthetic pypdf 2-page extraction; tesseract eng PNG; artifact_tool synthetic xlsx export. Commands + results described in CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md. GitHub full pytest NOT_RUN due DNS preventing clone; third-party installs and real Qwen inference NOT_RUN.
+- Result: PASS only three small independent local smoke probes; untested OSS and real inference NOT_RUN; CI on this specific Commit PENDING_CI.
+- Risks: no Arabic OCR accuracy, no on-prem model runtime, no provenance-validation implementation. Licenses for model weights may restrict commercial deployment. GitHub report initially is not functional contract-agent delivery.
+- Next: Implement synthetic corpus + quote/locator validator on feat/mcias-contract-intelligence, and log a new HANDOFF in same Commit; then run targeted tests and attach Actions evidence.
+- Handoff: Open docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; read DG-001 and CURRENT_STATE; preserve current PR #22 financial authority, no merge or A1.

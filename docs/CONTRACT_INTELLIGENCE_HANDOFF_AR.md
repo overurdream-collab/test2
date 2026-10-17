@@ -1,0 +1,11 @@
+# Contract Intelligence — استلام فوري للمبرمج وCodex
+
+**مشروع:** overurdream-collab/test2 / branch feat/mcias-contract-intelligence / base PR #22 (unmerged). **R0 status:** research and architectural specification documented; no model inference demonstrated. Read CURRENT_STATE and EXECUTION_JOURNAL first; never interpret docs as deployed behavior.
+## Do first
+1. Fetch latest branch HEAD from GitHub, compare with parent feat/temporal-reference-inputs-and-four-outcomes and review linked Draft PR.
+2. Read docs/CONTRACT_INTELLIGENCE_OPEN_SOURCE_RESEARCH_AR.md, ARCHITECTURE, TEST_REPORT, DECISION_REGISTER; code: ingestion/reader_agent.py, orchestrator.py, reference_points.py, reference_rule_bridge.py, app.py, models_ingestion.py and 0019.
+3. Run python -m pip install -e '.[test]' then python -m pytest -q tests/test_g2_ingestion.py tests/test_reference_rule_bridge.py tests/test_reference_points_and_outcomes.py tests/test_reference_points_http_security.py; use isolated MCIAS_TEST_DATABASE_URL for PG and Actions for comprehensive checks.
+4. **Next task:** add synthetic generation and JSON schema evidence validator in a small commit with HANDOFF and CURRENT_STATE; then model inference adapter behind disabled-by-default flag; do not persist AI output as ReferencePoint automatically.
+5. Real model is NOT_RUN. No model version/weights/hash, benchmark, accuracy metric or GPU availability has been established. Have on-prem isolated runtime approved before using any live institution input.
+## Invariants
+Never merge or deploy, pay for models, expose PHI, change main, update approved financial history, call G5 directly from LLM, create A1, approve points without institutional bound signature. Each commit must contain 8 HANDOFF fields + CURRENT_STATE and developer/acceptance updates if applicable; CI on exact SHA, PENDING_CI otherwise. Handoff must state precise remaining work.

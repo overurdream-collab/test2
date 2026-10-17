@@ -43,3 +43,11 @@
 - تعليمات التنفيذ: `docs/CODEX_MCIAS_V2_EXECUTION_HANDOFF.md`.
 - ملخص التقنيات: FastAPI/SQLAlchemy/Alembic/PostgreSQL، واجهات enterprise ES modules، GitHub Actions.
 - لا تُنسب نتيجة الاختبار إلى Commit غير مختبر؛ عندما تستكمل الخطوة التالية حدّث هذا الملف وسجل التنفيذ **في Commit نفسه**.
+
+
+## Contract Intelligence sub-branch — Research R0 (2026-10-17)
+- Child branch: feat/mcias-contract-intelligence from b694a2a1603a9a4c6d7af26ed56035b1a28b0166 (PR #22 remains draft/unmerged). This sub-branch research commit documents comparison of 6 external tools, model choices and native pypdf/Tesseract smoke tests; no production code or schema changes in R0.
+- Research evidence: docs/CONTRACT_INTELLIGENCE_OPEN_SOURCE_RESEARCH_AR.md; decision CID-001–004; test report and architecture/handoff. No real Qwen inference, no Arabic OCR comparative evaluation, no CI for this exact new commit at author time: PENDING_CI.
+- Existing G2 imports and ReferencePoint still work as baseline claimed by earlier PR22 CI; no assertion of success at this new SHA until CI verified.
+- Next task: create actual source-anchored candidate extractor/validator with synthetic tests after research, then local LLM inference with version capture; keep proposals draft-only. No A1, merge, deployment or G3/G5 modifications.
+- Resume: git switch feat/mcias-contract-intelligence; read CONTRACT_INTELLIGENCE_HANDOFF_AR.md and DG-001; every next commit updates this section and journal atomically.
