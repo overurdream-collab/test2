@@ -19,7 +19,8 @@
   - https://github.com/overurdream-collab/test2/actions/runs/39055254333
   - https://github.com/overurdream-collab/test2/actions/runs/39055254261
   - https://github.com/overurdream-collab/test2/actions/runs/39055254364
-- **اختبارات Commit سياسة التوثيق:** `PENDING_CI` عند تحرير هذا المستند؛ راجع طلب PR #22 وأضف حدث إثبات جديد لاحقًا دون تغيير السجل السابق.
+- **اختبارات Commit DG-001 الأول** `d7009e6c37f86e51182a7825d39c58ba8ad7dd31`: فحص [Documentation governance](https://github.com/overurdream-collab/test2/actions/runs/39055995211) **PASS**؛ [G1–G7](https://github.com/overurdream-collab/test2/actions/runs/39055995228) **PASS**؛ [G8](https://github.com/overurdream-collab/test2/actions/runs/39055995152) **لم تُراجع نتيجته ضمن أول شهادة**؛ [G9](https://github.com/overurdream-collab/test2/actions/runs/39055995077) **PASS**؛ [المتصفح](https://github.com/overurdream-collab/test2/actions/runs/39055995255) **لم تُراجع نتيجته ضمن أول شهادة**. راجع حالة CI مباشرة.
+- **Commit تحسين الفحص واختبار الرفض/القبول المصطنع:** `PENDING_CI` حتى تظهر نتائج الإصدار الجديد؛ لا تُنسب له نتائج الإصدار السابق.
 
 ## أين نتوقف؟
 المطور الجديد يفتح `README.md` ← `docs/DOCUMENTATION_GOVERNANCE_AR.md` ← هذا الملف ← `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md` ← `docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md` ← تعليمات Codex، ثم يراجع الشيفرة على PR #22.

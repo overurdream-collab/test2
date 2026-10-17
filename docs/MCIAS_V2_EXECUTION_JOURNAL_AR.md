@@ -120,3 +120,14 @@
 - Risks: الفحص الآلي يحكم على محتوى Commit بعد إرساله، ولا يمنع دمجًا إن لم يُضف إلى Required Checks في إعدادات حماية main؛ تطبيق الإلزام التاريخي يبدأ بعد Legacy Cutoff ولا يمحو Commits السابقة.
 - Next: التحقق من GitHub Actions على Commit السياسة، وفحص حماية main ثم جعل حالة Documentation governance / enforce إلزامية بعد مراجعة الصلاحيات والموافقة المناسبة.
 - Handoff: ابدأ من README ثم DG-001 ثم CURRENT STATE؛ كل Commit جديد يضيف حدث HANDOFF بالحقول الثمانية ويعدل CURRENT STATE معه في Commit ذري.
+
+
+### HANDOFF-20261017-002
+- Scope: تحسين آلية مقارنة فروع Pull Request عند تقدم main، ومعالجة انتهاء صلاحية SHA القديمة بعد squash، وإضافة اختبار محلي يتحقق من رفض Commit برمجي غير موثق وقبول Commit ذري موثق؛ تحديث روابط أول إثبات CI.
+- Why: منع فشل كاذب عند تغير SHA أساس main، ومنع ادعاء أن حارس التوثيق فعّال دون اختبار سلبي فعلي.
+- Files: scripts/check_documentation_governance.py; tests/test_documentation_governance.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md.
+- Tests: python -m unittest discover -s tests -p test_documentation_governance.py -v; Documentation governance GitHub Actions and existing G1–G7/G8/G9/workspace suites on new SHA.
+- Result: PENDING_CI — أول Commit d7009e6c اجتاز Governance https://github.com/overurdream-collab/test2/actions/runs/39055995211؛ هذا التعديل لم يختبر بعد وقت الحفظ.
+- Risks: حماية main المطلوبة لإنفاذ النتيجة على الدمج لا تزال تحتاج تحقق صلاحيات وإعداد قواعد الحماية؛ الاختبار يفرض تسجيل السبب ولكنه لا يضمن صحة المحتوى دون مراجعة بشرية.
+- Next: افحص CI على SHA الجديد ثم أضف إثبات نجاح مستقل، وفعّل Required Status Check عبر مسؤول المستودع إذا كان مخولًا.
+- Handoff: اقرأ DG-001 ونقطة الحالة وسجل التنفيذ، واستخدم Commit ذري يضم الشيفرة وHANDOFF وCURRENT_STATE معًا؛ فشل الفحص يوقف قبول PR.

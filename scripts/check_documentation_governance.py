@@ -55,16 +55,21 @@ def validate_added_entry(diff):
 def validate(base, head, legacy_cutoff):
     git("rev-parse", "--verify", base + "^{commit}")
     git("rev-parse", "--verify", head + "^{commit}")
-    if legacy_cutoff:
-        git("rev-parse", "--verify", legacy_cutoff + "^{commit}")
-    commits = git("rev-list", "--reverse", "--ancestry-path", base + ".." + head).splitlines()
-    if not commits and base != head:
-        raise RuntimeError("not a forward history path; refusing to guess")
+    # PR branches frequently diverge after main receives unrelated commits.
+    # Scan branch-local history from the true merge base, not base_sha..head
+    # directly. This avoids false positives or skipping detached branches.
+    common_ancestor = git("merge-base", base, head)
+    commits = git("rev-list", "--reverse", common_ancestor + ".." + head).splitlines()
+    # A legacy cutoff may disappear after squash-merging and deleting a branch.
+    # Never fail subsequent PRs just because its historical SHA was pruned.
+    legacy_exists = subprocess.run(("git", "cat-file", "-e",
+        legacy_cutoff + "^{commit}"), capture_output=True, check=False).returncode == 0 if legacy_cutoff else False
+    legacy_applies = legacy_exists and is_ancestor(legacy_cutoff, head)
     errors = []
     checked = 0
     legacy = 0
     for commit in commits:
-        if legacy_cutoff and is_ancestor(commit, legacy_cutoff):
+        if legacy_applies and is_ancestor(commit, legacy_cutoff):
             legacy += 1
             continue
         files = changed_files(commit)
