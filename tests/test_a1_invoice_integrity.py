@@ -177,3 +177,30 @@ def test_no_implicit_fee_or_service_kind():
     outcome = analyze(b)
     assert outcome["finding_status"] == "INSUFFICIENT_EVIDENCE"
     assert any(f["finding_type"] == "LINE_KIND" for f in outcome["findings"])
+
+
+def test_unattested_document_cannot_trigger_llm_review():
+    b = base()
+    b["documents"][0]["attested"] = False
+    b["documents"][0]["text"] = "ONE LAB-A test was performed."
+    def fake_model(system, user):
+        return json.dumps({"signals": [{"line_item_id": "L1", "source_id": "record-doc",
+            "exact_quote": "ONE LAB-A test was performed", "reported_quantity": "1",
+            "explanation": "One versus two billed."}]})
+    result = analyze(b, model=fake_model, model_id="stub")
+    assert not any(f["engine"] == "model" for f in result["findings"])
+    assert result["model_rejected_signals"] == 1
+    assert result["model_status"] == "INFERRED_VALIDATED"
+
+def test_attested_document_triggers_grounded_llm_review():
+    b = base()
+    b["documents"][0]["items"] = []
+    b["documents"][0]["text"] = "ONE LAB-A test was performed."
+    def text_extractor(system, user):
+        return json.dumps({"signals": [{"line_item_id": "L1", "source_id": "record-doc",
+            "exact_quote": "ONE LAB-A test was performed", "reported_quantity": "1",
+            "explanation": "Signed source differs from invoice."}]})
+    result = analyze(b, model=text_extractor, model_id="stub")
+    assert any(f["finding_type"] == "DOCUMENT_QUANTITY_CONTRADICTION"
+               for f in result["findings"])
+    assert result["model_rejected_signals"] == 0
