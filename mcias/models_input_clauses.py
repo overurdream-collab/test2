@@ -4,7 +4,7 @@ from sqlalchemy import Date, DateTime, ForeignKey, String, Text, Integer, JSON, 
 from sqlalchemy.orm import Mapped, mapped_column
 from mcias.models import Base, uid, now_utc
 
-SECTIONS = ("contracts", "providers", "copays", "categories", "exclusions", "approvals", "tariffs")
+SECTIONS = ("contracts", "providers", "beneficiaries", "copays", "categories", "exclusions", "approvals", "tariffs")
 
 class InputClause(Base):
     __tablename__ = "input_clauses"

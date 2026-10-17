@@ -2878,6 +2878,7 @@ function runResult(ctx, run) {
 const clauseSections = [
   ["contracts", "العقود", "Contracts"],
   ["providers", "مقدمو الخدمة", "Providers"],
+  ["beneficiaries", "المستفيدون", "Beneficiary reference points"],
   ["copays", "نسب التحمل", "Cost sharing"],
   ["categories", "الفئات", "Categories"],
   ["exclusions", "الاستثناءات", "Exclusions"],
