@@ -126,3 +126,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C26 test runner repair
 - Existing minimal no-model LMFE test was blocked before collection by unrelated global pytest conftest SQLAlchemy dependency (run 39073517388). New workflow invocation explicitly omits unrelated conftest; no LMFE schema or evidence validator changed. Inspect next run before concluding pattern behavior.
+
+
+### C26 exact parser isolation
+- Previous run 39073594944 showed non-ASCII quote rejection at offset 49 before `amount`; use new ASCII-only synthetic quote in dedicated parser test to isolate pattern behavior. Do not draw conclusion on nullable pattern until fresh CI result.

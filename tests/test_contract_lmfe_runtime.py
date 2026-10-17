@@ -27,7 +27,7 @@ def accepts(schema, document):
 def candidate(amount):
     clause = {
         "record_id": "SYN-AR-COPAY",
-        "quote": "تبلغ نسبة تحمل المريض للعيادات 20% اعتباراً من 2026-01-01 وحتى 2027-01-01.",
+        "quote": "Patient copay 20 percent from 2026-01-01 until 2027-01-01.",
         "section": "cost_sharing",
         "rule_type": "percentage",
         "logical_key": "copay_percent",

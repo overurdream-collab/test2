@@ -146,3 +146,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C26 no-model initial runner failure
 - https://github.com/overurdream-collab/test2/actions/runs/39073517388 failed BEFORE LMFE parser testing at `ModuleNotFoundError: sqlalchemy` from global pytest conftest. Do not classify as regex/schema failure. Only isolated test invocation fixed with `--noconftest`, exact-new-SHA CI pending.
+
+
+### C26 second failure — unicode fixture before amount
+- Runtime test run https://github.com/overurdream-collab/test2/actions/runs/39073594944 failed on input Arabic character before numeric field; amount pattern not tested. Synthetic runtime fixture narrowed to ASCII quote without modifying schema or production. New SHA PENDING_CI.

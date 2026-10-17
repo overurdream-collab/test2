@@ -472,3 +472,14 @@
 - Risks: --noconftest isolates all global fixtures for this focused unit test by design. No model/PHI/financial actions.
 - Next: Observe new standalone parser run and determine whether `20%` can be generated with C25 nullable decimal pattern. If parser works, leave schema as-is.
 - Handoff: Review PR23 head and new `contract-lmfe-probe.yml` run. Keep signed finance and source gates unchanged.
+
+
+### HANDOFF-20261018-007 — C26 ASCII fixture isolation
+- Scope: Adjust only the no-model parser test's quote fixture to ASCII synthetic source, so LMFE's unrelated non-ASCII character handling cannot block reaching `amount`. No actual production prompt/source data, validator, schema, model, financial rule or workflow change.
+- Why: Second isolated runtime probe https://github.com/overurdream-collab/test2/actions/runs/39073594944 failed on the Arabic letter at JSON character offset 49 BEFORE amount, while exercising actual character parser; this does not establish success or failure of nullable decimal pattern. Previous run 39073517388 failed pytest setup before collection. Keep both failures recorded.
+- Files: `tests/test_contract_lmfe_runtime.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: Previous no-model LMFE parser FAIL due Unicode quote before amount; new exact SHA CI PENDING_CI; no real-model success claim.
+- Result: TEST_FIX_PENDING_CI, not a schema correction.
+- Risks: ASCII test isolates amount only and cannot validate Arabic Unicode compatibility. Investigate Unicode separately only in a later authorized cycle.
+- Next: Inspect no-model probe and `20` vs `20%` results. Decide whether the schema itself needs correction only after actual result.
+- Handoff: Open PR23 latest HEAD and workflow Contract LMFE schema runtime probe; do not modify financial/source gates or activate AI.

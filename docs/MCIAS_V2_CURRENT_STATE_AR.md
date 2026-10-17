@@ -199,3 +199,7 @@
 
 ### C26 harness correction PENDING_CI
 - No-model runtime probe at dc8d03a69b843f1eb661859b6d2f65cce5c7a161 did not reach parser: pytest imported global `tests/conftest.py` with SQLAlchemy unavailable in isolated runner (Actions 39073517388 FAIL). Workflow now runs `--noconftest` to isolate dedicated schema test. Actual LMFE pattern result pending on new SHA; application/schema unchanged.
+
+
+### C26 isolated runtime test — ASCII fixture pending
+- No-model pinned LMFE run 39073594944 reached parser but rejected Arabic quote at character 49 before checking amount. Fixed test fixture ONLY to ASCII text for the amount-pattern investigation. This does not establish Arabic parsing quality; new SHA exact CI pending. No schema/application changes.
