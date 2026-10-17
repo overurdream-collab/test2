@@ -58,6 +58,13 @@ def upgrade():
         CREATE FUNCTION mcias_reference_point_guard() RETURNS trigger
         LANGUAGE plpgsql AS $$
         BEGIN
+            IF TG_OP = 'INSERT' THEN
+                IF NEW.status <> 'draft'
+                   OR NEW.approved_by IS NOT NULL OR NEW.approved_at IS NOT NULL THEN
+                    RAISE EXCEPTION 'reference points must be proposed as drafts';
+                END IF;
+                RETURN NEW;
+            END IF;
             IF TG_OP = 'DELETE' THEN
                 RAISE EXCEPTION 'reference points cannot be deleted';
             END IF;
@@ -73,7 +80,7 @@ def upgrade():
     """)
     op.execute("""
         CREATE TRIGGER trg_reference_point_guard
-        BEFORE UPDATE OR DELETE ON reference_points
+        BEFORE INSERT OR UPDATE OR DELETE ON reference_points
         FOR EACH ROW EXECUTE FUNCTION mcias_reference_point_guard()
     """)
     op.execute("""
