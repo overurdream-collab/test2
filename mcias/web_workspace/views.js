@@ -3041,6 +3041,26 @@ function uploadClauseSource(ctx, section) {
         "راجع حالة الاستخراج والحجر، ثم أدخل البنود في القسم المناسب باستخدام معرف المستند.",
         "Review extraction/quarantine status, then add source-linked clauses in the proper section."
       )));
+      if (section === "contracts") {
+        const documentId = response?.document_id || response?.id;
+        if (typeof documentId === "string" && /^[a-zA-Z0-9_-]{1,120}$/.test(documentId)) {
+          const check = actionButton(ctx,
+            L("فحص بيان مصدر العقد من G2", "Inspect G2 contract source manifest"),
+            "ingestion.read", async () => {
+              try {
+                const manifest = await ctx.api.request(
+                  "/api/v1/ingestion/documents/" + safeId(documentId) + "/manifest");
+                preview.replaceChildren(details(manifest), el("p", L(
+                  "هذا بيان المصدر فقط. لا تحفظ أي حقول عقد مستخرجة قبل التحقق البشري وربطها بمصدرها، ولا تعتمد العقد تلقائيًا.",
+                  "This is a source manifest only. Do not save extracted contract fields without verified provenance and human review; no automatic approval."
+                )));
+              } catch (err) { preview.replaceChildren(errorState(err)); }
+            }, "button");
+          const preview = el("div");
+          preview.setAttribute("aria-live", "polite");
+          result.append(check, preview);
+        }
+      }
     }catch(e){result.replaceChildren(errorState(e));}
   },"button primary");
   const result=el("div");result.setAttribute("aria-live","polite");
