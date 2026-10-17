@@ -147,3 +147,10 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C28 narrow repair follow-up
 - C28 first implementation failed security gold battery wrong_key (39074933268). New SHA limits redundant-key canonicalization to `provider:provider_service`, leaves arbitrary `H1:XRAY` rejected. Need exact CI and actual Qwen results before success claim. No other agent/finance or release.
+
+
+### C28 closed functional SHA and handoff
+- Exact functional SHA `01bf3711dff0a24e48c608c1c4372a6a851915bc` all 7 workflow groups completed SUCCESS: DG-001 https://github.com/overurdream-collab/test2/actions/runs/39075091215; LMFE parser https://github.com/overurdream-collab/test2/actions/runs/39075091171; G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39075091259; G8 https://github.com/overurdream-collab/test2/actions/runs/39075091157; G9 https://github.com/overurdream-collab/test2/actions/runs/39075091197; Enterprise https://github.com/overurdream-collab/test2/actions/runs/39075091219; real pretrained Qwen https://github.com/overurdream-collab/test2/actions/runs/39075091291.
+- G1–G7 unit exact log: 471 passed, 22 skipped, zero failed; previous adversarial `wrong_key` test no longer fails, and its H1:XRAY case remains rejected under the narrow correction.
+- Actual 4 generated Qwen candidates: TP3 FP0 FN0, precision100%, recall100% only on 3 positive synthetic clauses; negative FPR0/1, 1 quarantined injected proposal, 129.4 total seconds. H1:CONSULT 5000 verified, Arabic copay_percent 20 verified, mixed H2 generated raw logical_key `H2:H2_CONSULT` but final verified prediction H2:CONSULT 7000 after safely canonicalizing exact redundant prefix. Injected transfer text quarantined. This test uses forced-nonempty diagnostic grammar (including negative); not a production selection/accuracy guarantee.
+- No further code changes requested or applied. Closure commit docs-only DG-001, own CI PENDING_CI. PR22/23 remain Draft; no publication/merge or finance. Future operator must verify current PR HEAD and preserve negative provider/service/key regression coverage.

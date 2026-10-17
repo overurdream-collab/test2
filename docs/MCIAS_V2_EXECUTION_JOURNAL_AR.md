@@ -527,3 +527,17 @@
 - Risks: Other erroneous logical keys remain quarantined and require human correction, intentionally conservative; small SYN corpus cannot certify clinical production. No merge/deploy.
 - Next: Inspect new SHA G1–G7 and negative gold case, Enterprise and Qwen TP/FP/FN; if failed, stop and document. No further functional change until resolved.
 - Handoff: PR23 latest SHA, run `python -m pytest -q tests/test_contract_intelligence.py tests/test_contract_gold_battery.py`, then full CI; compare Qwen experiment 39074933192. Never approve AI clauses automatically.
+
+
+### HANDOFF-20261018-012 — C28 exact-SHA all CI and real-model closure
+- Scope: Documentation-only closure on successful C28 exact functional SHA, no extraction/schema, tests, finance, A1, production or main changes.
+- Why: Capture actual end-to-end source-verified synthetic output after C28 narrow key repair and guard against false unmeasured model-accuracy claims.
+- Files: `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Exact functional SHA `01bf3711dff0a24e48c608c1c4372a6a851915bc` all 7 workflow groups completed SUCCESS: DG-001 https://github.com/overurdream-collab/test2/actions/runs/39075091215; LMFE parser https://github.com/overurdream-collab/test2/actions/runs/39075091171; G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39075091259; G8 https://github.com/overurdream-collab/test2/actions/runs/39075091157; G9 https://github.com/overurdream-collab/test2/actions/runs/39075091197; Enterprise https://github.com/overurdream-collab/test2/actions/runs/39075091219; real pretrained Qwen https://github.com/overurdream-collab/test2/actions/runs/39075091291.
+- G1–G7 unit exact log: 471 passed, 22 skipped, zero failed; previous adversarial `wrong_key` test no longer fails, and its H1:XRAY case remains rejected under the narrow correction.
+- Actual 4 generated Qwen candidates: TP3 FP0 FN0, precision100%, recall100% only on 3 positive synthetic clauses; negative FPR0/1, 1 quarantined injected proposal, 129.4 total seconds. H1:CONSULT 5000 verified, Arabic copay_percent 20 verified, mixed H2 generated raw logical_key `H2:H2_CONSULT` but final verified prediction H2:CONSULT 7000 after safely canonicalizing exact redundant prefix. Injected transfer text quarantined. This test uses forced-nonempty diagnostic grammar (including negative); not a production selection/accuracy guarantee.
+- Tests: All C28 functional SHA runs PASS. This documentation-only SHA's CI PENDING_CI at authoring; do not confuse with measured functional SHA.
+- Result: EVIDENCE_VERIFIED_SYNTHETIC_ONLY, C28 prior recall 66.7% increased to 100% on three positive SYN clauses, not proven for actual contracts or automatic finance. PR23 stays draft/unmerged.
+- Risks: Tiny sample; no actual medical/financial records or Arabic OCR mixed real corpus evaluated. Canonicalization remains narrow duplicate-prefix only and only after independent validation; unrelated wrong keys such as H1:XRAY are rejected.
+- Next: No new functionality authorized in this closure. Resume only from PR23 latest head if further requested; review exact proof above and dedicated security battery before any new work.
+- Handoff: No deployment/merge/paid API/patient data. Real model trace in run 39075091291, unit tests in 39075091259.

@@ -220,3 +220,10 @@
 
 ### C28 correction after CI failure (PENDING_CI)
 - C28 827a73a2464b5c1f91aaa5c594bfdfa19315291b G1–G7 FAIL 1 negative gold case: wrong logical_key `H1:XRAY` was too broadly rewritten. Restrict deterministic repair to `provider:provider_service`, independent source checks fully valid, and add explicit negative test. New exact-SHA CI pending. Previous failure retained, no G3/G5 changes.
+
+
+### C28 exact-SHA verified closure — 2026-10-18
+- Exact functional SHA `01bf3711dff0a24e48c608c1c4372a6a851915bc` all 7 workflow groups completed SUCCESS: DG-001 https://github.com/overurdream-collab/test2/actions/runs/39075091215; LMFE parser https://github.com/overurdream-collab/test2/actions/runs/39075091171; G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39075091259; G8 https://github.com/overurdream-collab/test2/actions/runs/39075091157; G9 https://github.com/overurdream-collab/test2/actions/runs/39075091197; Enterprise https://github.com/overurdream-collab/test2/actions/runs/39075091219; real pretrained Qwen https://github.com/overurdream-collab/test2/actions/runs/39075091291.
+- G1–G7 unit exact log: 471 passed, 22 skipped, zero failed; previous adversarial `wrong_key` test no longer fails, and its H1:XRAY case remains rejected under the narrow correction.
+- Actual 4 generated Qwen candidates: TP3 FP0 FN0, precision100%, recall100% only on 3 positive synthetic clauses; negative FPR0/1, 1 quarantined injected proposal, 129.4 total seconds. H1:CONSULT 5000 verified, Arabic copay_percent 20 verified, mixed H2 generated raw logical_key `H2:H2_CONSULT` but final verified prediction H2:CONSULT 7000 after safely canonicalizing exact redundant prefix. Injected transfer text quarantined. This test uses forced-nonempty diagnostic grammar (including negative); not a production selection/accuracy guarantee.
+- All functional CI success and source-anchored SYN metrics verified. Only documentation changed in closure commit, whose own CI PENDING_CI. No merge/production/finance. Next resume from latest draft PR23 HEAD, retain conservative evidence gate.
