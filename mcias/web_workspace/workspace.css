@@ -1421,3 +1421,36 @@ dialog::backdrop {
 .auth-aside .eyebrow {
   color: #a2e6dc;
 }
+
+/* Governed section-by-section reference inputs and four-file claims triage */
+.reference-point-registry { border: 1px solid var(--border); }
+.reference-point-tabs { display: flex; flex-wrap: wrap; gap: .55rem; margin-block: 1rem; }
+.reference-point-tab {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  padding: .6rem .85rem; border-radius: .75rem; font: inherit; cursor: pointer;
+}
+.reference-point-tab[aria-pressed="true"] {
+  color: var(--teal-text); border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal); font-weight: 600;
+}
+.reference-point-toolbar { display: flex; gap: .65rem; align-items: end; flex-wrap: wrap; margin-block: 1rem; }
+.reference-point-heading, .reference-point-row {
+  display: grid; grid-template-columns: minmax(230px, 2fr) minmax(165px, 1fr) minmax(80px, .6fr) minmax(150px, 1fr);
+  gap: .8rem; align-items: center; padding: .85rem .7rem;
+}
+.reference-point-heading { background: var(--bg); color: var(--muted); border-radius: .65rem; font-weight: 600; }
+.reference-point-row { border-bottom: 1px solid var(--border); }
+.reference-point-row small { display: block; color: var(--muted); margin-top: .3rem; overflow-wrap: anywhere; }
+.reference-row-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
+.reference-point-row .button { padding: .5rem; font-size: .78rem; }
+.audit-outcome-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem; margin-block: 1rem; }
+.audit-outcome-item { display: flex; flex-direction: column; gap: .7rem; align-items: start; padding: 1rem; border: 1px solid var(--border); border-radius: .9rem; }
+.audit-outcome-item strong { font-size: 2rem; }
+.audit-outcome-item span { font-size: .9rem; }
+.audit-outcome-item .button { margin-top: auto; }
+@media (max-width: 900px) {
+  .reference-point-heading { display: none; }
+  .reference-point-row { grid-template-columns: 1fr; border: 1px solid var(--border); border-radius: .75rem; margin-block: .7rem; }
+  .audit-outcome-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 530px) { .audit-outcome-grid { grid-template-columns: 1fr; } }

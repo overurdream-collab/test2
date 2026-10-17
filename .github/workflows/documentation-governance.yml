@@ -1,0 +1,26 @@
+name: Documentation governance
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify governance checker itself
+        run: python -m unittest discover -s tests -p test_documentation_governance.py -v
+      - name: Enforce DG-001 per-commit handoff
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          LEGACY_CUTOFF: 8bdb43fd467f5766ecaa8cbc48f379dea99e17cb
+        run: |
+          python scripts/check_documentation_governance.py \
+            --base "$BASE_SHA" --head "$HEAD_SHA" \
+            --legacy-cutoff "$LEGACY_CUTOFF"

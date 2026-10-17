@@ -74,7 +74,9 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
     verification=verify(claim,checks["findings"],calculation)
     snapshot=AuditSnapshot(organization_id=claim.organization_id,claim_id=claim.id,
         policy_id=policy.policy_id,policy_fingerprint=fp,calculation=calculation,
-        findings={"agents":checks["findings"]},verification=verification,created_by=actor.id)
+        findings={"agents":checks["findings"],
+                  "reference_reconciliation":checks["reference_reconciliation"]},
+        verification=verification,created_by=actor.id)
     db.add(snapshot);db.flush()
     db.add(AuditLog(actor_id=actor.id,action="audit_snapshot_created",
         resource_type="audit_snapshot",resource_id=snapshot.id,

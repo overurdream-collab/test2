@@ -1,5 +1,22 @@
 # MCIAS v2.0
 
+**التوثيق إلزامي عند كل تغيير:** [DG-001](docs/DOCUMENTATION_GOVERNANCE_AR.md) · [الحالة الحالية لاستئناف العمل](docs/MCIAS_V2_CURRENT_STATE_AR.md). يمنع إهمال سجل التنفيذ أو تحديث حالة المشروع عند حفظ أي تعديل جديد.
+
+## MCIAS v2.0 — authoritative implementation handoff (PR #22, DRAFT)
+
+**For any new engineer, Codex or reviewer, start here:**
+
+1. [MCIAS v2.0 developer guide (Arabic)](docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md) — architecture, file map, versioned clauses, G3/G5 reconciliation, four outputs, APIs and safe workflows.
+2. [Chronological implementation journal](docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md) — each engineering step, tests, regressions, decisions, evidence and remaining blockers.
+3. [Feature-by-feature acceptance and tests](docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md) — implemented vs partial vs unimplemented and the precise acceptance criteria.
+4. [Contract Intelligence and typed rule compiler specification](docs/MCIAS_CONTRACT_INTELLIGENCE_AND_RULE_COMPILER_SPEC_AR.md) — future AI extraction, strict validation, institution-bound signatures and full test scenarios.
+5. [Codex / developer execution contract](docs/CODEX_MCIAS_V2_EXECUTION_HANDOFF.md) — exact implementation order, safety rules and stop conditions.
+6. [Prior handoff](docs/REFERENCE_POINTS_AND_OUTCOMES_HANDOFF_AR.md), [Agent architecture draft (PR #19)](https://github.com/overurdream-collab/test2/pull/19), [PR #22 review](https://github.com/overurdream-collab/test2/pull/22).
+
+**Important:** PR #22 is a standalone draft; until merged its files are on the `feat/temporal-reference-inputs-and-four-outcomes` branch only. It adds temporal reference input points and a **read-only** cross-check against existing G3/G5 financial authority; it does not automatically activate extracted clauses, update approved tariffs, or adjudicate medical/fraud findings. Four CSV outputs are provisional audit triage, not final insurer rejections or payment permissions. Institutional G0–G9 acceptance remains OPEN.
+
+---
+
 Official implementation repository. On-premises medical claims financial and administrative audit.
 
 ## Status

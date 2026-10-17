@@ -126,3 +126,122 @@ def test_inspect_claim_returns_eight_ordered_findings(
     assert findings["contract"]["reference"] == (contract.id if contract else None)
     assert findings["eligibility"]["reference"] == (enrollment.id if enrollment else None)
     assert findings["evidence"]["reference"] == ([attachment.id] if attachment else [])
+
+
+
+def test_approved_uncompiled_reference_point_blocks_even_8_clean_checks(agent_database):
+    """Real G5 SQL check must respect new temporal-reference hold, not fake pass."""
+    from mcias.models_reference_points import ReferencePoint
+    db, actor, document, second_record, claim = agent_database
+    category = BeneficiaryCategory(organization_id=claim.organization_id,
+        code="SYN-CAT", description="Synthetic eligible category")
+    contract = ContractVersion(organization_id=claim.organization_id,
+        provider_code=claim.provider_code, version=1, status="approved",
+        effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1))
+    db.add_all([category, contract])
+    db.flush()
+    db.add_all([
+        BeneficiaryEnrollment(organization_id=claim.organization_id,
+            beneficiary_token=claim.beneficiary_token, category_id=category.id,
+            effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1)),
+        ProviderTariff(contract_id=contract.id, service_code=claim.service_code,
+            amount=Decimal("100"), currency="YER"),
+        ClaimAttachment(organization_id=claim.organization_id, claim_id=claim.id,
+            ingestion_document_id=document.id, document_sha256=document.sha256,
+            linked_by=actor.id),
+        ReferencePoint(organization_id=claim.organization_id, section="approvals",
+            logical_key="SYN-prior-approval", version=1, title="Prior approval",
+            clause_text="Synthetic approval required on this service",
+            rule_type="approval", provider_code=claim.provider_code,
+            service_code=claim.service_code, effective_from=date(2026, 1, 1),
+            effective_until=date(2027, 1, 1), status="approved",
+            created_by=actor.id, approved_by=actor.id),
+    ])
+    db.flush()
+    policy = SimpleNamespace(approved=True, policy_id="SYN-approved",
+        tariff=Decimal("100"), copay_percent=Decimal("20"), exclusion=Decimal("0"))
+    checks = inspect_claim(db, claim, policy)
+    assert all(f["status"] == "pass" for f in checks["findings"])
+    assert checks["reference_reconciliation"]["status"] == "hold"
+    assert "uncompiled_approvals_point" in checks["reference_reconciliation"]["unresolved"]
+    assert checks["review_required"] is True
+
+
+
+def test_run_audit_immutable_snapshot_captures_reference_block(agent_database, monkeypatch):
+    """Synthetic, genuinely signed policy; an uncompiled clause must HOLD G5.
+
+    This exercises the full run_audit -> Palermo-2 -> frozen AuditSnapshot path.
+    """
+    import hashlib
+    import hmac
+    from mcias.models import Role, Permission, UserRole, RolePermission
+    from mcias.models_reference_points import ReferencePoint
+    from mcias.models_audit_policy import AuditPolicyGrant
+    from mcias.audit_engine import AuditPolicy
+    from mcias.audit_service import run_audit, fingerprint_policy
+    from mcias.audit_authorization import verify_policy_authorization
+    from mcias.claim_outcomes import classify, REVIEW
+
+    db, actor, document, extra, claim = agent_database
+    category = BeneficiaryCategory(organization_id=claim.organization_id,
+        code="SYN-FULL-REG", description="Synthetic authorized category")
+    contract = ContractVersion(organization_id=claim.organization_id,
+        provider_code=claim.provider_code, version=1, status="approved",
+        effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1))
+    db.add_all([category, contract]); db.flush()
+    db.add_all([
+        BeneficiaryEnrollment(organization_id=claim.organization_id,
+            beneficiary_token=claim.beneficiary_token, category_id=category.id,
+            effective_from=date(2026, 1, 1), effective_until=date(2027, 1, 1)),
+        ProviderTariff(contract_id=contract.id, service_code=claim.service_code,
+            amount=Decimal("100"), currency="YER"),
+        ClaimAttachment(organization_id=claim.organization_id, claim_id=claim.id,
+            ingestion_document_id=document.id, document_sha256=document.sha256,
+            linked_by=actor.id),
+        ReferencePoint(organization_id=claim.organization_id, section="approvals",
+            logical_key="SYN-preservice", version=1, title="Approval needed",
+            clause_text="Synthetic preservice approval with no trusted claim interpreter",
+            rule_type="approval", provider_code=claim.provider_code,
+            service_code=claim.service_code, effective_from=date(2026, 1, 1),
+            effective_until=date(2027, 1, 1), status="approved",
+            created_by=actor.id, approved_by=actor.id),
+    ])
+    head = User(organization_id=claim.organization_id, username="syn-g5-head",
+                password_hash="synthetic")
+    reviewer = User(organization_id=claim.organization_id, username="syn-g5-reviewer",
+                    password_hash="synthetic")
+    db.add_all([head, reviewer]); db.flush()
+    for user, role_code, perm_code in [(head,"syn-head-role","policies.approve"),
+                                      (reviewer,"syn-rev-role","policies.review")]:
+        role = Role(code=role_code)
+        perm = Permission(code=perm_code)
+        db.add_all([role, perm]); db.flush()
+        db.add(UserRole(user_id=user.id,role_id=role.id))
+        db.add(RolePermission(role_id=role.id,permission_id=perm.id))
+    db.flush()
+    policy=AuditPolicy(
+        policy_id="syn-reference-signed-v1",currency="YER",
+        rounding="HALF_UP", precision=2,
+        order=("exclusion","tariff","cap","copay"),
+        copay_percent=Decimal("20"), cap=None,
+        exclusion=Decimal("0"), tariff=Decimal("100"), approved=True)
+    fp=fingerprint_policy(policy)
+    monkeypatch.setenv("MCIAS_G5_POLICY_VERIFICATION_KEY", "synthetic-test-secret-"+"x"*40)
+    key=("synthetic-test-secret-"+"x"*40).encode()
+    raw="|".join((claim.organization_id,fp,head.id,reviewer.id)).encode()
+    signature=hmac.new(key,raw,hashlib.sha256).hexdigest()
+    db.add(AuditPolicyGrant(organization_id=claim.organization_id,
+        policy_id=policy.policy_id,policy_fingerprint=fp,
+        approver_id=head.id,reviewer_id=reviewer.id,signature=signature))
+    db.commit()
+    verified=verify_policy_authorization(
+        organization_id=claim.organization_id, policy_fingerprint=fp,
+        approver_id=head.id, reviewer_id=reviewer.id, signature=signature)
+    snapshot=run_audit(db,actor,claim.id,policy,verified_authorization=verified)
+    assert snapshot.calculation["status"] == "held"
+    assert snapshot.calculation["deductions"] == []
+    assert snapshot.verification["status"] == "held"
+    assert snapshot.findings["reference_reconciliation"]["status"] == "hold"
+    assert len(snapshot.findings["agents"]) == 8
+    assert classify(snapshot.findings,snapshot.verification,snapshot.calculation)[0] == REVIEW
