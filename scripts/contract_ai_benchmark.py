@@ -18,7 +18,7 @@ from lmformatenforcer import JsonSchemaParser
 from lmformatenforcer.integrations.transformers import build_transformers_prefix_allowed_tokens_fn
 from mcias.contract_intelligence import infer_local, validate_candidates, make_source_blocks, ContractExtractionError
 
-MODEL_ID="Qwen/Qwen3-0.6B"
+MODEL_ID="Qwen/Qwen3-1.7B"
 # Enforce model RESPONSE FORMAT (not clause truth), as real OpenAI-compatible JSON runtimes do.
 CLAUSE_SCHEMA={"type":"object","additionalProperties":False,"required":["clauses"],"properties":{
   "clauses":{"type":"array","minItems":0,"maxItems":4,"items":{"type":"object","additionalProperties":False,
@@ -33,7 +33,7 @@ CLAUSE_SCHEMA={"type":"object","additionalProperties":False,"required":["clauses
       "currency":{"type":["string","null"]},"effective_from":{"type":["string","null"]},
       "effective_until":{"type":["string","null"]}}}}}}
 
-MODEL_REVISION="c1899de289a04d12100db370d81485cdf75e47ca"
+MODEL_REVISION="70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
 CASES=[
  {"id":"SYN-EN-TARIFF", "source":"Provider H1 CONSULT tariff 5000 YER valid from 2026-01-01 to 2027-01-01.",
   "gold":[["tariffs","H1:CONSULT","5000"]]},
@@ -47,6 +47,7 @@ CASES=[
 
 def main(output):
     os.environ["HF_HUB_DISABLE_TELEMETRY"]="1"
+    # Next-size official Apache-2.0 model; same source validation, larger CPU memory.
     torch.set_num_threads(2)
     started=monotonic()
     tokenizer=AutoTokenizer.from_pretrained(MODEL_ID,revision=MODEL_REVISION,trust_remote_code=False)

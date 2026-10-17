@@ -48,3 +48,8 @@ C9 SHA daa4b934f84fd2e7bfefa0ed4de298b8c5178f0a: all ordinary governance/G1–G9
 
 ### C11 resume — corrected prompt quotes
 C10 new real-model harness could not import `mcias.contract_intelligence` due accidental doubled escapes before embedded JSON quote characters at line 237. CI https://github.com/overurdream-collab/test2/actions/runs/39064329834 and model run 39064329875 FAIL. C11 repairs Python syntax in prompt only, not validator/financial guard. Verify compileall, all CI, constrained pretrained model JSON accuracy and PostgreSQL immutable test after commit; until observed all PENDING. No merge, production, real files or A1.
+
+
+### C12 next action
+- C11 real-model evidence at SHA bee37b2d: JSON correct but every valid synthetic source returned zero clauses; Actions 39064533187 functional FAIL (TP=0, FP=0, FN=3). The new C12 source-only benchmark compares Qwen3-1.7B official revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e without modifying application runtime/finance.
+- Inspect Contract AI real-model synthetic benchmark Actions on new SHA, capture actual model load/memory errors if any and full TP/FP/FN/response SHA. All work on Draft PR23 child of unmerged PR22; no PHI/public uploads, paid servers, merge, production, A1 or automatic finance.

@@ -63,3 +63,8 @@ Commit `b161ee75076910f4f535d783d7adccc2c0d0d48e`: Governance https://github.com
 
 ### C10 failed-source syntax (GitHub CI objective evidence)
 Commit `19907cd2d06464769f1816e29aadac374c161e6a` — `mcias/contract_intelligence.py:237` had a double-backslash Python quote-escape issue in the new JSON example. Unit compileall failed https://github.com/overurdream-collab/test2/actions/runs/39064329834, model CPU benchmark failed prior to inference https://github.com/overurdream-collab/test2/actions/runs/39064329875. C10 generated ZERO Qwen tokens and has NO precision/recall measurement, so should not be conflated with C9's true 4 generated outputs / Recall0. C11 fixes literal syntax and awaits exact SHA Actions. Governance C10 passed 39064329849.
+
+
+### C11 measured schema fix FAIL; C12 stronger pinned CPU model PENDING
+- C11 exact SHA bee37b2df08f827c4e9fe53af604c064f8c0c808, model https://github.com/overurdream-collab/test2/actions/runs/39064533187: pretrained Qwen3-0.6B + LM Format Enforcer produced exactly four valid JSON objects {"clauses":[]} for English tariff, Arabic copay, mixed tariff and synthetic prompt injection. Therefore TP0 FP0 FN3, recall0 and undefined precision; no evidence of useful clause extraction.
+- C12 compares official Qwen3-1.7B pinned revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e, Apache-2.0, on the **same** 4 gold cases with **unchanged** source validation, constrained decoder and fail-on-zero-recall policy. 1.7B benchmark metrics NOT YET MEASURED; estimated runtime/memory are not measured and may be insufficient on standard CI. Never use SYN 4-case scores as production certification.

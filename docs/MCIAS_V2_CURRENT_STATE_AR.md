@@ -106,3 +106,9 @@
 ### C10 exact CI FAIL / C11 syntax repair
 - C10 SHA 19907cd2d06464769f1816e29aadac374c161e6a failed normal CI and pretrained model run because prompt example had invalid Python quote escaping (SyntaxError at contract_intelligence.py:237). This is a reproducible source regression, not model accuracy. Governance https://github.com/overurdream-collab/test2/actions/runs/39064329849 PASS; G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39064329834 FAIL; Qwen https://github.com/overurdream-collab/test2/actions/runs/39064329875 FAIL before inference. G8/G9 also failed. C11 fixes literal escaping. New SHA CI PENDING_CI.
 - Never claim real model C10 TP/FP/FN. Last valid measured model is C9 recall0. Remaining model-constrained actual test, PostgreSQL triggers and larger Arabic/OCR gold, signed institutional authorization; no main merge/production/A1.
+
+
+### C12 Contract AI comparative pinned Qwen3-1.7B (PENDING_CI)
+- Pre-C12 real-model C11 at SHA bee37b2df08f827c4e9fe53af604c064f8c0c808: https://github.com/overurdream-collab/test2/actions/runs/39064533187 FAIL, actual constrained JSON outputs all {"clauses":[]}; TP0 FP0 FN3, recall 0%, precision undefined. Syntax was correct, extraction did not work. Standard G1–G9 and DG checks reported successful at time of C12 initiation; do not equate them with AI pass.
+- C12 changes ONLY the SYN CPU benchmark to pinned Qwen/Qwen3-1.7B revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e under Apache-2.0. Same 4 gold cases, LM Format Enforcer, source/numeric checks. Expected ~4GB weights, might exceed free runner limit; exact C12 CI PENDING.
+- Remaining: real extracted source-backed clause quality acceptance, 20+ Arabic/English/mixed scanned contracts+provider XLSX gold, on-prem serving, independent human/tenant/browser/UAT and institution-signed activation. Never merge, deploy, operate on PHI, start A1 or activate finance.
