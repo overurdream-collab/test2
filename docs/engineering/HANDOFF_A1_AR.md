@@ -73,3 +73,6 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 
 ## A1 → G6/G7 وPR22 الأربع نتائج (واجهة قراءة فقط)
 أضيف mcias/agents/a1_review_packet.py؛ تنتج preview_a1_from_g4 حزمة review_packet مع أصل كل finding ونسخة المصدر، وHUMAN_REVIEW أو MISSING_ATTACHMENTS **مبدئيًا فقط**. لا يمكن للوكلاء إصدار ACCEPTED_RULES أو REJECTED_RULE_CERTAIN ولا اعتماد خصم؛ Palermo='NOT_EXECUTED'، G6='PENDING' وG7.realized_savings=null. هذا اتفاقية بيانات بين الوكلاء وليس نشرًا أو تكاملًا على قواعد G6/G7.
+
+## 2026-10-17 P0 مستقلة قابلة للاستلام
+جدول كل ملاحظة للمراجع وحالتها ومصدرها: docs/agents/A1_REVIEW_GATE_MATRIX_AR.md. آخر كود P0 مختبر على 0962b54a (G1–G7 وG9 وتتبّع PASS). docs/engineering/STATE_A1.json حالة مقروءة آليًا، ليست بديلاً من GitHub HEAD. PR #22 DG-001 وPR #23 غير مدمجين؛ packet تمهيدي لا قرار G6 نهائي. اختبار بيانات صناعية لا يمنح اعتماداً إنتاجيًا.

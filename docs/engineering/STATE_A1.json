@@ -11,7 +11,7 @@
   "draft_pr_url": "https://github.com/overurdream-collab/test2/pull/20",
   "architecture_draft_url": "https://github.com/overurdream-collab/test2/pull/19",
   "main_baseline_sha": "b69defa2f621458ef44d790b510840307a81009a",
-  "last_verified_a1_code_sha": "1ef2ede25ee123c5d9d353bca1c452837d730874",
+  "last_verified_a1_code_sha": "0962b54a896c572fc8db9d74d6d33cb044d25601",
   "traceability_cutoff_sha": "1ef2ede25ee123c5d9d353bca1c452837d730874",
   "latest_head": "RESOLVE_WITH_git_rev_parse_HEAD",
   "documentary_evidence": [
@@ -73,10 +73,12 @@
   "traceability_ci": "https://github.com/overurdream-collab/test2/actions/runs/39055359875",
   "traceability_ci_result": "PASS",
   "open_blockers": [
-    "Independent blind reviewer-labelled medical billing dataset",
-    "Authorized G3/G4 itemized mapping with proven unit semantics",
-    "Independent Palermo verification of raw bytes, attested source and quotes",
-    "Institutional review, security and production approvals"
+    "No approved per-unit G3 tariff and signed G5 policy bridge",
+    "No independent clinician-attested source and quote verification through Palermo",
+    "No end-to-end G6 reviewer persistence/G7 realized-savings governance",
+    "PR22 and PR23 unmerged; DG-001 linkage pending formal integration",
+    "No new expert-reviewed blind Arabic/English OCR PDF corpus",
+    "No institution security/production acceptance"
   ],
   "non_negotiable": [
     "no patient PHI",
@@ -86,5 +88,27 @@
     "no autonomous rejection, approval or deduction"
   ],
   "next_step": "Verify new PR HEAD CI, update same-commit journal for every new action, commission independent A1 technical review",
-  "note": "State is a dated snapshot; use GitHub HEAD and workflow results for fresh facts."
+  "note": "State is a dated snapshot; use GitHub HEAD and workflow results for fresh facts.",
+  "integration_status": "TESTED_SYNTHETIC_PARTIAL_P0",
+  "integration_phase": "verified G2/G4 CSV+XLSX, Pydantic, G3 temporal diagnostic, read-only G6/G7 review packet",
+  "current_acceptance_matrix": "docs/agents/A1_REVIEW_GATE_MATRIX_AR.md",
+  "ci_current_code_head": {
+    "sha": "0962b54a896c572fc8db9d74d6d33cb044d25601",
+    "g1_g7": "https://github.com/overurdream-collab/test2/actions/runs/39065243710",
+    "g9": "https://github.com/overurdream-collab/test2/actions/runs/39065243812",
+    "traceability": "https://github.com/overurdream-collab/test2/actions/runs/39065243702",
+    "browser": "https://github.com/overurdream-collab/test2/actions/runs/39065243743",
+    "qwen": "https://github.com/overurdream-collab/test2/actions/runs/39065243840"
+  },
+  "completed_internal_tasks": [
+    "Original encrypted bytes and SHA-256 revalidation",
+    "G2 CSV and isolated XLSX re-extraction vs stored rows",
+    "Authenticated G4 claims and attachments",
+    "Normalized original G4 field matching",
+    "Source per-field RBAC and privacy no-store",
+    "G3 H1/H2 half-open history without invented unit tariff",
+    "Pydantic contract",
+    "Internal same-source-row duplicate advisory",
+    "Provisional G6/G7 review packet with zero financial authority"
+  ]
 }
