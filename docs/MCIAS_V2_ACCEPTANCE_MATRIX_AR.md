@@ -142,3 +142,12 @@
 | CI-C19-02 | Same page shows CONSULT and XRAY USD; quote-specific service/currency required | IMPLEMENTED_NOT_TESTED |
 | CI-C19-03 | Structured XLSX same source row fields may carry identities separately | IMPLEMENTED_NOT_TESTED; existing reader tests remain |
 | CI-C19-04 | Model-derived tariff financial execution | BLOCKED_INSTITUTION / NOT_AUTHORIZED |
+
+### C20 synthetic full-file reader acceptance gates
+| ID | Requirement | Current status |
+|---|---|---|
+| CI-C20-01 | Ten separate real three-page PDF SYN contracts yield page-specific terms | IMPLEMENTED_NOT_TESTED |
+| CI-C20-02 | Five distinct real XLSX SYN price files keep H1/H2/H3 separate | IMPLEMENTED_NOT_TESTED |
+| CI-C20-03 | Five real scanned PDFs without OCR quarantine rather than guess clauses | IMPLEMENTED_NOT_TESTED |
+| CI-C20-04 | Local Arabic OCR accuracy on scanned PDF with source rows | NOT_MEASURED |
+| CI-C20-05 | Real LLM correctly extracts 20+ actual full documents; precision/recall | NOT_MEASURED |

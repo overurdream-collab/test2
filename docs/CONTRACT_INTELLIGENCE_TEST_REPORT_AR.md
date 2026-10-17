@@ -101,3 +101,7 @@ Commit `19907cd2d06464769f1816e29aadac374c161e6a` — `mcias/contract_intelligen
 
 ### C19 independent cross-clause identity falsification tests (PENDING_CI)
 Two new source-specific negative tests verify the AI cannot attach provider H2 to an H1 quote merely because H2 appears elsewhere on the same PDF page, or attach service XRAY and USD to a CONSULT/YER quote when both are present on one page. Same-row XLSX still allowed with independent cells. C19 tests and full PostgreSQL/UI CI have not been observed on exact SHA; report remains PENDING. This is a source-check strengthening, not a successful LLM recall measurement.
+
+### C20 — 20 actual generated synthetic PDF/XLSX/scan source reader cases
+- `tests/test_contract_real_files_corpus.py` (new SHA PENDING_CI): 10 different 3-page PDF sources assert page indices, H1/H2 tariff isolation and independent exclusions; 5 real generated XLSX sheets assert per-provider H1/H2/H3 tariff rows, currencies and amount changes; 5 scanned image-only PDFs assert G2 quarantines absent local OCR. No fake reader/model responses. All tests run in memory; no licensed/private source text.
+- Important boundary: source parser coverage is **not** real Arabic OCR character accuracy or contract LLM TP/FP/FN/Precision/Recall. These remain NOT_MEASURED. Need actual tested Arabic scanned PDF pack and real Qwen predictions on larger frozen gold. Earlier 20 handcrafted source-anchor texts/10 adversarial tests likewise validate rules but not extraction model quality.

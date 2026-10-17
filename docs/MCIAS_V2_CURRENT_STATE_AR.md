@@ -149,3 +149,7 @@
 ### C19 cross-clause tariff identity gate — PENDING_CI
 - C19 strengthens model quote evidence for PDF/image: provider_code, service_code and currency must be found in the verbatim **same quoted clause**, not any other clause on the page. Excel values may be in separate cells of the exact same trusted G2 row. Adds tests with two hospitals of same price and two services/currencies on one PDF page.
 - No signed financial rule changes or institutional acceptance, no automatic AI activation. C19 full CI pending. Previous pinned Qwen3-1.7B source-backed recall 0/3, all four source claims rejected. Resume on Draft PR23 exact SHA and test results. No merge or A1.
+
+### C20 — 20 source-file parser regression corpus (PENDING_CI)
+- New `tests/test_contract_real_files_corpus.py` generates and parses 20 separate actual SYN binary documents through existing G2: 10 three-page PDFs (contract/price/exclusion with page anchors), 5 XLSX (H1/H2/H3 scoped rows), 5 scanned image-only PDFs (OCR disabled: quarantine, never auto-accept). Nothing contains PHI. This is parser-source evidence only, **not** 20 model extractions or Arabic OCR accuracy measurement.
+- C19 exact SHA ac32fda06730dcd4618041011aee153bd84d7c97 G1–G7, G8, G9, Enterprise, Governance workflows all PASS, separate real-Qwen benchmark still not accepted. C20 exact SHA PENDING_CI. Missing actual model Precision/Recall on 20 realistic files, Arabic/mixed OCR and signed institutional financial activation; no merge/production/A1.

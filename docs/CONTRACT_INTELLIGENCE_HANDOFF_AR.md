@@ -84,3 +84,7 @@ C17 real-model run 39066166029 FAIL: four source-unverified proposals, wrong IDs
 
 ### C19 — PDF tariff identity independence
 Read mcias/contract_intelligence.py validation of provider/service/currency: PDF/image uses one exact quote, structured sheet only same G2 source row, besides numeric/date checks. Two adversarial tests added to tests/test_contract_intelligence.py; examine GitHub Actions on latest C19 SHA and fix regressions with new DG-001 event. No model finance activation, no main merge, no A1. Real model still under independent review and broader gold benchmark missing.
+
+### C20 reproducible binary document corpus
+- Open `tests/test_contract_real_files_corpus.py`; in-memory generated files only, 10 3-page PDF, 5 XLSX tariff sheets with 3 providers, 5 scanned image-only PDFs without enabled OCR. Run `python -m pytest -q tests/test_contract_real_files_corpus.py tests/test_contract_documents.py`. Expect strict page/row locators and quarantine; no sample data uploaded.
+- This is NOT pretrained LLM extraction or Arabic OCR validation. Review exact C20 SHA CI, pending current pretrained benchmark, and subsequent Arabic OCR/model corpus. Do not merge or use production data; G3/G5 unaffected.
