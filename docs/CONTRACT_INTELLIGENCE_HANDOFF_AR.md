@@ -44,3 +44,7 @@ C8 real Qwen3-0.6B generated 4 outputs but zero source-verified clauses: TP0 FP0
 
 ### C10 — JSON-constrained pretrained experiment + raw SQL guard
 C9 SHA daa4b934f84fd2e7bfefa0ed4de298b8c5178f0a: all ordinary governance/G1–G9/Enterprise workflows success, but real Qwen3-0.6B benchmark FAILED https://github.com/overurdream-collab/test2/actions/runs/39063739175 (TP0 FP0 FN3, malformed fenced arrays and wrong schema). No acceptance. C10 adds lm-format-enforcer v0.11.2 **benchmark-only** constrained JSON output, generic few-shot prompt, and tests/test_contract_proposal_postgres.py to prove proposed/review/promoted immutable tables resist direct SQL changes. Test on exact C10 SHA pending; review CI, see model generated hashes/source anchors, fix only without bypassing validator. Real patient/private files forbidden, no production approvals, deployment, PR merge or A1.
+
+
+### C11 resume — corrected prompt quotes
+C10 new real-model harness could not import `mcias.contract_intelligence` due accidental doubled escapes before embedded JSON quote characters at line 237. CI https://github.com/overurdream-collab/test2/actions/runs/39064329834 and model run 39064329875 FAIL. C11 repairs Python syntax in prompt only, not validator/financial guard. Verify compileall, all CI, constrained pretrained model JSON accuracy and PostgreSQL immutable test after commit; until observed all PENDING. No merge, production, real files or A1.

@@ -263,3 +263,14 @@
 - Risks: LM format enforcer may fail with Transformers v4.57/Qwen, token mask overhead on CPU and security caveats; constrained syntax does not prevent hallucination or injection. Six OSS parser comparison remains limited; missing broad gold Arabic scanned PDF/Excel cases and institution-bound signature. No patient files/public upload, paid service, main merge or A1.
 - Next: Inspect C10 real-model benchmark output and CI on exact SHA; if failures inspect documented token-mask issue, adjust pinned tool or use more capable legally licensed local model only with fresh measured tests; retain quote/provenance and financial fail-closed.
 - Handoff: PR23 child branch; follow DG-001, C10 files, Actions and output artifact; compare model hashes and TP/FP/FN against the previous runs; on-prem production remains blocked without signed institution verification.
+
+
+### HANDOFF-20261017-015
+- Scope: Fix Python string literal escaping in the new synthetic prompt JSON example (C10) only; preserve existing candidate evidence validator and all safeguards. No financial API/model activation changes.
+- Why: C10 exact SHA 19907cd2d06464769f1816e29aadac374c161e6a introduced two backslashes before embedded quotes, causing SyntaxError "unexpected character after line continuation character" at mcias/contract_intelligence.py line 237, independently confirmed by unit compileall and real model benchmark logs. Other workflows G8/G9/Enterprise also failed import at that SHA; do not claim success. DG run 39064329849 PASSED.
+- Files: mcias/contract_intelligence.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: Inspected https://github.com/overurdream-collab/test2/actions/runs/39064329834 (unit compile SyntaxError and PostgreSQL job failed import) and https://github.com/overurdream-collab/test2/actions/runs/39064329875 (real-model step failed import). Corrected \\ backslash escaping of quotes in Python string literals. New exact SHA GitHub Actions PENDING_CI. Do not infer PASS.
+- Result: C10 FAIL on source syntax; corrected C11 PENDING_CI. No model output/TP counts at C10 because import failed before inference.
+- Risks: Real model schema constraint (MIT LM Format Enforcer), extended 500-token decode, new PostgreSQL immutable history test still unverified under CI. No production or PHI/data migration.
+- Next: Check C11 unit compile + PostgreSQL and actual model-generated clauses, then only accept genuine TP/FP/FN with source anchors. If failures, document and fix in separate atomic DG event.
+- Handoff: Continue PR23 child Draft; last known functional model C9 Recall0, C11 compile and GPU-free inference to be checked. No main merge / A1 / signed financial changes.
