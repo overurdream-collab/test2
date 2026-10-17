@@ -19,3 +19,6 @@ Data: Arabic 10p, English, bilingual, native+scan PDF, XLSX three providers, ame
 
 ## C1 code reality
 mcias/contract_intelligence.py is pure validation + local HTTP transport only, not a backend route. It uses record_id/locator/fields supplied by G2 after future authorization; output status forced DRAFT_ONLY. It does not persist candidate data nor call G3/G5. NOTE: CSV row locator is not currently included in accepted type set except row; read API adapter must preserve G2 kind exactly.
+
+## C2 live boundaries
+HTTP preview at /api/v1/contract-intelligence/documents/{document_id}/preview only. source selection is tenant- and permission-scoped; G2 field-level control is reused. model is loopback-only, optional runtime required. Preview results in memory and response with exact G2 locator; bad OCR forces human review. No background job or persistent proposal; human must independently create ReferencePoint via separate existing UI, institution-level signed approval still missing. No G3/G5 changes.

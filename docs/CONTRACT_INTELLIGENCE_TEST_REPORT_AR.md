@@ -22,3 +22,6 @@
 
 ## C1 evidence gate
 New tests/test_contract_intelligence.py introduces synthetic tests for quote, row, source hash, typed Decimal, duplicate and conflicting clauses, missing dates, prompt injection, endpoint SSRF and model unavailable. **No PASS attributed to the repository** until GitHub Actions shows exact SHA; PENDING_CI. No extraction precision/recall available. Synthetic model ids in tests are not real inference.
+
+## C2 proof status
+Added synthetic tests/test_contract_intelligence_api.py with user permissions, cross tenant, source quarantine, missing model env, OCR uncertainty and medical field access. In test, infer_local is MOCKED and the result must never be claimed as real AI. Python/JS/PG CI of C2 exact SHA PENDING_CI. C1 confirmed Governance run 39058718203 success and MCIAS G1-G7 run 39058718217 success at 453aebde6a8d349207331bbd0bd1b96c5bc34169.

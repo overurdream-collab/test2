@@ -11,7 +11,7 @@ from hashlib import sha256
 import json
 import re
 from urllib.parse import urlsplit
-from urllib.request import Request, build_opener, ProxyHandler
+from urllib.request import Request, build_opener, ProxyHandler, HTTPRedirectHandler
 
 SECTIONS = frozenset({"contracts", "providers", "beneficiaries", "cost_sharing",
                        "categories", "exclusions", "approvals", "tariffs"})
@@ -119,9 +119,9 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
             errors.append("quote_missing")
         elif block and not any(_normalize(quote) in _normalize(value) for value in block["fields"].values()):
             errors.append("quote_not_in_source")
-        if section not in SECTIONS:
+        if not isinstance(section, str) or section not in SECTIONS:
             errors.append("unsupported_section")
-        if kind not in RULE_TYPES:
+        if not isinstance(kind, str) or kind not in RULE_TYPES:
             errors.append("unsupported_rule_type")
         if not isinstance(key, str) or not _CODE.fullmatch(key):
             errors.append("invalid_logical_key")
@@ -136,7 +136,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         if section == "tariffs" and (not provider or not service or not currency or key != str(provider) + ":" + str(service) or kind != "amount"):
             errors.append("tariff_identity_incomplete")
         amount = None
-        if kind in {"amount", "percentage", "count"}:
+        if isinstance(kind, str) and kind in {"amount", "percentage", "count"}:
             try:
                 amount = _numeric(raw.get("amount"), kind)
             except ValueError:
@@ -166,7 +166,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
             errors.append("invalid_effective_date")
         if not start:
             errors.append("missing_effective_from")
-        dedup_key = (section, key, provider, service)
+        dedup_key = (repr(section), repr(key), repr(provider), repr(service))
         previous = seen.get(dedup_key)
         signature = (quote, amount, start, end)
         if previous is not None:
@@ -174,9 +174,9 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         else:
             seen[dedup_key] = signature
         item = {
-            "section": section if section in SECTIONS else None,
+            "section": section if isinstance(section, str) and section in SECTIONS else None,
             "logical_key": key if isinstance(key, str) and _CODE.fullmatch(key) else None,
-            "rule_type": kind if kind in RULE_TYPES else None,
+            "rule_type": kind if isinstance(kind, str) and kind in RULE_TYPES else None,
             "original_clause_text": quote if isinstance(quote, str) else "",
             "amount": amount, "currency": currency if isinstance(currency, str) else None,
             "provider_code": provider if isinstance(provider, str) else None,
@@ -195,11 +195,17 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
 
 
 def _validate_local_endpoint(endpoint):
-    parsed = urlsplit(endpoint)
-    if (parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "::1", "localhost"}
+    if not isinstance(endpoint, str):
+        raise ContractExtractionError("invalid local model endpoint")
+    try:
+        parsed = urlsplit(endpoint)
+        port = parsed.port
+    except ValueError as exc:
+        raise ContractExtractionError("invalid local model endpoint") from exc
+    if (parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "::1"}
         or parsed.username is not None or parsed.password is not None or parsed.query or parsed.fragment
-        or parsed.path != "/v1/chat/completions" or parsed.port is None):
-        raise ContractExtractionError("only explicit local OpenAI-compatible model endpoints are supported")
+        or parsed.path != "/v1/chat/completions" or port is None):
+        raise ContractExtractionError("only explicit numeric loopback OpenAI-compatible model endpoints are supported")
     return endpoint
 
 
@@ -235,9 +241,13 @@ def infer_local(blocks, *, endpoint, model_id, model_revision, timeout=30):
     }, ensure_ascii=False).encode("utf-8")
     request = Request(endpoint, data=request_body,
                       headers={"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
+    class NoRedirect(HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            raise ContractExtractionError("model redirect denied")
+
     try:
-        # Disable proxy inherited from host to guarantee no external egress.
-        with build_opener(ProxyHandler({})).open(request, timeout=timeout) as res:
+        # Disable inherited proxies AND HTTP redirects to block local-to-remote exfiltration.
+        with build_opener(ProxyHandler({}), NoRedirect()).open(request, timeout=timeout) as res:
             raw = res.read(262145)
         if len(raw) > 262144:
             raise ContractExtractionError("model response too large")

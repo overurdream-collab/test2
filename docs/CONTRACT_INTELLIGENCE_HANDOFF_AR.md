@@ -12,3 +12,6 @@ Never merge or deploy, pay for models, expose PHI, change main, update approved 
 
 ## C1 first code commit
 Review mcias/contract_intelligence.py and tests/test_contract_intelligence.py; check actual GitHub Actions. The model endpoint is deliberately only 127.0.0.1/localhost with /v1/chat/completions; no runtime configured so real Qwen inference is NOT_RUN. Next must connect G2 record/job tenant-scoped API and preserve field-level permissions, then begin true model benchmarking. No ReferencePoint inserted automatically.
+
+## C2 next steps
+Preview API lives in mcias/contract_intelligence_api.py, route app.py, browser reference_points_view.js. Requires G2 document status extracted, trusted locator fields, existing RBAC and explicit local model vars. No persistence or automatic approval; C2 tests mock model. Check exact SHA CI, fix failures, run isolated on-prem model with SHA/weights revision then build persisted candidate review workflow as new additive migration, updating expected G9 migration head as appropriate.

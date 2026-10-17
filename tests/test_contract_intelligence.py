@@ -111,3 +111,17 @@ def test_real_transport_not_faked_if_runtime_unavailable():
     with pytest.raises(ContractExtractionError):
         infer_local(blocks(), endpoint="http://127.0.0.1:9/v1/chat/completions",
                     model_id="SYN-only", model_revision="SYN-revision", timeout=2)
+
+
+def test_malformed_model_json_types_are_reviewed_not_executed():
+    malformed = proposal(section=["tariffs"], rule_type=["amount"], logical_key=["H1:CONSULT"],
+                         provider_code=["H1"])
+    c = check([malformed])[0]
+    assert c["status"] == "DRAFT_ONLY"
+    assert "unsupported_section" in c["validation_errors"]
+    assert "unsupported_rule_type" in c["validation_errors"]
+
+
+def test_model_localhost_hostname_rejected_for_strict_loopback_pin():
+    with pytest.raises(ContractExtractionError):
+        _validate_local_endpoint("http://localhost:8765/v1/chat/completions")

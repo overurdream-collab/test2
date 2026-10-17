@@ -56,3 +56,8 @@
 - Added isolated pure advisory evidence validator and local-only OpenAI-compatible HTTP transport, NOT connected to API, UI, database or ReaderAgent yet. Every response remains DRAFT_ONLY. No model weights/runtime installed, real inference NOT_RUN. Unit tests and CI on this commit PENDING_CI.
 - Files: mcias/contract_intelligence.py, tests/test_contract_intelligence.py; no migration/G3/G5 changes.
 - Next: inspect exact GitHub CI at HEAD, fix tests, then connect G2 persisted source records under RBAC and add draft-only proposal persistence; do not activate financial rules.
+
+### Contract C2: permissioned non-persistent preview
+- PR #23 adds POST /api/v1/contract-intelligence/documents/{document_id}/preview and a source-ID preview button within existing reference points UI, plus 7 synthetic API tests and local inference redirect prevention. Existing G2 + SHA + user/field permissions reused, no new tables or financial mutations.
+- The local OpenAI-compatible endpoint MUST be set by operator (MCIAS_CONTRACT_LLM_URL numeric 127.0.0.1:port path /v1/chat/completions, MCIAS_CONTRACT_LLM_MODEL, MCIAS_CONTRACT_LLM_REVISION) on private on-prem server. No model is connected in CI; API success tests mock inference, not real LLM.
+- **NOT COMPLETE:** real Qwen inference, persistent candidates and approval UI, long PDF/tables/Arabic accuracy gold, typed compiler + institutional signature. Actual CI of this commit PENDING_CI; test failures to be documented/fixed in new commit.

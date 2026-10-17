@@ -164,3 +164,14 @@
 - Risks: potential Python/CI regression pending test, parser may not carry granular text spans; model without explicit local runtime remains unavailable; unauthenticated use prohibited because module not exposed yet.
 - Next: Verify GitHub Actions results on exact commit and repair any failure with new DG-001 event; then wire permissioned G2 document-only preview API.
 - Handoff: inspect PR #23 HEAD, tests/test_contract_intelligence.py and module; run pytest with -q then follow docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; do not merge.
+
+
+### HANDOFF-20261017-006
+- Scope: Added tenant/scoped source preview API and RTL/LTR button in existing reference points screen; harden localhost model transport against redirects and unhashable model output; add synthetic API/negative tests. No schema migration, proposal persistence, G3/G5/Palermo financial changes, deployment or A1.
+- Why: Reuse existing G2/ReaderAgent/Palermo-1 and protect sensitive fields, prevent AI side effects; CID-001, CID-003; extend C1 after full G1-G7/governance success at SHA 453aebde6a8d349207331bbd0bd1b96c5bc34169.
+- Files: mcias/contract_intelligence.py; mcias/contract_intelligence_api.py; mcias/app.py; mcias/web_workspace/reference_points_view.js; tests/test_contract_intelligence.py; tests/test_contract_intelligence_api.py; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md; docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; docs/CONTRACT_INTELLIGENCE_ARCHITECTURE_AR.md.
+- Tests: python -m pytest -q tests/test_contract_intelligence.py tests/test_contract_intelligence_api.py (CI run required); node --check mcias/web_workspace/reference_points_view.js (CI/workspace run required). C1 SHA 453aebde: Governance https://github.com/overurdream-collab/test2/actions/runs/39058718203 success; G1-G7 https://github.com/overurdream-collab/test2/actions/runs/39058718217 success.
+- Result: PENDING_CI for this C2 SHA; mocked model tests are not model inference. Real LLM NOT_RUN.
+- Risks: Source values treated untrusted and sensitive, strict `medical_fields.<field>.read` permission required; preview not persisted; unreviewed/uncertain OCR held; data may appear in permitted preview and must never be used for real payments. No original SourceFile modification.
+- Next: Verify C2 exact SHA CI and regressions, fix fails in new atomic DG-001 commit, then implement signed/append-only proposal persistence with separate reviewer and real local LLM benchmark.
+- Handoff: Fetch PR #23 HEAD, read api.py + tests and `CONTRACT_INTELLIGENCE_HANDOFF_AR.md`; run tests with synthetic DB; configure model only inside isolated private environment; never merge/deploy.

@@ -165,3 +165,10 @@ python -m pytest -q tests/test_g5_agent_order.py tests/test_g5_engine.py
 - mcias/contract_intelligence.py: make_source_blocks() reads existing G2 ExtractedSourceRecord shapes; validate_candidates() rejects unsupported locator/quote/numeric/date/tenant-independent identity at pure layer and returns **DRAFT_ONLY** records; infer_local() opens explicit localhost-only OpenAI-compatible POST, no external proxy or cloud fallback, requires model id+revision.
 - There is **no live API or UI integration yet** and **no real model inference**. API must enforce organization scope plus RBAC/field-level access prior to using G2 records; never hand public model data.
 - tests/test_contract_intelligence.py: positive/negative synthetic anchors, wrong provider, OCR price mismatch, prompt injection as untrusted content, SSRF and unavailable inference. Read exact CI status before claiming any pass.
+
+
+### C2 — Contract preview integration (child Draft PR #23)
+- API: POST /api/v1/contract-intelligence/documents/{document_id}/preview; required reference.write AND workspace.super_admin plus per G2 source field medical_fields.<field>.read permission; organization isolation and G2 completeness enforced, no mutation. Failure if model unconfigured (503), unreviewed source (409), foreign (404), permissions (403).
+- Operator-only env: MCIAS_CONTRACT_LLM_URL=http://127.0.0.1:<PORT>/v1/chat/completions; MCIAS_CONTRACT_LLM_MODEL=<exact-local-id>; MCIAS_CONTRACT_LLM_REVISION=<weight-revision>. URL cannot redirect; no proxies; service must bind to private loopback. Never put PHI into external inference. Model not installed here.
+- UI: /admin/reference-data, existing sections toolbar "معاينة بنود العقد بالذكاء الاصطناعي"; paste G2 document ID (returned by upload), preview result inside drawer; no automatic draft/save/approval. Real persistence, typed compiler and bilingual review table still NOT IMPLEMENTED.
+- Run python -m pytest -q tests/test_contract_intelligence.py tests/test_contract_intelligence_api.py; node --check mcias/web_workspace/reference_points_view.js; inspect full CI on exact PR head.

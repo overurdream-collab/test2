@@ -67,3 +67,7 @@
 | CI-03 | Tenant-scoped API, persistent proposal, reviewer UI | NOT_IMPLEMENTED | No routes or migration on C1 |
 | CI-04 | Synthetic Arabic/English/OCR dataset and Precision/Recall | NOT_IMPLEMENTED | no model inference / reference gold |
 | CI-05 | Typed approved financial compiler and signature | NOT_IMPLEMENTED / BLOCKED_INSTITUTION | G3/G5 authority preserved |
+
+| CI-06 | RBAC + tenant + per-field gate preview API | IMPLEMENTED_NEEDS_CI | tests/test_contract_intelligence_api.py, 7 synthetic unit/HTTP scenarios; PENDING_CI |
+| CI-07 | Preview button linked into existing bilingual workspace | IMPLEMENTED_NEEDS_UAT | mcias/web_workspace/reference_points_view.js; model unconfigured by default |
+| CI-08 | Redirect-proof local inference | IMPLEMENTED_NEEDS_CI | numeric loopback only + HTTP no-follow; test setup pending |

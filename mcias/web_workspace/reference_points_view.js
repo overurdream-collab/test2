@@ -195,6 +195,42 @@ function sourceUpload(ctx) {
   openDrawer(L("إضافة ملف جديد", "Add new source file"), n);
 }
 
+function contractPreview(ctx) {
+  if (!authorized(ctx, "reference.write") ||
+      !ctx.context.permissions.includes("workspace.super_admin")) return;
+  const n = el("section"), f = el("form"), out = el("div");
+  const id = field("contract-source-document-id",
+    L("معرّف مستند العقد المسجل", "Registered contract document ID"),
+    {maxLength: 80, required: true});
+  n.append(el("p", L(
+    "معاينة غير محفوظة: تتطلب نموذج ذكاء اصطناعي محلي مفعّلًا وحقول مصدر مصرحًا بها. جميع البنود مقترحات فقط؛ ولا تؤثر على G3 أو G5.",
+    "Unstored preview: requires an operator-configured local AI model and source-field permissions. All clauses are proposals only; no G3/G5 effects."
+  )));
+  const submit = el("button", L("استخراج البنود للمعاينة", "Preview clause extraction"), "button primary");
+  submit.type = "submit";
+  f.append(id.wrap, submit, out);
+  f.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const doc = id.input.value.trim();
+    if (!doc || submit.disabled) return;
+    submit.disabled = true;
+    out.replaceChildren(loading());
+    try {
+      const result = await ctx.api.request(
+        "/api/v1/contract-intelligence/documents/" + encodeURIComponent(doc) + "/preview",
+        {method: "POST"});
+      out.replaceChildren(
+        el("p", L("نتائج غير محفوظة؛ راجع الأدلة ولا تعتمد أي بند تلقائيًا",
+                  "Unstored results; review evidence, never auto-approve clauses"), "muted"),
+        details(result));
+    } catch(err) {
+      out.replaceChildren(errorState(err));
+    } finally {submit.disabled = false;}
+  });
+  n.append(f);
+  openDrawer(L("معاينة استخراج بنود العقد بالذكاء الاصطناعي", "AI contract clause preview"), n);
+}
+
 export function referencePointsView(ctx) {
   const card = panel(L("سجل بنود المدخلات", "Input clause register"),
     L("افتح أي قسم لعرض نقاطه، وإصداراتها، وتواريخها. لا حذف أو تعديل مباشر للبند المعتمد.",
@@ -214,7 +250,11 @@ export function referencePointsView(ctx) {
                        () => editor(ctx, section, refresh), "button primary");
     add.disabled = !authorized(ctx, "reference.write") ||
       !ctx.context.permissions.includes("workspace.super_admin");
-    toolbar.append(upload, add);
+    const preview = button(L("معاينة بنود العقد بالذكاء الاصطناعي", "Preview AI contract clauses"),
+                           () => contractPreview(ctx), "button");
+    preview.disabled = !authorized(ctx, "reference.write") ||
+      !ctx.context.permissions.includes("workspace.super_admin");
+    toolbar.append(upload, add, preview);
   };
   async function refresh() {
     target.replaceChildren(loading());
