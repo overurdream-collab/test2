@@ -190,3 +190,49 @@ source-code head. Real LLM evaluation and rules evaluation are NOT conflated.
 **Disposition:** A1 is a functioning **synthetic-only proof of concept**
 with REAL Qwen3-8B inference and validated code path, but is not institution-
 accepted. The draft PR must remain unmerged. No A2 work performed.
+
+
+---
+
+## Existing G5 engine comparison — measured compatible six-case subset
+
+A direct full-population metric is not honest because the existing G5 engine
+has aggregate claim amounts but no common trusted item-level quantity/unit
+mapping. An *actual* restricted common-input experiment was therefore run
+against the unmodified existing \`mcias.audit_engine.evaluate\` with an
+explicitly authorized-for-TEST synthetic per-claim tariff ceiling:
+
+    python -m scripts.compare_a1_g5_baseline --output a1-g5-comparison.json
+
+Six independently authored synthetic cases: clean, unit-price inflation,
+legitimate discount, unauthorized fee, authorized fee, and a quantity
+overstatement where the billed total was within a pre-stated aggregate
+G5 ceiling. The same test input, claim total and source versions were used;
+both engines were invoked, and no database rows were changed.
+
+| Metric | A1 deterministic | G5 aggregate deduction proxy |
+|---|---:|---:|
+| True positives | 3 | 2 |
+| False positives | 0 | 0 |
+| False negatives | 0 | 1 |
+| True negatives | 3 | 3 |
+| Precision | 1.0 | 1.0 |
+| Recall | 1.0 | 0.6667 |
+| Mean measured runtime (ms) | 0.1851 | 0.0527 |
+
+Evidence: https://github.com/overurdream-collab/test2/actions/runs/39053124523
+(43 automated targeted tests passed, artifact a1-g5-comparison.json).
+The FN belongs to the legitimate aggregate-ceiling issue: the line
+quantity disagreed with the attested record even though the approved
+test ceiling did not require a G5 tariff deduction.
+
+**Critical caveat:** a nonzero monetary deduction is only a synthetic
+*comparison proxy*, not a real G5 review decision. This directly tests the
+existing G5 calculation engine, NOT policy-grant authorization, eligibility,
+Palermo review, or any medical judgment. Neither percentage may be extended
+to arbitrary real claims, codes, contract unit semantics, currencies or
+medical records. The current G5 system is left completely unchanged.
+
+All reported claims are independent synthetic fixtures. Audit engine
+versions, model weights, source paths, GitHub CI logs and case-by-case
+labels are linked above. Failures were preserved rather than omitted.
