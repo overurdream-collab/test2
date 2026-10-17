@@ -30,6 +30,8 @@ jobs:
       MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias:synthetic_ci_only@127.0.0.1:5432/mcias_contracts_e2e
       MCIAS_BOOTSTRAP_TOKEN: synthetic_contracts_ci_only
       MCIAS_MFA_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      MCIAS_STORAGE_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      MCIAS_STORAGE_DIR: /tmp/mcias-contracts-e2e-store
       MCIAS_ENABLE_UI_DEMO: 'false'
     steps:
       - uses: actions/checkout@v4
