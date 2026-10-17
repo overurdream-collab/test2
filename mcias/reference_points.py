@@ -179,17 +179,23 @@ def approve(db, actor, point_id, authorization_id, reason):
 def list_points(db, org, section, at=None, limit=100, offset=0):
     if section not in SECTIONS:
         raise PointConflict("unsupported reference section")
-    rows = db.scalars(select(ReferencePoint).where(
+    query = select(ReferencePoint).outerjoin(
+        ReferencePointClosure, ReferencePointClosure.point_id == ReferencePoint.id
+    ).where(
         ReferencePoint.organization_id == org, ReferencePoint.section == section
-    ).order_by(ReferencePoint.logical_key, ReferencePoint.version.desc())
-      .limit(limit).offset(offset)).all()
-    result = []
-    for point in rows:
-        end = _end(db, point)
-        item = as_dict(point, end)
-        if at is None or (point.status == "approved" and point.effective_from <= at < end):
-            result.append(item)
-    return result
+    )
+    # Filter by historical service date BEFORE pagination, not after.
+    # This avoids hiding older active versions behind >100 newer versions.
+    if at is not None:
+        query = query.where(
+            ReferencePoint.status == "approved",
+            ReferencePoint.effective_from <= at,
+            func.coalesce(ReferencePointClosure.effective_until, ReferencePoint.effective_until) > at
+        )
+    rows = db.scalars(query.order_by(
+        ReferencePoint.logical_key, ReferencePoint.version.desc()
+    ).limit(limit + 1).offset(offset)).all()
+    return [as_dict(point, _end(db, point)) for point in rows]
 
 
 def as_dict(point, effective_until=None):
