@@ -175,3 +175,14 @@
 - Risks: Source values treated untrusted and sensitive, strict `medical_fields.<field>.read` permission required; preview not persisted; unreviewed/uncertain OCR held; data may appear in permitted preview and must never be used for real payments. No original SourceFile modification.
 - Next: Verify C2 exact SHA CI and regressions, fix fails in new atomic DG-001 commit, then implement signed/append-only proposal persistence with separate reviewer and real local LLM benchmark.
 - Handoff: Fetch PR #23 HEAD, read api.py + tests and `CONTRACT_INTELLIGENCE_HANDOFF_AR.md`; run tests with synthetic DB; configure model only inside isolated private environment; never merge/deploy.
+
+
+### HANDOFF-20261017-007
+- Scope: Repair one adversarial model-output crash in Contract Intelligence validator; tighten numeric evidence to quoted clause not entire PDF page; regression test added. No schema/API authority change or G3/G5 financial change.
+- Why: CI on C2 SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212 failed 1 unit test with TypeError on list-valued provider_code (https://github.com/overurdream-collab/test2/actions/runs/39059261540). Also identified wrong-price-on-same-page false anchor. Fix fail-safe handling without weakening source evidence.
+- Files: mcias/contract_intelligence.py; tests/test_contract_intelligence.py; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: C2 GitHub Actions G1-G7 unit 1 failed / 389 passed / 20 skipped, PostgreSQL and dependency audit PASS. Governance run 39059261519 PASS; G9 run 39059261517 PASS. New test test_page_with_two_prices_cannot_anchor_wrong_price_to_other_clause added; on this fix commit no CI evidence yet.
+- Result: C2 FAIL objectively; this fix PENDING_CI. Never attribute prior passes to new SHA.
+- Risks: Local LLM unconfigured; quote precision in Arabic and OCR untested, malformed nested responses can remain problematic; human reviewer required. No historical version changes.
+- Next: Check unit, PG, security, browser, governance actions on this exact head SHA; record results and implement remaining review/persistence only if green.
+- Handoff: git switch feat/mcias-contract-intelligence; read test failure logs from 39059261540 and added adversarial tests; follow docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; avoid A1, main and production.

@@ -15,3 +15,6 @@ Review mcias/contract_intelligence.py and tests/test_contract_intelligence.py; c
 
 ## C2 next steps
 Preview API lives in mcias/contract_intelligence_api.py, route app.py, browser reference_points_view.js. Requires G2 document status extracted, trusted locator fields, existing RBAC and explicit local model vars. No persistence or automatic approval; C2 tests mock model. Check exact SHA CI, fix failures, run isolated on-prem model with SHA/weights revision then build persisted candidate review workflow as new additive migration, updating expected G9 migration head as appropriate.
+
+### C3 targeted regression
+Fixes failing G1-G7 unit on 1d84f576: provider_code list caused TypeError. Newly added two-prices-same-page test. Look up CI for C3 exact SHA and record evidence before any further work. C1 local-only LLM runtime still NOT RUN.

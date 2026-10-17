@@ -125,3 +125,15 @@ def test_malformed_model_json_types_are_reviewed_not_executed():
 def test_model_localhost_hostname_rejected_for_strict_loopback_pin():
     with pytest.raises(ContractExtractionError):
         _validate_local_endpoint("http://localhost:8765/v1/chat/completions")
+
+
+def test_page_with_two_prices_cannot_anchor_wrong_price_to_other_clause():
+    source = make_source_blocks([{
+        "id": "SYN-P", "locator": {"kind": "page", "index": 1},
+        "values": {"text": "H1 CONSULT 5000 YER. H2 CONSULT 7000 YER."}
+    }])
+    output = validate_candidates([proposal(record_id="SYN-P", quote="H1 CONSULT 5000 YER",
+                                 amount="7000")], source, source_sha256=DIGEST,
+                                 model_id="SYN-model", model_revision="SYN-revision")[0]
+    assert "numeric_not_in_source" in output["validation_errors"]
+    assert output["evidence_status"] == "needs_human_review"

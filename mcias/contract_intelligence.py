@@ -143,8 +143,9 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
                 errors.append("invalid_numeric")
             if amount is not None and block:
                 # Require exact numeric token from the source, not inferred digits
-                # from a similar-looking OCR value such as 5OOO.
-                values = " ".join(block["fields"].values())
+                # from a similar-looking OCR value such as 5OOO. Match the exact
+                # quoted clause, never a different tariff on the same page.
+                values = quote if isinstance(quote, str) else ""
                 try:
                     if Decimal(amount) not in [Decimal(x) for x in _NUMBER.findall(values)]:
                         errors.append("numeric_not_in_source")
@@ -155,7 +156,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         if block:
             field_text = " ".join(block["fields"].values())
             for name, value in (("provider", provider), ("service", service), ("currency", currency)):
-                if value is not None and value not in field_text:
+                if isinstance(value, str) and value not in field_text:
                     errors.append(name + "_not_in_source")
         try:
             start, end = _check_date(raw.get("effective_from")), _check_date(raw.get("effective_until"))

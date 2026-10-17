@@ -61,3 +61,7 @@
 - PR #23 adds POST /api/v1/contract-intelligence/documents/{document_id}/preview and a source-ID preview button within existing reference points UI, plus 7 synthetic API tests and local inference redirect prevention. Existing G2 + SHA + user/field permissions reused, no new tables or financial mutations.
 - The local OpenAI-compatible endpoint MUST be set by operator (MCIAS_CONTRACT_LLM_URL numeric 127.0.0.1:port path /v1/chat/completions, MCIAS_CONTRACT_LLM_MODEL, MCIAS_CONTRACT_LLM_REVISION) on private on-prem server. No model is connected in CI; API success tests mock inference, not real LLM.
 - **NOT COMPLETE:** real Qwen inference, persistent candidates and approval UI, long PDF/tables/Arabic accuracy gold, typed compiler + institutional signature. Actual CI of this commit PENDING_CI; test failures to be documented/fixed in new commit.
+
+### C2 adverse-test fix / HANDOFF-007
+- On C2 SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212: Governance Actions 39059261519 PASS, G9 Actions 39059261517 PASS, G1–G7 Actions 39059261540 FAIL (unit: 1 failed 389 passed 20 skipped); root cause LLM returned list as provider_code, causing TypeError in evidence validator. PostgreSQL job and dependency audit passed. C2 not marked fully passing.
+- This fix checks invalid provider/service types safely, and requires numeric value inside the actual quoted clause, not elsewhere on same page. New SHA CI PENDING_CI. Next: inspect new CI. No real Qwen, no production activation.
