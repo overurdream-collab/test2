@@ -23,6 +23,8 @@ def cases():
                  "unauthorized_fee", "authorized_fee", "inflated_quantity"):
         b = deepcopy(base())
         line = b["invoice"]["items"][0]
+        line["quantity"] = "1"
+        line["unit_price"] = line["line_total"] = "10"
         ceiling = Decimal("10")
         expected = False
         if name == "inflated_price":
@@ -91,7 +93,6 @@ def evaluate_common_subset():
                                       g5["deductions"] if step["rule"]=="tariff"),
             "g5_review_proxy":any(Decimal(x["deduction"])>0 for x in g5["deductions"]),
             "synthetic_policy_tariff_ceiling":str(approved_test_ceiling),
-            "original_claim_unchanged":bundle["claim"]["amount"]==a1["currency"] if False else True,
         }
         assert (result["a1_review"] == expected), f"A1 comparator case mismatch {name}"
         rows.append(result)
