@@ -186,3 +186,7 @@ The existing `/admin/reference-data` drawer now offers local AI preview or serve
 
 ### C15 verified date evidence (PENDING_CI)
 For AI proposals, service-effective `effective_from` and `effective_until` are not trusted solely because they have valid ISO syntax. On PDF/image source locators, the date must appear verbatim within `original_clause_text` (same quote); dates elsewhere on that page are not provenance. XLSX/CSV same source record may hold a date in a separate column of the same row. Missing/inconsistent evidence is `needs_human_review` and cannot enter promotion to active finance. Changes only mcias/contract_intelligence.py and tests; G3/G5 remain authoritative and unchanged.
+
+
+### C16 Contract AI system prompt source isolation — pending CI
+Model instruction is schema-only, with NO hardcoded provider/service, prices, dates or currency example. Previous pinned Qwen3-1.7B copied `P7:XRAY` from illustrative system prompt into unrelated contract proposals; all were quarantined. Verify typed output against G2 actual same-source quote, provider, service, currency, numeric amount and effective dates. New negative test prohibits reintroducing example-specific values. C15 source-date rule: end date not found in exact PDF clause or matching XLSX row must block independent reviewer acceptance. No G3/G5 policy execution.

@@ -49,7 +49,7 @@ def client_fixture(monkeypatch):
         db.add(job); db.flush()
         record = ExtractedSourceRecord(
             job_id=job.id, locator={"kind": "page", "index": 1, "row": None, "column": None},
-            values={"text": "H1 CONSULT price 5000 YER effective 2026-01-01"}, confidence=100)
+            values={"text": "H1 CONSULT price 5000 YER effective 2026-01-01 until 2027-01-01"}, confidence=100)
         db.add(record); db.commit()
         ids = {"editor": editor.id, "reader": reader.id, "foreign": foreign.id,
                "document": doc.id, "record": record.id, "job": job.id, "home": home.id}
@@ -69,7 +69,7 @@ def client_fixture(monkeypatch):
     monkeypatch.setenv("MCIAS_CONTRACT_LLM_REVISION", "SYN-revision")
     def fake_model(blocks, **kwargs):
         return {"candidates": [{
-            "record_id": ids["record"], "quote": "H1 CONSULT price 5000 YER effective 2026-01-01",
+            "record_id": ids["record"], "quote": "H1 CONSULT price 5000 YER effective 2026-01-01 until 2027-01-01",
             "section": "tariffs", "logical_key": "H1:CONSULT", "provider_code": "H1",
             "service_code": "CONSULT", "currency": "YER", "rule_type": "amount",
             "amount": "5000", "effective_from": "2026-01-01", "effective_until": None,

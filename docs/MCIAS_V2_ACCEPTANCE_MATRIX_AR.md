@@ -125,3 +125,12 @@
 | CI-C15-02 | Date from same XLSX row is permitted if other source fields match | IMPLEMENTED_NOT_TESTED |
 | CI-C15-03 | Purely invented dates cause needs_human_review | IMPLEMENTED_NOT_TESTED |
 | CI-C15-04 | Real-world cross-referenced header/annex date provenance workflow | PARTIAL / MANUAL_REVIEW |
+
+
+### C16 model instruction regression
+| ID | Gate | Current status |
+|---|---|---|
+| CI-C16-01 | No provider/amount/date constants copied from system prompt examples | IMPLEMENTED_NOT_TESTED |
+| CI-C16-02 | XLSX same-row date fixture / independently reviewed source end date | IMPLEMENTED_NOT_TESTED |
+| CI-C16-03 | Real Qwen3-1.7B source-backed clause extraction in four-SYN diagnostic | FAIL at C14: 4 quarantined, TP0 FP0 FN3; C16 retest PENDING |
+| CI-C16-04 | Full G1–G9 + Enterprise at C16 exact SHA | PENDING_CI; C15 G1–G7/Enterprise FAILED |

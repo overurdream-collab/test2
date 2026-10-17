@@ -69,3 +69,8 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 ### C15 date lineage
 - Open mcias/contract_intelligence.py `validate_candidates` and tests/test_contract_intelligence.py: for PDF/image, verify date inside quote; for sheet/row, permit date in same persisted G2 record fields. Unknown or inferred effective date must not silently authorize tariff version.
 - Run targeted pytest + full CI and inspect C14 forced model experiment before applying any other changes. No actual contract data/public runner use, no main merge, production, signatures, A1 or financial rule activation.
+
+
+### C16 resumption — example contamination and grounded dates
+- C14 real Qwen diagnostic all 4 generated candidates copied P7:XRAY from system-prompt sample and got quarantined (run 39065549717). C15 stricter date proof rightly exposed two bad synthetic fixtures, causing G1–G7/Enterprise failures (run 39065759298). C16 removes prompt sample constants and corrects test *source quote and row* (not validator). Check new full CI and real model errors/TP/FP/FN.
+- Review mcias/contract_intelligence.py, tests/test_contract_intelligence.py, tests/test_contract_intelligence_api.py. Do not re-introduce numeric/provider examples into system instruction; do not drop source date validation. No production, main/merge, A1 or model-specific financial authority.

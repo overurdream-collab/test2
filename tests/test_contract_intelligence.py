@@ -13,9 +13,9 @@ def blocks():
         {"id": "SYN-P1", "locator": {"kind": "page", "index": 1, "row": None, "column": None},
          "values": {"text": "Contract H1 CONSULT price 5000 YER effective 2026-01-01"}},
         {"id": "SYN-X2", "locator": {"kind": "sheet", "index": 1, "row": 2, "column": None},
-         "values": {"provider": "H2", "service": "CONSULT", "price": "7000", "currency": "YER"}},
+         "values": {"provider": "H2", "service": "CONSULT", "price": "7000", "currency": "YER", "valid_from": "2026-01-01"}},
         {"id": "SYN-X3", "locator": {"kind": "sheet", "index": 1, "row": 3, "column": None},
-         "values": {"provider": "H3", "service": "CONSULT", "price": "6000", "currency": "YER"}},
+         "values": {"provider": "H3", "service": "CONSULT", "price": "6000", "currency": "YER", "valid_from": "2026-01-01"}},
     ])
 
 
@@ -178,3 +178,25 @@ def test_invented_future_period_without_any_source_cell_stays_on_hold():
     assert "effective_start_not_in_source" in found["validation_errors"]
     assert "effective_end_not_in_source" in found["validation_errors"]
     assert found["evidence_status"]=="needs_human_review"
+
+
+def test_llm_contract_prompt_contains_no_hardcoded_provider_tariff_example(monkeypatch):
+    # Real pinned Qwen previously repeated P7:XRAY/1200/USD despite unrelated
+    # source. Ensure system instructions never plant example identities/values.
+    import io
+    import json
+    from mcias import contract_intelligence as module
+    seen = {}
+    class OnlyLocalFakeOpener:
+        def open(self, request, timeout=None):
+            seen["body"] = json.loads(request.data.decode("utf-8"))
+            return io.BytesIO(json.dumps({
+                "choices":[{"message":{"content":json.dumps({"clauses":[]})}}
+            }).encode("utf-8"))
+    monkeypatch.setattr(module,"build_opener",lambda *args:OnlyLocalFakeOpener())
+    infer_local(blocks(),endpoint="http://127.0.0.1:16393/v1/chat/completions",
+                model_id="SYN-model",model_revision="SYN-only")
+    instructions=seen["body"]["messages"][0]["content"]
+    for contaminated in ("P7:XRAY","1200","2030-01-01","2031-01-01"):
+        assert contaminated not in instructions
+    assert "provider_code" in instructions and "source" in instructions

@@ -29,3 +29,7 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 
 ## CID-008 — 2026-10-17 — Binding fail-closed effective date provenance
 - ISO date syntax and existence somewhere on the PDF page are insufficient proof of an individual clause's temporal validity. For PDF/image require date in the exact quoted passage; for Excel table allow same row separate cell; inferred/cross-paragraph date gets needs_human_review. It is intentionally conservative and may block valid header-based dates until an independently reviewed reference relationship is implemented. No AI discretion to choose another period; G3/G5 historical financial authority untouched. C15 tests and CI PENDING.
+
+
+## CID-009 — 2026-10-17 — Exclude literal contract identities in system prompt
+- Real pretrained Qwen3-1.7B copied the exact fixed tutorial `P7:XRAY` key and USD/1200 context even while quoting unrelated H1 CONSULT, Arabic copay and malicious text (C14 run 39065549717). Decision: keep system prompt schema-only with no sample provider, service, amount, currency or date; separate source text in user role; retain independent source/date/tenant/typed guards and no automatic finance execution. Do not consider nonempty JSON proof of factual extraction. C16 exact-sha tests PENDING.
