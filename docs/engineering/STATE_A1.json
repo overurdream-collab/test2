@@ -1,0 +1,133 @@
+{
+  "schema_version": "mcias-engineering-handoff-1.0",
+  "project": "MCIAS v2.0",
+  "scope": "A1 InvoiceIntegrity only",
+  "status": "TESTED_SYNTHETIC_READY_FOR_INDEPENDENT_REVIEW",
+  "institution_accepted": false,
+  "production_deployed": false,
+  "ai_inference_proven": true,
+  "repo": "overurdream-collab/test2",
+  "branch": "feat/mcias-a1-invoice-integrity",
+  "draft_pr_url": "https://github.com/overurdream-collab/test2/pull/20",
+  "architecture_draft_url": "https://github.com/overurdream-collab/test2/pull/19",
+  "main_baseline_sha": "b69defa2f621458ef44d790b510840307a81009a",
+  "last_verified_a1_code_sha": "0962b54a896c572fc8db9d74d6d33cb044d25601",
+  "traceability_cutoff_sha": "1ef2ede25ee123c5d9d353bca1c452837d730874",
+  "latest_head": "RESOLVE_WITH_git_rev_parse_HEAD",
+  "documentary_evidence": [
+    "docs/engineering/TRACEABILITY_POLICY_AR.md",
+    "docs/engineering/worklogs/A1_2026-10-17.md",
+    "docs/engineering/HANDOFF_A1_AR.md",
+    "docs/agents/A1_EVIDENCE_REPORT_20261017.md"
+  ],
+  "metrics": {
+    "targeted_tests": {
+      "passed": 57,
+      "warning_count": 1,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39065561792",
+      "context": "A1 targeted pytest on exact inspected HEAD; 57 passed, 1 warning"
+    },
+    "deterministic": {
+      "cases": 18,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "tn": 2,
+      "abstentions": 9
+    },
+    "ai_model": {
+      "id": "Qwen3-8B-GGUF/Q4_K_M",
+      "real_inference": true,
+      "weights_sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+      "cases": 36,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "tn": 26,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39065561792",
+      "caution": "Synthetic post-fix retest of previously used examples; NOT fresh independent blinded medical corpus",
+      "mean_claim_seconds": 9.519330555555555,
+      "peak_process_rss_kib": 9299580
+    },
+    "ai_initial_holdout_failed": {
+      "cases": 26,
+      "tp": 8,
+      "fp": 2,
+      "fn": 0,
+      "tn": 16,
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39051176994"
+    },
+    "existing_g5_comparator": {
+      "cases": 6,
+      "a1": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "g5_nonzero_deduction_proxy": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 1,
+        "tn": 3
+      },
+      "caution": "Common synthetic policy subset; no end-to-end institutional G5 metric"
+    }
+  },
+  "traceability_ci": "https://github.com/overurdream-collab/test2/actions/runs/39065561665",
+  "traceability_ci_result": "PASS: 0 violations among 14 non-ledger change commits, 4 synthetic tests passed",
+  "open_blockers": [
+    "No approved per-unit G3 tariff and signed G5 policy bridge",
+    "No independent clinician-attested source and quote verification through Palermo",
+    "No end-to-end G6 reviewer persistence/G7 realized-savings governance",
+    "PR22 and PR23 unmerged; DG-001 linkage pending formal integration",
+    "No new expert-reviewed blind Arabic/English OCR PDF corpus",
+    "No institution security/production acceptance"
+  ],
+  "non_negotiable": [
+    "no patient PHI",
+    "no paid APIs",
+    "no production or main changes",
+    "no A2",
+    "no autonomous rejection, approval or deduction"
+  ],
+  "next_step": "External independent medical billing expert-labelled blind Arabic/English PDF/OCR corpus and institution-approved per-unit G3/G5 policy; prepare secure Palermo independent attestation. Requires authorized institution/curated data; do not fabricate or merge PR22/23.",
+  "note": "State is a dated snapshot; use GitHub HEAD and workflow results for fresh facts.",
+  "integration_status": "TESTED_SYNTHETIC_PARTIAL_P0",
+  "integration_phase": "verified G2/G4 CSV+XLSX, Pydantic, G3 temporal diagnostic, read-only G6/G7 review packet",
+  "current_acceptance_matrix": "docs/agents/A1_REVIEW_GATE_MATRIX_AR.md",
+  "ci_current_code_head": {
+    "sha": "f4729b109f5e22a85ebb7a55192858b530a9e60d",
+    "g1_g7": "https://github.com/overurdream-collab/test2/actions/runs/39065561669",
+    "g9": "https://github.com/overurdream-collab/test2/actions/runs/39065561710",
+    "traceability": "https://github.com/overurdream-collab/test2/actions/runs/39065561665",
+    "browser": "https://github.com/overurdream-collab/test2/actions/runs/39065561658",
+    "qwen": "https://github.com/overurdream-collab/test2/actions/runs/39065561792",
+    "status": "ALL_SIX_RELATED_WORKFLOW_RUNS_PASSED_AT_THIS_SHA",
+    "unit_pytest": "405 passed, 19 skipped, 1 warning",
+    "enterprise_pytest": "423 passed, 1 skipped, 14 warnings",
+    "a1_pytest": "57 passed, 1 warning",
+    "real_model_inference": "36 inferences; TP10 FP0 FN0 TN26; mean 9.51933 seconds; peak RSS 9299580 KiB",
+    "limitations": "No new expert-blind OCR/PDF corpus; CI pass only for tests actually executed"
+  },
+  "completed_internal_tasks": [
+    "Original encrypted bytes and SHA-256 revalidation",
+    "G2 CSV and isolated XLSX re-extraction vs stored rows",
+    "Authenticated G4 claims and attachments",
+    "Normalized original G4 field matching",
+    "Source per-field RBAC and privacy no-store",
+    "G3 H1/H2 half-open history without invented unit tariff",
+    "Pydantic contract",
+    "Internal same-source-row duplicate advisory",
+    "Provisional G6/G7 review packet with zero financial authority"
+  ],
+  "last_verified_git_head_before_checkpoint": "f4729b109f5e22a85ebb7a55192858b530a9e60d",
+  "last_verification_source": "GitHub branch and per-run jobs/logs for 2026-10-17, not locally executed",
+  "latest_internal_operation": "f4729b1 documentation and DG-001 review gate; follow-up verification at this checkpoint",
+  "pending_approvals_and_external_dependencies": [
+    "Authorized per-unit tariff mapping and signed G5 financial policy",
+    "Independent Palermo attestation of actual clinical performed-service records and model quotes",
+    "Expert-blind Arabic/English original PDF/OCR dataset, consented and privacy-safe",
+    "Formal PR22/PR23 integration and production acceptance (DRAFT, unmerged)"
+  ]
+}
