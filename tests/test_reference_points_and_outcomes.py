@@ -96,3 +96,15 @@ def test_snapshot_tenant_mismatch_denied():
     snap = Row(claim_id="1", organization_id="another")
     with pytest.raises(ValueError):
         classify_claims([claim], [snap])
+
+
+
+def test_reference_reconciliation_forces_review_even_if_other_checks_pass():
+    f = findings()
+    f["reference_reconciliation"] = {
+        "status": "hold", "unresolved": ["uncompiled_approvals_point"],
+        "points": [{"point_id": "synthetic-point", "version": 3}],
+    }
+    outcome = classify(f, {"status": "verified"}, {"status": "calculated"})
+    assert outcome[0] == REVIEW
+    assert outcome[1] == "temporal_reference_reconciliation_pending"
