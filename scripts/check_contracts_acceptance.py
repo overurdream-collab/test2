@@ -19,7 +19,7 @@ assert dburl.split("/")[-1].endswith("_e2e"), "Only test PostgreSQL allowed"
 assert os.environ["MCIAS_ENVIRONMENT"]=="development"
 engine=create_engine(dburl)
 tag=uuid4().hex[:10]
-secret=os.urandom(20)
+secrets={label:os.urandom(20) for label in ('writer','reader')}
 with Session(engine) as db:
     org=Organization(name="SYN CONTRACTS "+tag)
     db.add(org); db.flush()
@@ -43,9 +43,10 @@ with Session(engine) as db:
         db.add(UserRole(user_id=user.id,role_id=assigned.id))
         db.add(UserRole(user_id=user.id,role_id=admin.id))
         users[label]=user.username
-        if label=="writer":
+        # Both synthetic accounts hold super_admin; real auth requires MFA for each.
+        if label in secrets:
             nonce=os.urandom(12)
-            encrypted=AESGCM(bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])).encrypt(nonce,secret,user.id.encode())
+            encrypted=AESGCM(bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])).encrypt(nonce,secrets[label],user.id.encode())
             db.add(MFAFactor(user_id=user.id,encrypted_secret=nonce+encrypted,enabled=True))
     db.commit()
 
@@ -57,8 +58,7 @@ def login(page,label):
     page.goto("http://127.0.0.1:8000/login")
     page.get_by_label("اسم المستخدم",exact=True).fill(users[label])
     page.get_by_label("كلمة المرور",exact=True).fill(password)
-    if label=="writer":
-        page.get_by_label("رمز التحقق (إلزامي للإدارة)",exact=True).fill(generate_totp(secret,int(time.time())//30))
+    page.get_by_label("رمز التحقق (إلزامي للإدارة)",exact=True).fill(generate_totp(secrets[label],int(time.time())//30))
     with page.expect_response(lambda response: response.url.endswith("/api/v1/auth/login")) as auth:
         page.get_by_role("button",name="تسجيل الدخول بأمان",exact=True).click()
     assert auth.value.status == 200, "Actual login rejected: HTTP " + str(auth.value.status)
