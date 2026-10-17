@@ -204,3 +204,11 @@ def test_attested_document_triggers_grounded_llm_review():
     assert any(f["finding_type"] == "DOCUMENT_QUANTITY_CONTRADICTION"
                for f in result["findings"])
     assert result["model_rejected_signals"] == 0
+
+
+def test_measured_common_input_g5_comparison():
+    from scripts.compare_a1_g5_baseline import evaluate_common_subset
+    report = evaluate_common_subset()
+    assert report["a1"] == {"TP":3,"FP":0,"FN":0,"TN":3,"precision":1.0,"recall":1.0}
+    assert report["g5_proxy"] == {"TP":2,"FP":0,"FN":1,"TN":3,"precision":1.0,"recall":2/3}
+    assert len(report["rows"]) == 6
