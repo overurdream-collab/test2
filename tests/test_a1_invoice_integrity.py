@@ -86,15 +86,43 @@ def test_no_hallucinated_model_quotes_or_actions():
 
 def test_grounded_model_quote_creates_advisory_only():
     b = base()
+    b["documents"][0]["text"] = "Signed report confirms only ONE LAB-A test was performed."
     def stub(system, user):
-        return json.dumps({"signals": [{"source_id": "record-doc",
-                 "exact_quote": "certified record confirms two LAB-A tests",
-                 "explanation": "Compare invoice and certified record manually."}]})
+        return json.dumps({"signals": [{"line_item_id": "L1", "source_id": "record-doc",
+                 "exact_quote": "only ONE LAB-A test was performed",
+                 "reported_quantity": "1",
+                 "explanation": "Source says one performed; invoice bills two."}]})
     result = analyze(b, model=stub, model_id="fixture-stub-not-real-llm")
     assert result["finding_status"] == "REVIEW"
-    assert result["findings"][0]["engine"] == "model"
-    assert result["findings"][0]["suspected_amount"] if "suspected_amount" in result["findings"][0] else True
+    finding = result["findings"][0]
+    assert finding["engine"] == "model"
+    assert finding["line_item_id"] == "L1"
+    assert len(finding["evidence_refs"]) == 2
+    assert finding["source_reported_quantity"] == "1"
+    assert finding["supporting_quote"] in b["documents"][0]["text"]
+    assert "suspected_amount" not in finding
     assert result["scope"] == "ADVISORY_ONLY_NO_FINANCIAL_DECISION"
+
+
+def test_extracted_quantity_must_appear_in_exact_quote():
+    b = base()
+    b["documents"][0]["text"] = "TWO LAB-A tests were performed."
+    def malicious(system, user):
+        return json.dumps({"signals": [{"line_item_id": "L1", "source_id": "record-doc",
+                    "exact_quote": "TWO LAB-A tests were performed",
+                    "reported_quantity": "1", "explanation": "Fabricated count"}]})
+    out = analyze(b, model=malicious, model_id="stub")
+    assert out["finding_status"] == "PASS"
+
+
+def test_fake_line_reference_never_accepted():
+    b = base()
+    b["documents"][0]["text"] = "Only ONE LAB-A test was performed."
+    def injected(system, user):
+        return json.dumps({"signals": [{"line_item_id": "UNKNOWN", "source_id": "record-doc",
+                    "exact_quote": "ONE LAB-A test was performed",
+                    "reported_quantity": "1", "explanation": "Forged id"}]})
+    assert analyze(b, model=injected, model_id="stub")["finding_status"] == "PASS"
 
 
 def test_bad_model_json_suppressed_and_recorded():
