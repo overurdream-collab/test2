@@ -255,3 +255,52 @@ def test_g4_normalized_claim_amount_cannot_diverge_from_original_source(tmp_path
             build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-altered-claim")
     finally:
         db.close();engine.dispose()
+
+
+def test_original_invoice_explicit_fee_kind_is_preserved_without_financial_authority(tmp_path):
+    """Trusted G2 bytes, not code-name inference, determine whether a line is a fee."""
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        claim,_,_=_claim(db,store,org,invoice=False,amount="25")
+        invoice_csv=(
+            "line_item_id,service_code,unit,quantity,unit_price,line_total,"
+            "invoice_total,claim_reference,provider_code,currency,item_kind\n"
+            f"SYN-L1,CONSULT,visit,2,10,20,25,{claim.claim_reference},H1,YER,service\n"
+            f"SYN-F1,ADMIN,fee,1,5,5,25,{claim.claim_reference},H1,YER,fee\n"
+        ).encode()
+        doc,_=_document(db,store,org,"mixed_invoice.csv",invoice_csv)
+        db.add(ClaimAttachment(organization_id=org.id,claim_id=claim.id,
+            ingestion_document_id=doc.id,document_sha256=doc.sha256,linked_by=actor.id))
+        db.commit()
+        result=build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-explicit-fee")
+        items=result["snapshot"].invoice.items
+        assert [(item.code,item.kind) for item in items]==[
+            ("CONSULT","service"),("ADMIN","fee")]
+        assert len(result["snapshot"].source_verifications)==2
+        preview=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-fee-preview")
+        assert preview["financial_decision"]=="NOT_AUTHORIZED"
+        assert "approved_unit_mapping" in preview["missing_evidence"]
+        assert preview["review_packet"]["financial_decision_authorized"] is False
+    finally:
+        db.close();engine.dispose()
+
+
+def test_invalid_declared_fee_kind_fails_closed_not_silently_service(tmp_path):
+    engine,db,store,org,actor=_setup(tmp_path)
+    try:
+        claim,_,_=_claim(db,store,org,invoice=False)
+        csv=(
+            "line_item_id,service_code,unit,quantity,unit_price,line_total,"
+            "invoice_total,claim_reference,provider_code,currency,item_kind\n"
+            f"SYN-L1,CONSULT,visit,2,10,20,20,{claim.claim_reference},H1,YER,discount\n"
+        ).encode()
+        doc,_=_document(db,store,org,"bad_kind.csv",csv)
+        db.add(ClaimAttachment(organization_id=org.id,claim_id=claim.id,
+            ingestion_document_id=doc.id,document_sha256=doc.sha256,linked_by=actor.id))
+        db.commit()
+        result=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-invalid-kind")
+        assert "invalid_invoice_row" in result["missing_evidence"]
+        assert result["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
+        assert result["financial_decision"]=="NOT_AUTHORIZED"
+    finally:
+        db.close();engine.dispose()

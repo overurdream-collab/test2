@@ -272,7 +272,12 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
         try:
             for row in checked["records"]:
                 v=row.values
-                items.append({"id":v["line_item_id"],"kind":"service",
+                # Optional source-declared kind; legacy invoice rows remain service.
+                # Fee classification is NEVER inferred from code or price.
+                kind=v.get("item_kind","service")
+                if kind not in ("service","fee"):
+                    raise ValueError("invalid item_kind")
+                items.append({"id":v["line_item_id"],"kind":kind,
                               "code":v["service_code"],"unit":v["unit"],
                               "quantity":v["quantity"],"unit_price":v["unit_price"],
                               "line_total":v["line_total"],

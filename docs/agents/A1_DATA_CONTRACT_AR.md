@@ -40,3 +40,9 @@ python -m pytest -q
 
 ## تحقق مستقل من المطالبة نفسها
 يُعاد تطبيع صف المطالبة الأصلي المحمي بواسطة G4 claim_normalization.normalize، ثم يُقارن بكل حقول ClaimEntry (provider, service, date, original amount/currency, beneficiary token, claim_reference)، وليس SHA الملف وحده؛ أي اختلاف مباشر في قاعدة بيانات الاختبار يُوقف A1 قبل التحليل. صلاحيات الحقول تشمل أعمدة G4 الأصلية كذلك. اختبار synthetic يستخدم UPDATE في SQLite مؤقتة للتحقق من guard، لا يتصل بقاعدة حقيقية.
+
+
+## مرحلة 1 — نوع البند من أصل الفاتورة (تكامل صغير)
+يمكن لملف CSV/XLSX يحتوي حقول G2 الموثقة أن يضيف عمودًا اختياريًا `item_kind` بقيمة `service` أو `fee`. ينتقل النوع من صف البايتات الأصلية بعد إعادة الاستخراج والتحقق، ولا يستنتج المحوّل رسمًا من `service_code` أو من المبلغ. الصفوف القديمة التي لا تتضمن العمود تبقى `service` للتوافق، ووجود قيمة غير معروفة يؤدي إلى `invalid_invoice_row` و`INSUFFICIENT_EVIDENCE` دون تسوية مالية. لا تتحول الرسوم إلى `UNJUSTIFIED_FEE` محسومة بلا جدول رسوم عقدي مُعتمد بالكامل.
+
+اختبارات: `test_original_invoice_explicit_fee_kind_is_preserved_without_financial_authority` و`test_invalid_declared_fee_kind_fails_closed_not_silently_service`. هذان اختبارا أصل CSV مشفر اصطناعي؛ لا إثبات لتصنيف رسوم من OCR/PDF.
