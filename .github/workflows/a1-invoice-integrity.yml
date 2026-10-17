@@ -1,15 +1,6 @@
-name: A1 InvoiceIntegrity synthetic validation
+name: A1 InvoiceIntegrity model qualification
 
 on:
-  push:
-    branches:
-      - feat/mcias-a1-invoice-integrity
-    paths:
-      - "mcias/agents/**"
-      - "tests/a1/**"
-      - "tests/test_a1_invoice_integrity.py"
-      - "scripts/*a1*.py"
-      - ".github/workflows/a1-invoice-integrity.yml"
   pull_request:
     paths:
       - "mcias/agents/**"
@@ -52,7 +43,7 @@ jobs:
   open-weight-inference:
     needs: synthetic-rules
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -62,10 +53,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install "llama-cpp-python>=0.3.9,<1" "huggingface_hub>=0.30,<2"
-      - name: Real Qwen3 0.6B CPU inference on synthetic text
+      - name: Real Qwen3-8B CPU inference and independent ten-case accuracy
         env:
           HF_HUB_DISABLE_TELEMETRY: "1"
-        run: python -m scripts.a1_probe_local_model --download-public-model --output a1-real-model-evidence.json
+        run: python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3-8B-GGUF --output a1-real-model-evidence.json
       - name: Preserve inference transcript and model fingerprint
         uses: actions/upload-artifact@v4
         if: always()
