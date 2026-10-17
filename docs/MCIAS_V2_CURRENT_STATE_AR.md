@@ -186,3 +186,8 @@
 ### C25 — 2026-10-18 decimal-string constrained Qwen benchmark (PENDING_CI)
 - C24 `a3123b93db394fd3c0b61edd1ee946adcfe8a79a` had six PASS workflows, actual Qwen forced SYN diagnostic TP1 FP0 FN2. Arabic copay generated `20%`, mixed H2 generated invalid `H2:H2_CONSULT`; both quarantined. C24 evidence recorded in docs-only `d81a78790b11e23e7b866973d1b80b4347461d83`; no evidence of improved model accuracy.
 - C25 adjusts **only** the pinned LM Format Enforcer benchmark `amount` schema to require a decimal string (or null), plus synthetic static schema test. No independent evidence gate or production API changed. New SHA CI and actual model outcome PENDING_CI. Next action: inspect exact new run, not infer quality from successful model loading or schema test. No merge, finance, A1 or production.
+
+
+### C25 actual evaluated — no model quality gain (2026-10-18)
+- C25 SHA `caeec0d63c4dc75aa08ae5271ac55683450f6346`: all six Actions PASS (governance, G1–G9, Enterprise, pretrained Qwen synthetic benchmark). Actual Qwen generated TP1 FP0 FN2, recall33.3%, precision100% on one accepted source clause, 3/4 quarantined, one negative-case verified FP0. Model still generated Arabic `20%` rather than `20`, and mixed key `H2:H2_CONSULT` rather than `H2:CONSULT`. The C25 experimental JSON-schema pattern did not fix these outputs; **NO_IMPROVEMENT**, not production quality. Model run https://github.com/overurdream-collab/test2/actions/runs/39072778324. Evidence-only documentation closure new CI PENDING_CI.
+- Next precise task: verify constrained parser runtime enforcement of string pattern with nullable union and reproduce with focused runtime test before modifying extraction again. Preserve all validator/finance/reviewer protections.

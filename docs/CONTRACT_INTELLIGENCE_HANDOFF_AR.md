@@ -114,3 +114,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C25 resume — format constraint trial
 - At baseline documentation SHA d81a78790b11e23e7b866973d1b80b4347461d83, C24 real model recalled 1/3 (TP1 FP0 FN2). C25 experiment constrains `amount` to numeric string or null **only within SYN Qwen benchmark**; standalone syntax test covers percent suffix and date-like strings. All new-SHA CI and real pretrained model quality PENDING_CI. If pinned LMFE pattern handling errors or negative cases worsen, record failure without weakening source validation. Do not touch application model gateway, human review, G3/G5 or A1. Continue at latest PR23 SHA.
+
+
+### C25 evidence closure / next investigation
+- Baseline C25 `caeec0d63c4dc75aa08ae5271ac55683450f6346` Actions DG/G1-G9/Enterprise and real CPU Qwen benchmark all PASS. **Actual extraction remains TP1 FP0 FN2**; the amount syntax regex in benchmark did not prevent model `20%`; H2 logical key still wrong. Details and logs https://github.com/overurdream-collab/test2/actions/runs/39072778324. No second functional adjustment made in this closure. Before touching schema again, confirm pinned LM Format Enforcer nullable-string regex token enforcement with a runtime test. Never weaken independent source gate, user approval, finance or privacy. PR22/PR23 remain DRAFT.
