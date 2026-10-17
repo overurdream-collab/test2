@@ -34,3 +34,6 @@ At SHA 1d84f576ea75c5632c8d2686c2c8d00021c75212, G1-G7 run https://github.com/ov
 
 ### C5 typed compiler tests PENDING_CI
 tests/test_contract_rule_compiler.py covers permitted tariff and copay, before/end-exclusive date, provider/tenant mismatch, unsigned draft and missing source, untyped exclusion, forged AST fingerprint, NaN. All new SHA tests pending CI. No financial activation or model inference, no precision/recall.
+
+### C6 Proposal Persistence / PENDING_CI
+New synthetic HTTP tests cover server-only candidate creation, duplicate extraction, immutable reviewer decision, missing date refusal, uncertain OCR refusal, cross-tenant denial, and reviewed promotion to inactive ReferencePoint draft. Test file: `tests/test_contract_intelligence_api.py`. PostgreSQL revision `0020_contract_proposals` enforces append-only triggers. **No tests of these changes claimed PASS until new SHA Actions are examined.** No measured clause precision/recall or real Qwen inference.

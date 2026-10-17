@@ -208,3 +208,14 @@
 - Risks: Caller-supplied financial reference values are NOT proof they are signed, so module never activates rules; signature-bound institutional authorization is missing. No production payment/rejection operations.
 - Next: Inspect exact current SHA CI; record any failing test with a new DG-001 event; then benchmark real local model and implement proposal persistence and reviewer workflows.
 - Handoff: Read typed compiler module/tests then Contract Intelligence handoff; keep financial G3/G5 bridge unchanged, no merge, no production.
+
+
+### HANDOFF-20261017-010
+- Scope: Add persistent immutable organization-scoped contract candidates, separate review event and optional promotion to reference DRAFT only, PostgreSQL migration 0020, API and synthetic tests. Existing G2, signed G3/G5, main, production and A1 remain unchanged.
+- Why: C1–C5 preview did not persist extracted clauses or independently reviewed decisions. Reuse existing trusted G2 evidence / ReferencePoint; research CID-003/004.
+- Files: mcias/models_contract_proposals.py; alembic/versions/0020_contract_proposals.py; mcias/contract_proposals_api.py; mcias/app.py; mcias/reference_points.py; alembic/env.py; tests/test_contract_intelligence_api.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md; docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md.
+- Tests: python -m pytest -q tests/test_contract_intelligence_api.py tests/test_contract_intelligence.py tests/test_contract_rule_compiler.py tests/test_contract_documents.py (new tests submitted for GitHub Actions); Alembic PostgreSQL migration and all existing CI expected. No local repository clone because DNS fails.
+- Result: PENDING_CI — no PASS claimed for new SHA. Prior head 47996ebb937cca26b434747cf0450f7b07f41d75 passed governance run 39060103800, G1–G7 run 39060103822, G9 run 39060103912, Enterprise run 39060103888.
+- Risks: Real Qwen inference not run; synthetic HTTP tests mock the LLM. Model candidate text may still need medical/legal interpretation. Reviewer must independently inspect original source; no source fields copied in candidate JSON. PostgreSQL append-only triggers protect review history. Promotion cannot invent dates/automatic amendments or bypass written authorization. No institutional signature-bound production activation.
+- Next: Check exact SHA CI and repair any G9/PostgreSQL/API regressions with fresh DG-001 event. Then browser review flow, real private inference, golden precision/recall and independent security/UAT review.
+- Handoff: Use PR #23 child feat/mcias-contract-intelligence of PR #22. Run alembic upgrade head in isolated test PostgreSQL and listed tests. Review pending CI, never merge/activate. See Contract Intelligence handoff and DG-001.

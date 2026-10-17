@@ -71,3 +71,10 @@
 
 ### C5 typed diagnostic compiler
 - Added mcias/contract_rule_compiler.py (new SHA CI PENDING_CI). Only approved source-anchored tariff/copay references convert to inert typed AST with fingerprint; comparisons to supplied G3/G5 values report CONSISTENT/CONFLICT/NOT_APPLICABLE/INDETERMINATE, not deductions or payment decisions. No signed execution authority, no production activation and no integration into G5. No real model inference. Next verify exact CI and move to real LLM benchmark/proposal review.
+
+
+### C6 Contract Intelligence — append-only proposal review (new SHA PENDING_CI)
+- Child Draft PR #23 remains unmerged and targets PR #22 branch. C6 adds migration 0020 and immutable tenant-bound candidate/review/promotion tables. Endpoints: POST /api/v1/contract-intelligence/documents/{id}/extract (server-side evidence-checked model + persistence), GET /documents/{id}/proposals, POST /proposals/{id}/review and /promote. Independent reviewer decision is final; accepted complete source can be promoted to ReferencePoint **draft only**, never approved/executed.
+- Exact earlier tested SHA 47996ebb937cca26b434747cf0450f7b07f41d75: governance 39060103800 PASS, G1–G7 39060103822 PASS, G9 39060103912 PASS, workspace 39060103888 PASS. C6 is PENDING_CI until its new SHA Actions checked.
+- NOT_DONE: live pretrained Qwen inference, Arabic mixed/scan accuracy benchmark with ground truth, end-user review UAT, all acceptance cases, institution-bound cryptographic authorizations and production approval. Any unclear dates/OCR require review; no external patient data or commercial hosting.
+- Immediate resume: inspect latest PR23 HEAD, exact CI, tests/test_contract_intelligence_api.py and migration 0020. Run isolated PostgreSQL and fix failures before another functional change, logging DG-001 at every commit. No merge/main/A1.

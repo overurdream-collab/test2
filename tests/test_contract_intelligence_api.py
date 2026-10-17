@@ -143,3 +143,121 @@ def test_missing_sensitive_field_permission_denied(client_fixture):
         rec.values = {"private_diagnosis": "SYN", "text": rec.values["text"]}
         db.commit()
     assert request(client, ids).status_code == 403
+
+
+# C6: persistent candidates, irreversible independent review, and draft-only promotion.
+from sqlalchemy import select
+from mcias.models_contract_proposals import ContractProposal, ContractProposalReview, ContractProposalPromotion
+
+def grant_reviewer(engine):
+    with Session(engine) as db:
+        role=db.scalar(select(Role).where(Role.code=="SYN-contract-readonly-role"))
+        for code in ("reference.approve","ingestion.read","medical_fields.text.read"):
+            p=db.scalar(select(Permission).where(Permission.code==code))
+            if p is None:
+                p=Permission(code=code)
+                db.add(p)
+                db.flush()
+            db.add(RolePermission(role_id=role.id,permission_id=p.id))
+        db.commit()
+
+def extract_proposals(client,ids):
+    return client.post("/api/v1/contract-intelligence/documents/"+ids["document"]+"/extract",
+                       headers={"Authorization":"Bearer editor"})
+
+def test_persist_extracted_candidates_and_deduplicate_without_financial_effect(client_fixture):
+    client,ids,engine=client_fixture
+    first=extract_proposals(client,ids)
+    assert first.status_code==201,first.text
+    proposal=first.json()["proposals"][0]
+    assert proposal["status"]=="PENDING_REVIEW"
+    assert proposal["candidate"]["status"]=="DRAFT_ONLY"
+    assert "source_fields" not in proposal["candidate"]
+    second=extract_proposals(client,ids)
+    assert second.status_code==201,second.text
+    assert second.json()["proposals"][0]["id"]==proposal["id"]
+    with Session(engine) as db:
+        assert db.query(ContractProposal).count()==1
+        assert db.query(ReferencePoint).count()==0
+
+def test_separate_reviewer_accepts_then_promotes_only_as_draft(client_fixture,monkeypatch):
+    client,ids,engine=client_fixture
+    grant_reviewer(engine)
+    old=contract_api.infer_local
+    def dated(blocks,**kw):
+        r=old(blocks,**kw)
+        r["candidates"][0]["effective_until"]="2027-01-01"
+        return r
+    monkeypatch.setattr(contract_api,"infer_local",dated)
+    response=extract_proposals(client,ids)
+    assert response.status_code==201,response.text
+    p=response.json()["proposals"][0]["id"]
+    # The extractor cannot independently accept its own proposal.
+    same=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer editor"},
+        json={"decision":"accepted","reason":"SYN reason: exact source verified independently"})
+    assert same.status_code in (403,409)
+    reviewed=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer reader"},
+        json={"decision":"accepted","reason":"SYN verified quote, amount and provider independently"})
+    assert reviewed.status_code==201,reviewed.text
+    assert reviewed.json()["status"]=="ACCEPTED"
+    repeat=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer reader"},
+        json={"decision":"rejected","reason":"SYN attempted mutation of immutable review"})
+    assert repeat.status_code==409
+    promoted=client.post("/api/v1/contract-intelligence/proposals/"+p+"/promote",
+        headers={"Authorization":"Bearer editor"})
+    assert promoted.status_code==201,promoted.text
+    assert promoted.json()["status"]=="REFERENCE_DRAFT_ONLY"
+    assert promoted.json()["financial_execution_authorized"] is False
+    with Session(engine) as db:
+        assert db.query(ReferencePoint).count()==1
+        assert db.query(ReferencePoint).first().status=="draft"
+        assert db.query(ContractProposalPromotion).count()==1
+        assert db.query(ContractProposalReview).count()==1
+
+def test_no_invented_end_date_and_tenant_boundary(client_fixture):
+    client,ids,engine=client_fixture
+    grant_reviewer(engine)
+    res=extract_proposals(client,ids)
+    assert res.status_code==201,res.text
+    p=res.json()["proposals"][0]["id"]
+    foreign=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer foreign"},
+        json={"decision":"accepted","reason":"SYN cross tenant access should be forbidden"})
+    assert foreign.status_code in (403,404)
+    reviewed=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer reader"},
+        json={"decision":"accepted","reason":"SYN only source facts accepted, dates incomplete"})
+    assert reviewed.status_code==201,reviewed.text
+    impossible=client.post("/api/v1/contract-intelligence/proposals/"+p+"/promote",
+        headers={"Authorization":"Bearer editor"})
+    assert impossible.status_code==409
+    with Session(engine) as db:
+        assert db.query(ReferencePoint).count()==0
+
+def test_review_rejects_unverified_ocr_source(client_fixture):
+    client,ids,engine=client_fixture
+    grant_reviewer(engine)
+    with Session(engine) as db:
+        record=db.get(ExtractedSourceRecord,ids["record"])
+        record.confidence=50
+        db.commit()
+    res=extract_proposals(client,ids)
+    assert res.status_code==201,res.text
+    p=res.json()["proposals"][0]["id"]
+    reviewed=client.post("/api/v1/contract-intelligence/proposals/"+p+"/review",
+        headers={"Authorization":"Bearer reader"},
+        json={"decision":"accepted","reason":"SYN bad OCR must not become approved reference"})
+    assert reviewed.status_code==409
+    with Session(engine) as db:
+        assert db.query(ContractProposalReview).count()==0
+
+def test_persisted_proposals_not_readable_across_tenant(client_fixture):
+    client,ids,engine=client_fixture
+    grant_reviewer(engine)
+    assert extract_proposals(client,ids).status_code==201
+    foreign=client.get("/api/v1/contract-intelligence/documents/"+ids["document"]+"/proposals",
+                       headers={"Authorization":"Bearer foreign"})
+    assert foreign.status_code in (403,404)

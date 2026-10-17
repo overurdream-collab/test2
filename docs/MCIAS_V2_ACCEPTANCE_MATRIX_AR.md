@@ -75,3 +75,13 @@
 | CI-09 | Actual synthetic PDF two pages + XLSX H1/H2/H3 + scanned quarantine + injection-as-text | IMPLEMENTED_NEEDS_CI | tests/test_contract_documents.py, PENDING_CI, not AI inference |
 
 | CI-10 | Type whitelist for tariffs/copay, source/date/tenant scope, forged AST guard | IMPLEMENTED_NEEDS_CI | mcias/contract_rule_compiler.py tests/test_contract_rule_compiler.py; DIAGNOSTIC_ONLY, never financial authority |
+
+### Contract Intelligence C6 (new SHA CI pending)
+| ID | Scope | State |
+|---|---|---|
+| CI-C6-01 | Persist tenant/source-bound AI candidates without activation | IMPLEMENTED_NOT_TESTED |
+| CI-C6-02 | Independent one-time review, deny cross-tenant and bad OCR | IMPLEMENTED_NOT_TESTED |
+| CI-C6-03 | Promote reviewed complete candidate to draft only | IMPLEMENTED_NOT_TESTED |
+| CI-C6-04 | PostgreSQL 0020 append-only triggers | IMPLEMENTED_NOT_TESTED |
+| CI-C6-05 | Real Qwen inference, Arabic/mixed gold Precision and Recall | NOT_MEASURED |
+| CI-C6-06 | Human reviewer UI and institution-bound signature | PARTIAL / BLOCKED_INSTITUTION |

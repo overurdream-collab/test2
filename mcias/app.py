@@ -163,6 +163,9 @@ app.include_router(reference_points_router)
 from mcias.contract_intelligence_api import router as contract_intelligence_router
 app.include_router(contract_intelligence_router)
 
+from mcias.contract_proposals_api import router as contract_proposals_router
+app.include_router(contract_proposals_router)
+
 from mcias.claim_outcomes_api import router as claim_outcomes_router
 app.include_router(claim_outcomes_router)
 
