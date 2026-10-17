@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy.pool import StaticPool
 
 from mcias.models import (Base,Organization,User,Role,Permission,
                           UserRole,RolePermission,SourceFile)
@@ -24,7 +25,7 @@ from mcias.agents.a1_trusted_input import (A1Input,A1AccessDenied,A1SourceBlocke
     SCHEMA_VERSION, REQUIRED_SENSITIVE, build_a1_snapshot,preview_a1_from_g4)
 
 def _setup(tmp_path):
-    engine=create_engine("sqlite+pysqlite:///:memory:")
+    engine=create_engine("sqlite+pysqlite:///:memory:", connect_args={"check_same_thread":False}, poolclass=StaticPool)
     Base.metadata.create_all(engine)
     db=Session(engine,expire_on_commit=False)
     store=EncryptedStore(str(tmp_path/"stored"),b"\x07"*32)

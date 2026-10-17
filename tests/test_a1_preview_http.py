@@ -21,13 +21,16 @@ def test_a1_preview_never_enabled_in_production(tmp_path,monkeypatch):
 
 def test_real_g2_g4_preview_http_works_only_for_authorized_user(tmp_path,monkeypatch):
     engine,db,store,org,actor=_setup(tmp_path)
+    previous_overrides=dict(app.dependency_overrides)
     try:
         claim,_,_=_claim(db,store,org,actor)
         monkeypatch.setenv("MCIAS_ENVIRONMENT","development")
         monkeypatch.setenv("MCIAS_A1_PREVIEW_ENABLED","true")
         monkeypatch.setenv("MCIAS_STORAGE_DIR",str(store.root))
         monkeypatch.setenv("MCIAS_STORAGE_KEY",(b"\x07"*32).hex())
-        app.dependency_overrides[get_db]=lambda:db
+        def override_db():
+            yield db
+        app.dependency_overrides[get_db]=override_db
         with TestClient(app) as client:
             # Real auth subsystem denies missing login, rather than a bypass.
             forbidden=client.get("/api/v1/a1/claims/"+claim.id+"/preview")
@@ -43,4 +46,5 @@ def test_real_g2_g4_preview_http_works_only_for_authorized_user(tmp_path,monkeyp
             assert missing.status_code==404
     finally:
         app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous_overrides)
         db.close();engine.dispose()
