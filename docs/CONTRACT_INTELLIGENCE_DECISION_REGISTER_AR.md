@@ -33,3 +33,6 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 
 ## CID-009 — 2026-10-17 — Exclude literal contract identities in system prompt
 - Real pretrained Qwen3-1.7B copied the exact fixed tutorial `P7:XRAY` key and USD/1200 context even while quoting unrelated H1 CONSULT, Arabic copay and malicious text (C14 run 39065549717). Decision: keep system prompt schema-only with no sample provider, service, amount, currency or date; separate source text in user role; retain independent source/date/tenant/typed guards and no automatic finance execution. Do not consider nonempty JSON proof of factual extraction. C16 exact-sha tests PENDING.
+
+## CID-010 — 2026-10-17 — Quote-scoped financial identifiers, not page-scoped
+- A PDF page may list H1 and H2 with identical price or multiple services/currencies. Model candidates must not verify merely because a proposed provider_code/service_code/currency exists somewhere on the same PDF page. Require presence within the same exact quote for PDF/image; XLSX identifiers must remain in the same G2 row. Ambiguous references to header/provider require human adjudication, not programmatic guessing. No G3/G5 tariff change. New C19 CI PENDING.

@@ -190,3 +190,6 @@ For AI proposals, service-effective `effective_from` and `effective_until` are n
 
 ### C16 Contract AI system prompt source isolation — pending CI
 Model instruction is schema-only, with NO hardcoded provider/service, prices, dates or currency example. Previous pinned Qwen3-1.7B copied `P7:XRAY` from illustrative system prompt into unrelated contract proposals; all were quarantined. Verify typed output against G2 actual same-source quote, provider, service, currency, numeric amount and effective dates. New negative test prohibits reintroducing example-specific values. C15 source-date rule: end date not found in exact PDF clause or matching XLSX row must block independent reviewer acceptance. No G3/G5 policy execution.
+
+### C19 PDF provider/service/currency source anchoring
+Never accept a tariff candidate if its provider/service/currency appears on the PDF page but **outside** the exact extracted clause quote. On a structured XLSX row, identifiers may be in different cells of the same `ExtractedSourceRecord`. This supplements the existing numeric-in-quote and effective-date-in-quote checks. Reject candidate as `needs_human_review`; no automatic G3/G5 updates. See `tests/test_contract_intelligence.py` tests for wrong H2/H1 and XRAY/CONSULT/USD/YER. C19 CI PENDING.

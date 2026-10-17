@@ -145,3 +145,7 @@
 ### C17 measured model / C18 minute-boundary limiter-test fix (PENDING_CI)
 - Exact C17 SHA 3ee1d648e530086b153354688377b48a37f76055: DG 39066166099 PASS; G1–G7 39066166064 PASS; G8 39066166028 PASS; G9 39066166072 PASS; Enterprise 39066166119 FAIL one rate-limit timing test; real pinned Qwen3-1.7B forced-nonempty diagnostic 39066166029 FAIL: four nonempty JSON proposals, ALL quarantined due wrong service/logical key or null amount, TP0 FP0 FN3, Recall0%, precision undefined. No model approval.
 - C18 pinning 60-second rate-limit clock in test fixture only, so 101 sequential requests no longer cross a real minute rollover. Production middleware untouched. C18 CI PENDING; stronger real model/20+ actual-file gold/Arabic OCR/signatures still open. No merge, deployment or A1.
+
+### C19 cross-clause tariff identity gate — PENDING_CI
+- C19 strengthens model quote evidence for PDF/image: provider_code, service_code and currency must be found in the verbatim **same quoted clause**, not any other clause on the page. Excel values may be in separate cells of the exact same trusted G2 row. Adds tests with two hospitals of same price and two services/currencies on one PDF page.
+- No signed financial rule changes or institutional acceptance, no automatic AI activation. C19 full CI pending. Previous pinned Qwen3-1.7B source-backed recall 0/3, all four source claims rejected. Resume on Draft PR23 exact SHA and test results. No merge or A1.

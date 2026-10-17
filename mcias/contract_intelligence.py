@@ -154,9 +154,15 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         elif raw.get("amount") is not None:
             errors.append("unexpected_numeric")
         if block:
-            field_text = " ".join(block["fields"].values())
+            # A PDF page can contain multiple providers and tariffs. Identity
+            # fields must match the SINGLE quoted clause, not another clause
+            # elsewhere on that same page. Structured sheets remain row-scoped.
+            if block["locator"]["kind"] in {"page", "image"}:
+                identity_sources = (quote,) if isinstance(quote, str) else ()
+            else:
+                identity_sources = tuple(block["fields"].values())
             for name, value in (("provider", provider), ("service", service), ("currency", currency)):
-                if isinstance(value, str) and value not in field_text:
+                if isinstance(value, str) and not any(value in part for part in identity_sources):
                     errors.append(name + "_not_in_source")
         try:
             start, end = _check_date(raw.get("effective_from")), _check_date(raw.get("effective_until"))

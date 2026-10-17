@@ -200,3 +200,43 @@ def test_llm_contract_prompt_contains_no_hardcoded_provider_tariff_example(monke
     for contaminated in ("P7:XRAY","1200","2030-01-01","2031-01-01"):
         assert contaminated not in instructions
     assert "provider_code" in instructions and "source" in instructions
+
+
+def test_pdf_provider_from_another_clause_must_not_validate_this_tariff():
+    batch = make_source_blocks([{
+        "id": "SYN-MULTI-PROVIDER",
+        "locator": {"kind": "page", "index": 4},
+        "values": {"text": (
+            "H1 CONSULT tariff 5000 YER from 2026-01-01 to 2027-01-01. "
+            "H2 CONSULT tariff 5000 YER from 2026-01-01 to 2027-01-01."
+        )}
+    }])
+    candidate = proposal(record_id="SYN-MULTI-PROVIDER",
+        quote="H1 CONSULT tariff 5000 YER from 2026-01-01 to 2027-01-01.",
+        provider_code="H2", logical_key="H2:CONSULT",
+        effective_from="2026-01-01", effective_until="2027-01-01")
+    out = validate_candidates([candidate], batch, source_sha256=DIGEST,
+        model_id="SYN-test", model_revision="SYN-test")[0]
+    assert "provider_not_in_source" in out["validation_errors"]
+    assert out["evidence_status"]=="needs_human_review"
+    assert out["status"]=="DRAFT_ONLY"
+
+
+def test_pdf_service_and_currency_must_match_specific_quote_not_page():
+    batch = make_source_blocks([{
+        "id": "SYN-MULTI-SERVICE",
+        "locator": {"kind": "page", "index": 1},
+        "values": {"text": (
+            "H1 CONSULT tariff 5000 YER from 2026-01-01 to 2027-01-01. "
+            "H1 XRAY tariff 5000 USD from 2026-01-01 to 2027-01-01."
+        )}
+    }])
+    item = proposal(record_id="SYN-MULTI-SERVICE",
+        quote="H1 CONSULT tariff 5000 YER from 2026-01-01 to 2027-01-01.",
+        service_code="XRAY", logical_key="H1:XRAY", currency="USD",
+        effective_from="2026-01-01", effective_until="2027-01-01")
+    out = validate_candidates([item], batch, source_sha256=DIGEST,
+        model_id="SYN-test", model_revision="SYN-test")[0]
+    assert "service_not_in_source" in out["validation_errors"]
+    assert "currency_not_in_source" in out["validation_errors"]
+    assert out["evidence_status"]=="needs_human_review"

@@ -134,3 +134,11 @@
 | CI-C16-02 | XLSX same-row date fixture / independently reviewed source end date | IMPLEMENTED_NOT_TESTED |
 | CI-C16-03 | Real Qwen3-1.7B source-backed clause extraction in four-SYN diagnostic | FAIL at C14: 4 quarantined, TP0 FP0 FN3; C16 retest PENDING |
 | CI-C16-04 | Full G1–G9 + Enterprise at C16 exact SHA | PENDING_CI; C15 G1–G7/Enterprise FAILED |
+
+### C19 multiprovider PDF quote boundary
+| ID | Test | Status |
+|---|---|---|
+| CI-C19-01 | Same PDF page shows H1 and H2 price; H2 cannot be bound to H1 quote | IMPLEMENTED_NOT_TESTED |
+| CI-C19-02 | Same page shows CONSULT and XRAY USD; quote-specific service/currency required | IMPLEMENTED_NOT_TESTED |
+| CI-C19-03 | Structured XLSX same source row fields may carry identities separately | IMPLEMENTED_NOT_TESTED; existing reader tests remain |
+| CI-C19-04 | Model-derived tariff financial execution | BLOCKED_INSTITUTION / NOT_AUTHORIZED |

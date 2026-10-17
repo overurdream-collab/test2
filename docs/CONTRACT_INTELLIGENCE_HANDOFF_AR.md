@@ -81,3 +81,6 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 
 ### C18 next resume — timing test and actual model blocker
 C17 real-model run 39066166029 FAIL: four source-unverified proposals, wrong IDs and missing numeric values, Recall0/3; example contamination fixed but pretrained extraction still unusable. All G1–G9 regular tests and governance PASS, Enterprise 39066166119 FAIL one intermittent wall-minute-rollover limit test. C18 test-only fix pins rate-limit now while still executing actual middleware; CI on new SHA PENDING. Inspect current PR23 head, all C18 Actions, then resume rigorous real-model/source tests. Never use private data or bypass signed G3/G5 controls, no merge or A1.
+
+### C19 — PDF tariff identity independence
+Read mcias/contract_intelligence.py validation of provider/service/currency: PDF/image uses one exact quote, structured sheet only same G2 source row, besides numeric/date checks. Two adversarial tests added to tests/test_contract_intelligence.py; examine GitHub Actions on latest C19 SHA and fix regressions with new DG-001 event. No model finance activation, no main merge, no A1. Real model still under independent review and broader gold benchmark missing.
