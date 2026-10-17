@@ -237,7 +237,9 @@ def infer_local(blocks, *, endpoint, model_id, model_revision, timeout=30):
     _validate_local_endpoint(endpoint)
     if not model_id or not model_revision or not isinstance(model_id, str) or not isinstance(model_revision, str):
         raise ContractExtractionError("model name and revision required")
-    if not 1 <= timeout <= 60:
+    # Production API uses the unchanged 30s default. An explicitly opted-in
+    # private CPU benchmark may need up to 180s; never allow an unbounded wait.
+    if not 1 <= timeout <= 180:
         raise ContractExtractionError("invalid model timeout")
     src = json.dumps(blocks, ensure_ascii=False, separators=(",", ":"))
     if len(src.encode("utf-8")) > MAX_CONTENT:

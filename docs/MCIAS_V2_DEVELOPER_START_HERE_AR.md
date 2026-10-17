@@ -193,3 +193,7 @@ Model instruction is schema-only, with NO hardcoded provider/service, prices, da
 
 ### C19 PDF provider/service/currency source anchoring
 Never accept a tariff candidate if its provider/service/currency appears on the PDF page but **outside** the exact extracted clause quote. On a structured XLSX row, identifiers may be in different cells of the same `ExtractedSourceRecord`. This supplements the existing numeric-in-quote and effective-date-in-quote checks. Reject candidate as `needs_human_review`; no automatic G3/G5 updates. See `tests/test_contract_intelligence.py` tests for wrong H2/H1 and XRAY/CONSULT/USD/YER. C19 CI PENDING.
+
+ 
+### C22 — opt-in local CPU benchmark timeout (DG-001, PENDING_CI)
+`infer_local(..., timeout=30)` retains original production default, loopback-only URL, no proxies/redirects and all source validators. Explicit caller may pass up to 180 seconds for isolated CPU inference evaluation; values outside 1–180 are rejected. Production `mcias/contract_intelligence_api.py` calls without a timeout argument (30s). Only `scripts/contract_ai_benchmark.py` opts into 180 and reports the selected deadline. Test `python -m pytest -q tests/test_contract_intelligence.py` then exact GitHub CI/real pretrained benchmark; no production model enabled or protected approval changed. C21 baseline model did not return before 60s; do not claim C22 model extraction success without metrics.

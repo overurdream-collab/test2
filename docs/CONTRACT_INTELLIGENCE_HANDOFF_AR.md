@@ -91,3 +91,9 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C21 model comparison experiment
 - Inspect pinned Qwen2.5-1.5B-Instruct (Apache-2.0) test-only benchmark in scripts/contract_ai_benchmark.py. Run Actions on exact new SHA, collect model revision, actual generated response hashes, candidates, quarantined, TP/FP/FN and errors. Compare to Qwen3 0.6B/1.7B previously measured Recall0. Production model stays unconfigured; forced-nonempty diagnostic is explicitly not acceptable for autonomous contract decisions. No main merge, A1, deployment, real PHI or financial activation.
+
+ 
+### C22 next operator — no duplicate commits
+- Fetch **latest** `feat/mcias-contract-intelligence` HEAD and PR23; user has forbidden conflicting edits. C21 SHA `920ac469268e80e56574a7913c6812410428ea50` all five regular GitHub suites PASS, but Qwen2.5-1.5B-Instruct SYN benchmark run 39067055754 FAIL (60s loopback timeout, BrokenPipe, TP0 FN3). It emitted a plausible sourced English tariff but client could not verify it before timeout.
+- C22 is narrowly scoped: `mcias/contract_intelligence.py` explicit timeout maximum 180s instead of 60, **default production 30 remains**; `scripts/contract_ai_benchmark.py` explicitly passes 180 and labels metric; unit test proves default30/opt-in180/reject181 or 0. It does not change finance/G3/G5/tenant/quoted-source validation. Inspect exact new CI and test artifact before calling C22 a pass.
+- Unfinished AI quality on frozen gold (20+ files), Arabic scanned OCR, signed financial authority and independent reviewer/browser end-to-end. No merger of PR23 or PR22, production deployment, institutional datasets in free cloud or A1 work.

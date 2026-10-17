@@ -105,7 +105,7 @@ def main(output):
             hashes={}
             try:
                 inference=infer_local(blocks,endpoint=f"http://127.0.0.1:{http.server_port}/v1/chat/completions",
-                    model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=60)
+                    model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=180)
                 hashes={"request":inference["request_sha256"],"response":inference["response_sha256"]}
                 proposals=validate_candidates(inference["candidates"],blocks,
                     source_sha256=sha256(case["source"].encode()).hexdigest(),
@@ -138,6 +138,7 @@ def main(output):
         "model_revision":MODEL_REVISION,"pytorch":torch.__version__,
         "transformers":"4.57.1","generated_calls":inference_calls,
         "generated_output_count":sum(1 for x in inference_calls if "output_sha256" in x),
+        "explicit_private_cpu_benchmark_timeout_seconds":180,
         "true_positives":tp,"false_positives":fp,"false_negatives":fn,
         "precision":tp/(tp+fp) if tp+fp else None,
         "recall":tp/(tp+fn) if tp+fn else None,

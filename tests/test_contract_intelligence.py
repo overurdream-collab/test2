@@ -240,3 +240,28 @@ def test_pdf_service_and_currency_must_match_specific_quote_not_page():
     assert "service_not_in_source" in out["validation_errors"]
     assert "currency_not_in_source" in out["validation_errors"]
     assert out["evidence_status"]=="needs_human_review"
+
+
+def test_explicit_cpu_benchmark_timeout_is_bounded_and_default_unchanged(monkeypatch):
+    # The production caller still gets 30 seconds, but the isolated CPU model
+    # benchmark can opt into 180 without weakening any source/financial guard.
+    import io
+    import json
+    import mcias.contract_intelligence as module
+    used = []
+    payload = {"choices": [{"message": {"content": json.dumps({"clauses": []})}}]}
+    class LocalOpener:
+        def open(self, request, timeout=None):
+            used.append(timeout)
+            return io.BytesIO(json.dumps(payload).encode())
+    monkeypatch.setattr(module, "build_opener", lambda *args: LocalOpener())
+    params = {"endpoint": "http://127.0.0.1:14432/v1/chat/completions",
+              "model_id": "SYN-PRIVATE", "model_revision": "SYN-REVISION"}
+    assert module.infer_local(blocks(), **params)["candidates"] == []
+    assert module.infer_local(blocks(), **params, timeout=180)["candidates"] == []
+    assert used == [30, 180]
+    with pytest.raises(ContractExtractionError):
+        module.infer_local(blocks(), **params, timeout=181)
+    with pytest.raises(ContractExtractionError):
+        module.infer_local(blocks(), **params, timeout=0)
+    assert used == [30, 180]

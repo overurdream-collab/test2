@@ -39,3 +39,9 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 
 ## CID-011 — 2026-10-17 — Qwen2.5-1.5B-Instruct MODEL TEST ONLY
 - Compare official open licensed Qwen2.5-1.5B-Instruct SHA 989aa7980e4cf806f80c7fef2b1adb7bc71aa306 (Apache-2.0, 3.09GB) after Qwen3 small models failed to extract typed fields. Same frozen four SYN snippets and independent G2 evidence guard. New inference test PENDING; no claim or default model until 20+ file benchmark, actual Arabic OCR and human review. Model license/source official Hugging Face repo. No private data to hosted runner.
+
+ 
+## CID-007 — 2026-10-17 — Bounded slow CPU inference without production default change
+- Official Qwen2.5-1.5B-Instruct C21 SYN benchmark generated coherent first sample but loopback HTTP timed out at 60 seconds, causing BrokenPipe; no validated extraction TP (0/3). Keep evidence gate and all tenant/financial restrictions unchanged.
+- Approve opt-in maximum 180-second `infer_local(timeout=180)` for free CPU synthetic benchmark ONLY; API callers still omit timeout and use default 30. Reject 181/unbounded durations. Alternative shortening JSON schema or falsifying/simulating model output rejected because it would obscure actual inference and source verification. This is an engineering evaluation decision, **not** selecting a clinical/contract production model.
+- C22 exact-sha CI pending; if CPU exceeds bound, mark FAIL and investigate more efficient constrained inference or private runtime, not an unbounded request. No paid compute/PHI/public documents, G3/G5 activity, merge or A1.

@@ -151,3 +151,13 @@
 | CI-C20-03 | Five real scanned PDFs without OCR quarantine rather than guess clauses | IMPLEMENTED_NOT_TESTED |
 | CI-C20-04 | Local Arabic OCR accuracy on scanned PDF with source rows | NOT_MEASURED |
 | CI-C20-05 | Real LLM correctly extracts 20+ actual full documents; precision/recall | NOT_MEASURED |
+
+ 
+### Contract Intelligence C22 objective gate
+| ID | Requirement | Status |
+|---|---|---|
+| CI-C22-01 | Explicit local CPU transport 180s cap; default 30s; reject 0/181 | IMPLEMENTED_PENDING_CI |
+| CI-C22-02 | Pretrained Qwen2.5-1.5B text inference delivers at least one source-verified clause within configured test deadline | C21 FAIL (timeout at 60s); C22 NOT_MEASURED |
+| CI-C22-03 | 20 binary synthetic source reader documents + 20 text anchors/10 adversarial validator cases | EXISTING (regular C21 CI PASS); not AI precision/recall |
+| CI-C22-04 | Measured human-reviewed bilingual, Arabic OCR 20+ doc model Precision/Recall | NOT_MEASURED |
+| CI-C22-05 | Institutional signed financial execution or PR merge | BLOCKED_NO_AUTHORIZATION |
