@@ -134,3 +134,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C26 single schema remediation checkpoint
 - Isolated no-model run 39073665424 proved C25 LMFE nullable-union amount `pattern` accepts `20%`, contrary to intent. SYN-only schema changed to `anyOf` explicit patterned string and null; two regression tests updated. Inspect next exact SHA parser CI BEFORE calling fix successful. All core source provenance/financial/reviewer guards unchanged; no extra feature allowed.
+
+
+### C27 handoff
+- On C26 SHA c9ea45e950bf480b75b929694f9621e807037e7a, independent LMFE 1 passed; general suites failed optional import. One test-only `pytest.importorskip` fix committed with DG-001 docs, no runtime or benchmark change. Verify new SHA general suites plus dedicated test executed, inspect actual Qwen results. No production/main/finance/A1.

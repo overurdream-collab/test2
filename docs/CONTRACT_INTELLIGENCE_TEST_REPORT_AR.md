@@ -154,3 +154,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C26 actual LMFE parser defect and anyOf trial
 - Third no-model runtime run https://github.com/overurdream-collab/test2/actions/runs/39073665424: `20` accepted, `20%` **also accepted** with C25 nullable union + pattern, proven at full parser `can_end()`, so earlier benchmark regex did not act as safety filter. One benchmark-only schema adjustment isolates `pattern` inside string branch of `anyOf`, keeping null branch; new parser regression and real model quality PENDING_CI. No source validator relaxation.
+
+
+### C27 CI collection fix (PENDING_CI)
+- C26 general suite G1-G7 39073747367 and Enterprise 39073747397 both FAIL collection due missing lmformatenforcer. Dedicated LMFE parser 39073747353 PASS with 1 test: accepted numeric decimal 20 and null, rejected 20%/invalid patterns. C27 uses `pytest.importorskip` only for optional test; dedicated job installs library and is expected to execute, not silently skip. New exact SHA result pending. No new Qwen model quality score claimed.

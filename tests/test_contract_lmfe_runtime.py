@@ -3,7 +3,10 @@ import ast
 import json
 from pathlib import Path
 
-from lmformatenforcer import JsonSchemaParser
+import pytest
+
+# General CI has no inference-only dependency; the dedicated LMFE workflow installs it.
+JsonSchemaParser = pytest.importorskip("lmformatenforcer", reason="isolated LMFE runtime dependency").JsonSchemaParser
 
 
 def actual_c25_schema():

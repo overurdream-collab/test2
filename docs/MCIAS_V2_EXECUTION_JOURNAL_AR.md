@@ -494,3 +494,14 @@
 - Risks: LMFE may also ignore patterns nested in anyOf; if so, do not claim fix or relax evidence check. Forced-nonempty benchmark is diagnostic, not production efficacy. No PHI.
 - Next: Check dedicated no-model `Contract LMFE schema runtime probe` exact SHA; if it rejects `20%` and admits `20`/null, inspect standard CI and actual Qwen output. If still fails, record precise failure and halt further functional edits this cycle.
 - Handoff: Open PR23 new SHA and dedicated probe run, inspect test `tests/test_contract_lmfe_runtime.py`. No merge/production/finance/A1.
+
+
+### HANDOFF-20261018-009 — C27 isolate optional LMFE test collection
+- Scope: One-line collection-safe `pytest.importorskip("lmformatenforcer")` substitution within `tests/test_contract_lmfe_runtime.py`; dedicated `contract-lmfe-probe.yml` remains mandatory with pinned LMFE installed and the same numeric/null assertions. No application, schema, validator, G2/G3/G5, model tuning, finance, merge, or deploy changes.
+- Why: C26 SHA c9ea45e950bf480b75b929694f9621e807037e7a G1-G7 unit run https://github.com/overurdream-collab/test2/actions/runs/39073747367 and Enterprise https://github.com/overurdream-collab/test2/actions/runs/39073747397 FAIL by `ModuleNotFoundError: lmformatenforcer` at test collection; dedicated parser https://github.com/overurdream-collab/test2/actions/runs/39073747353 PASS 1 test in 0.13s with string decimal 20 allowed, 20% denied and null allowed. General CI should not install optional model packages.
+- Files: `tests/test_contract_lmfe_runtime.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: C26 dedicated real parser PASS, G1-G7 and Enterprise FAIL during collection as above. New SHA G1-G7, Enterprise, dedicated LMFE, DG-001, G8, G9 PENDING_CI. Local test execution NOT_RUN; connector-only GitHub revision. C26 Qwen run https://github.com/overurdream-collab/test2/actions/runs/39073747366 was in progress at initial inspection: do not invent TP/FP/FN until inspected.
+- Result: IMPLEMENTED_PENDING_CI. Real LMFE test must run (not skip) in dedicated workflow; missing package may skip only in general suites.
+- Risks: If standalone CI environment loses pinned package, must fail/verify explicit execution rather than treat skipped test as PASS; workflow installs 0.11.2 and inspect test count. Human review/financial authority untouched.
+- Next: Verify latest exact SHA all workflows, especially unit/Enterprise fixes and dedicated LMFE 1 passed; read genuine C26 Qwen output metrics if completed and record without a new code edit.
+- Handoff: Read this event, `tests/test_contract_lmfe_runtime.py`, `.github/workflows/contract-lmfe-probe.yml`, latest PR23 head and Actions. Do not merge, deploy, touch source validation or advance AI tuning.

@@ -207,3 +207,7 @@
 
 ### C26 confirmed runtime nullable regex bypass / attempted anyOf fix (PENDING_CI)
 - Pinned LMFE 0.11.2 no-model runtime run 39073665424 accepted `20%` with C25 `type=[string,null]` + `pattern`. This is a genuine constraint bypass for the tested schema, unlike prior harness failures. One SYN benchmark-only fix switches to explicit `anyOf` patterned string/null and updates tests, keeping source validation unchanged. New exact-SHA CI PENDING_CI; no production model or inference improvement asserted.
+
+
+### C27 — isolate optional LMFE import from regular pytest (PENDING_CI)
+- C26 SHA c9ea45e950bf480b75b929694f9621e807037e7a dedicated LMFE 0.11.2 runtime passed 20, 20%, null checks; G1-G7 and Enterprise broke at test import because optional library absent (runs 39073747367, 39073747397). C27 switches module import to `pytest.importorskip`, allowing normal suites to skip optional parser test while the dedicated job still installs LMFE and must execute it. No engine/schema/security/finance changes; latest CI PENDING_CI. Next: verify exact results and C26 actual Qwen metrics.
