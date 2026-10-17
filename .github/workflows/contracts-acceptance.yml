@@ -6,6 +6,8 @@ on:
   push:
     branches: [feat/mcias-input-triactions-e2e]
   workflow_dispatch:
+  pull_request:
+    branches: [feat/mcias-temporal-inputs-triage-ui]
 jobs:
   contracts-acceptance:
     runs-on: ubuntu-latest
