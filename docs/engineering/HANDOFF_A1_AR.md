@@ -111,3 +111,7 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 
 ## استلام دورة مرجع الرسوم — رفض التفعيل لغياب الصلاحية
 آخر فحص: G3 `ProviderTariff` تعرفة خدمة، ولا توجد جهة رسوم مصدقة؛ PR22 ReferencePoint مصدره اختياري ولا FK لإصدار العقد/نوع رسم/وحدة/توقيع بند؛ PR23 Contract Intelligence مصدره `DRAFT_ONLY` ولا يروّج إلى اعتماد مالي. أبقِ `approved_contract_fee_clause` و`additional_fee_authority=NOT_ESTABLISHED`، ولا تفتح `allowed_fees` لمدخلات غير مصدقة. اختبار expiration الاصطناعي الجديد في `tests/test_a1_invoice_integrity.py`. تحقق من CI عند آخر SHA ثم توقف ضمن المرحلة الأولى لحين مواصفة واعتماد المؤسسة. لا دمج أو بدء Palermo.
+
+
+## مرحلة 1 — مقترح مخطط رسوم بلا تفعيل (2026-10-18)
+على SHA التالي للمؤشر `bcccfe00538d47edd5b8816e3ff680a6f5667d13`، أضيف `mcias/agents/a1_fee_reference_contract.py` و`tests/test_a1_fee_reference_contract.py` كـPydantic schema غير متصل بقاعدة البيانات. التوقيع مجرد ميتاداتا NOT_VERIFIED وكل مدخل NOT_AUTHORIZED. راجع `docs/agents/A1_FEE_REFERENCE_PROPOSAL_AR.md` وسجل الحدث. التالية: فحص CI exact SHA، ثم إقرار تخزين ومطابقة وتوقيع مؤسسي قبل أي ربط فعلي؛ لا تعيد بناء G3/PR22/23 ولا تفترض موافقة الرسوم.
