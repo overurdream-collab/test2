@@ -25,3 +25,7 @@ HTTP preview at /api/v1/contract-intelligence/documents/{document_id}/preview on
 
 ### C5 rule AST whitelist
 The typed compiler only constructs inert ASTs from separately approved, source SHA bound ReferencePoint, whose numeric types allow tariffs/cost_sharing comparisons in diagnostics. No execution in audit_service or G3/G5, no `eval`, no SQL or payment. This is NOT institution-signature-bound activation or a complete compiler for exclusions/approvals/duration. Unknown clauses are blocked.
+
+
+### C8 UI + reproducible synthetic model evaluation
+Existing RTL/LTR input workspaces now contain preview and persisted extraction actions, plus an independent review drawer for source quotes, page/sheet/row, model version, dates and validation errors. Browser never sends its own fabricated candidate for server approval. Accept/reject records are append-only, promotion still creates inactive ReferencePoint draft requiring separate institutional authorization. For AI experiment, pinned Qwen3-0.6B is installed in an ephemeral free public Actions runner and served only on 127.0.0.1 by Python temporary HTTP harness, so `infer_local` exercises real transport and `validate_candidates` rechecks provenance. Model is benchmark-only; no runtime architecture changed or external patient data. Report is NOT_MEASURED until workflow passes.

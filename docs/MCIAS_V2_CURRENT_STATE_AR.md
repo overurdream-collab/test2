@@ -84,3 +84,9 @@
 - C6 SHA 88ec7edb50a1eb51156fe20470c550518f919d0a is **FAILED**: DG PASS run 39062436942; G1–G7 FAIL run 39062436975, G9 FAIL run 39062436968, Workspace FAIL run 39062436946. Root causes: five new synthetic tests had fixture 401 invalid session for new router, and migrations assert prior 0019 while additive schema is now 0020.
 - New fix updates synthetic fixture auth only and replaces expected migration head with actual 0020 in PostgreSQL/G9 checks. Production permission checks are unchanged. Tests on new SHA PENDING_CI.
 - No real Qwen inference, no proven Arabic clause metrics, no full reviewer browser UAT. No production activation, G3/G5 tariff replacement, main merge or A1. Next inspect exact CI of fix.
+
+
+### C8: RTL reviewer UI and real-Qwen synthetic CPU benchmark — PENDING_CI
+- Last fully tested contract branch SHA b161ee75076910f4f535d783d7adccc2c0d0d48e: all 5 Actions workflows PASS (see HANDOFF-012). New C8 UI lets permitted operators save AI candidates and independent reviewers inspect, accept/reject and promote only to ReferencePoint draft. No production financial activation.
+- Added pinned Qwen/Qwen3-0.6B CPU-only GitHub Actions benchmark: 4 public synthetic cases (Arabic, English, mixed, prompt injection) with response hashes and measured TP/FP/FN, Precision/Recall, FPR. Weight/model SHA c1899de289a04d12100db370d81485cdf75e47ca (Apache-2.0). Script and workflow committed with no model weights, secrets or patient data.
+- PENDING_CI on latest SHA. **Real inference not yet claimed**: test only counts after GitHub Actions actually runs and reports generated output. Production on-prem LLM remains not configured; 4-fixture benchmark is inadequate to certify provider prices/OCR. Still no signed approvals/merge/deploy or A1.

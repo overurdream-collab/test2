@@ -32,3 +32,7 @@ Read mcias/contract_rule_compiler.py + tests/test_contract_rule_compiler.py and 
 
 ### C7 CI fix resume
 C6 SHA 88ec7edb had FAIL on tests due mock-auth fixture and migration head; see Test Report. C7 supplies fixture and 0020 head updates (test-only and G9 preflight). Run exact-head G1–G7, G9, Enterprise and DG Actions. Real local Qwen, UI review and signed approval are still open and must not be represented as complete. Never merge or enable financial authority.
+
+
+### C8 handoff — real pretrained proof and human UI
+The `reference_points_view.js` drawer now supports persisted /extract and a separate review/propose UI for users having `reference.read` + `ingestion.read`, and `reference.approve` for human review. Branch C8 adds `scripts/contract_ai_benchmark.py` and `.github/workflows/contract-ai-benchmark.yml` for local loopback Qwen3-0.6B model, pinned SHA, 4 synthetic cases and measured evidence. Inspect exact Actions before saying any model run passed. Hosted public standard GitHub runners are free; no external sensitive records or financial activation. If the synthetic benchmark fails, record model loading or malformed-JSON error and continue only with evidence. Expand Arabic/scanned/Excel gold corpus before complete acceptance. Do not merge or start A1.

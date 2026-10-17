@@ -208,7 +208,9 @@ function contractPreview(ctx) {
   )));
   const submit = el("button", L("استخراج البنود للمعاينة", "Preview clause extraction"), "button primary");
   submit.type = "submit";
-  f.append(id.wrap, submit, out);
+  const persist = el("button", L("استخراج وحفظ مقترحات للمراجعة", "Extract and save review proposals"), "button");
+  persist.type = "submit";
+  f.append(id.wrap, submit, persist, out);
   f.addEventListener("submit", async ev => {
     ev.preventDefault();
     const doc = id.input.value.trim();
@@ -217,11 +219,15 @@ function contractPreview(ctx) {
     out.replaceChildren(loading());
     try {
       const result = await ctx.api.request(
-        "/api/v1/contract-intelligence/documents/" + encodeURIComponent(doc) + "/preview",
+        "/api/v1/contract-intelligence/documents/" + encodeURIComponent(doc) +
+          (ev.submitter === persist ? "/extract" : "/preview"),
         {method: "POST"});
       out.replaceChildren(
-        el("p", L("نتائج غير محفوظة؛ راجع الأدلة ولا تعتمد أي بند تلقائيًا",
-                  "Unstored results; review evidence, never auto-approve clauses"), "muted"),
+        el("p", ev.submitter === persist ?
+          L("حُفظت مسودات مقترحات؛ تتطلب مراجعة مستقلة ثم اعتمادًا مؤسسيًا منفصلًا.",
+            "Proposals stored; independent review and separate institutional approval required.") :
+          L("نتائج غير محفوظة؛ لا يعتمد أي بند تلقائيًا.",
+            "Unstored results; never auto-approve clauses."), "muted"),
         details(result));
     } catch(err) {
       out.replaceChildren(errorState(err));
@@ -229,6 +235,92 @@ function contractPreview(ctx) {
   });
   n.append(f);
   openDrawer(L("معاينة استخراج بنود العقد بالذكاء الاصطناعي", "AI contract clause preview"), n);
+}
+
+function contractReview(ctx) {
+  if (!authorized(ctx, "reference.read") ||
+      !authorized(ctx, "ingestion.read")) return;
+  const outer = el("section"), form = el("form"), content = el("div");
+  const id = field("proposal-document-id",
+    L("معرّف ملف العقد", "Contract document ID"), {maxLength: 80, required: true});
+  const submit = el("button", L("عرض المقترحات المحفوظة", "Load saved proposals"), "button primary");
+  submit.type = "submit";
+  outer.append(el("p", L(
+    "تظهر البنود ومصدرها وتعارضاتها قبل أي اعتماد. المراجعة قرار مستقل لا ينشئ تعليمات مالية.",
+    "Inspect evidence, conflicts, and dates before independent review; no financial instruction is activated."), "muted"));
+  form.append(id.wrap, submit, content);
+  async function reload() {
+    const doc = id.input.value.trim();
+    if (!doc) return;
+    content.replaceChildren(loading());
+    try {
+      const response = await ctx.api.request("/api/v1/contract-intelligence/documents/" +
+        encodeURIComponent(doc) + "/proposals");
+      content.replaceChildren();
+      if (!response.proposals.length) content.append(
+        el("p", L("لا توجد مقترحات محفوظة", "No stored proposals"), "muted"));
+      for (const proposal of response.proposals) {
+        const clause = proposal.candidate;
+        const item = el("article", null, "reference-point-row");
+        const heading = el("div"), detailsBox = el("div"), actions = el("div", null, "reference-row-actions");
+        heading.append(el("strong", clause.original_clause_text || L("نص غير معروف", "Unknown text")),
+                       badge(proposal.status),
+                       el("small", (clause.section || "?") + " · " + (clause.logical_key || "?")));
+        const locator = clause.source_locator || {};
+        detailsBox.append(el("small",
+          L("المصدر: ", "Source: ") + (locator.kind || "?") + " " + (locator.index || "?") +
+          (locator.row ? " / row " + locator.row : "")),
+          el("small", L("النموذج: ", "Model: ") + proposal.model_id + " @ " + proposal.model_revision),
+          el("small", L("السريان: ", "Validity: ") +
+            (clause.effective_from || L("غير محدد", "missing")) + " → " +
+            (clause.effective_until || L("غير محدد", "missing"))),
+          el("small", L("التحقق: ", "Validation: ") +
+            (clause.validation_errors?.join(", ") || L("لا توجد أخطاء مطابقة مكتشفة", "No detected anchor errors"))));
+        const inspect = button(L("عرض الدليل الكامل", "Full evidence"), () =>
+          openDrawer(L("تفاصيل مقترح العقد", "Clause proposal details"), details(proposal)), "button");
+        actions.append(inspect);
+        if (!proposal.review && authorized(ctx, "reference.approve")) {
+          const reason = field("proposal-reason-" + proposal.id,
+            L("مبرر المراجعة (20 حرفًا فأكثر)", "Review rationale (20+ characters)"),
+            {type:"textarea", maxLength:1000});
+          const saveDecision = async (decision) => {
+            if (reason.input.value.trim().length < 20) {
+              toast(L("المبرر غير كافٍ", "Please provide a substantive rationale")); return;
+            }
+            try {
+              await ctx.api.request("/api/v1/contract-intelligence/proposals/" +
+                encodeURIComponent(proposal.id) + "/review",
+                {method:"POST", body:{decision,reason:reason.input.value.trim()}});
+              await reload();
+            } catch(err) {content.prepend(errorState(err));}
+          };
+          actions.append(reason.wrap,
+            button(L("قبول المراجعة", "Accept review"), () => void saveDecision("accepted"), "button"),
+            button(L("رفض المقترح", "Reject proposal"), () => void saveDecision("rejected"), "button"));
+        }
+        if (proposal.review?.decision === "accepted" && !proposal.reference_point_id &&
+            authorized(ctx, "reference.write") &&
+            ctx.context.permissions.includes("workspace.super_admin")) {
+          const promote = async () => {
+            if (!(await confirm(L("هل تنشئ مسودة فقط دون تفعيل مالي؟",
+              "Create an inactive clause draft only?")))) return;
+            try {
+              await ctx.api.request("/api/v1/contract-intelligence/proposals/" +
+                encodeURIComponent(proposal.id) + "/promote", {method:"POST"});
+              await reload();
+            } catch(err) {content.prepend(errorState(err));}
+          };
+          actions.append(button(L("تحويل لمسودة غير مفعلة", "Create inactive draft"),
+            () => void promote(), "button"));
+        }
+        item.append(heading, detailsBox, actions);
+        content.append(item);
+      }
+    } catch(err) {content.replaceChildren(errorState(err));}
+  }
+  form.addEventListener("submit", ev => {ev.preventDefault();void reload();});
+  outer.append(form);
+  openDrawer(L("مراجعة مقترحات العقود", "Contract proposal review"), outer);
 }
 
 export function referencePointsView(ctx) {
@@ -254,7 +346,10 @@ export function referencePointsView(ctx) {
                            () => contractPreview(ctx), "button");
     preview.disabled = !authorized(ctx, "reference.write") ||
       !ctx.context.permissions.includes("workspace.super_admin");
-    toolbar.append(upload, add, preview);
+    const review = button(L("مراجعة المقترحات المحفوظة", "Review stored proposals"),
+      () => contractReview(ctx), "button");
+    review.disabled = !authorized(ctx, "reference.read") || !authorized(ctx, "ingestion.read");
+    toolbar.append(upload, add, preview, review);
   };
   async function refresh() {
     target.replaceChildren(loading());

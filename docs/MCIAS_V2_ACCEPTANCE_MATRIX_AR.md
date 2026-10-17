@@ -85,3 +85,13 @@
 | CI-C6-04 | PostgreSQL 0020 append-only triggers | IMPLEMENTED_NOT_TESTED |
 | CI-C6-05 | Real Qwen inference, Arabic/mixed gold Precision and Recall | NOT_MEASURED |
 | CI-C6-06 | Human reviewer UI and institution-bound signature | PARTIAL / BLOCKED_INSTITUTION |
+
+
+### C8 reviewer UI / real pretrained benchmark (PENDING_CI)
+| ID | Evidence requirement | State |
+|---|---|---|
+| CI-C8-01 | Bilingual source-linked extraction-save UI and independent reviewer UI pass browser tests | IMPLEMENTED_NOT_TESTED |
+| CI-C8-02 | Pinned Qwen3-0.6B downloads and generates in free CPU Actions; actual response SHA | PENDING_CI / NOT_YET_MEASURED |
+| CI-C8-03 | Synthetic Arabic, English, mixed, prompt-injection TP/FP/FN, Precision/Recall | PENDING_CI / NOT_YET_MEASURED |
+| CI-C8-04 | Gold 20+ files including Arabic OCR, tables and amendment/medical cases | NOT_IMPLEMENTED |
+| CI-C8-05 | Institutional signatures/approval and production | BLOCKED_INSTITUTION |
