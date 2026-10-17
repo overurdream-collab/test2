@@ -18,6 +18,17 @@ class GovernanceParserTests(unittest.TestCase):
             "+- " + key + ": documented relevant detail\n" for key in gate.REQUIRED)
         self.assertEqual(gate.validate_added_entry(diff), [])
 
+    def test_titled_handoff_keeps_all_eight_required_fields(self):
+        titled = "+### HANDOFF-20261017-026 — C22 bounded timeout\n"
+        documented = titled + "".join(
+            "+- " + field + ": independently logged\n" for field in gate.REQUIRED)
+        self.assertEqual(gate.validate_added_entry(documented), [])
+        self.assertTrue(any("Tests" in problem for problem in
+            gate.validate_added_entry(titled + "+- Scope: incomplete\n")))
+        self.assertTrue(gate.validate_added_entry(
+            "+### HANDOFF-20261017-026 unstructured fake heading\n" +
+            "".join("+- " + field + ": value\n" for field in gate.REQUIRED)))
+
     def test_incomplete_record_fails(self):
         problems = gate.validate_added_entry("+### HANDOFF-20261017-002\n+- Scope: only scope\n")
         self.assertTrue(any("Tests" in text for text in problems))
