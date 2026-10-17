@@ -204,7 +204,7 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
                 refs, lid, abs(qty * price - line_total)))
         if not c:
             continue
-        kind = line.get("kind", "service")
+        kind = line.get("kind")
         if kind not in ("service", "fee"):
             findings.append(_finding("LINE_KIND", "INSUFFICIENT_EVIDENCE", "Unknown item type.",
                                      refs, lid, missing=["item_type"]))
@@ -263,6 +263,8 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
             [x for x in (claim_ref, inv_ref) if x], amount=abs(claimed - stated)))
     model_findings, model_state = ([], "NOT_CONFIGURED")
     if model is not None:
+        if bundle.get("synthetic") is not True:
+            raise ValueError("experimental A1 model accepts synthetic records only")
         if not model_id or not isinstance(model_id, str):
             raise ValueError("model_id required when model is provided")
         model_findings, model_state = _model_review(bundle, model, sources)
