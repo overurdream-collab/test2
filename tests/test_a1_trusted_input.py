@@ -169,7 +169,7 @@ def test_cross_tenant_and_missing_permissions_fail_before_source_read(tmp_path):
         with pytest.raises(A1AccessDenied):
             build_a1_snapshot(db,outsider,claim.id,store,run_id="SYN-wrong-tenant")
         with pytest.raises(A1AccessDenied):
-            build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-other-claim")
+            build_a1_snapshot(db,actor,"SYN-missing-claim",store,run_id="SYN-other-claim")
     finally:
         db.close();engine.dispose()
 
@@ -202,7 +202,7 @@ def test_h1_h2_half_open_tariffs_but_no_invented_unit_authority(tmp_path):
                              service_date=day,claim_id="SYN-"+provider+day,invoice=False)
             result=build_a1_snapshot(db,actor,claim.id,store,run_id="SYN-period")
             ref=result["g3_reference"]
-            assert ref["reference_amount"]==rate
+            assert Decimal(ref["reference_amount"])==Decimal(rate)
             assert ref["status"]=="REFERENCE_ONLY_UNIT_UNPROVEN"
             assert result["snapshot"].contracts==[]
             assert "approved_unit_mapping" in result["snapshot"].missing_evidence
