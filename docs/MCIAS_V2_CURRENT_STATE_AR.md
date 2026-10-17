@@ -191,3 +191,7 @@
 ### C25 actual evaluated — no model quality gain (2026-10-18)
 - C25 SHA `caeec0d63c4dc75aa08ae5271ac55683450f6346`: all six Actions PASS (governance, G1–G9, Enterprise, pretrained Qwen synthetic benchmark). Actual Qwen generated TP1 FP0 FN2, recall33.3%, precision100% on one accepted source clause, 3/4 quarantined, one negative-case verified FP0. Model still generated Arabic `20%` rather than `20`, and mixed key `H2:H2_CONSULT` rather than `H2:CONSULT`. The C25 experimental JSON-schema pattern did not fix these outputs; **NO_IMPROVEMENT**, not production quality. Model run https://github.com/overurdream-collab/test2/actions/runs/39072778324. Evidence-only documentation closure new CI PENDING_CI.
 - Next precise task: verify constrained parser runtime enforcement of string pattern with nullable union and reproduce with focused runtime test before modifying extraction again. Preserve all validator/finance/reviewer protections.
+
+
+### C26 — runtime probe pending
+- C25 schema remains unchanged. Added `tests/test_contract_lmfe_runtime.py` and dedicated no-model GitHub workflow pinned to LM Format Enforcer 0.11.2 to test whether C25 decimal regex rejects `20%` and accepts `20`, plus nullable branch. Previous SHA ee8c1f906dc4b3f73f56ecdc5595cc7d20568cda general CI passed, new probe actual CI PENDING_CI. No new model metrics, financial activation or reviewer changes. Next: read probe result before modifying schema.

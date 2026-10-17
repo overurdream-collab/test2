@@ -138,3 +138,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C25 pinned Qwen actually measured — no improvement
 - Exact commit `caeec0d63c4dc75aa08ae5271ac55683450f6346`, real generated inference https://github.com/overurdream-collab/test2/actions/runs/39072778324: all six workflows PASS; TP1 FP0 FN2, recall0.3333333, precision1.0 based on 1 accepted, 4 total candidates / 3 quarantined. Arabic quote correct but amount still `20%`, invalid Decimal, and mixed H2 candidate `H2:H2_CONSULT` wrong logical key. Adversarial injection also quarantined (0/1 source-verified FPR). Total benchmark 254.1 seconds. Relative to C24 TP1 FP0 FN2, C25 schema regex did not improve observed extraction. Do not infer natural extraction precision from forced-nonempty test or assume LMFE pattern was enforced. Runtime parser investigation is next, while independent validator unchanged.
+
+
+### C26 LMFE direct parser test — PENDING_CI
+- Pinned 0.11.2 LM Format Enforcer no-model `JsonSchemaParser` test uses exact C25 schema read through AST, executes `get_allowed_characters/add_character/can_end` on synthetically constructed full clauses, covers `20`, `20%`, optional `null` and invalid date-text. A green static Python regex check alone is not accepted as LMFE enforcement proof. Dedicated workflow runs before any model invocation. Local environment cannot install LMFE (network unavailable). New SHA result PENDING_CI.
