@@ -241,6 +241,7 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
     invoice_sum = Decimal(0)
     total_knowable = bool(lines)
     seen = set()
+    seen_source_line_values = set()
     for line in lines:
         if not isinstance(line, dict) or not isinstance(line.get("id"), str) or not line["id"] or line["id"] in seen:
             findings.append(_finding("LINE_ID", "HELD", "Missing or duplicate line identity.", [], missing=["unique_line_id"]))
@@ -259,6 +260,16 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
             continue
         invoice_sum += line_total
         refs = [lref]
+        # Two distinct line IDs pointing to the same original source position
+        # with exactly matching quantities/values warrant review, not a
+        # determined duplicate claim or automatic financial adjustment.
+        sig=(lref["document_id"],lref["sha256"],lref["locator"],code,unit,
+             str(qty),str(price),str(line_total))
+        if sig in seen_source_line_values:
+            findings.append(_finding("POTENTIAL_INTERNAL_DUPLICATE", "REVIEW",
+                "Identical invoiced service values reuse one source row; manual review required.",
+                refs, lid))
+        seen_source_line_values.add(sig)
         if qty * price != line_total:
             findings.append(_finding("LINE_ARITHMETIC", "REVIEW",
                 f"Line states {line_total}, but {qty} x {price} = {qty * price}.",

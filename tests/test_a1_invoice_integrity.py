@@ -212,3 +212,30 @@ def test_measured_common_input_g5_comparison():
     assert report["a1"] == {"TP":3,"FP":0,"FN":0,"TN":3,"precision":1.0,"recall":1.0}
     assert report["g5_proxy"] == {"TP":2,"FP":0,"FN":1,"TN":3,"precision":1.0,"recall":2/3}
     assert len(report["rows"]) == 6
+
+
+def test_same_original_invoice_row_reused_by_two_lines_is_review_not_savings():
+    from copy import deepcopy
+    b=base()
+    duplicate=deepcopy(b["invoice"]["items"][0])
+    duplicate["id"]="L2"
+    b["invoice"]["items"].append(duplicate)
+    b["invoice"]["stated_total"]=b["claim"]["amount"]="40.0000"
+    outcome=analyze(b)
+    items=[x for x in outcome["findings"] if x["finding_type"]=="POTENTIAL_INTERNAL_DUPLICATE"]
+    assert len(items)==1
+    assert items[0]["finding_status"]=="REVIEW"
+    assert items[0]["line_item_id"]=="L2"
+    assert "suspected_amount" not in items[0]
+
+def test_distinct_original_invoice_rows_with_same_service_not_assumed_duplicates():
+    from copy import deepcopy
+    b=base()
+    separate=deepcopy(b["invoice"]["items"][0])
+    separate["id"]="L2"
+    separate["source"]["locator"]="synthetic:row:2"
+    b["invoice"]["items"].append(separate)
+    b["invoice"]["stated_total"]=b["claim"]["amount"]="40.0000"
+    outcome=analyze(b)
+    assert not any(x["finding_type"]=="POTENTIAL_INTERNAL_DUPLICATE"
+                   for x in outcome["findings"])

@@ -64,3 +64,5 @@ python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3
 اقرأ docs/agents/A1_DATA_CONTRACT_AR.md وmcias/agents/a1_trusted_input.py. يعيد قراءة الأصل المشفر ويطابق الصفوف؛ لا يحوّل G3 amount إلى unit price دون توثيق. لا API حقيقي بعد ولا PDF OCR ولا attested proof. جميع الاختبارات على هذا التغيير PENDING_CI قبل ظهور سجل CI.
 
 مرجع XLSX الجديد: يستعمل G2 file_scanner وisolated_parse في عملية محدودة ومقارنة البايتات ثم الصفوف؛ راجع tests/test_a1_trusted_input.py؛ PDF/OCR ما زال غير مؤهل للمقارنة المالية. لا مصدر لتوثيق تنفيذ الخدمة أو وحدة التعرفة.
+
+تطوير فحص Duplicate (فقط داخل A1): إذا استُخدم موضع الصف الأصلي نفسه مع نفس الكميات/القيم في بندين مختلفين، يصدر POTENTIAL_INTERNAL_DUPLICATE للمراجعة بلا توفير مالي مرشح؛ تكرار service_code على صفين مستقلين لا يعد تكرارًا.
