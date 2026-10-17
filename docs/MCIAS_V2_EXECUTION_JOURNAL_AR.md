@@ -41,6 +41,9 @@
 | E18 | حماية PostgreSQL من إدراج معتمد بالقوة | `0019_reference_points.py` | أول إدخال لا بد أن يكون `draft`، حتى لو تجاوز ORM | اختبار `test_reference_points_postgres.py` |
 | E19 | اختبار SQL مباشر أمام الـtrigger | `tests/test_reference_points_postgres.py` | يحاول INSERT approved وUPDATE وDELETE ثم يثبت بقاء الأصل | PostgreSQL CI |
 | E20 | تسليم مواصفة مرحلة الذكاء التعاقدي | `MCIAS_CONTRACT_INTELLIGENCE_AND_RULE_COMPILER_SPEC_AR.md` | مواصفة مفصلة للتنفيذ الآمن دون ادعاء أن المستخرج AI يعمل | مراجعة بنود المواصفة |
+| E21 | تعليمات تسليم Codex والمراجعين | `CODEX_MCIAS_V2_EXECUTION_HANDOFF.md` | ترتيب القراءة، حدود الأمان، المهام المفتوحة، وقف الادعاء بالاكتمال | رابط README |
+| E22 | فهرسة كل الوثائق من المستودع | `README.md` | لا يحتاج المطور إلى هذه المحادثة لمعرفة الهيكل والاختبارات وحالة التنفيذ | روابط docs وPR |
+
 
 
 ### حوادث اختبار تم إصلاحها أثناء التطوير
