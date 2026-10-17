@@ -153,3 +153,7 @@
 ### C20 — 20 source-file parser regression corpus (PENDING_CI)
 - New `tests/test_contract_real_files_corpus.py` generates and parses 20 separate actual SYN binary documents through existing G2: 10 three-page PDFs (contract/price/exclusion with page anchors), 5 XLSX (H1/H2/H3 scoped rows), 5 scanned image-only PDFs (OCR disabled: quarantine, never auto-accept). Nothing contains PHI. This is parser-source evidence only, **not** 20 model extractions or Arabic OCR accuracy measurement.
 - C19 exact SHA ac32fda06730dcd4618041011aee153bd84d7c97 G1–G7, G8, G9, Enterprise, Governance workflows all PASS, separate real-Qwen benchmark still not accepted. C20 exact SHA PENDING_CI. Missing actual model Precision/Recall on 20 realistic files, Arabic/mixed OCR and signed institutional financial activation; no merge/production/A1.
+
+### C21 test-only pretrained Qwen2.5-1.5B-Instruct comparison (PENDING_CI)
+- C21 changes ONLY `scripts/contract_ai_benchmark.py` to official Apache-2.0 Qwen/Qwen2.5-1.5B-Instruct pinned revision 989aa7980e4cf806f80c7fef2b1adb7bc71aa306, ~3.09GB pretrained weights. Maintains existing four SYN cases, LM Format Enforcer/forced-nonempty *diagnostic* and independent quote/amount/provider/date safeguards. No new production or autonomous financial model. CI PENDING at new SHA.
+- Prior Qwen3-1.7B model outputs remained four quarantined/Recall0. Neither model approved. Missing 20+ real-file LLM extraction metrics, Arabic OCR, on-prem privacy and institution-bound signed financial activation; Draft PR23 unmerged, A1 not started.

@@ -88,3 +88,6 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 ### C20 reproducible binary document corpus
 - Open `tests/test_contract_real_files_corpus.py`; in-memory generated files only, 10 3-page PDF, 5 XLSX tariff sheets with 3 providers, 5 scanned image-only PDFs without enabled OCR. Run `python -m pytest -q tests/test_contract_real_files_corpus.py tests/test_contract_documents.py`. Expect strict page/row locators and quarantine; no sample data uploaded.
 - This is NOT pretrained LLM extraction or Arabic OCR validation. Review exact C20 SHA CI, pending current pretrained benchmark, and subsequent Arabic OCR/model corpus. Do not merge or use production data; G3/G5 unaffected.
+
+### C21 model comparison experiment
+- Inspect pinned Qwen2.5-1.5B-Instruct (Apache-2.0) test-only benchmark in scripts/contract_ai_benchmark.py. Run Actions on exact new SHA, collect model revision, actual generated response hashes, candidates, quarantined, TP/FP/FN and errors. Compare to Qwen3 0.6B/1.7B previously measured Recall0. Production model stays unconfigured; forced-nonempty diagnostic is explicitly not acceptable for autonomous contract decisions. No main merge, A1, deployment, real PHI or financial activation.

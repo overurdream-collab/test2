@@ -36,3 +36,6 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 
 ## CID-010 — 2026-10-17 — Quote-scoped financial identifiers, not page-scoped
 - A PDF page may list H1 and H2 with identical price or multiple services/currencies. Model candidates must not verify merely because a proposed provider_code/service_code/currency exists somewhere on the same PDF page. Require presence within the same exact quote for PDF/image; XLSX identifiers must remain in the same G2 row. Ambiguous references to header/provider require human adjudication, not programmatic guessing. No G3/G5 tariff change. New C19 CI PENDING.
+
+## CID-011 — 2026-10-17 — Qwen2.5-1.5B-Instruct MODEL TEST ONLY
+- Compare official open licensed Qwen2.5-1.5B-Instruct SHA 989aa7980e4cf806f80c7fef2b1adb7bc71aa306 (Apache-2.0, 3.09GB) after Qwen3 small models failed to extract typed fields. Same frozen four SYN snippets and independent G2 evidence guard. New inference test PENDING; no claim or default model until 20+ file benchmark, actual Arabic OCR and human review. Model license/source official Hugging Face repo. No private data to hosted runner.
