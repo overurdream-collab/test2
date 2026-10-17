@@ -58,7 +58,7 @@ def list_section(section: str, at: date | None = None,
                  authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     actor = _actor(db, authorization, "reference.read")
     items = _safe(db, lambda: list_points(db, actor.organization_id, section, at, limit, offset))
-    return {"section": section, "items": items, "offset": offset, "has_more": len(items) == limit}
+    return {"section": section, "items": items[:limit], "offset": offset, "has_more": len(items) > limit}
 
 
 @router.post("", status_code=201)
