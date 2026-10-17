@@ -219,3 +219,14 @@
 - Risks: Real Qwen inference not run; synthetic HTTP tests mock the LLM. Model candidate text may still need medical/legal interpretation. Reviewer must independently inspect original source; no source fields copied in candidate JSON. PostgreSQL append-only triggers protect review history. Promotion cannot invent dates/automatic amendments or bypass written authorization. No institutional signature-bound production activation.
 - Next: Check exact SHA CI and repair any G9/PostgreSQL/API regressions with fresh DG-001 event. Then browser review flow, real private inference, golden precision/recall and independent security/UAT review.
 - Handoff: Use PR #23 child feat/mcias-contract-intelligence of PR #22. Run alembic upgrade head in isolated test PostgreSQL and listed tests. Review pending CI, never merge/activate. See Contract Intelligence handoff and DG-001.
+
+
+### HANDOFF-20261017-011
+- Scope: Repair C6 first-commit CI failures without altering signed financial rules. Patch synthetic API fixture to mock new proposal-router auth (production auth remains real); bump hardcoded Alembic head expectations 0019->0020 in G5/G6/G7/G8, PostgreSQL integration and restore, and G9 release/preflight.
+- Why: At C6 SHA 88ec7edb50a1eb51156fe20470c550518f919d0a, Actions G1–G7 39062436975 FAIL (unit 5 new tests rejected with HTTP 401 invalid session; postgres 5 migration-head asserts). G9 39062436968 FAIL (migration head and restore). Enterprise 39062436946 FAIL (same plus G8 head). Governance 39062436942 PASS. Errors are evidenced in job logs; no success was attributed to C6.
+- Files: tests/test_contract_intelligence_api.py; mcias/preflight_g9.py; mcias/release_g9.py; tests/test_postgres_integration.py; tests/test_restore_drill.py; tests/test_g5_postgres.py; tests/test_g6_postgres.py; tests/test_g7_postgres.py; tests/test_g8_postgres.py; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md; docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md.
+- Tests: GitHub Actions previous exact SHA (see links above); new full pytest, PostgreSQL migration + G9 preflight and browser workflow on fix SHA queued after commit. NOT_RUN locally owing GitHub clone DNS.
+- Result: Previous C6 FAIL; fix PENDING_CI. No pretrained Qwen inference or Arabic precision/recall tested.
+- Risks: Other migration-head snapshots or additional actual API defects could emerge after fixture repair. Patching test expected head only follows an actual additive 0020 migration; financial G3/G5 validation remains immutable.
+- Next: Verify next GitHub CI exact SHA and fix remaining runtime/test regressions; only then expand UI and real inference evaluation.
+- Handoff: Continue Draft PR #23, inspect job failures and tests. Read current state and governance. Never merge, deploy or activate rules without separate authorization.

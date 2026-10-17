@@ -61,6 +61,9 @@ def client_fixture(monkeypatch):
     app.dependency_overrides[get_db] = get_test_db
     monkeypatch.setattr(contract_api, "resolve_user", lambda db, auth:
         (db.get(User, ids[auth.replace("Bearer ", "")]), None))
+    import mcias.contract_proposals_api as proposals_api
+    monkeypatch.setattr(proposals_api, "resolve_user", lambda db, auth:
+        (db.get(User, ids[auth.replace("Bearer ", "")]), None))
     monkeypatch.setenv("MCIAS_CONTRACT_LLM_URL", "http://127.0.0.1:23456/v1/chat/completions")
     monkeypatch.setenv("MCIAS_CONTRACT_LLM_MODEL", "SYN-model")
     monkeypatch.setenv("MCIAS_CONTRACT_LLM_REVISION", "SYN-revision")

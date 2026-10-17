@@ -37,3 +37,8 @@ tests/test_contract_rule_compiler.py covers permitted tariff and copay, before/e
 
 ### C6 Proposal Persistence / PENDING_CI
 New synthetic HTTP tests cover server-only candidate creation, duplicate extraction, immutable reviewer decision, missing date refusal, uncertain OCR refusal, cross-tenant denial, and reviewed promotion to inactive ReferencePoint draft. Test file: `tests/test_contract_intelligence_api.py`. PostgreSQL revision `0020_contract_proposals` enforces append-only triggers. **No tests of these changes claimed PASS until new SHA Actions are examined.** No measured clause precision/recall or real Qwen inference.
+
+
+### C6 exact GitHub evidence and C7 fix (2026-10-17)
+- C6 `88ec7edb50a1eb51156fe20470c550518f919d0a`: governance https://github.com/overurdream-collab/test2/actions/runs/39062436942 PASS; G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39062436975 FAIL (5 synthetic API tests HTTP401 from unmocked new router; PostgreSQL assertions expecting old 0019); G9 https://github.com/overurdream-collab/test2/actions/runs/39062436968 FAIL (G9 preflight head and restore); Enterprise https://github.com/overurdream-collab/test2/actions/runs/39062436946 FAIL (same and G8 head). Correctly classified FAIL, no extraction precision.
+- C7 repair modifies test-only auth double and target revision constants to existing Alembic head `0020_contract_proposals`. C7 new SHA CI **PENDING_CI**, not assumed passing; model inference remains NOT_RUN.

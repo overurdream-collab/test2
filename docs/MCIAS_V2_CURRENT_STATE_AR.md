@@ -78,3 +78,9 @@
 - Exact earlier tested SHA 47996ebb937cca26b434747cf0450f7b07f41d75: governance 39060103800 PASS, G1–G7 39060103822 PASS, G9 39060103912 PASS, workspace 39060103888 PASS. C6 is PENDING_CI until its new SHA Actions checked.
 - NOT_DONE: live pretrained Qwen inference, Arabic mixed/scan accuracy benchmark with ground truth, end-user review UAT, all acceptance cases, institution-bound cryptographic authorizations and production approval. Any unclear dates/OCR require review; no external patient data or commercial hosting.
 - Immediate resume: inspect latest PR23 HEAD, exact CI, tests/test_contract_intelligence_api.py and migration 0020. Run isolated PostgreSQL and fix failures before another functional change, logging DG-001 at every commit. No merge/main/A1.
+
+
+### C6 CI regression and C7 repair (2026-10-17)
+- C6 SHA 88ec7edb50a1eb51156fe20470c550518f919d0a is **FAILED**: DG PASS run 39062436942; G1–G7 FAIL run 39062436975, G9 FAIL run 39062436968, Workspace FAIL run 39062436946. Root causes: five new synthetic tests had fixture 401 invalid session for new router, and migrations assert prior 0019 while additive schema is now 0020.
+- New fix updates synthetic fixture auth only and replaces expected migration head with actual 0020 in PostgreSQL/G9 checks. Production permission checks are unchanged. Tests on new SHA PENDING_CI.
+- No real Qwen inference, no proven Arabic clause metrics, no full reviewer browser UAT. No production activation, G3/G5 tariff replacement, main merge or A1. Next inspect exact CI of fix.

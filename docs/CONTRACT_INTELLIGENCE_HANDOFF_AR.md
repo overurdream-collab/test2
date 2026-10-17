@@ -28,3 +28,7 @@ Read mcias/contract_rule_compiler.py + tests/test_contract_rule_compiler.py and 
 ### C6 resume: source-anchored persisted proposals
 - New models_contract_proposals.py and migration 0020 implement tenant-bound immutable proposal/review/promotion history. contract_proposals_api.py defines /extract, /documents/{id}/proposals, /proposals/{id}/review and /promote. No raw AI result supplied by client is accepted. Source G2 fields are checked for permissions again on review. Only independently reviewed complete candidates promote to an INACTIVE ReferencePoint draft, not to finance execution.
 - Tests: tests/test_contract_intelligence_api.py; PostgreSQL and full CI on new SHA PENDING. Real Qwen inference, Arabic OCR benchmark, UI reviewer journey, institutional signatures all NOT_DONE. Never merge or deploy.
+
+
+### C7 CI fix resume
+C6 SHA 88ec7edb had FAIL on tests due mock-auth fixture and migration head; see Test Report. C7 supplies fixture and 0020 head updates (test-only and G9 preflight). Run exact-head G1–G7, G9, Enterprise and DG Actions. Real local Qwen, UI review and signed approval are still open and must not be represented as complete. Never merge or enable financial authority.
