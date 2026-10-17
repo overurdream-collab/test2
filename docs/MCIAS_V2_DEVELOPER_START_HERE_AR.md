@@ -159,3 +159,49 @@ python -m pytest -q tests/test_g5_agent_order.py tests/test_g5_engine.py
 - أي قرار قانوني/طبي/مالي غير محسوم يأخذ `HOLD` أو `HUMAN_REVIEW`. كل مطالبة قديمة تُراجع بقواعد **تاريخ الخدمة** وتحفظ بصمة النسخة في تقرير التدقيق.
 - لا تغيّر G3 وG5 ليقبلا مصادر جديدة بسهولة على حساب `policy_fingerprint` والتفويض، ولا تعِد كتابة اللقطات القديمة.
 - قوائم TODO الحقيقية موثقة في سجل التنفيذ؛ وجود الشاشة لا يعني اكتمال خدمة استخراج العقود أو الاعتماد الإنتاجي أو وكلاء A1–A5.
+
+
+## Contract Intelligence: new evidence gate on child PR #23
+- mcias/contract_intelligence.py: make_source_blocks() reads existing G2 ExtractedSourceRecord shapes; validate_candidates() rejects unsupported locator/quote/numeric/date/tenant-independent identity at pure layer and returns **DRAFT_ONLY** records; infer_local() opens explicit localhost-only OpenAI-compatible POST, no external proxy or cloud fallback, requires model id+revision.
+- There is **no live API or UI integration yet** and **no real model inference**. API must enforce organization scope plus RBAC/field-level access prior to using G2 records; never hand public model data.
+- tests/test_contract_intelligence.py: positive/negative synthetic anchors, wrong provider, OCR price mismatch, prompt injection as untrusted content, SSRF and unavailable inference. Read exact CI status before claiming any pass.
+
+
+### C2 — Contract preview integration (child Draft PR #23)
+- API: POST /api/v1/contract-intelligence/documents/{document_id}/preview; required reference.write AND workspace.super_admin plus per G2 source field medical_fields.<field>.read permission; organization isolation and G2 completeness enforced, no mutation. Failure if model unconfigured (503), unreviewed source (409), foreign (404), permissions (403).
+- Operator-only env: MCIAS_CONTRACT_LLM_URL=http://127.0.0.1:<PORT>/v1/chat/completions; MCIAS_CONTRACT_LLM_MODEL=<exact-local-id>; MCIAS_CONTRACT_LLM_REVISION=<weight-revision>. URL cannot redirect; no proxies; service must bind to private loopback. Never put PHI into external inference. Model not installed here.
+- UI: /admin/reference-data, existing sections toolbar "معاينة بنود العقد بالذكاء الاصطناعي"; paste G2 document ID (returned by upload), preview result inside drawer; no automatic draft/save/approval. Real persistence, typed compiler and bilingual review table still NOT IMPLEMENTED.
+- Run python -m pytest -q tests/test_contract_intelligence.py tests/test_contract_intelligence_api.py; node --check mcias/web_workspace/reference_points_view.js; inspect full CI on exact PR head.
+
+### C5 typed diagnostic review
+- compile_diagnostic(ReferencePoint, end_override=None) supports section tariffs/amount and cost_sharing/percentage only when status approved, source sha256 and dated; creates immutable-like fingerprinted diagnostic AST with execution_authorized=False. compare_diagnostic() requires matching tenant, provider, service, service date interval, currency and caller-supplied G3/G5 values; statuses advisory only. It does NOT verify G3/G5 cryptographic grant; audit_service/reconcile unchanged. tests/test_contract_rule_compiler.py contains security and history regressions.
+
+### C6 — AI contract proposal lifecycle (PENDING_CI)
+New Alembic head `0020_contract_proposals`; candidate/review/promotion tables are append-only. The /api/v1/contract-intelligence/documents/{id}/extract endpoint invokes the existing private AI preview and saves source-anchored proposals; GET /documents/{id}/proposals rechecks G2 sensitive fields and tenant isolation. POST /proposals/{id}/review requires independent reviewer with reference.approve and ingestion.read; POST /proposals/{id}/promote requires reference.write and workspace.super_admin, complete dates and accepted source, then creates ReferencePoint `draft` only. No G3/G5 changes or AI financial execution. Exact SHA CI unverified; real Qwen and UI end-to-end not yet shown. Run isolated PostgreSQL migration and pytest tests/test_contract_intelligence_api.py.
+
+
+### C8 candidate review UI and synthetic model evaluation
+The existing `/admin/reference-data` drawer now offers local AI preview or server-side saved extraction, and a separate authorized viewer/reviewer for source-anchored proposals. Review UI requires reference.read+ingestion.read; independent accepted/rejected decisions require reference.approve; separately authorized editors can promote accepted complete terms only to ReferencePoint `draft`. For real model proof, `scripts/contract_ai_benchmark.py` uses official pinned Qwen3-0.6B revision and local loopback /v1/chat/completions on a free public GitHub standard runner (synthetic cases only); reports TP/FP/FN, precision/recall, FPR and output SHA. Never send real records to GH Actions, and do not conflate this 4-text benchmark with Arabic OCR or production acceptance. Check exact C8 CI first; no G3/G5 activation.
+
+
+### C15 verified date evidence (PENDING_CI)
+For AI proposals, service-effective `effective_from` and `effective_until` are not trusted solely because they have valid ISO syntax. On PDF/image source locators, the date must appear verbatim within `original_clause_text` (same quote); dates elsewhere on that page are not provenance. XLSX/CSV same source record may hold a date in a separate column of the same row. Missing/inconsistent evidence is `needs_human_review` and cannot enter promotion to active finance. Changes only mcias/contract_intelligence.py and tests; G3/G5 remain authoritative and unchanged.
+
+
+### C16 Contract AI system prompt source isolation — pending CI
+Model instruction is schema-only, with NO hardcoded provider/service, prices, dates or currency example. Previous pinned Qwen3-1.7B copied `P7:XRAY` from illustrative system prompt into unrelated contract proposals; all were quarantined. Verify typed output against G2 actual same-source quote, provider, service, currency, numeric amount and effective dates. New negative test prohibits reintroducing example-specific values. C15 source-date rule: end date not found in exact PDF clause or matching XLSX row must block independent reviewer acceptance. No G3/G5 policy execution.
+
+### C19 PDF provider/service/currency source anchoring
+Never accept a tariff candidate if its provider/service/currency appears on the PDF page but **outside** the exact extracted clause quote. On a structured XLSX row, identifiers may be in different cells of the same `ExtractedSourceRecord`. This supplements the existing numeric-in-quote and effective-date-in-quote checks. Reject candidate as `needs_human_review`; no automatic G3/G5 updates. See `tests/test_contract_intelligence.py` tests for wrong H2/H1 and XRAY/CONSULT/USD/YER. C19 CI PENDING.
+
+ 
+### C22 — opt-in local CPU benchmark timeout (DG-001, PENDING_CI)
+`infer_local(..., timeout=30)` retains original production default, loopback-only URL, no proxies/redirects and all source validators. Explicit caller may pass up to 180 seconds for isolated CPU inference evaluation; values outside 1–180 are rejected. Production `mcias/contract_intelligence_api.py` calls without a timeout argument (30s). Only `scripts/contract_ai_benchmark.py` opts into 180 and reports the selected deadline. Test `python -m pytest -q tests/test_contract_intelligence.py` then exact GitHub CI/real pretrained benchmark; no production model enabled or protected approval changed. C21 baseline model did not return before 60s; do not claim C22 model extraction success without metrics.
+
+
+### C24 Contract AI bilingual prompt guidance
+- Local model instructions recognize explicitly quoted Arabic `نسبة تحمل المريض`/`نسبة التحمل` copayment wording and copy the percentage digits from the same quoted clause, never from effective dates. This changes prompt guidance only. Existing source/identity/numeric/date validation, draft approval, tenant security and signed financial authority unchanged. Real model quality at C24 PENDING_CI; see test report.
+
+
+### C28 verified tariff identity rule
+- For an AI proposed tariff only, independent G2 quote/number/provider/service/currency/date checks run before a redundant model `logical_key` mismatch can be canonicalized from the verified `provider_code:service_code`. Any additional evidence or identity failure remains on hold. DRAFT_ONLY/human review and signed G3/G5 authority unchanged. Exact-SHA CI PENDING.

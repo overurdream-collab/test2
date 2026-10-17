@@ -94,7 +94,15 @@ def test_seed_reset_wrong_confirmation_never_connects(monkeypatch):
     config=SeedConfig("postgresql://localhost/synthetic_e2e","development")
     with pytest.raises(ValueError): reset(config,"client")
 
-def test_middleware_returns_429_retry_after_and_ignores_forwarded_headers(database):
+def test_middleware_returns_429_retry_after_and_ignores_forwarded_headers(database, monkeypatch):
+    # 101 sequential HTTP requests can cross a real minute boundary on a busy
+    # browser/PG CI runner. Pin the rate-limit WINDOW, not any permission checks.
+    from mcias import rate_limits
+    genuine_check = rate_limits.check_limits
+    frozen = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+    monkeypatch.setattr(rate_limits, "check_limits",
+        lambda db, authorization, client_ip: genuine_check(
+            db, authorization, client_ip, now=frozen))
     def dependency():
         with Session(database) as db: yield db
     app.dependency_overrides[get_db]=dependency
