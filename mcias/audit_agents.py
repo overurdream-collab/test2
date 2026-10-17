@@ -4,6 +4,7 @@ from sqlalchemy import select
 from mcias.models_reference import BeneficiaryEnrollment, ProviderTariff
 from mcias.models_claims import ClaimAttachment, ClaimEntry
 from mcias.reference import active_contract
+from mcias.reference_rule_bridge import reconcile
 
 AGENTS=("eligibility","contract","tariff","exclusion","caps","cost_sharing","duplicates","evidence")
 
@@ -38,8 +39,13 @@ def inspect_claim(db,claim:ClaimEntry,policy):
         ClaimAttachment.organization_id==claim.organization_id,ClaimAttachment.claim_id==claim.id)).all()
     add("evidence","pass" if attachments else "hold","attachment linked" if attachments else "no linked evidence",
         attachments)
+    # The new clause register is cross-checked against G3/G5; it cannot
+    # overwrite the financial tariff or authorize an uncompiled contract term.
+    reference_reconciliation=reconcile(db,claim,policy,tariff if tariff_ok else None)
     assert tuple(x["agent"] for x in findings)==AGENTS
     return {"findings":findings,"contract":contract,"tariff":tariff if tariff_ok else None,
             "enrollment":enrollment[0] if len(enrollment)==1 else None,
             "eligible":len(enrollment)==1,"evidence_complete":bool(attachments),
-            "review_required":bool(duplicates) or any(x["status"]=="hold" for x in findings)}
+            "review_required":bool(duplicates) or any(x["status"]=="hold" for x in findings)
+                or reference_reconciliation["status"]!="pass",
+            "reference_reconciliation":reference_reconciliation}
