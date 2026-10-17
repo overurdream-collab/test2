@@ -261,7 +261,7 @@ def test_original_invoice_explicit_fee_kind_is_preserved_without_financial_autho
     """Trusted G2 bytes, not code-name inference, determine whether a line is a fee."""
     engine,db,store,org,actor=_setup(tmp_path)
     try:
-        claim,_,_=_claim(db,store,org,invoice=False,amount="25")
+        claim,_,_=_claim(db,store,org,actor,invoice=False,amount="25")
         invoice_csv=(
             "line_item_id,service_code,unit,quantity,unit_price,line_total,"
             "invoice_total,claim_reference,provider_code,currency,item_kind\n"
@@ -288,7 +288,7 @@ def test_original_invoice_explicit_fee_kind_is_preserved_without_financial_autho
 def test_invalid_declared_fee_kind_fails_closed_not_silently_service(tmp_path):
     engine,db,store,org,actor=_setup(tmp_path)
     try:
-        claim,_,_=_claim(db,store,org,invoice=False)
+        claim,_,_=_claim(db,store,org,actor,invoice=False)
         csv=(
             "line_item_id,service_code,unit,quantity,unit_price,line_total,"
             "invoice_total,claim_reference,provider_code,currency,item_kind\n"
