@@ -51,7 +51,8 @@ def case(name):
                              "line_total": "7", "source": ref("invoice-doc")})
         inv["stated_total"] = cl["amount"] = "27"
     elif name == "legit_fee":
-        con["allowed_fees"] = [{"code": "ADMIN", "unit": "fee", "currency": "YER", "unit_price": "3"}]
+        con["allowed_fees"] = [{"code": "ADMIN", "unit": "fee", "currency": "YER",
+                                "unit_price": "3", "source": ref("contract-doc")}]
         inv["items"].append({"id": "F1", "kind": "fee", "code": "ADMIN",
                              "unit": "fee", "quantity": "1", "unit_price": "3",
                              "line_total": "3", "source": ref("invoice-doc")})

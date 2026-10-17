@@ -46,3 +46,7 @@ python -m pytest -q
 يمكن لملف CSV/XLSX يحتوي حقول G2 الموثقة أن يضيف عمودًا اختياريًا `item_kind` بقيمة `service` أو `fee`. ينتقل النوع من صف البايتات الأصلية بعد إعادة الاستخراج والتحقق، ولا يستنتج المحوّل رسمًا من `service_code` أو من المبلغ. الصفوف القديمة التي لا تتضمن العمود تبقى `service` للتوافق، ووجود قيمة غير معروفة يؤدي إلى `invalid_invoice_row` و`INSUFFICIENT_EVIDENCE` دون تسوية مالية. لا تتحول الرسوم إلى `UNJUSTIFIED_FEE` محسومة بلا جدول رسوم عقدي مُعتمد بالكامل.
 
 اختبارات: `test_original_invoice_explicit_fee_kind_is_preserved_without_financial_authority` و`test_invalid_declared_fee_kind_fails_closed_not_silently_service`. هذان اختبارا أصل CSV مشفر اصطناعي؛ لا إثبات لتصنيف رسوم من OCR/PDF.
+
+
+## رسوم العقد — شرط إثبات مرجع البند (مرحلة 1)
+حتى مع `item_kind=fee` وسجل في `allowed_fees`، لا يعتبر A1 الرسم مطابقًا إلا إذا احتوى **بند الرسم المسموح** على `source: {document_id, sha256, locator}`، وكان `document_id` و`sha256` متطابقين مع مصدر العقد الساري المعتمد. عند غياب/اختلاف ذلك، يصدر `FEE_CONTRACT_AUTHORITY / INSUFFICIENT_EVIDENCE` مع `approved_fee_clause_source` ولا يُحتسب الرسم مسموحًا به. مرجع العقد وموضع البند هما إثبات بنيوي استشاري، **لا تحقق بايتات العقد أو توقيع المؤسسة**؛ ربط G3 الحقيقي بوحدات ورسوم مصدقة يظل معلقًا. اختبار الخدمة/الرسم لم يغيّر بوابات الأحكام المالية.

@@ -294,6 +294,17 @@ def analyze(bundle: dict, model: Callable | None = None, model_id: str | None = 
                     "Missing/ambiguous matched code, unit, currency or tariff amount.",
                     [*refs, csrc], lid, missing=["unique_tariff_or_fee"]))
             continue
+        # A fee schedule row is not itself contractual authority. Require
+        # a clause-level reference back to the same approved contract document.
+        if kind == "fee":
+            fee_ref = _ref(matches[0].get("source"))
+            if (not fee_ref or fee_ref["document_id"] != csrc["document_id"]
+                or fee_ref["sha256"] != csrc["sha256"]):
+                findings.append(_finding("FEE_CONTRACT_AUTHORITY", "INSUFFICIENT_EVIDENCE",
+                    "Fee schedule has no verifiable clause reference in approved contract.",
+                    [*refs, csrc], lid, missing=["approved_fee_clause_source"]))
+                continue
+            refs = [*refs, fee_ref]
         allowed = decimal(matches[0]["unit_price"])
         if price > allowed:
             findings.append(_finding("PRICE_OVERCHARGE", "REVIEW",

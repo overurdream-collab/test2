@@ -239,3 +239,27 @@ def test_distinct_original_invoice_rows_with_same_service_not_assumed_duplicates
     outcome=analyze(b)
     assert not any(x["finding_type"]=="POTENTIAL_INTERNAL_DUPLICATE"
                    for x in outcome["findings"])
+
+
+def test_fee_is_not_authorized_without_individual_contract_clause_source():
+    b = case("legit_fee")
+    b["contracts"][0]["allowed_fees"][0].pop("source")
+    result = analyze(b)
+    assert result["finding_status"] == "INSUFFICIENT_EVIDENCE"
+    assert any(f["finding_type"] == "FEE_CONTRACT_AUTHORITY" for f in result["findings"])
+    assert not any(f["finding_type"] == "UNJUSTIFIED_FEE" for f in result["findings"])
+
+
+def test_fee_authority_cannot_reference_different_contract_document():
+    from tests.a1.synthetic_cases import ref
+    b = case("legit_fee")
+    b["contracts"][0]["allowed_fees"][0]["source"] = ref("another-contract")
+    result = analyze(b)
+    assert result["finding_status"] == "INSUFFICIENT_EVIDENCE"
+    assert any(f["finding_type"] == "FEE_CONTRACT_AUTHORITY" for f in result["findings"])
+
+
+def test_sourced_approved_fee_remains_advisory_clean():
+    result = analyze(case("legit_fee"))
+    assert result["finding_status"] == "PASS"
+    assert not any(f["finding_type"] == "FEE_CONTRACT_AUTHORITY" for f in result["findings"])
