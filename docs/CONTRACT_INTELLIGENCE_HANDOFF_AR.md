@@ -59,3 +59,8 @@ C10 new real-model harness could not import `mcias.contract_intelligence` due ac
 - Exact C12 1.7B benchmark run 39064879988 was an evidence-backed **FAIL**: 4 empty structured outputs, TP0 FP0 FN3. Avoid classifying 0 FP with no model positives as success.
 - New `tests/test_contract_gold_battery.py`: 20 positive synthetic source snippets spanning eight categories and 10 intentionally invalid updates; run `pytest -q tests/test_contract_gold_battery.py` as unit tests. This verifies only quote/type/dates/provider checks, not actual AI extraction or OCR.
 - Enterprise run 39064879967 failed a rate-limit check; rerun requested and investigation open. Fetch fresh branch head and checks before proceeding. Remaining: actual validated clauses from pretrained model, large document gold, Arabic OCR and signature-bound institutional UAT. No merge/main/production/A1.
+
+
+### C14 — diagnostic differentiation
+- C13 deterministic 30-case gold-anchoring suite passed as part of G1–G7 (run 39065318369), not AI benchmark. C14 test-only script forces at least one structured proposal in ALL four SYN model prompts (including adversarial negative), while source validator stays strict and false-positive gate is explicit. No production runtime or signed finance changes.
+- Retrieve C14 exact GitHub Actions output: how many candidates generated, how many quarantined, TP/FP/FN on verified source anchors, any model/timeouts and artifact hashes. Do NOT use forced-nonempty metrics as normal model-selection accuracy. Next: assess more capable model or two-stage classifier+extractor; expand 20+ real-structure SYN documents and local Arabic OCR.

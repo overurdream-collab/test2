@@ -20,3 +20,8 @@ Observed C9 true Qwen3-0.6B output: fenced top-level JSON arrays, wrong keys/enu
 
 ## CID-006 — 2026-10-17 — MODEL COMPARISON EXPERIMENT (NOT SELECTED)
 - At C11 SHA bee37b2df08f827c4e9fe53af604c064f8c0c808 the pinned real Qwen3-0.6B emitted four syntactically valid empty arrays with lm-format-enforcer; source-verified recall remained zero. Run a legally reusable stronger official candidate Qwen/Qwen3-1.7B (Apache-2.0; Hugging Face official snapshot revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e) under identical SYN gold and validators on free CPU CI. No default production model change. Model weights ~4GB and CPU memory/performance are unverified; abort with honest FAIL on memory/runtime/zero recall. A successful 4-case test alone is insufficient to select a model or certify Arabic OCR.
+
+
+## CID-007 — 2026-10-17 — EXPERIMENT: force candidate in test harness only
+- The optional-empty JSON grammar produced only `{"clauses":[]}` on both Qwen3-0.6B and Qwen3-1.7B when reading three verifiable SYN examples. For diagnosis only, require at least one candidate for ALL sources including the negative injection, without conditional use of known gold labels. Evaluate model capacity to fill the 11 typed fields; count quarantined candidates and fail if any negative is incorrectly source-verified. This DOES NOT authorize forcing candidates in institutional production, relaxing G2 quotes, or generating executable finance rules.
+- Test result remains PENDING on C14 SHA; compare to pinned historical model runs, then decide suitable real-model serving pipeline with larger corpus. Binding safety CID-003 remains unchanged.

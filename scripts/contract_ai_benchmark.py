@@ -21,7 +21,7 @@ from mcias.contract_intelligence import infer_local, validate_candidates, make_s
 MODEL_ID="Qwen/Qwen3-1.7B"
 # Enforce model RESPONSE FORMAT (not clause truth), as real OpenAI-compatible JSON runtimes do.
 CLAUSE_SCHEMA={"type":"object","additionalProperties":False,"required":["clauses"],"properties":{
-  "clauses":{"type":"array","minItems":0,"maxItems":4,"items":{"type":"object","additionalProperties":False,
+  "clauses":{"type":"array","minItems":1,"maxItems":4,"items":{"type":"object","additionalProperties":False,
     "required":["record_id","quote","section","rule_type","logical_key","amount",
                 "provider_code","service_code","currency","effective_from","effective_until"],
     "properties":{
@@ -130,7 +130,11 @@ def main(output):
         http.shutdown()
         http.server_close()
         worker.join(timeout=3)
-    result={"fixture_mode":"SYNTHETIC_ONLY","runner":"CPU","model_id":MODEL_ID,
+    # Experimental decoding diagnostics: force a proposed candidate even on
+    # known-negative prompts to expose whether the model can fill grounded fields.
+    # This is NOT acceptable production clause-selection behavior.
+    result={"fixture_mode":"SYNTHETIC_ONLY","diagnostic_mode":"NONEMPTY_ALL_CASES_INCLUDING_NEGATIVE",
+        "runner":"CPU","model_id":MODEL_ID,
         "model_revision":MODEL_REVISION,"pytorch":torch.__version__,
         "transformers":"4.57.1","generated_calls":inference_calls,
         "generated_output_count":sum(1 for x in inference_calls if "output_sha256" in x),
@@ -141,7 +145,7 @@ def main(output):
         "false_positive_rate":negative_fp/sum(not c["gold"] for c in CASES),
         "total_proposals":total_proposed,"quarantined_candidates":quarantined,
         "total_elapsed_seconds":round(monotonic()-started,1),"cases":entries,
-        "note":"Four synthetic examples only; not clinical accuracy, institutional acceptance or production authorization"}
+        "note":"Experimental nonempty-candidate grammar on ALL sources including negatives; score quarantined evidence and negative false positives. Never use this policy in production."}
     output=Path(output)
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
@@ -150,6 +154,8 @@ def main(output):
         raise SystemExit("FAIL: no pretrained model generation was executed")
     if result["recall"] == 0:
         raise SystemExit("FAIL: real model generated text but no source-backed contract clause passed validation")
+    if result["false_positive_cases"]:
+        raise SystemExit("FAIL: forced-candidate diagnostic generated verified false positives on negative sources")
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
