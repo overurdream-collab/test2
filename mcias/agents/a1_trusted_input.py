@@ -311,7 +311,10 @@ def preview_a1_from_g4(db,actor,claim_id,store,*,run_id):
     data=build_a1_snapshot(db,actor,claim_id,store,run_id=run_id)
     # Real on-prem medical data is never sent to an AI inference backend here.
     result=analyze(data["snapshot"].analysis_bundle())
-    return {"a1":result,"missing_evidence":data["snapshot"].missing_evidence,
+    from mcias.agents.a1_review_packet import packet_from_preview
+    preview={"a1":result,"missing_evidence":data["snapshot"].missing_evidence,
             "g3_historical_diagnostic":data["g3_reference"],
             "status":data["status"],"financial_decision":"NOT_AUTHORIZED",
             "source_verifications":[v.model_dump() for v in data["snapshot"].source_verifications]}
+    preview["review_packet"]=packet_from_preview(preview)
+    return preview

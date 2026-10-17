@@ -125,6 +125,8 @@ def test_actual_encrypted_g2_g4_rows_and_Pydantic_positive(tmp_path):
         assert out["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
         assert out["financial_decision"]=="NOT_AUTHORIZED"
         assert "approved_unit_mapping" in out["missing_evidence"]
+        assert out["review_packet"]["provisional_four_way_code"]=="HUMAN_REVIEW"
+        assert out["review_packet"]["g7_realized_savings"] is None
     finally:
         db.close();engine.dispose()
 
@@ -135,6 +137,7 @@ def test_g4_claim_without_invoice_does_not_create_unit_or_line(tmp_path):
         out=preview_a1_from_g4(db,actor,claim.id,store,run_id="SYN-no-invoice")
         assert out["a1"]["finding_status"]=="INSUFFICIENT_EVIDENCE"
         assert "no_unique_verified_itemized_invoice" in out["missing_evidence"]
+        assert out["review_packet"]["provisional_four_way_code"]=="MISSING_ATTACHMENTS"
     finally:
         db.close();engine.dispose()
 

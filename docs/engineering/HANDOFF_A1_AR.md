@@ -70,3 +70,6 @@ python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3
 أمان HTTP: App security middleware يفرض Cache-Control: no-store على جميع المسارات /api/v1/a1/، واختبار مثبت ضمن tests/test_a1_preview_http.py. CI الخاص بـA1 يشمل اختبارات G2/G4 adapter وHTTP إلى جانب القواعد والنموذج الحقيقي.
 
 Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها المطَبّعة بيانات صف G2 الأصلية حرفيًا/عددياً؛ تراجع الاختبارات tests/test_a1_trusted_input.py::test_g4_normalized_claim_amount_cannot_diverge_from_original_source. صلاحيات source medical_fields تغطي G4 fields والـinvoice.
+
+## A1 → G6/G7 وPR22 الأربع نتائج (واجهة قراءة فقط)
+أضيف mcias/agents/a1_review_packet.py؛ تنتج preview_a1_from_g4 حزمة review_packet مع أصل كل finding ونسخة المصدر، وHUMAN_REVIEW أو MISSING_ATTACHMENTS **مبدئيًا فقط**. لا يمكن للوكلاء إصدار ACCEPTED_RULES أو REJECTED_RULE_CERTAIN ولا اعتماد خصم؛ Palermo='NOT_EXECUTED'، G6='PENDING' وG7.realized_savings=null. هذا اتفاقية بيانات بين الوكلاء وليس نشرًا أو تكاملًا على قواعد G6/G7.
