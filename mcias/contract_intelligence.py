@@ -185,6 +185,15 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
                     errors.append("effective_" + label + "_not_in_source")
         if not start:
             errors.append("missing_effective_from")
+        # A model's tariff logical_key is redundant. Canonicalize it ONLY if
+        # every independent source, identity, amount and date check succeeded.
+        # Never repair a wrong provider/service or an unsupported quote.
+        if (section == "tariffs" and errors == ["tariff_identity_incomplete"]
+                and isinstance(provider, str) and isinstance(service, str)
+                and isinstance(currency, str) and kind == "amount"):
+            key = provider + ":" + service
+            if _CODE.fullmatch(key):
+                errors.clear()
         dedup_key = (repr(section), repr(key), repr(provider), repr(service))
         previous = seen.get(dedup_key)
         signature = (quote, amount, start, end)

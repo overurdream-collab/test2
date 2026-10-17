@@ -158,3 +158,8 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C27 CI collection fix (PENDING_CI)
 - C26 general suite G1-G7 39073747367 and Enterprise 39073747397 both FAIL collection due missing lmformatenforcer. Dedicated LMFE parser 39073747353 PASS with 1 test: accepted numeric decimal 20 and null, rejected 20%/invalid patterns. C27 uses `pytest.importorskip` only for optional test; dedicated job installs library and is expected to execute, not silently skip. New exact SHA result pending. No new Qwen model quality score claimed.
+
+
+### C28 — canonical tariff logical key (new SHA PENDING_CI)
+- C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
+- New validation branch allows exactly one existing error: model logical_key mismatch for otherwise completely verified tariff; replaces with deterministic provider:service. Every other validation error still quarantines. Real model and all CI on C28 have not yet been observed.

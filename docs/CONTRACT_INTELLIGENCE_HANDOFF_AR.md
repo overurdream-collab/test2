@@ -138,3 +138,8 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C27 handoff
 - On C26 SHA c9ea45e950bf480b75b929694f9621e807037e7a, independent LMFE 1 passed; general suites failed optional import. One test-only `pytest.importorskip` fix committed with DG-001 docs, no runtime or benchmark change. Verify new SHA general suites plus dedicated test executed, inspect actual Qwen results. No production/main/finance/A1.
+
+
+### C28 next operator
+- C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
+- One key derivation on fully verified tariff candidate, with cross-provider and cross-service adversarial tests; C28 exact-SHA CI and model quality PENDING. Inspect actual generated outputs and source-error quarantine, don't tune another model field before CI. No merge, production or G3/G5.

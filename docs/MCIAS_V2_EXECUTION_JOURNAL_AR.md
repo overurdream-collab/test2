@@ -505,3 +505,14 @@
 - Risks: If standalone CI environment loses pinned package, must fail/verify explicit execution rather than treat skipped test as PASS; workflow installs 0.11.2 and inspect test count. Human review/financial authority untouched.
 - Next: Verify latest exact SHA all workflows, especially unit/Enterprise fixes and dedicated LMFE 1 passed; read genuine C26 Qwen output metrics if completed and record without a new code edit.
 - Handoff: Read this event, `tests/test_contract_lmfe_runtime.py`, `.github/workflows/contract-lmfe-probe.yml`, latest PR23 head and Actions. Do not merge, deploy, touch source validation or advance AI tuning.
+
+
+### HANDOFF-20261018-010 — C28 canonical tariff key only after complete independent source verification
+- Scope: Single bounded advisory `validate_candidates` change: if the **only** validation error is tariff_identity_incomplete from model-proposed logical_key, derive canonical key from verified same-record provider_code and service_code, retaining original independent quote/amount/currency/date/source evidence gates. Add positive and three negative source-isolation tests. Human review/DRAFT_ONLY and G3/G5 financial authority unchanged.
+- Why: C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
+- Files: `mcias/contract_intelligence.py`, `tests/test_contract_intelligence.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`, `docs/MCIAS_V2_DEVELOPER_START_HERE_AR.md`, `docs/MCIAS_V2_ACCEPTANCE_MATRIX_AR.md`.
+- Tests: C27 above all 7 GitHub workflow families PASS. C28 newly added Python tests and new-SHA CI PENDING_CI; NOT_RUN locally (no checkout runtime). No C28 model TP/FP/FN asserted before real run.
+- Result: IMPLEMENTED_PENDING_CI, existing safety errors never removed. A malformed provider/service, mismatched source quote, wrong amount or dates cannot trigger repair. Dedup uses the canonical key after independent validation.
+- Risks: Small synthetic benchmark may not capture actual OCR/multi-provider ambiguity; only a fully validated candidate is eligible. No automatic approval or financial execution.
+- Next: Verify exact C28 G1-G7/G8/G9/Enterprise/DG/LMFE CI and actual Qwen TP/FP/FN; if any regression, stop and repair within DG-001.
+- Handoff: Reopen PR23 latest HEAD, read C28 tests and `mcias/contract_intelligence.py`, compare to C27 benchmark 39074039943; no main merge, production, A1 or paid service.

@@ -211,3 +211,8 @@
 
 ### C27 — isolate optional LMFE import from regular pytest (PENDING_CI)
 - C26 SHA c9ea45e950bf480b75b929694f9621e807037e7a dedicated LMFE 0.11.2 runtime passed 20, 20%, null checks; G1-G7 and Enterprise broke at test import because optional library absent (runs 39073747367, 39073747397). C27 switches module import to `pytest.importorskip`, allowing normal suites to skip optional parser test while the dedicated job still installs LMFE and must execute it. No engine/schema/security/finance changes; latest CI PENDING_CI. Next: verify exact results and C26 actual Qwen metrics.
+
+
+### C28 — safe derivation of verified tariff logical_key (PENDING_CI)
+- C27 baseline 9287f9f3cf6aeec0a6fd132d113830d42180c347: all 7 workflow groups PASS, Qwen real SYN diagnostic https://github.com/overurdream-collab/test2/actions/runs/39074039943 generated TP2 FP0 FN1 (recall 66.7%; precision 100% among two verified positives), English H1 and Arabic copay verified; mixed H2 returned provider H2, service CONSULT, amount 7000.00, but wrong logical_key H2:H2_CONSULT. Forced-nonempty benchmark is not normal extraction quality.
+- One source-validator change rebuilds malformed redundant tariff key as provider:service only when no other error exists except the key mismatch and provider/service and amount/date/quote are verified. No acceptance of unverified codes. Tests added for good H2 and wrong provider, wrong service, unsupported price/quote. New exact-SHA CI/real Qwen pending. No financial activation.

@@ -269,3 +269,34 @@ def test_explicit_cpu_benchmark_timeout_is_bounded_and_default_unchanged(monkeyp
     with pytest.raises(ContractExtractionError):
         module.infer_local(blocks(), **params, timeout=0)
     assert used == [30, 180]
+
+
+def test_source_verified_tariff_rebuilds_only_redundant_model_key():
+    item = proposal(record_id="SYN-X2", quote="7000", provider_code="H2",
+                    service_code="CONSULT", amount="7000", logical_key="H2:H2_CONSULT")
+    out = check([item])[0]
+    assert out["logical_key"] == "H2:CONSULT"
+    assert out["validation_errors"] == []
+    assert out["evidence_status"] == "verified_source_anchor"
+    assert out["status"] == "DRAFT_ONLY"
+
+
+def test_unproven_provider_or_service_never_gets_key_repair():
+    for changed, rejection in (({"provider_code": "H3", "logical_key": "H3:H3_CONSULT"}, "provider_not_in_source"),
+                               ({"service_code": "XRAY", "logical_key": "H2:H2_XRAY"}, "service_not_in_source")):
+        args = dict(record_id="SYN-X2", quote="7000", provider_code="H2",
+                    service_code="CONSULT", amount="7000", logical_key="H2:H2_CONSULT")
+        args.update(changed)
+        out = check([proposal(**args)])[0]
+        assert rejection in out["validation_errors"]
+        assert "tariff_identity_incomplete" in out["validation_errors"]
+        assert out["evidence_status"] == "needs_human_review"
+        assert out["status"] == "DRAFT_ONLY"
+
+
+def test_wrong_tariff_quote_or_amount_cannot_be_automatically_repaired():
+    out = check([proposal(record_id="SYN-X2", quote="6000", provider_code="H2",
+                          service_code="CONSULT", amount="7000", logical_key="H2:H2_CONSULT")])[0]
+    assert "quote_not_in_source" in out["validation_errors"]
+    assert "numeric_not_in_source" in out["validation_errors"]
+    assert out["evidence_status"] == "needs_human_review"

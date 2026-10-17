@@ -201,3 +201,7 @@ Never accept a tariff candidate if its provider/service/currency appears on the 
 
 ### C24 Contract AI bilingual prompt guidance
 - Local model instructions recognize explicitly quoted Arabic `نسبة تحمل المريض`/`نسبة التحمل` copayment wording and copy the percentage digits from the same quoted clause, never from effective dates. This changes prompt guidance only. Existing source/identity/numeric/date validation, draft approval, tenant security and signed financial authority unchanged. Real model quality at C24 PENDING_CI; see test report.
+
+
+### C28 verified tariff identity rule
+- For an AI proposed tariff only, independent G2 quote/number/provider/service/currency/date checks run before a redundant model `logical_key` mismatch can be canonicalized from the verified `provider_code:service_code`. Any additional evidence or identity failure remains on hold. DRAFT_ONLY/human review and signed G3/G5 authority unchanged. Exact-SHA CI PENDING.

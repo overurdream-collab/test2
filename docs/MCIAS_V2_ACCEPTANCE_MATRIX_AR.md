@@ -165,3 +165,7 @@
 
 ### C24 Contract AI Arabic copay
 - Prompt-only explicit source-copay guidance + mocked HTTP instructions regression: IMPLEMENTED_PENDING_CI. Pinned model TP/FP/FN after C24: NOT_MEASURED; preceding forced SYN baseline TP1 FP0 FN2. Real bilingual quality, signed finance and independent institution acceptance remain BLOCKED.
+
+
+### C28 canonical key acceptance
+- Canonicalize erroneous model tariff key after all source/identity/effective-date gates PASS: IMPLEMENTED_PENDING_CI. Wrong-provider, wrong-service and wrong-quote/amount tests added. No general inferred tariff permissions, production finance or automatic approval.
