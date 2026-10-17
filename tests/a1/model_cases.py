@@ -28,6 +28,11 @@ CASES = (
      "The statement 'only one LAB-A test was performed' is incorrect. TWO LAB-A tests were performed.", "2"),
 )
 
+ATTESTED_SOURCE_CASES = frozenset({
+    "match_completed", "one_performed_two_billed", "two_performed_one_ordered",
+    "one_completed_three_billed", "arabic_two_performed", "negated_one_performed_two",
+})
+
 def model_case(name):
     matched = [x for x in CASES if x[0] == name]
     if len(matched) != 1:
@@ -39,5 +44,7 @@ def model_case(name):
     # Keep rule arithmetic reconciled independent of textual contradiction.
     line["line_total"] = bundle["invoice"]["stated_total"] = bundle["claim"]["amount"] = str(int(billed)*10)
     bundle["documents"][0]["text"] = text
+    bundle["documents"][0]["attested"] = name in ATTESTED_SOURCE_CASES
+    bundle["documents"][0]["items"] = []  # no structured quantity: only real LLM can interpret textual count
     bundle["run_id"] = "synthetic-model-" + name
     return bundle, label
