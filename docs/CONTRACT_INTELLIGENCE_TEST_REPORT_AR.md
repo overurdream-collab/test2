@@ -142,3 +142,7 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 
 ### C26 LMFE direct parser test — PENDING_CI
 - Pinned 0.11.2 LM Format Enforcer no-model `JsonSchemaParser` test uses exact C25 schema read through AST, executes `get_allowed_characters/add_character/can_end` on synthetically constructed full clauses, covers `20`, `20%`, optional `null` and invalid date-text. A green static Python regex check alone is not accepted as LMFE enforcement proof. Dedicated workflow runs before any model invocation. Local environment cannot install LMFE (network unavailable). New SHA result PENDING_CI.
+
+
+### C26 no-model initial runner failure
+- https://github.com/overurdream-collab/test2/actions/runs/39073517388 failed BEFORE LMFE parser testing at `ModuleNotFoundError: sqlalchemy` from global pytest conftest. Do not classify as regex/schema failure. Only isolated test invocation fixed with `--noconftest`, exact-new-SHA CI pending.

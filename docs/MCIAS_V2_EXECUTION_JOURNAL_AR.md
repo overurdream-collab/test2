@@ -461,3 +461,14 @@
 - Risks: Pinned parser `can_end` semantics or API may differ, record actual test failure, do not treat tooling failure as schema defect. No private data, no model downloaded.
 - Next: Inspect new `Contract LMFE schema runtime probe` job outcome and error trace; if runtime regex accepts `20%`, implement one bounded benchmark-only fix with regression, else leave schema intact and record alternate root cause for next cycle.
 - Handoff: Resume PR23 latest head. Run `python -m pytest -q tests/test_contract_lmfe_runtime.py` with pinned dependency; inspect workflow. Never silently auto-normalize model candidate or relax evidence validator; no production/main/finance/A1.
+
+
+### HANDOFF-20261018-006 — isolate LMFE probe from global pytest fixture
+- Scope: Fix only standalone no-model LMFE workflow test invocation with `--noconftest`; retain actual schema, parser test, pinned dependencies and all application source unchanged.
+- Why: C26 probe on SHA dc8d03a69b843f1eb661859b6d2f65cce5c7a161 failed during pytest setup BEFORE executing any test: https://github.com/overurdream-collab/test2/actions/runs/39073517388 log `tests/conftest.py: ModuleNotFoundError: sqlalchemy`. Isolated two-dependency runner need not import G1-G9 global fixtures. This failure supplies no evidence about `pattern` behavior.
+- Files: `.github/workflows/contract-lmfe-probe.yml`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: Previous no-model workflow 39073517388 FAIL in collection before tests; new exact SHA probe and other CI PENDING_CI. Not claiming parser result yet.
+- Result: TEST_HARNESS_FIX_PENDING_CI (no schema/validator fix).
+- Risks: --noconftest isolates all global fixtures for this focused unit test by design. No model/PHI/financial actions.
+- Next: Observe new standalone parser run and determine whether `20%` can be generated with C25 nullable decimal pattern. If parser works, leave schema as-is.
+- Handoff: Review PR23 head and new `contract-lmfe-probe.yml` run. Keep signed finance and source gates unchanged.

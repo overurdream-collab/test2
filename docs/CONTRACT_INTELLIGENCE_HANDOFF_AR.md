@@ -122,3 +122,7 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 
 ### C26 next operator
 - Review standalone `Contract LMFE schema runtime probe` CI on latest PR23 commit: exact C25 schema nullable decimal string, `20` expected accepted, `20%` rejected with pinned LMFE 0.11.2, no pretrained generation. No code change to benchmark until result examined; obey DG-001 and do not change source validation, G3/G5 or deploy.
+
+
+### C26 test runner repair
+- Existing minimal no-model LMFE test was blocked before collection by unrelated global pytest conftest SQLAlchemy dependency (run 39073517388). New workflow invocation explicitly omits unrelated conftest; no LMFE schema or evidence validator changed. Inspect next run before concluding pattern behavior.

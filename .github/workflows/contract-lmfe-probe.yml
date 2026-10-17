@@ -25,4 +25,4 @@ jobs:
       - name: Install only pinned LM Format Enforcer and pytest
         run: python -m pip install 'lm-format-enforcer==0.11.2' 'pytest>=8,<9'
       - name: Check actual C25 schema character-by-character without a model
-        run: python -m pytest -q tests/test_contract_lmfe_runtime.py
+        run: python -m pytest -q --noconftest tests/test_contract_lmfe_runtime.py

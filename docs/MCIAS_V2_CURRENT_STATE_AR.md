@@ -195,3 +195,7 @@
 
 ### C26 — runtime probe pending
 - C25 schema remains unchanged. Added `tests/test_contract_lmfe_runtime.py` and dedicated no-model GitHub workflow pinned to LM Format Enforcer 0.11.2 to test whether C25 decimal regex rejects `20%` and accepts `20`, plus nullable branch. Previous SHA ee8c1f906dc4b3f73f56ecdc5595cc7d20568cda general CI passed, new probe actual CI PENDING_CI. No new model metrics, financial activation or reviewer changes. Next: read probe result before modifying schema.
+
+
+### C26 harness correction PENDING_CI
+- No-model runtime probe at dc8d03a69b843f1eb661859b6d2f65cce5c7a161 did not reach parser: pytest imported global `tests/conftest.py` with SQLAlchemy unavailable in isolated runner (Actions 39073517388 FAIL). Workflow now runs `--noconftest` to isolate dedicated schema test. Actual LMFE pattern result pending on new SHA; application/schema unchanged.
