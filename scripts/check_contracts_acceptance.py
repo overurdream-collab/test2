@@ -59,10 +59,18 @@ def login(page,label):
     page.get_by_label("كلمة المرور",exact=True).fill(password)
     if label=="writer":
         page.get_by_label("رمز التحقق (إلزامي للإدارة)",exact=True).fill(generate_totp(secret,int(time.time())//30))
-    page.get_by_role("button",name="تسجيل الدخول بأمان",exact=True).click()
-    expect(page.locator("main h1")).to_be_visible(timeout=12000)
-    page.goto("http://127.0.0.1:8000/admin/input-register")
-    expect(page.get_by_role("button",name="العقود",exact=True)).to_be_visible()
+    with page.expect_response(lambda response: response.url.endswith("/api/v1/auth/login")) as auth:
+        page.get_by_role("button",name="تسجيل الدخول بأمان",exact=True).click()
+    assert auth.value.status == 200, "Actual login rejected: HTTP " + str(auth.value.status)
+    assert auth.value.json().get("access_token"), "Login response has no session token"
+    expect(page.get_by_role("heading",name="مرحبًا بك في MCIAS")).not_to_be_visible(timeout=12000)
+    # Session bearer token is MEMORY-ONLY: page.goto would reload and erase it.
+    page.evaluate('''() => {
+        history.pushState({}, "", "/admin/input-register");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+    }''')
+    expect(page.get_by_role("button",name="العقود",exact=True)).to_be_visible(timeout=12000)
+    record(page,"00-contracts-authenticated-"+label)
 
 try:
     with sync_playwright() as pw:
