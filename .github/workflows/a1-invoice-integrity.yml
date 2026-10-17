@@ -32,12 +32,16 @@ jobs:
         run: python -m pytest tests/test_a1_invoice_integrity.py -q
       - name: Evaluate hand-labeled synthetic cases
         run: python -m scripts.evaluate_a1 --output a1-results.json
+      - name: Compare A1 and existing G5 Decimal engine on compatible synthetic claims
+        run: python -m scripts.compare_a1_g5_baseline --output a1-g5-comparison.json
       - name: Save real measurements as test artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: a1-deterministic-metrics
-          path: a1-results.json
+          path: |
+            a1-results.json
+            a1-g5-comparison.json
           if-no-files-found: ignore
 
   open-weight-inference:
