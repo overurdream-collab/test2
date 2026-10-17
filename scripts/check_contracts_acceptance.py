@@ -100,12 +100,29 @@ try:
             page.get_by_role("button",name="استيراد ملف (رفع المصدر)",exact=True).click()
             expect(page.locator("#drawer")).to_be_visible()
             page.locator("#drawer input[type=file]").set_input_files(str(synthetic))
-            page.get_by_role("button",name="رفع الملف",exact=True).click()
-            expect(page.locator("#drawer")).to_contain_text("document",timeout=15000)
+            with page.expect_response(lambda r: "/api/v1/ingestion/uploads?" in r.url and r.request.method == "POST") as upload:
+                page.get_by_role("button",name="رفع الملف",exact=True).click()
+            assert upload.value.status == 200, "G2 upload HTTP " + str(upload.value.status)
+            uploaded = upload.value.json()
+            document_id = uploaded.get("document_id") or uploaded.get("id")
+            assert document_id and uploaded.get("status") == "extracted", "G2 source not extracted: " + str(uploaded)
+            results["g2_upload"] = {"http_status":upload.value.status,"status":uploaded.get("status"),"document_id":document_id}
             record(page,"03-upload-result")
-            # Gate: source-manifest alone is insufficient. Require actual extracted
-            # candidate fields, editable human preview and confirm before creation.
+            inspect = page.get_by_role("button",name="فحص بيان مصدر العقد من G2",exact=True)
+            expect(inspect).to_be_enabled(timeout=10000)
+            with page.expect_response(lambda r: "/api/v1/ingestion/documents/" in r.url and r.url.endswith("/manifest")) as manifest_response:
+                inspect.click()
+            assert manifest_response.value.status == 200, "G2 manifest HTTP " + str(manifest_response.value.status)
+            manifest = manifest_response.value.json()
+            results["g2_manifest"] = manifest
+            expect(page.locator("#drawer")).to_contain_text(str(document_id),timeout=10000)
+            record(page,"04-g2-source-manifest")
+            # Strict gate: a manifest is NOT an editable review of extracted contract clauses.
             preview=page.locator("#drawer [data-testid='g2-contract-fields-preview']")
+            if preview.count() == 0:
+                results["import"]="BLOCKED"
+                results["first_missing_function"]="Source-linked editable contract clauses preview before confirmation"
+                raise AssertionError("G2 manifest displays source metadata but no contract clauses review/validation UI")
             expect(preview).to_be_visible(timeout=10000)
             expect(preview).to_contain_text("SYN_001")
             expect(page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True)).to_be_visible()
