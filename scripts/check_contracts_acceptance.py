@@ -128,7 +128,8 @@ try:
             expect(preview).to_contain_text("SYN_001")
             expect(page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True)).to_be_visible()
             record(page,"04-g2-human-preview")
-            results["import"]="PASS"
+            results["source_review_preview"]="PASS"
+            results["import"]="BLOCKED"
             # Next steps executed only after import acceptance gate passes.
             # A real add/edit test must subsequently verify DB records and version chain.
             raise AssertionError("Add/Edit PostgreSQL roundtrip is not yet implemented in this strict acceptance harness; no PASS allowed")
