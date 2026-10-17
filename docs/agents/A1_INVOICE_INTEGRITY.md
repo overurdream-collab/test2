@@ -64,24 +64,37 @@ external source files by this prototype*. This is a planned Palermo verification
 
 ## Real open-weight model experiment
 
-Suggested target for future evaluation: Qwen3-8B (Apache-2.0), via local
-llama.cpp with verified model weights. On limited free CI CPU we probe
-**Qwen3-0.6B GGUF only**, expressly a feasibility smoke, not an 8B-equivalent
-accuracy benchmark or a medical system qualification.
+**Implemented and empirically tested:** Qwen3-8B GGUF Q4_K_M, downloaded
+from official Qwen/Qwen3-8B-GGUF pinned revision and run locally on free
+GitHub Actions Ubuntu (16 GiB CPU runner). Model input never leaves the
+runner; ONLY public weights are downloaded. No paid API or patient data.
 
-To run the REAL weight-inference experiment without paid APIs:
+Reproduction:
 
     python -m pip install "llama-cpp-python>=0.3.9,<1" "huggingface_hub>=0.30,<2"
-    python -m scripts.a1_probe_local_model --download-public-model
+    python -m scripts.a1_probe_local_model --download-public-model \
+        --repo Qwen/Qwen3-8B-GGUF --output a1-real-model-evidence.json
 
-This downloads **only public model weights** (official Qwen repo); the model
-runs in-process using CPU, and fixture contents are never uploaded.
-Alternatively supply --model-file /trusted/local/model.gguf to avoid download.
-The generated a1-real-model-evidence.json contains SHA-256 of actual weights,
-model revision, two raw generated responses, token usage, RSS and latency.
-No simulated model output qualifies as real inference. The fake test callback
-in tests/test_a1_invoice_integrity.py tests JSON guardrails ONLY and is
-explicitly named a stub.
+Optional --model-file /trusted/model.gguf replaces the download flag.
+The probe hashes full weights using streaming SHA-256, runs genuine
+transformer inference with llama.cpp, and records complete bounded model
+outputs, token usage, dates/run fingerprints, confusion matrices, elapsed
+time and peak RSS. It fails if model output fails schema/evidence checks
+or model-backed precision/recall on the synthetic holdout falls below 0.9.
+
+Historical 0.6B model was tested and proved inadequate; Qwen3-8B succeeded
+on the initial ten and post-evidence-gate 36 synthetic cases. *Read the
+evidence report for both the failed intermediate 26-case holdout and the
+post-fix re-test; the latter is no longer a blind test.*
+
+The model can interpret performed quantities from free text even where
+structured source item counts are absent. The LLM does NOT calculate money
+or authorize a financial or medical decision. Before surfacing a model
+finding the code independently checks a source-attestation flag from an
+upstream trusted snapshot, exact quote, code, line ID, quantity token,
+source provenance and mismatch with billed quantity. The validator
+cannot independently establish real-world authenticity of upstream
+attestation; trusted adapter and Palermo verification remain required.
 
 ## Reproducible synthetic tests
 
@@ -90,7 +103,9 @@ explicitly named a stub.
     python -m scripts.evaluate_a1 --output a1-results.json
 
 Hand-labeled fixture specifications and gold statuses:
-tests/a1/synthetic_cases.py::GOLD; 18 fixed synthetic scenarios. Their
+tests/a1/synthetic_cases.py::GOLD; 18 fixed synthetic scenarios. Additionally
+there are 10 development model cases (tests/a1/model_cases.py) and 26
+source-trust-aware holdout cases (tests/a1/holdout_cases.py). Their
 labels were authored independently of model output. Separate tests exercise
 line arithmetic, contract date cutoffs, tenant/currency isolation, OCR and
 missing quantity, allowed/unsupported fees, document prompt injection,
