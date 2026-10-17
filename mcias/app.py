@@ -191,3 +191,7 @@ app.include_router(workspace_web_router)
 
 from mcias.retention_api import router as retention_router
 app.include_router(retention_router)
+
+# Experimental A1 preview is always disabled by default and forbidden in production.
+from mcias.agents.a1_api import router as a1_preview_router
+app.include_router(a1_preview_router)

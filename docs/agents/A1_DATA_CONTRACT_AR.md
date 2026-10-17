@@ -27,3 +27,8 @@ Palermo تحقق مصدر تنفيذ الخدمات الطبية والصفحا�
 ## أوامر
 python -m pytest -q tests/test_a1_trusted_input.py tests/test_a1_invoice_integrity.py
 python -m pytest -q
+
+
+## واجهة HTTP تجربة فقط
+تمت إضافة GET /api/v1/a1/claims/{claim_id}/preview خلف feature flag MCIAS_A1_PREVIEW_ENABLED=true وبشرط MCIAS_ENVIRONMENT != production. يتطلب توثيق bearer session وصلاحية claims.read + ingestion.read + صلاحيات كل حقل Invoice. الواجهة افتراضيًا 503 ولا تسمح بالنشر إنتاجيًا، وتعيد 404 عند عدم صلاحية/وجود المطالبة و409 عند فشل سلامة المصدر، ولا ترسل البيانات إلى نموذج AI أو قاعدة مالية.
+اختبار HTTP: python -m pytest -q tests/test_a1_preview_http.py. لا ترفع feature flag على خادم حقيقي؛ مستخدم فقط لبيئة تطوير اصطناعية منفصلة.
