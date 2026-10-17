@@ -3050,10 +3050,53 @@ function uploadClauseSource(ctx, section) {
               try {
                 const manifest = await ctx.api.request(
                   "/api/v1/ingestion/documents/" + safeId(documentId) + "/manifest");
-                preview.replaceChildren(details(manifest), el("p", L(
-                  "هذا بيان المصدر فقط. لا تحفظ أي حقول عقد مستخرجة قبل التحقق البشري وربطها بمصدرها، ولا تعتمد العقد تلقائيًا.",
-                  "This is a source manifest only. Do not save extracted contract fields without verified provenance and human review; no automatic approval."
-                )));
+                preview.replaceChildren(details(manifest));
+                const jobId = response?.job_id;
+                if (manifest.status !== "extracted" || !/^[a-zA-Z0-9_-]{1,120}$/.test(jobId || "")) return;
+                const extracted = await ctx.api.request("/api/v1/ingestion/jobs/" + safeId(jobId) + "/records?limit=100");
+                const records = (extracted.records || []).filter(r => typeof r.values?.text === "string" && r.values.text.trim());
+                if (!records.length) {
+                  preview.append(el("p", L("لم تُستخرج نصوص قابلة للمراجعة.", "No reviewable source text extracted.")));
+                  return;
+                }
+                const review = el("section");
+                review.dataset.testid = "g2-contract-fields-preview";
+                review.append(el("h3", L("معاينة نصوص العقد قبل الحفظ", "Contract source review before saving")));
+                review.append(el("p", L("نصوص صفحات G2 الخام؛ يلزم نسخ البند والتحقق منه بشريًا. لا يوجد اعتماد تلقائي.", "Raw G2 page text; a human must verify a verbatim clause. No automatic approval.")));
+                for (const record of records) {
+                  const source = String(record.values.text), loc = record.locator || {};
+                  const block = el("div",null,"input-actions");
+                  block.dataset.testid = "g2-contract-source-record";
+                  block.append(el("p", L("موضع المصدر: ","Source location: ") + JSON.stringify(loc)));
+                  const original = el("pre", source.slice(0,12000));
+                  original.style.whiteSpace = "pre-wrap";
+                  block.append(original);
+                  const key = field("logical_key",L("معرف البند","Clause key"),{maxLength:100,pattern:"[A-Za-z0-9_.:-]+"});
+                  const clause = field("clause_text",L("النص المُراجع من المصدر","Human-verified source quote"),{type:"textarea",maxLength:2000});
+                  const provider = field("provider_code",L("رمز مقدم الخدمة","Provider code"),{maxLength:80,required:false});
+                  const effective = field("effective_from",L("تاريخ السريان","Effective from"),{type:"date"});
+                  block.append(key.wrap,clause.wrap,provider.wrap,effective.wrap);
+                  const feedback = el("div");
+                  const confirm = actionButton(ctx,L("تأكيد الحقول وإنشاء مسودة","Confirm reviewed fields and create draft"),"reference.write",async()=>{
+                    if (!key.input.reportValidity() || !clause.input.reportValidity() || !effective.input.reportValidity()) return;
+                    if (!source.includes(clause.input.value.trim())) {
+                      feedback.replaceChildren(errorState(new Error(L("النص ليس اقتباسًا مطابقًا للمصدر.","Clause must be a verbatim source quote.")))); return;
+                    }
+                    confirm.disabled = true;
+                    try {
+                      const saved = await ctx.api.request("/api/v1/input-clauses/points",{method:"POST",body:{
+                        section:"contracts",logical_key:key.input.value,clause_text:clause.input.value,
+                        provider_code:provider.input.value||"",effective_from:effective.input.value,
+                        structured_value:{text:clause.input.value},source_document_id:documentId,
+                        source_locator:{kind:String(loc.kind||"page"),index:Number(loc.index||1)}
+                      }});
+                      feedback.replaceChildren(details(saved),el("p",L("مسودة غير معتمدة.","Unapproved draft only.")));
+                    } catch(err) {confirm.disabled=false;feedback.replaceChildren(errorState(err));}
+                  },"button");
+                  block.append(confirm,feedback);
+                  review.append(block);
+                }
+                preview.append(review);
               } catch (err) { preview.replaceChildren(errorState(err)); }
             }, "button");
           const preview = el("div");
