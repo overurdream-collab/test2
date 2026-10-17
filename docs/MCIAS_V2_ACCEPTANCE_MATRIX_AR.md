@@ -95,3 +95,13 @@
 | CI-C8-03 | Synthetic Arabic, English, mixed, prompt-injection TP/FP/FN, Precision/Recall | PENDING_CI / NOT_YET_MEASURED |
 | CI-C8-04 | Gold 20+ files including Arabic OCR, tables and amendment/medical cases | NOT_IMPLEMENTED |
 | CI-C8-05 | Institutional signatures/approval and production | BLOCKED_INSTITUTION |
+
+
+### C10 model grammar and PostgreSQL negative tests (PENDING_CI)
+| ID | Actual evidence and requirement | State |
+|---|---|---|
+| CI-C10-01 | JSON schema constrained local model transport (official MIT LMFE) | IMPLEMENTED_NOT_TESTED |
+| CI-C10-02 | Real Qwen3-0.6B produces verifiable English/Arabic/mixed candidate | FAILED at C9; C10 PENDING_CI |
+| CI-C10-03 | Injection source never becomes financially executable even with valid JSON | Source validator only; real adversarial C10 PENDING_CI |
+| CI-C10-04 | Raw PostgreSQL updates and deletions forbidden on proposal, review and promotion | IMPLEMENTED_NOT_TESTED |
+| CI-C10-05 | 20+ synthetic real PDFs/OCR/XLSX gold, Precision/Recall and independent clinical/legal review | NOT_COMPLETE |

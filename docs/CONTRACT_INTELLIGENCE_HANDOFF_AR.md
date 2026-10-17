@@ -40,3 +40,7 @@ The `reference_points_view.js` drawer now supports persisted /extract and a sepa
 
 ### C9 actual pretrained model blocker
 C8 real Qwen3-0.6B generated 4 outputs but zero source-verified clauses: TP0 FP0 FN3, Recall0, Precision undefined (Action run 39063356685). Diagnose as model JSON schema mismatch, not a working functional agent. C9 script adds safe previews of *synthetic-only* outputs and fails the quality job when zero useful clauses. Fetch new benchmark logs/artifact; update reporting with raw evidence. Never send real insurance files to a public runner. Remaining: prompt/schema correction, repeatable real inference, larger 20+ contracts, Arabic OCR, review UAT, signatures, no main merge or A1.
+
+
+### C10 — JSON-constrained pretrained experiment + raw SQL guard
+C9 SHA daa4b934f84fd2e7bfefa0ed4de298b8c5178f0a: all ordinary governance/G1–G9/Enterprise workflows success, but real Qwen3-0.6B benchmark FAILED https://github.com/overurdream-collab/test2/actions/runs/39063739175 (TP0 FP0 FN3, malformed fenced arrays and wrong schema). No acceptance. C10 adds lm-format-enforcer v0.11.2 **benchmark-only** constrained JSON output, generic few-shot prompt, and tests/test_contract_proposal_postgres.py to prove proposed/review/promoted immutable tables resist direct SQL changes. Test on exact C10 SHA pending; review CI, see model generated hashes/source anchors, fix only without bypassing validator. Real patient/private files forbidden, no production approvals, deployment, PR merge or A1.

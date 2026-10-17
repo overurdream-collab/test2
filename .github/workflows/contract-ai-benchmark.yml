@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install "torch==2.7.1+cpu" --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install "transformers==4.57.1" "accelerate==1.11.0" "huggingface_hub>=0.35,<1" "safetensors>=0.6,<0.8"
+          python -m pip install "transformers==4.57.1" "accelerate==1.11.0" "huggingface_hub>=0.35,<1" "safetensors>=0.6,<0.8" "lm-format-enforcer==0.11.2"
           python -m pip install -e .
       - name: Real local Qwen3 generation and deterministic source validation
         run: |

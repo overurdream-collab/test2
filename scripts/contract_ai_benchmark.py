@@ -14,9 +14,25 @@ from threading import Thread
 from time import monotonic
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from lmformatenforcer import JsonSchemaParser
+from lmformatenforcer.integrations.transformers import build_transformers_prefix_allowed_tokens_fn
 from mcias.contract_intelligence import infer_local, validate_candidates, make_source_blocks, ContractExtractionError
 
 MODEL_ID="Qwen/Qwen3-0.6B"
+# Enforce model RESPONSE FORMAT (not clause truth), as real OpenAI-compatible JSON runtimes do.
+CLAUSE_SCHEMA={"type":"object","additionalProperties":False,"required":["clauses"],"properties":{
+  "clauses":{"type":"array","minItems":0,"maxItems":4,"items":{"type":"object","additionalProperties":False,
+    "required":["record_id","quote","section","rule_type","logical_key","amount",
+                "provider_code","service_code","currency","effective_from","effective_until"],
+    "properties":{
+      "record_id":{"type":"string"},"quote":{"type":"string"},
+      "section":{"type":"string","enum":["contracts","providers","beneficiaries","cost_sharing","categories","exclusions","approvals","tariffs"]},
+      "rule_type":{"type":"string","enum":["text","amount","percentage","count","exclusion","approval","duration"]},
+      "logical_key":{"type":"string"},"amount":{"type":["string","null"]},
+      "provider_code":{"type":["string","null"]},"service_code":{"type":["string","null"]},
+      "currency":{"type":["string","null"]},"effective_from":{"type":["string","null"]},
+      "effective_until":{"type":["string","null"]}}}}}}
+
 MODEL_REVISION="c1899de289a04d12100db370d81485cdf75e47ca"
 CASES=[
  {"id":"SYN-EN-TARIFF", "source":"Provider H1 CONSULT tariff 5000 YER valid from 2026-01-01 to 2027-01-01.",
@@ -37,6 +53,8 @@ def main(output):
     model=AutoModelForCausalLM.from_pretrained(MODEL_ID,revision=MODEL_REVISION,trust_remote_code=False,
                                                torch_dtype="auto",low_cpu_mem_usage=True)
     model.eval()
+    schema_parser=JsonSchemaParser(CLAUSE_SCHEMA)
+    constrained_tokens=build_transformers_prefix_allowed_tokens_fn(tokenizer,schema_parser)
     inference_calls=[]
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*args):
@@ -53,8 +71,10 @@ def main(output):
                 tokens=tokenizer.apply_chat_template(messages,tokenize=True,
                        add_generation_prompt=True,enable_thinking=False,return_tensors="pt")
                 with torch.inference_mode():
-                    generated=model.generate(tokens,max_new_tokens=240,do_sample=False,
-                          pad_token_id=tokenizer.eos_token_id)
+                    generated=model.generate(tokens,max_new_tokens=500,do_sample=False,
+                          pad_token_id=tokenizer.eos_token_id,
+                          prefix_allowed_tokens_fn=constrained_tokens,
+                          attention_mask=torch.ones_like(tokens))
                 completion=tokenizer.decode(generated[0,tokens.shape[-1]:],
                                             skip_special_tokens=True)
                 inference_calls.append({"output_sha256":sha256(completion.encode()).hexdigest(),

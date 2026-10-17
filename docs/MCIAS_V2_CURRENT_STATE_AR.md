@@ -95,3 +95,9 @@
 ### C8 functional AI benchmark result / C9 diagnosis
 - C8 SHA b20e5c2045d449c17ca3cc930efa0397bcea0ef9: ALL five regular GitHub workflows passed (Governance 39063356625, G1-G7 39063356576, G8 39063356628, G9 39063356604, Enterprise 39063356580). Real Qwen3-0.6B benchmark https://github.com/overurdream-collab/test2/actions/runs/39063356685 generated 4 actual local CPU completions; total 90.7 seconds, TP=0 FP=0 FN=3, Recall 0%, Precision undefined, all four cases ContractExtractionError, no extracted candidates. **MODEL GENERATION WORKS; CONTRACT EXTRACTION FAILS.** Do not mark Contract Intelligence complete.
 - C9 now adds synthetic generated-response previews and negative gate on Recall=0, so infrastructure success cannot mask functional failure. New SHA PENDING_CI. Next investigate exact model completions/prompt, run another pinned real-model experiment; keep source validator strict, no production/patient data.
+
+
+### C10 — constrained generation and PostgreSQL guard validation (PENDING_CI)
+- C9 exact SHA daa4b934f84fd2e7bfefa0ed4de298b8c5178f0a intentionally failed the real pretrained Qwen3-0.6B benchmark run 39063739175: 4 local generated responses, fenced JSON top-level arrays and incorrect names/medical context, 0 valid proposals, TP0 FP0 FN3, Recall0%, Precision undefined. The prompt-injection pseudo-contract remained untrusted and rejected.
+- C10 uses official noamgat/lm-format-enforcer v0.11.2 MIT **test harness only** to honor JSON format with source validation unchanged, tighter generic prompt, new PostgreSQL trigger negative regression on candidate+review+promotion history and regular CI inclusion. New exact SHA PENDING_CI.
+- The 5 regular CI workflows at C9 SHA must be inspected independently. No 20+ gold documents and production-bound Qwen service/signatures, no production/merge/A1. Next: check actual benchmark outputs, Precision/Recall, DB test and docs CI; fix and log every failure.
