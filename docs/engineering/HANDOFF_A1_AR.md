@@ -58,3 +58,7 @@ python -m scripts.a1_probe_local_model --download-public-model --repo Qwen/Qwen3
 
 ## P0 تنفيذ تكليف المراجعة المستقلة (2026-10-17)
 اقرأ تقرير البحث `docs/agents/A1_OPEN_SOURCE_RESEARCH_AR.md` أولًا؛ تم فحص PR #22 وPR #23 وتأكد أنهما Draft، وContract Intelligence لا يملك تفويض تفعيل مالي. لا تجلب أسعارًا من Draft. باقي الأعمال: trusted source adapter مستقل، Palermo SHA تحقق أصل المستند، Pydantic contract، اختبارات تاريخ H1/H2 وCI على SHA التنفيذ. أي بيانات ناقصة ترجع INSUFFICIENT_EVIDENCE لا أسعارًا مخترعة.
+
+
+## P0 Trusted A1 Input Adapter (CSV-only)
+اقرأ docs/agents/A1_DATA_CONTRACT_AR.md وmcias/agents/a1_trusted_input.py. يعيد قراءة الأصل المشفر ويطابق الصفوف؛ لا يحوّل G3 amount إلى unit price دون توثيق. لا API حقيقي بعد ولا PDF OCR ولا attested proof. جميع الاختبارات على هذا التغيير PENDING_CI قبل ظهور سجل CI.
