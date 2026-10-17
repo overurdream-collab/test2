@@ -191,3 +191,9 @@ app.include_router(workspace_web_router)
 
 from mcias.retention_api import router as retention_router
 app.include_router(retention_router)
+
+# Governed input-point register and review-only four-way audit exports.
+from mcias.input_clause_api import router as input_clause_router
+app.include_router(input_clause_router)
+from mcias.audit_triage_api import router as audit_triage_router
+app.include_router(audit_triage_router)
