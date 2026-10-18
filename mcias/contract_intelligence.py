@@ -191,7 +191,10 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         if (section == "tariffs" and errors == ["tariff_identity_incomplete"]
                 and isinstance(provider, str) and isinstance(service, str)
                 and isinstance(currency, str) and kind == "amount"
-                and key == provider + ":" + provider + "_" + service):
+                and (key == provider + ":" + provider + "_" + service
+                     or (isinstance(key, str) and re.fullmatch(
+                         re.escape(provider) + "-" + re.escape(service) + "-tariff",
+                         key, flags=re.IGNORECASE)))):
             key = provider + ":" + service
             if _CODE.fullmatch(key):
                 errors.clear()
@@ -205,6 +208,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
         item = {
             "section": section if isinstance(section, str) and section in SECTIONS else None,
             "logical_key": key if isinstance(key, str) and _CODE.fullmatch(key) else None,
+            "model_logical_key": raw.get("logical_key") if isinstance(raw.get("logical_key"), str) else None,
             "rule_type": kind if isinstance(kind, str) and kind in RULE_TYPES else None,
             "original_clause_text": quote if isinstance(quote, str) else "",
             "amount": amount, "currency": currency if isinstance(currency, str) else None,

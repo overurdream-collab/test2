@@ -307,3 +307,36 @@ def test_other_wrong_tariff_key_remains_quarantined():
     assert "tariff_identity_incomplete" in out["validation_errors"]
     assert out["evidence_status"] == "needs_human_review"
     assert out["status"] == "DRAFT_ONLY"
+
+
+def test_c32_r2_verified_hyphen_key_repaired_preserving_raw_model_key():
+    q = "Provider R2 XRAY tariff 910.00 YER valid from 2026-01-01 to 2027-01-01"
+    src = q + "."
+    blocks = make_source_blocks([{"id": "NEW-EN-TARIFF-B", "locator": {"kind": "page", "index": 1}, "values": {"text": src}}])
+    candidate = proposal(record_id="NEW-EN-TARIFF-B", quote=q, provider_code="R2",
+        service_code="XRAY", logical_key="r2-xray-tariff", amount="910.00",
+        effective_from="2026-01-01", effective_until="2027-01-01")
+    def evaluate(mutation):
+        proposed = {**candidate, **mutation}
+        return validate_candidates([proposed], blocks, source_sha256=DIGEST,
+            model_id="SYN-Qwen", model_revision="SYN-frozen")[0]
+    good = evaluate({})
+    assert good["logical_key"] == "R2:XRAY"
+    assert good["model_logical_key"] == "r2-xray-tariff"
+    assert good["validation_errors"] == []
+    assert good["status"] == "DRAFT_ONLY"
+    assert good["evidence_status"] == "verified_source_anchor"
+    bad = [
+        ({"logical_key":"R2:CONSULT"}, "tariff_identity_incomplete"),
+        ({"provider_code":"R3", "logical_key":"r3-xray-tariff"}, "provider_not_in_source"),
+        ({"service_code":"MRI", "logical_key":"r2-mri-tariff"}, "service_not_in_source"),
+        ({"amount":"911"}, "numeric_not_in_source"),
+        ({"quote":"Provider R2 XRAY tariff 999 YER"}, "quote_not_in_source"),
+    ]
+    for mutation, required_error in bad:
+        out=evaluate(mutation)
+        assert required_error in out["validation_errors"], (mutation, out)
+        assert out["evidence_status"] == "needs_human_review"
+        assert out["status"] == "DRAFT_ONLY"
+    assert evaluate({"logical_key":"R2:XRAY"})["logical_key"] == "R2:XRAY"
+

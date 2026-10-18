@@ -574,3 +574,14 @@
 - Risks: new corpus uses synthetic sheet-row text and two-provider cases with forced-nonempty schema; multi-provider case may expose model recall issues, deliberately not loosen gates.
 - Next: Check CI on C31 exact SHA, inspect raw inference TP/FP/FN by case, report fail modes only before considering changes. Never run money authorization, PHI or production.
 - Handoff: PR23 remains Draft, no merge/deploy/paid services, A1–A5 excluded.
+
+
+### HANDOFF-20261018-016 — C32 guarded alternate tariff key and raw audit
+- Scope: A bounded model-key repair for exact `provider-service-tariff` spelling after all independent source gates; leave existing duplicate-prefix repair, security, price, sheet logic intact. Preserve raw model key in advisory metadata. Add R2 safety and frozen C31 raw-output replay tests.
+- Why: C32 targeted correction: original C31 SYN-Qwen run https://github.com/overurdream-collab/test2/actions/runs/39077588819 reported TP1 FP0 FN5 (Recall16.7%), 6 quarantined. The raw R2 source-proven provider=R2 service=XRAY amount=910.00 but model key=r2-xray-tariff was quarantined. This change accepts exactly the case-insensitive `provider-service-tariff` spelling when EVERY other evidence/amount/date/identity check passed and keeps model_logical_key in advisory result. Arbitrary wrong_key such as H1:XRAY stays rejected; R3/R4 hallucinations and sheet failures untouched. Frozen source and gold remain unmodified. Frozen-output replay *expected* after C32 TP2 FP0 FN4, Recall33.3%, quarantine5; actual new Qwen run must be measured separately, never assume deterministic inference reproduces it.
+- Files: `mcias/contract_intelligence.py`, `tests/test_contract_intelligence.py`, `tests/test_contract_c32_frozen_replay.py`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`.
+- Tests: C31 original results verified; new-C32 unit, full CI and real model PENDING_CI, NOT_RUN locally. Replay expected TP2 FP0 FN4 on original 6 sources, no changed gold.
+- Result: IMPLEMENTED_PENDING_CI; DRAFT_ONLY unchanged; evidence check on R3/R4/sheets remains fail-closed.
+- Risks: New spelling allowance is strictly bounded; cannot vouch for real-world accuracy based on tiny forced-inference SYN suite; future model output can differ from frozen replay.
+- Next: Verify exact C32 SHA regression G1-G9, Enterprise, LMFE, DG-001 and real Qwen; inspect discrepancies; no C33.
+- Handoff: draft PR23 only; no merge, deploy, financial execution, real data or paid services.
