@@ -2998,7 +2998,7 @@ function inputClauseWorkspace(ctx) {
           const choose=button(contract.contract_number+" — v"+contract.version,async()=>{
             try {
               const found=await ctx.api.request("/api/v1/reference/contracts/drafts/"+safeId(contract.id));
-              selectedRecord={...found,g3_id:contract.id};
+              selectedRecord={...found,g3_id:contract.id,section:"contracts"};
               editAction.disabled=ctx.demo || !allowed(ctx,"reference.write");
               chosen.replaceChildren(details(found));
             }catch(err){chosen.replaceChildren(errorState(err));}

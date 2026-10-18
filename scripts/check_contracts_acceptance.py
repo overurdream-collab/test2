@@ -230,6 +230,7 @@ try:
             results["add"]="PASS"
             # Select persisted G3 contract from the actual contracts screen.
             page.locator("#drawer").get_by_role("button",name="إغلاق",exact=True).click()
+            page.get_by_role("button",name="العقود",exact=True).click()
             choose=page.get_by_role("button",name=contract_number+" — v1",exact=True)
             expect(choose).to_be_visible(timeout=12000)
             choose.click()
