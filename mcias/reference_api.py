@@ -98,10 +98,32 @@ def _perform(db, operation):
 
 @router.post("/contracts", status_code=201)
 def create_contract(payload: DraftIn, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
-    user = _actor(db, authorization, "reference.write")
-    contract = _perform(db, lambda: create_draft(db, user, payload.provider_code,
-                         payload.effective_from, payload.effective_until, payload.precedence,
-                         contract_number=payload.contract_number, contract_notes=payload.contract_notes))
+    from mcias.audit_writer import record_outcome_independent
+    user, _ = resolve_user(db, authorization)
+    if not user.organization_id:
+        raise HTTPException(403, "organization required")
+    try:
+        require_organization(db, user, user.organization_id, "reference.write")
+    except HTTPException as exc:
+        db.rollback()
+        if exc.status_code == 403:
+            record_outcome_independent(db.get_bind(), actor_id=user.id,
+                organization_id=user.organization_id, action="contract_creation_denied",
+                resource_type="contract_version", resource_id=None, outcome="denied",
+                details={"reason_code": "permission_denied"})
+        raise
+    try:
+        contract = _perform(db, lambda: create_draft(db, user, payload.provider_code,
+                             payload.effective_from, payload.effective_until, payload.precedence,
+                             contract_number=payload.contract_number, contract_notes=payload.contract_notes))
+    except HTTPException as exc:
+        db.rollback()
+        if exc.status_code == 409:
+            record_outcome_independent(db.get_bind(), actor_id=user.id,
+                organization_id=user.organization_id, action="contract_creation_denied",
+                resource_type="contract_version", resource_id=None, outcome="denied",
+                details={"reason_code": "reference_conflict"})
+        raise
     return {"id": contract.id, "version": contract.version, "status": contract.status,
             "contract_number": contract.contract_number}
 
