@@ -585,3 +585,14 @@
 - Risks: New spelling allowance is strictly bounded; cannot vouch for real-world accuracy based on tiny forced-inference SYN suite; future model output can differ from frozen replay.
 - Next: Verify exact C32 SHA regression G1-G9, Enterprise, LMFE, DG-001 and real Qwen; inspect discrepancies; no C33.
 - Handoff: draft PR23 only; no merge, deploy, financial execution, real data or paid services.
+
+
+### HANDOFF-20261018-017 — C33 literal multi-provider segmentation diagnostic
+- Scope: Opt-in real Qwen benchmark path isolates only independently recognized, non-overlapping, literal page clauses with two different provider/service identities; validates proposals independently against each original substring. C31 fixture and gold unchanged.
+- Why: C33 synthetic-only diagnostic: existing G2 make_source_blocks and independent validate_candidates reused; C31 unchanged case and gold. Baseline C32 real model TP2 FP0 FN4 recall33.3%, R3 raw 1500 instead of 4100 and R4 raw 1000 instead of 8200. Opt-in --split-multi-tariff isolates exactly matched literal source clauses into two page-anchored segments (start/end/hash), one model call per segment. Unmatched/ambiguous/Excel blocks remain unchanged; no validator, model, weights or financial rules modified. New Qwen C33 real run and exact-SHA CI PENDING; no claims of improved Recall before results.
+- Files: `scripts/contract_tariff_segments.py`, `scripts/contract_ai_benchmark.py`, `tests/test_contract_tariff_segments.py`, `.github/workflows/contract-ai-c33.yml`, and the four DG-001 docs.
+- Tests: New segment and adversarial amount/identity tests; C33 Qwen real metrics PENDING_CI; compare real baseline on C32 SHA.
+- Result: IMPLEMENTED_PENDING_CI. Source span offsets and SHA stored in diagnostic output; fail-closed fallback on ambiguity.
+- Risks: Synthetic English pattern only; segmentation may change raw model output, and low Recall may persist. Never use split as production evidence override.
+- Next: Inspect exact SHA CI and real Qwen R3/R4 proposals and quarantine; report any failure without further C33 changes.
+- Handoff: Draft PR23, no merge/deploy/PHI/financial activation, do not modify R5/R6.

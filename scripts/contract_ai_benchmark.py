@@ -6,6 +6,7 @@ No production documents, tokens, external model API or financial rule activation
 import argparse
 from datetime import datetime, timezone
 from contract_benchmark_scoring import count_matches
+from contract_tariff_segments import isolated_tariff_blocks
 from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -46,7 +47,7 @@ CASES=[
   "gold":[]},
 ]
 
-def main(output, cases=None):
+def main(output, cases=None, split_multi_tariff=False):
     os.environ["HF_HUB_DISABLE_TELEMETRY"]="1"
     # Alternative fully instruction-tuned Apache-2.0 model, test only; same schema and validation.
     torch.set_num_threads(2)
@@ -98,22 +99,23 @@ def main(output, cases=None):
     tp=fp=fn=negative_fp=total_proposed=quarantined=0
     try:
         for case in (CASES if cases is None else cases):
-            blocks=make_source_blocks([{"id":case["id"],
+            block_batches = isolated_tariff_blocks(case) if split_multi_tariff else [make_source_blocks([{"id":case["id"],
                                        "locator":case.get("locator", {"kind":"page","index":1}),
-                                       "values":case.get("values", {"text":case["source"]})}])
+                                       "values":case.get("values", {"text":case["source"]})}])]
             request_start=monotonic()
             error=None
             proposals=[]
             hashes={}
-            try:
-                inference=infer_local(blocks,endpoint=f"http://127.0.0.1:{http.server_port}/v1/chat/completions",
-                    model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=180)
-                hashes={"request":inference["request_sha256"],"response":inference["response_sha256"]}
-                proposals=validate_candidates(inference["candidates"],blocks,
-                    source_sha256=sha256(case["source"].encode()).hexdigest(),
-                    model_id=MODEL_ID,model_revision=MODEL_REVISION)
-            except ContractExtractionError as exc:
-                error=type(exc).__name__
+            for segment_blocks in block_batches:
+                try:
+                    inference=infer_local(segment_blocks,endpoint=f"http://127.0.0.1:{http.server_port}/v1/chat/completions",
+                        model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=180)
+                    hashes[str(len(hashes)+1)]={"request":inference["request_sha256"],"response":inference["response_sha256"]}
+                    proposals.extend(validate_candidates(inference["candidates"],segment_blocks,
+                        source_sha256=sha256(case["source"].encode()).hexdigest(),
+                        model_id=MODEL_ID,model_revision=MODEL_REVISION))
+                except ContractExtractionError as exc:
+                    error=type(exc).__name__
             valid=[p for p in proposals if p["evidence_status"]=="verified_source_anchor"
                    and not p["validation_errors"]]
             predicted={(p["section"],p["logical_key"],p["amount"]) for p in valid}
@@ -125,6 +127,7 @@ def main(output, cases=None):
             entries.append({"case_id":case["id"],"source_sha256":sha256(case["source"].encode()).hexdigest(),
                             "gold":case["gold"],"predicted":[list(v) for v in sorted(predicted)],
                             "candidate_count":len(proposals),"quarantined":len(proposals)-len(valid),
+                            "source_segments":[{"locator":block[0]["locator"],"source_sha256":sha256(block[0]["fields"]["text"].encode()).hexdigest()} for block in block_batches if "text" in block[0]["fields"]],
                             "tp":a,"fp":b,"fn":c,"error":error,"inference_sha256":hashes,
                             "elapsed_s":round(monotonic()-request_start,2)})
             print("EVALUATED",case["id"],"TP",a,"FP",b,"FN",c,"ERROR",error,flush=True)
@@ -164,6 +167,7 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",default="contract-model-benchmark.json")
     parser.add_argument("--cases-file",default=None)
+    parser.add_argument("--split-multi-tariff",action="store_true")
     args=parser.parse_args()
     cases=json.loads(Path(args.cases_file).read_text(encoding="utf-8")) if args.cases_file else None
-    main(args.output,cases)
+    main(args.output,cases,args.split_multi_tariff)

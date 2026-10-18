@@ -1,0 +1,50 @@
+name: Contract AI C33 isolated tariff segments
+
+on:
+  pull_request:
+    branches:
+      - feat/temporal-reference-inputs-and-four-outcomes
+    paths:
+      - 'scripts/contract_ai_benchmark.py'
+      - 'scripts/contract_tariff_segments.py'
+      - 'tests/test_contract_tariff_segments.py'
+      - 'tests/fixtures/contract_independent_synthetic.json'
+      - '.github/workflows/contract-ai-independent.yml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qwen-synthetic-cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TRANSFORMERS_OFFLINE: '0'
+      MCIAS_ENVIRONMENT: development
+      OMP_NUM_THREADS: '2'
+      HF_HUB_ENABLE_HF_TRANSFER: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated free CPU inference dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "torch==2.7.1+cpu" --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install "transformers==4.57.1" "accelerate==1.11.0" "huggingface_hub>=0.35,<1" "safetensors>=0.6,<0.8" "lm-format-enforcer==0.11.2"
+          python -m pip install -e .
+      - name: Real local Qwen3 generation and deterministic source validation
+        run: |
+          python scripts/contract_ai_benchmark.py --split-multi-tariff --cases-file tests/fixtures/contract_independent_synthetic.json --output /tmp/mcias-c33-contract-ai-metrics.json
+      - name: Save anonymized metrics and hashed inference evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: syn-contract-ai-c33-metrics
+          path: /tmp/mcias-c33-contract-ai-metrics.json
+          retention-days: 1
+          if-no-files-found: warn
