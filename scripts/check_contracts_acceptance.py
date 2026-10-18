@@ -315,7 +315,7 @@ try:
             assert body["items"] and all("details" not in item for item in body["items"])
             assert any(item["action"]=="contract_draft_revised" for item in body["items"])
             assert not any(item["action"]=="synthetic_foreign_private" for item in body["items"])
-            assert "DO_NOT_EXPOSE" not in activity.text
+            assert "DO_NOT_EXPOSE" not in activity.text()
             results["activity_audit"]={"status":"PASS","actor_tenant_isolation":True,
                                        "details_redacted":True,"revision_event_visible":True}
             results["edit"]="PASS"
