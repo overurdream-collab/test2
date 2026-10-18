@@ -139,3 +139,7 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 
 ## A1 safeguard after deferring institution-signature workflow
 Synthetic source-declared fee items must keep G6 review packet as provisional HUMAN_REVIEW, propagate approved_contract_fee_clause missing, and never invent signed G5 policy, reviewer decision, or G7 realized savings. This is only a test guard. Super-admin-only restrictions remain a handover policy pending separately authorized server-side enforcement.
+
+
+## Next A1 checkpoint — itemized evidence
+A small G2/G4/A1 encrypted original synthetic test suite checks line Decimal arithmetic, row SHA/locator attribution, missing price fail-closed, G6 HUMAN_REVIEW and G7 no savings; file `tests/test_a1_itemized_decimal_provenance.py`. This establishes no OCR clinical accuracy or authority to identify which of quantity/price/total is erroneous. Continue only after exact-SHA CI, without institutional signing, RBAC migration or financial policy changes.

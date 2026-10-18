@@ -72,3 +72,7 @@ python -m pytest -q
 أصغر تغيير مستقبلي مقترح **بعد موافقة حوكمة المؤسسة**: إضافة تمثيل append-only لملحق رسوم مرتبط صراحةً بإصدار العقد وفترة سريانه، والمزود ورمز الرسم ووحدته وسعره وعملته وموضع بند موثَّق ببصمة بايتات الأصل، واعتماد مستقل **موقع مرتبط بهذا البند والإصدار**، مع فحوص تعارض وفترات `[from,until)` وتعدد المستندات/الأولوية. لا تشغيل للسجل حتى توقيعه واختباره، ولا يغير هذا الفرع G3/G5 أو PR22/23.
 
 اختبار انحدار إضافي: `test_expired_sourced_fee_contract_cannot_authorize_fee`، مع الاختبارات القائمة للحالات `legit_fee` و`fee` والمرجع الناقص، والتي تثبت سلوكًا على بيانات اصطناعية فقط.
+
+
+## A1 synthetic itemized decimal and provenance regression
+`tests/test_a1_itemized_decimal_provenance.py` uses real encrypted, hash-matched G2 original CSV -> G4 -> A1 for synthetic drug, lab, consultation and fee lines. Every numeric input has an exact original invoice row SHA and locator. Decimal exact multiplication is tested for 2 × 12.5000 = 25.0000, 3 × 7.00 != 14.00, 2 × 15.00 != 20.00, and 2 × 10.25 != 20.51. Without independently attested units and prices, the engine reports line arithmetic conflict, not which field is fraudulent. A missing price fails closed as invalid_invoice_row, with no computed value; fee remains missing approved_contract_fee_clause. All financial decisions remain unauthorized and G6 human review provisional. There is no currency conversion or implicit rounding.
