@@ -26,7 +26,7 @@ with Session(engine) as db:
     role=Role(code="contract_writer_"+tag)
     readonly=Role(code="contract_reader_"+tag)
     db.add_all([role,readonly]); db.flush()
-    for code in ["profile.read","reference.read","reference.write","ingestion.read","ingestion.upload"]:
+    for code in ["profile.read","reference.read","reference.write","ingestion.read","ingestion.upload","medical_fields.text.read"]:
         perm=db.scalar(select(Permission).where(Permission.code==code))
         if perm is None:
             perm=Permission(code=code); db.add(perm); db.flush()
@@ -71,20 +71,21 @@ def login(page,label):
     }''')
     expect(page.get_by_role("button",name="العقود",exact=True)).to_be_visible(timeout=12000)
     record(page,"00-contracts-authenticated-"+label)
+    return auth.value.json()["access_token"]
 
 try:
     with sync_playwright() as pw:
         browser=pw.chromium.launch()
         page=browser.new_page(viewport={"width":1440,"height":950})
         try:
-            login(page,"writer")
+            writer_token=login(page,"writer")
             for name in ("استيراد ملف (رفع المصدر)","إضافة","تعديل"):
                 expect(page.get_by_role("button",name=name,exact=True)).to_be_visible()
             record(page,"01-contracts-controls")
             # Unauthorized operator must not be allowed to mutate.
             other=browser.new_page()
             try:
-                login(other,"reader")
+                reader_token=login(other,"reader")
                 for name in ("استيراد ملف (رفع المصدر)","إضافة","تعديل"):
                     expect(other.get_by_role("button",name=name,exact=True)).to_be_disabled()
                 record(other,"02-reader-denied")
@@ -128,11 +129,39 @@ try:
             expect(preview).to_contain_text("SYN_001")
             expect(page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True)).to_be_visible()
             record(page,"04-g2-human-preview")
+            from mcias.models_input_clauses import InputClause
+            with Session(engine) as db:
+                assert db.scalar(select(InputClause).where(InputClause.organization_id==org.id,
+                    InputClause.section=="contracts")) is None, "Source preview created draft without human confirmation"
+            preview.get_by_label("القيمة بعد التصحيح",exact=True).fill("126.00")
+            record(page,"05-human-correction-before-confirm")
+            # An unauthorized reader cannot confirm even by direct HTTP POST.
+            denied = page.request.post("http://127.0.0.1:8000/api/v1/input-clauses/contracts/documents/invalid/confirm",
+                headers={"Authorization":"Bearer "+reader_token},
+                data={"source_record_id":"SYN","service_code":"SYN_001","corrected_value":"126.00",
+                      "effective_from":"2026-11-01","human_confirmed":True})
+            assert denied.status == 403, "Unauthorized user reached confirmation route"
+            preview.locator("input[type=checkbox]").check()
+            with page.expect_response(lambda r: "/api/v1/input-clauses/contracts/documents/" in r.url and r.url.endswith("/confirm")) as confirmation:
+                page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True).click()
+            assert confirmation.value.status == 201, "Confirmed draft HTTP " + str(confirmation.value.status)
+            with Session(engine) as db:
+                rows=db.scalars(select(InputClause).where(InputClause.organization_id==org.id,
+                    InputClause.section=="contracts")).all()
+                assert len(rows)==1, "Expected precisely one confirmed contract draft"
+                point=rows[0]
+                assert point.structured_value["original_amount"]=="125.00"
+                assert point.structured_value["amount"]=="126.00"
+                assert point.structured_value["human_confirmed"] is True
+                assert point.source_document_id and point.source_locator.get("kind")=="page"
+                results["db_evidence"]={"draft_id":point.id,"version":point.version,
+                    "original_amount":"125.00","corrected_amount":"126.00","status":"draft",
+                    "source_document_id":point.source_document_id}
+            record(page,"06-confirmed-contract-draft")
             results["source_review_preview"]="PASS"
-            results["import"]="BLOCKED"
-            # Next steps executed only after import acceptance gate passes.
-            # A real add/edit test must subsequently verify DB records and version chain.
-            raise AssertionError("Add/Edit PostgreSQL roundtrip is not yet implemented in this strict acceptance harness; no PASS allowed")
+            results["import"]="PASS"
+            results["add"]="BLOCKED"
+            results["edit"]="BLOCKED"
         finally:
             try: record(page,"99-last-browser-state")
             except Exception: pass
@@ -144,4 +173,6 @@ except Exception as exc:
     (OUT/"results.json").write_text(json.dumps(results,ensure_ascii=False,indent=2))
     raise
 finally:
+    (OUT/"results.json").write_text(json.dumps(results,ensure_ascii=False,indent=2))
+    print(json.dumps(results,ensure_ascii=False,indent=2))
     engine.dispose()
