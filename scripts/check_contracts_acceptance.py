@@ -5,7 +5,7 @@ from uuid import uuid4
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from playwright.sync_api import sync_playwright, expect
-from mcias.models import Organization, User, Role, Permission, RolePermission, UserRole, MFAFactor
+from mcias.models import Organization, User, Role, Permission, RolePermission, UserRole, MFAFactor, AuditLog
 from mcias.security import hash_password
 from mcias.mfa import generate_totp
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
