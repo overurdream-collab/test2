@@ -121,11 +121,15 @@ try:
             record(page,"04-g2-source-manifest")
             # Strict gate: a manifest is NOT an editable review of extracted contract clauses.
             preview=page.locator("#drawer [data-testid='g2-contract-fields-preview']")
-            if preview.count() == 0:
+            # G2 manifest and contract candidate preview are sequential async requests.
+            # A synchronous .count() here races the second request and reports a false absence.
+            try:
+                expect(preview).to_be_visible(timeout=15000)
+            except AssertionError:
                 results["import"]="BLOCKED"
-                results["first_missing_function"]="Source-linked editable contract clauses preview before confirmation"
-                raise AssertionError("G2 manifest displays source metadata but no contract clauses review/validation UI")
-            expect(preview).to_be_visible(timeout=10000)
+                results["first_missing_function"]="Contract preview not rendered after G2 manifest; inspect server response"
+                record(page,"04-preview-not-rendered")
+                raise
             expect(preview).to_contain_text("SYN_001")
             expect(page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True)).to_be_visible()
             record(page,"04-g2-human-preview")

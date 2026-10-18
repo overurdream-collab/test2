@@ -1,0 +1,2 @@
+# DG-001 — G2 preview async browser gate correction
+Base 862d21995a44b8f9874ee3dc116ef8f63b430519; run https://github.com/overurdream-collab/test2/actions/runs/39133467608 reached manifest but failed immediately at synchronous preview.count() before waiting for the separate contract preview GET. Changed to Playwright waiting 15 s for visible review form, preserving strict failure and screenshot if absent. Not a backend change. Do not assert import PASS before CI browser→PostgreSQL proof.
