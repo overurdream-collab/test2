@@ -76,3 +76,7 @@ python -m pytest -q
 
 ## A1 synthetic itemized decimal and provenance regression
 `tests/test_a1_itemized_decimal_provenance.py` uses real encrypted, hash-matched G2 original CSV -> G4 -> A1 for synthetic drug, lab, consultation and fee lines. Every numeric input has an exact original invoice row SHA and locator. Decimal exact multiplication is tested for 2 × 12.5000 = 25.0000, 3 × 7.00 != 14.00, 2 × 15.00 != 20.00, and 2 × 10.25 != 20.51. Without independently attested units and prices, the engine reports line arithmetic conflict, not which field is fraudulent. A missing price fails closed as invalid_invoice_row, with no computed value; fee remains missing approved_contract_fee_clause. All financial decisions remain unauthorized and G6 human review provisional. There is no currency conversion or implicit rounding.
+
+
+## G2 missing price limitation (tested)
+When the original row provides an empty `unit_price`, the current A1 adapter raises `A1SourceBlocked(invalid_unverified_invoice_fields)` before building a review packet. It does **not** invent zero or compute a total, but cannot yet emit `HUMAN_REVIEW`/missing field details for this case. A future separately scoped safe intake triage path should preserve the verified original SHA/row and surface a missing-value review packet, without loosening numeric validators.

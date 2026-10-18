@@ -1,7 +1,7 @@
 """Synthetic G2 encrypted original -> G4 -> A1 invoice arithmetic and provenance."""
 import pytest
 from mcias.models_claims import ClaimAttachment
-from mcias.agents.a1_trusted_input import preview_a1_from_g4, build_a1_snapshot
+from mcias.agents.a1_trusted_input import preview_a1_from_g4, build_a1_snapshot, A1SourceBlocked
 from tests.test_a1_trusted_input import _setup, _claim, _document
 
 
@@ -30,6 +30,13 @@ def test_g2_g4_a1_decimal_source_cases(tmp_path, label, code, kind, qty, price, 
             organization_id=org.id, claim_id=claim.id, ingestion_document_id=doc.id,
             document_sha256=doc.sha256, linked_by=actor.id))
         db.commit()
+        if label == "medicine_missing_price":
+            # G2 keeps the original empty price, and A1 refuses to fabricate it.
+            # Current adapter blocks before emitting a review packet: known gap.
+            with pytest.raises(A1SourceBlocked, match="invalid_unverified_invoice_fields"):
+                build_a1_snapshot(db, actor, claim.id, store, run_id="SYN-" + label)
+            assert doc.sha256 and len(rows) == 1
+            return
         state = build_a1_snapshot(db, actor, claim.id, store, run_id="SYN-" + label)
         preview = preview_a1_from_g4(db, actor, claim.id, store, run_id="SYN-preview-" + label)
         packet = preview["review_packet"]

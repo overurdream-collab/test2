@@ -147,3 +147,7 @@ A small G2/G4/A1 encrypted original synthetic test suite checks line Decimal ari
 
 ## CI regression correction — synthetic invoice_total fixture
 Exact-SHA run 39136573522 FAILED six new test cases; all classified MISSING_ATTACHMENTS, because the new CSV synthetic row wrote only line_total while header required both line_total and invoice_total. The source validator correctly rejected an incomplete row. Corrected the fixture to supply the *same stated amount* in both explicit columns; no changes to G2/A1 engines or missing-evidence rules. Next verify exact new SHA unit tests and source refs. 
+
+
+## Tested limitation — original price missing
+The six-case synthetic suite exposed that missing `unit_price` is fail-closed at `build_a1_snapshot` (`A1SourceBlocked`) rather than a G6 HUMAN_REVIEW packet. This is a real adapter gap, not a passed human-review acceptance criterion; preserve fail-closed and implement missing-input triage only in a separately tested follow-up. All complete rows still require verified SHA and arithmetic evidence.
