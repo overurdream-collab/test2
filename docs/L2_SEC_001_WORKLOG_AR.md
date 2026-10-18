@@ -14,3 +14,7 @@ Before any final approval, implement the FastAPI request transaction-owner rollb
 
 ## Current status
 PARTIAL / BLOCKED. No safe PostgreSQL target verified. No final PASS. No merge or deploy.
+
+
+## 2026-10-18 — Corrected regression
+Commit 23be2dad4eae611a4a6b7c76ee455a866751183b: test checks independent session BEFORE rollback; uses only disposable L2-SYNTHETIC fixture; restores leaked baseline mutation after observation; absence of safe PostgreSQL is explicit FAIL/BLOCKED, not a skip/PASS. Original guard implementation remains unchanged, so expected original result on PostgreSQL is FAIL, but unexecuted. No PostgreSQL local tool/service confirmed. Shared writer remains only on PR #25. Do not claim completion.
