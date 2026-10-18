@@ -42,9 +42,11 @@ def create_draft(db, actor, provider_code, start, end, precedence=0, *, contract
                            version=current + 1, effective_from=start, effective_until=end,
                            precedence=precedence, status="draft", created_by=actor.id)
     db.add(item); db.flush()
-    _audit(db, actor, "contract_draft_created", "contract_version", item.id,
-           {"version": item.version, "provider_code": provider_code,
-            "contract_number": contract_number})
+    from mcias.audit_writer import write_event
+    write_event(db, actor=actor, organization_id=actor.organization_id,
+                action="contract_draft_created", resource_type="contract_version",
+                resource_id=item.id, outcome="success",
+                details={"version": item.version, "contract_number": contract_number})
     db.commit()
     return item
 
