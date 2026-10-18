@@ -143,3 +143,7 @@ Synthetic source-declared fee items must keep G6 review packet as provisional HU
 
 ## Next A1 checkpoint — itemized evidence
 A small G2/G4/A1 encrypted original synthetic test suite checks line Decimal arithmetic, row SHA/locator attribution, missing price fail-closed, G6 HUMAN_REVIEW and G7 no savings; file `tests/test_a1_itemized_decimal_provenance.py`. This establishes no OCR clinical accuracy or authority to identify which of quantity/price/total is erroneous. Continue only after exact-SHA CI, without institutional signing, RBAC migration or financial policy changes.
+
+
+## CI regression correction — synthetic invoice_total fixture
+Exact-SHA run 39136573522 FAILED six new test cases; all classified MISSING_ATTACHMENTS, because the new CSV synthetic row wrote only line_total while header required both line_total and invoice_total. The source validator correctly rejected an incomplete row. Corrected the fixture to supply the *same stated amount* in both explicit columns; no changes to G2/A1 engines or missing-evidence rules. Next verify exact new SHA unit tests and source refs. 

@@ -22,7 +22,7 @@ def test_g2_g4_a1_decimal_source_cases(tmp_path, label, code, kind, qty, price, 
         csv = (
             "line_item_id,service_code,unit,quantity,unit_price,line_total,"
             "invoice_total,claim_reference,provider_code,currency,item_kind\n"
-            f"SYN-L1,{code},unit,{qty},{price},{line_total},"
+            f"SYN-L1,{code},unit,{qty},{price},{line_total},{line_total},"
             f"{claim.claim_reference},H1,YER,{kind}\n"
         ).encode()
         doc, rows = _document(db, store, org, label + ".csv", csv)
