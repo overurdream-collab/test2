@@ -228,7 +228,73 @@ try:
             results["manual_add_validation"]={"duplicate_status":dup.status,
                 "reader_denial_status":denied_add.status,"invalid_dates_status":invalid.status}
             results["add"]="PASS"
-            results["edit"]="BLOCKED"
+            # Select persisted G3 contract from the actual contracts screen.
+            page.locator("#drawer").get_by_role("button",name="إغلاق",exact=True).click()
+            choose=page.get_by_role("button",name=contract_number+" — v1",exact=True)
+            expect(choose).to_be_visible(timeout=12000)
+            choose.click()
+            expect(page.get_by_role("button",name="تعديل",exact=True)).to_be_enabled(timeout=10000)
+            record(page,"10-selected-existing-g3-contract")
+            page.get_by_role("button",name="تعديل",exact=True).click()
+            revision=page.locator("#drawer [data-testid='g3-contract-revision-form']")
+            expect(revision).to_be_visible()
+            expect(revision.get_by_label("معلومات العقد",exact=True)).to_have_value(
+                "Synthetic medical provider contract — draft only")
+            record(page,"11-prefilled-contract-revision")
+            revision.get_by_label("معلومات العقد",exact=True).fill("SYNTHETIC revised contract notes — version 2")
+            record(page,"12-revision-edited-before-save")
+            with page.expect_response(lambda r: "/api/v1/reference/contracts/drafts/" in r.url
+                    and r.url.endswith("/revise") and r.request.method=="POST") as change:
+                revision.get_by_role("button",name="تنفيذ الطلب",exact=True).click()
+            assert change.value.status==201, "G3 revise HTTP "+str(change.value.status)
+            expect(revision).to_contain_text("SYNTHETIC revised contract notes",timeout=10000)
+            record(page,"13-contract-version-history")
+            from mcias.models import AuditLog
+            from mcias.models_reference import ProviderTariff
+            with Session(engine) as db:
+                versions=db.scalars(select(ContractVersion).where(
+                    ContractVersion.organization_id==organization_id,
+                    ContractVersion.contract_number==contract_number).order_by(ContractVersion.version)).all()
+                assert len(versions)==2 and [v.version for v in versions]==[1,2]
+                assert versions[0].contract_notes=="Synthetic medical provider contract — draft only"
+                assert versions[1].contract_notes=="SYNTHETIC revised contract notes — version 2"
+                assert versions[0].id!=versions[1].id
+                assert all(v.status=="draft" and v.authorization_id is None for v in versions)
+                assert all(v.provider_code=="SYN_HOSP" for v in versions)
+                assert all(v.created_by for v in versions)
+                assert versions[1].created_at>=versions[0].created_at
+                assert not db.scalars(select(ProviderTariff).where(ProviderTariff.contract_id.in_(
+                    [v.id for v in versions]))).first()
+                audit=db.scalars(select(AuditLog).where(
+                    AuditLog.resource_type=="contract_version",
+                    AuditLog.resource_id==versions[1].id,
+                    AuditLog.action=="contract_draft_revised")).all()
+                assert len(audit)==1 and audit[0].details["previous_id"]==versions[0].id
+                original_id=versions[0].id
+                latest_id=versions[1].id
+                results["revision_db_evidence"]={"contract_number":contract_number,
+                    "original_id":original_id,"new_id":latest_id,"versions":[1,2],
+                    "original_notes":versions[0].contract_notes,"new_notes":versions[1].contract_notes,
+                    "audit_event_id":audit[0].id,"original_unchanged":True,
+                    "financial_approval":False}
+            revise_url="http://127.0.0.1:8000/api/v1/reference/contracts/drafts/"+original_id+"/revise"
+            revised_payload={"contract_notes":"SYN stale overwrite", "effective_from":"2026-11-01",
+                "effective_until":"2027-11-01","precedence":0}
+            stale=page.request.post(revise_url,
+                headers={"Authorization":"Bearer "+writer_token},data=revised_payload)
+            assert stale.status==409, "Stale version was accepted"
+            denied_revision=page.request.post(
+                "http://127.0.0.1:8000/api/v1/reference/contracts/drafts/"+latest_id+"/revise",
+                headers={"Authorization":"Bearer "+reader_token},data=revised_payload)
+            assert denied_revision.status==403, "Unauthorized reader revised G3 contract"
+            bad_dates=page.request.post(
+                "http://127.0.0.1:8000/api/v1/reference/contracts/drafts/"+latest_id+"/revise",
+                headers={"Authorization":"Bearer "+writer_token},
+                data={**revised_payload,"effective_from":"2028-01-01","effective_until":"2027-01-01"})
+            assert bad_dates.status==409, "Invalid revision effective dates allowed"
+            results["revision_guards"]={"stale_version":stale.status,
+                "reader_denied":denied_revision.status,"invalid_dates":bad_dates.status}
+            results["edit"]="PASS"
         finally:
             try: record(page,"99-last-browser-state")
             except Exception: pass

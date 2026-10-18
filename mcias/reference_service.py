@@ -48,6 +48,39 @@ def create_draft(db, actor, provider_code, start, end, precedence=0, *, contract
     db.commit()
     return item
 
+
+def revise_contract_draft(db, actor, original_id, *, contract_notes, start, end, precedence):
+    """Optimistic append-only G3 draft revision; old row and tariffs unchanged."""
+    from sqlalchemy import func, text
+    original = db.get(ContractVersion, original_id)
+    if original is None or original.organization_id != actor.organization_id:
+        raise ReferenceConflict("contract not accessible")
+    _tenant(actor, original.organization_id)
+    if original.status != "draft" or not original.contract_number:
+        raise ReferenceConflict("only numbered draft contracts may be revised")
+    if start >= end or precedence < 0 or precedence > 10000 or len(contract_notes) > 1000:
+        raise ReferenceConflict("invalid revision fields")
+    if db.bind.dialect.name == "postgresql":
+        db.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:key, 0))"),
+                   {"key": original.organization_id + ":" + original.provider_code})
+    current = db.scalar(select(func.max(ContractVersion.version)).where(
+        ContractVersion.organization_id == original.organization_id,
+        ContractVersion.provider_code == original.provider_code)) or 0
+    if original.version != current:
+        raise ReferenceConflict("stale contract version; reload latest")
+    # Existing G3 independent precedence/impact checks remain mandatory for APPROVAL.
+    revision = ContractVersion(organization_id=original.organization_id,
+        provider_code=original.provider_code, contract_number=original.contract_number,
+        contract_notes=contract_notes, effective_from=start, effective_until=end,
+        precedence=precedence, version=current + 1, status="draft", created_by=actor.id)
+    db.add(revision)
+    db.flush()
+    _audit(db, actor, "contract_draft_revised", "contract_version", revision.id,
+           {"previous_id": original.id, "previous_version": original.version,
+            "version": revision.version, "contract_number": original.contract_number})
+    db.commit()
+    return revision
+
 def add_tariff(db, actor, contract_id, service_code, amount, currency):
     contract = db.get(ContractVersion, contract_id, with_for_update=True)
     if contract is None:

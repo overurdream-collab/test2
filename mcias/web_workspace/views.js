@@ -2920,8 +2920,12 @@ function inputClauseWorkspace(ctx) {
     const editAction = actionButton(ctx, L("تعديل", "Edit"), "reference.write",
       () => {
         if (!selectedRecord || selectedRecord.section !== section) return;
-        openDrawer(L("إصدار بديل مع حفظ الأصل", "Create replacement version"),
-          clauseDraftForm(ctx, section, selectedRecord));
+        if (section === "contracts" && selectedRecord.g3_id)
+          openDrawer(L("تعديل عقد — إصدار جديد","Revise contract as new version"),
+            editG3ContractDraftForm(ctx,selectedRecord));
+        else if (section !== "contracts")
+          openDrawer(L("إصدار بديل مع حفظ الأصل", "Create replacement version"),
+            clauseDraftForm(ctx, section, selectedRecord));
       }, "button");
     editAction.disabled = true;
     fileArea.setAttribute("role", "group");
@@ -2983,8 +2987,59 @@ function inputClauseWorkspace(ctx) {
         });
     }
     load();
+    if (section === "contracts") {
+      const g3List = el("div");
+      content.prepend(g3List);
+      void fetchPanel(ctx,g3List,"/api/v1/workspace/catalog/contracts?limit=100",data=>{
+        const choices=(data.items||[]).filter(x=>x.contract_number && x.status==="draft");
+        const row=el("div",null,"input-actions");
+        row.append(el("h3",L("اختر عقد G3 للتعديل","Choose a G3 contract to revise")));
+        for (const contract of choices) {
+          const choose=button(contract.contract_number+" — v"+contract.version,async()=>{
+            try {
+              const found=await ctx.api.request("/api/v1/reference/contracts/drafts/"+safeId(contract.id));
+              selectedRecord={...found,g3_id:contract.id};
+              editAction.disabled=ctx.demo || !allowed(ctx,"reference.write");
+              chosen.replaceChildren(details(found));
+            }catch(err){chosen.replaceChildren(errorState(err));}
+          },"button");
+          row.append(choose);
+        }
+        const chosen=el("div");
+        g3List.append(row,chosen);
+      });
+    }
   }
   draw(selected);
+}
+function editG3ContractDraftForm(ctx, previous) {
+  const form=operation(ctx,L("حفظ إصدار عقد جديد","Save new contract revision"),
+    L("تُحفظ النسخة القديمة ولا تُفعّل تعرفة أو موافقة.","Original preserved; no tariff or approval activated."),
+    [
+      {name:"contract_notes",label:L("معلومات العقد","Contract information"),type:"textarea",
+        value:previous.contract_notes,maxLength:1000,required:false},
+      {name:"effective_from",label:L("تاريخ البداية","Start date"),type:"date",value:previous.effective_from},
+      {name:"effective_until",label:L("تاريخ النهاية","End date"),type:"date",value:previous.effective_until},
+      {name:"precedence",label:L("أولوية العقد","Contract precedence"),type:"number",
+        value:String(previous.precedence),min:0,max:10000}
+    ],"reference.write",async values=>{
+      if(values.effective_from>=values.effective_until)
+        throw new Error(L("الفترة غير صحيحة","Invalid date range"));
+      const result=await ctx.api.request("/api/v1/reference/contracts/drafts/"+
+        safeId(previous.g3_id)+"/revise", {method:"POST",body:{
+          contract_notes:values.contract_notes,effective_from:values.effective_from,
+          effective_until:values.effective_until,precedence:Number(values.precedence)
+        }});
+      const history=await ctx.api.request("/api/v1/reference/contracts/drafts/"+
+        safeId(previous.g3_id)+"/history");
+      if(result.status!=="draft" || result.previous_id!==previous.g3_id ||
+          !history.items.some(x=>x.id===previous.g3_id) ||
+          !history.items.some(x=>x.id===result.id))
+        throw new Error(L("فشل إثبات الإصدار","Version evidence mismatch"));
+      return {revision:result,history};
+    });
+  form.dataset.testid="g3-contract-revision-form";
+  return form;
 }
 function manualContractDraftForm(ctx) {
   const organization = ctx.context.organization;

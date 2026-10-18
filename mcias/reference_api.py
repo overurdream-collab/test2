@@ -196,3 +196,38 @@ def contract_draft_details(contract_id: str, authorization: str | None = Header(
             "effective_until": contract.effective_until, "precedence": contract.precedence,
             "version": contract.version, "status": contract.status,
             "authorization_id": contract.authorization_id}
+
+class ContractRevisionIn(BaseModel):
+    contract_notes: str = Field(max_length=1000)
+    effective_from: date
+    effective_until: date
+    precedence: int = Field(ge=0, le=10000)
+
+@router.post("/contracts/drafts/{contract_id}/revise", status_code=201)
+def revise_contract(contract_id: str, payload: ContractRevisionIn,
+                    authorization: str | None = Header(default=None),
+                    db: Session = Depends(get_db)):
+    user = _actor(db, authorization, "reference.write")
+    from mcias.reference_service import revise_contract_draft
+    item = _perform(db, lambda: revise_contract_draft(db, user, contract_id,
+        contract_notes=payload.contract_notes, start=payload.effective_from,
+        end=payload.effective_until, precedence=payload.precedence))
+    return {"id":item.id, "version":item.version, "status":item.status,
+            "previous_id":contract_id, "contract_number":item.contract_number}
+
+@router.get("/contracts/drafts/{contract_id}/history")
+def contract_history(contract_id: str, authorization: str | None = Header(default=None),
+                     db: Session = Depends(get_db)):
+    user = _actor(db, authorization, "reference.read")
+    original = _contract(db, user, contract_id, "reference.read")
+    if not original.contract_number:
+        raise HTTPException(409, "contract has no stable number")
+    entries = db.scalars(select(ContractVersion).where(
+        ContractVersion.organization_id==user.organization_id,
+        ContractVersion.contract_number==original.contract_number
+    ).order_by(ContractVersion.version)).all()
+    return {"items":[{"id":v.id, "version":v.version, "status":v.status,
+        "contract_number":v.contract_number,"contract_notes":v.contract_notes,
+        "effective_from":v.effective_from, "effective_until":v.effective_until,
+        "provider_code":v.provider_code, "created_by":v.created_by,
+        "created_at":v.created_at} for v in entries]}
