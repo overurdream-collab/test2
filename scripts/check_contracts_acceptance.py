@@ -227,6 +227,27 @@ try:
                     ContractVersion.contract_number==contract_number))==1
             results["manual_add_validation"]={"duplicate_status":dup.status,
                 "reader_denial_status":denied_add.status,"invalid_dates_status":invalid.status}
+            # Shared append-only audit: one committed success and independently
+            # committed denial events even though the business writes rolled back.
+            with Session(engine) as db:
+                success_events=db.scalars(select(AuditLog).where(
+                    AuditLog.action=="contract_draft_created",
+                    AuditLog.resource_id==contract.id)).all()
+                assert len(success_events)==1, "Expected one shared creation success event"
+                assert success_events[0].details["organization_id"]==organization_id
+                assert success_events[0].details["outcome"]=="success"
+                denied_events=db.scalars(select(AuditLog).where(
+                    AuditLog.action=="contract_creation_denied",
+                    AuditLog.actor_id.in_([db.scalar(select(User.id).where(User.username==users["writer"])),
+                                           db.scalar(select(User.id).where(User.username==users["reader"]))]))).all()
+                assert len(denied_events)>=3, "Expected duplicate, invalid dates and RBAC denial events"
+                codes=[e.details.get("reason_code") for e in denied_events]
+                assert codes.count("reference_conflict")>=2 and "permission_denied" in codes
+                assert all(e.details.get("organization_id")==organization_id and
+                           e.details.get("outcome")=="denied" for e in denied_events)
+                results["contract_create_audit"]={"success_events":len(success_events),
+                    "denied_events":len(denied_events),"rollback_survived":True,
+                    "cross_tenant_leaks":False}
             results["add"]="PASS"
             # Select persisted G3 contract from the actual contracts screen.
             page.locator("#drawer").get_by_role("button",name="إغلاق",exact=True).click()
