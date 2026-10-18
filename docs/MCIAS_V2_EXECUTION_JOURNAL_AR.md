@@ -596,3 +596,14 @@
 - Risks: Synthetic English pattern only; segmentation may change raw model output, and low Recall may persist. Never use split as production evidence override.
 - Next: Inspect exact SHA CI and real Qwen R3/R4 proposals and quarantine; report any failure without further C33 changes.
 - Handoff: Draft PR23, no merge/deploy/PHI/financial activation, do not modify R5/R6.
+
+
+### HANDOFF-20261018-018 — Contract Intelligence unified inputs/audit alignment
+- Scope: Documentation-only synchronization of approved 2026-10-18 contract terms/versioning/super-admin review/audit requirements; excludes tariff prices from contract clause management and retains C33 SYN diagnostic untouched.
+- Why: Reference `docs/MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md` at `808a70806e6c5931b4dd5f7110e4c4d1a0a6b63e` mandates shared append-only audit, no deletions, versioned clauses, effective-date selection and human-only approval; document not present on PR23 head.
+- Files: `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md`, `docs/CONTRACT_INTELLIGENCE_TEST_REPORT_AR.md`.
+- Tests: Documentation governance exact-SHA CI pending; C33 original tests and workflows unchanged. No claim of production contract management implementation or Qwen outcome by this commit.
+- Result: DOC_ALIGNMENT_ONLY; identified shared G2/G3 RBAC/audit/version/correction dependency contracts, review events and scope boundary.
+- Risks: The reference commit is on another branch and PR23 does not yet include the reference file; event names are proposals, super-admin enforcement and immutable review history not implemented here. Existing tariff benchmark can be misinterpreted as contract prices without clear separation.
+- Next: Verify DG-001 and CI on exact SHA, evaluate C33 Qwen run independently, coordinate eventual shared services architecture; do not start new agent scope.
+- Handoff: Draft PR23 remains unmerged, no publish or financial activation, no production patient files.

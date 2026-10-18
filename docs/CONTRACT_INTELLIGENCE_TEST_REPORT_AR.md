@@ -199,3 +199,28 @@ Two new source-specific negative tests verify the AI cannot attach provider H2 t
 ### C33 opt-in synthetic segmentation pending CI
 - C33 synthetic-only diagnostic: existing G2 make_source_blocks and independent validate_candidates reused; C31 unchanged case and gold. Baseline C32 real model TP2 FP0 FN4 recall33.3%, R3 raw 1500 instead of 4100 and R4 raw 1000 instead of 8200. Opt-in --split-multi-tariff isolates exactly matched literal source clauses into two page-anchored segments (start/end/hash), one model call per segment. Unmatched/ambiguous/Excel blocks remain unchanged; no validator, model, weights or financial rules modified. New Qwen C33 real run and exact-SHA CI PENDING; no claims of improved Recall before results.
 - Preserve source-bound validation and original C31 dataset; C33 improvement unverified until real Qwen output completes.
+
+
+## CONTRACT-INPUTS-ALIGNMENT 2026-10-18 — مرجعية المدخلات والسجل التدقيقي
+**المصدر المعتمد للتصميم:** `docs/MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md` عند commit `808a70806e6c5931b4dd5f7110e4c4d1a0a6b63e` (في فرع مرجعي مستقل؛ لم تُدمج الوثيقة بعد في رأس PR #23). هذه المزامنة توثيق تبعيات وليست إثبات تنفيذ للمنظومة المشتركة.
+
+### الحد الوظيفي
+- Contract Intelligence في هذه المرحلة يستخرج **شروط العقود** فقط: الاستثناءات، الموافقات المسبقة، القيود والشروط والتغطيات التعاقدية حسب تعريفها. **تعرفة الخدمات وأسعار providers (tariffs) ليست بند عقد مُدارًا**؛ تبقى تجارب C31–C33 الحالية للتعرفة معزولة في benchmark تشخيصي اصطناعي ولا يُسمح بنشرها أو استيرادها تلقائيًا إلى عقد معتمد أو G3/G5. فصل المجالين مطلوب عند ربط واجهات ومدخلات Unified Input Management لاحقًا، وليس تغيير fixtures القائمة.
+- مصدر الإدخال G2 يحتفظ بالمستند الأصلي وhash وsource_record_id وlocator وsource_fields والاقتباس الحرفي، ومخرجات النموذج `model_logical_key`، وإصدار النموذج والأخطاء وحالة `DRAFT_ONLY`؛ **هذا لا يعني وجود سجل دائم لتصحيحات البشر** أو عقد محفوظ ومعتمد حاليًا.
+- تعرض المرشحات مع نوع الشرط والنص الأصلي والمصدر والموضع والنقص والتعارض للمراجعة. **السوبر أدمن حصريًا** يراجع ويصحح ويكمل ويضيف ويوافق قبل اعتماد الحفظ؛ صلاحية السيرفر/DB يجب أن تفرض عبر الخدمات المشتركة. AI لا ينشئ عقدًا معتمدًا، ولا يجيز عقدًا أو تغييرًا ماليًا.
+
+### الإصدارات والسريان (تبعية مشتركة غير منفذة هنا)
+- لكل بند `stable_clause_id` ثابت، مع `clause_version_id` مستقل، `contract_id`، `provider_id`، `organization_id`، حالة المسودة/المراجعة/الاعتماد، المصدر، actor، reason، وقت التسجيل UTC، `effective_from` و`effective_until`؛ نسخة سابقة محفوظة لا تُحذف أو تُعدل في مكانها.
+- التعديل بند جديد الإصدار ذريًا مع إغلاق المدى الزمني للإصدار السابق وربط القديم بالجديد؛ فترة السريان `[effective_from,effective_until)`، النهاية المفتوحة مستمرة، والقيمة المطبقة بتاريخ **الخدمة الطبية** لا بتاريخ وصول المطالبة ولا «آخر نسخة». استمرار العقد القديم/تعليق البنود المتعارضة/التعديل الرجعي يُعالج عبر الخدمات المشتركة والمراجعة البشرية وoptimistic locking، دون فرض أثر تلقائي على المطالبات السابقة.
+- وظائف الواجهة المشتركة: عقد جديد مع اختيار إبقاء البنود السابقة أو إغلاقها، تعديل بند محدد بإصدار، إضافة بند؛ لا حذف وظيفي/تاريخي حتى للسوبر أدمن. توقيع العقود الإلكتروني **مؤجل**، ولا تُنفَّذ هنا خدمة versions مستقلة.
+
+### تصحيحات الإنسان والأثر التدقيقي
+- التصحيح البشري لا يكتب فوق الاقتباس الأصلي أو ناتج النموذج؛ يسجل مصدره، السبب، المُراجع، القيم قبل/بعد، `source/evidence_refs`، نسخة المراجعة، وقت التسجيل وتاريخ السريان. إقرار بند مستخرج لا ينشأ تلقائيًا من `verified_source_anchor`؛ يتطلب إجراء سوبر أدمن وتفويضًا مؤكدًا.
+- **أحداث مطلوبة إلى Audit Log المشترك مستقبلًا**: `contract.document_uploaded`, `contract.extraction_started`, `contract.extraction_completed`, `contract.extraction_failed`, `contract.candidate_proposed`, `contract.candidate_quarantined`, `contract.review_started`, `contract.candidate_corrected`, `contract.candidate_rejected`, `contract.clause_added`, `contract.clause_version_created`, `contract.clause_prior_version_closed`, `contract.clause_approved`, `contract.clause_activation_requested`, `contract.change_denied`, `contract.conflict_detected`, `contract.audit_accessed`. الأسماء اقتراح عقد تكامل إلى حين إقرار schema الأحداث المركزي، وليست API منفَّذة.
+- حقول العقد المستقبلي: `event_id/occurred_at_utc/actor_id/actor_type/organization_id/correlation_id/action/resource_type/resource_id/resource_version/result/reason_code/before_ref/after_ref/effective_at/request_id/reviewer_id/evidence_refs`، trace غير سري. لا تُكتب العقود الكاملة أو بيانات المرضى أو الرموز/الأسرار خامًا في اللوق؛ الإشارات لأدلة محمية وسياسة وصول وتقسيم مؤسسات. يجب أن تكون الكتابة append-only مع outbox/معاملة موثوقة وفحوص denied/error؛ لا ننشئ Audit writer مستقلًا هنا.
+
+### الفجوات والتبعيات وحالة C33
+- **موجود جزئيًا:** G2 records وlocators، evidence-gated draft candidates، `model_logical_key` و`DRAFT_ONLY`، وبعض shared G3 contract_versions وRBAC/audit؛ لا تُعد هذه إثبات اكتمال البنود التاريخية أو صلاحيات السوبر أدمن أو Audit Log الشامل.
+- **غير منفذ في PR #23:** إدارة شروط فقط عبر UI، مراجعة واعتماد السوبر أدمن، immutable human corrections، stable IDs + clause version persistence، قفل التعارض والزمن، اختيار نسخة معتمدة بتاريخ الخدمة، shared outbox/audit event integrations ومصفوفة الصلاحيات التفصيلية. تتطلب خدمات Unified Input Management العامة والتكامل مع G2/G3/G5 وموافقة مؤسسية.
+- **C33 دون تغيير:** يبقى benchmark التعرفة الاصطناعي R3/R4 مجرّد أداة تشخيص ويستمر تشغيله وقياسه كما هو. لا تعديل للنموذج/validator/fixtures/الأسعار، ولا إدراج تعرفات كمدخلات بنود العقود. نتيجة Qwen الحقيقية لـC33 تُقرأ مستقلة عن هذا التوثيق ولا تُعد دليلًا على جهوزية الإنتاج.
+- **قرار النشر:** PR #23 مسودة، لا merge/deploy/تفعيل مالي/مستندات حقيقية/توقيع إلكتروني. تبعيات RBAC/Audit/versioning تنتظر الخدمات المشتركة وتعيين أصحاب القرار.
