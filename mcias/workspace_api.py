@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from mcias.app import get_db
 from mcias.auth import resolve_user, require_permission
 from mcias.tenant import require_organization
-from mcias.models import Organization, User, Role, Permission, UserRole, RolePermission
+from mcias.models import Organization, User, Role, Permission, UserRole, RolePermission, AuditLog
 from mcias.models_claims import ClaimBatch, ClaimEntry
 from mcias.models_ingestion import IngestionDocument, IngestionJob
 from mcias.models_reference import ContractVersion
@@ -101,3 +101,36 @@ def user_detail(user_id: str, authorization: str | None = Header(default=None), 
     if user is None:
         raise HTTPException(404, 'user not found')
     return {field: getattr(user, field) for field in CATALOG['users'][2]}
+
+# Tenant-scoped metadata-only activity history. Never return raw audit details
+# because older writers may have placed sensitive values in JSON details.
+@router.get("/activity")
+def activity_history(limit: int = Query(50, ge=1, le=100),
+                     offset: int = Query(0, ge=0),
+                     action: str | None = Query(None, max_length=150),
+                     authorization: str | None = Header(default=None),
+                     db: Session = Depends(get_db)):
+    actor, _ = resolve_user(db, authorization)
+    require_organization(db, actor, actor.organization_id, "reference.read")
+    if "super_admin" not in role_codes(db, actor):
+        db.add(AuditLog(actor_id=actor.id, action="activity_read_denied",
+                        resource_type="audit_log", resource_id=None,
+                        details={"reason": "super_admin_required"}))
+        db.commit()
+        raise HTTPException(403, "super admin required")
+    # Existing audit_log rows are linked to the actor rather than a tenant
+    # column. Never expose null-actor or cross-tenant events.
+    stmt = select(AuditLog, User.username).join(User, AuditLog.actor_id == User.id).where(
+        User.organization_id == actor.organization_id)
+    if action:
+        stmt = stmt.where(AuditLog.action == action)
+    rows = db.execute(stmt.order_by(AuditLog.created_at.desc(), AuditLog.id.desc())
+                      .offset(offset).limit(limit)).all()
+    return {"items": [{"id": event.id, "actor_id": event.actor_id,
+                       "actor_username": username, "action": event.action,
+                       "resource_type": event.resource_type,
+                       "resource_id": event.resource_id,
+                       "created_at": event.created_at}
+                      for event, username in rows],
+            "scope": "current_organization", "offset": offset,
+            "limit": limit, "details_redacted": True}

@@ -295,6 +295,29 @@ try:
             assert bad_dates.status==409, "Invalid revision effective dates allowed"
             results["revision_guards"]={"stale_version":stale.status,
                 "reader_denied":denied_revision.status,"invalid_dates":bad_dates.status}
+            # Real audit activity endpoint: tenant-scoped, metadata-only, no raw details.
+            from mcias.models import AuditLog
+            with Session(engine) as db:
+                foreign=Organization(name="SYN FOREIGN AUDIT "+tag)
+                db.add(foreign);db.flush()
+                foreign_actor=User(organization_id=foreign.id,username="syn-audit-other-"+tag,
+                                   password_hash=hash_password(password))
+                db.add(foreign_actor);db.flush()
+                foreign_event=AuditLog(actor_id=foreign_actor.id,action="synthetic_foreign_private",
+                                      resource_type="contract_version",resource_id=None,
+                                      details={"medical_secret":"DO_NOT_EXPOSE"})
+                db.add(foreign_event);db.commit()
+            activity=page.request.get("http://127.0.0.1:8000/api/v1/workspace/activity?limit=100",
+                                      headers={"Authorization":"Bearer "+writer_token})
+            assert activity.status==200, "Audit activity list HTTP "+str(activity.status)
+            body=activity.json()
+            assert body["details_redacted"] is True and body["scope"]=="current_organization"
+            assert body["items"] and all("details" not in item for item in body["items"])
+            assert any(item["action"]=="contract_draft_revised" for item in body["items"])
+            assert not any(item["action"]=="synthetic_foreign_private" for item in body["items"])
+            assert "DO_NOT_EXPOSE" not in activity.text
+            results["activity_audit"]={"status":"PASS","actor_tenant_isolation":True,
+                                       "details_redacted":True,"revision_event_visible":True}
             results["edit"]="PASS"
         finally:
             try: record(page,"99-last-browser-state")
