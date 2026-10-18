@@ -29,3 +29,6 @@ The worker is bounded to 10,000 rows per monthly job and the existing 128 MiB bu
 ## Acceptance blockers
 
 Institutional policy must define retention start date, legal holds, exceptions, authorized destruction and independent approval. A restore drill and custody verification are required before any future purge. Readback integrity verification is implemented; a full institutional restore acceptance is not implied. Database partition conversion and deletion are intentionally deferred because existing audit immutability prevents deletion.
+
+## 2026-10-18 governance clarification
+Global application rule: **no functional deletion of input records or historical versions**, by any role including Super Admin. The requested system-wide activity log is append-only; later legally mandated retention/privacy remedies require an independently approved institutional policy, not silent deletion. Seven-year retention above remains proposed only. Requirements: [unified inputs and audit](MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md).

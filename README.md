@@ -91,3 +91,6 @@ pending institutional approval.
 ## Bilingual policy and external acceptance pack
 
 [العربية](docs/ACCEPTANCE_PACK_INDEX.md) · [English](docs/ACCEPTANCE_PACK_INDEX_EN.md): 13 proposed financial decisions, deployment checks, external test/report templates, UAT and independent penetration-test scope. All external results/signatures remain unexecuted; these documents do not authorize production.
+
+## Approved requirements update — 2026-10-18 (design only)
+Arabic source of truth for the newly agreed contract-clause lifecycle, beneficiary family relationships, historical coverage, system-wide activity audit, global no-delete rule, permission delegation and super-admin-only future input types: [MCIAS unified inputs and audit requirements](docs/MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md). These are **not yet implemented or production-accepted**; PR #25's synthetic Import/Add/Edit successes are narrower and do not certify the revised business workflow.

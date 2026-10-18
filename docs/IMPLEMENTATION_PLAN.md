@@ -29,3 +29,6 @@ Contract precedence; accounting base and deduction order; rounding/currency; ret
 4. Run unit tests: `pytest`.
 5. Start API: `uvicorn mcias.app:app --reload`.
 **Database tables are not migrated yet**; this is a scaffold, not a runnable end-to-end claims product.
+
+## 2026-10-18 — binding future-scope amendment
+See [unified inputs and audit Arabic requirements](MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md). All input kinds need append-only history/no deletion, effective-date reasoning, tenant boundaries, auditable actor/action, family-member analytics, and strictly reviewed contract clauses. Implement and test this scope separately; older historical delivery-status statements above are snapshots, not a current status certification.
