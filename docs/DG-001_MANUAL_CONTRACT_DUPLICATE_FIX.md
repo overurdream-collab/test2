@@ -1,0 +1,3 @@
+# DG-001 — Manual contract duplicate rejection correction
+Parent 7e4edc16f7aee35ecc7f4e98f3d5730fb4353509.
+Strict Chromium run https://github.com/overurdream-collab/test2/actions/runs/39135123497 proved the manual G3 form, POST and SQL readback, but acceptance failed because the duplicate contract number was accepted as provider version 2. For manual ADD, a contract number is a unique identity within one organization; this path must reject any previously used number, regardless of version. Removed only the service's version predicate in its duplicate check. A future explicit EDIT/version workflow is separate and untouched. Existing G3 approval rules unchanged. Repeat strict CI to establish results; remain draft, no main merge or deployment.

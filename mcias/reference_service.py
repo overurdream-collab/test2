@@ -35,8 +35,7 @@ def create_draft(db, actor, provider_code, start, end, precedence=0, *, contract
         ContractVersion.provider_code == provider_code)) or 0
     if contract_number and db.scalar(select(ContractVersion.id).where(
         ContractVersion.organization_id == actor.organization_id,
-        ContractVersion.contract_number == contract_number,
-        ContractVersion.version == current + 1)):
+        ContractVersion.contract_number == contract_number)):
         raise ReferenceConflict("duplicate contract number for version")
     item = ContractVersion(organization_id=actor.organization_id, provider_code=provider_code,
                            contract_number=contract_number, contract_notes=contract_notes,
