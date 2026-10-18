@@ -284,6 +284,16 @@ try:
             stale=page.request.post(revise_url,
                 headers={"Authorization":"Bearer "+writer_token},data=revised_payload)
             assert stale.status==409, "Stale version was accepted"
+            # The denied attempt is committed outside the failed business transaction.
+            with Session(engine) as db:
+                denied_audits=db.scalars(select(AuditLog).where(
+                    AuditLog.action=="contract_revision_denied",
+                    AuditLog.resource_id==original_id)).all()
+                assert denied_audits and denied_audits[-1].details["outcome"]=="denied"
+                assert denied_audits[-1].details["organization_id"]==organization_id
+                assert "contract_notes" not in denied_audits[-1].details
+                results["durable_rejection_audit"]={"event_id":denied_audits[-1].id,
+                    "outcome":"denied","survived_rollback":True}
             denied_revision=page.request.post(
                 "http://127.0.0.1:8000/api/v1/reference/contracts/drafts/"+latest_id+"/revise",
                 headers={"Authorization":"Bearer "+reader_token},data=revised_payload)
@@ -314,8 +324,27 @@ try:
             assert body["details_redacted"] is True and body["scope"]=="current_organization"
             assert body["items"] and all("details" not in item for item in body["items"])
             assert any(item["action"]=="contract_draft_revised" for item in body["items"])
+            assert any(item["action"]=="contract_revision_denied" for item in body["items"])
             assert not any(item["action"]=="synthetic_foreign_private" for item in body["items"])
             assert "DO_NOT_EXPOSE" not in activity.text()
+            with Session(engine) as db:
+                success_event=db.scalar(select(AuditLog).where(
+                    AuditLog.action=="contract_draft_revised",AuditLog.resource_id==latest_id))
+                assert success_event and success_event.details["outcome"]=="success"
+                assert success_event.details["organization_id"]==organization_id
+                # Database-level immutable audit history: privileged owner cannot
+                # bypass the database trigger with raw UPDATE or DELETE.
+                from sqlalchemy import text as sql_text
+                from sqlalchemy.exc import DBAPIError
+                for stmt in ("UPDATE audit_log SET action='forged' WHERE id=:id",
+                             "DELETE FROM audit_log WHERE id=:id"):
+                    try:
+                        db.execute(sql_text(stmt),{"id":success_event.id})
+                        db.commit()
+                        raise AssertionError("Raw SQL audit mutation was accepted")
+                    except DBAPIError:
+                        db.rollback()
+                assert db.get(AuditLog,success_event.id).action=="contract_draft_revised"
             results["activity_audit"]={"status":"PASS","actor_tenant_isolation":True,
                                        "details_redacted":True,"revision_event_visible":True}
             results["edit"]="PASS"

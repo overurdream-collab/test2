@@ -75,9 +75,12 @@ def revise_contract_draft(db, actor, original_id, *, contract_notes, start, end,
         precedence=precedence, version=current + 1, status="draft", created_by=actor.id)
     db.add(revision)
     db.flush()
-    _audit(db, actor, "contract_draft_revised", "contract_version", revision.id,
-           {"previous_id": original.id, "previous_version": original.version,
-            "version": revision.version, "contract_number": original.contract_number})
+    from mcias.audit_writer import write_event
+    write_event(db, actor=actor, organization_id=original.organization_id,
+                action="contract_draft_revised", resource_type="contract_version",
+                resource_id=revision.id, outcome="success",
+                details={"previous_id": original.id, "previous_version": original.version,
+                         "version": revision.version, "contract_number": original.contract_number})
     db.commit()
     return revision
 

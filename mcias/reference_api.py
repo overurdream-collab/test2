@@ -209,9 +209,18 @@ def revise_contract(contract_id: str, payload: ContractRevisionIn,
                     db: Session = Depends(get_db)):
     user = _actor(db, authorization, "reference.write")
     from mcias.reference_service import revise_contract_draft
-    item = _perform(db, lambda: revise_contract_draft(db, user, contract_id,
-        contract_notes=payload.contract_notes, start=payload.effective_from,
-        end=payload.effective_until, precedence=payload.precedence))
+    from mcias.audit_writer import record_outcome_independent
+    try:
+        item = _perform(db, lambda: revise_contract_draft(db, user, contract_id,
+            contract_notes=payload.contract_notes, start=payload.effective_from,
+            end=payload.effective_until, precedence=payload.precedence))
+    except HTTPException as exc:
+        db.rollback()
+        record_outcome_independent(db.get_bind(), actor_id=user.id,
+            organization_id=user.organization_id, action="contract_revision_denied",
+            resource_type="contract_version", resource_id=contract_id,
+            outcome="denied", details={"reason_code": "revision_rejected"})
+        raise
     return {"id":item.id, "version":item.version, "status":item.status,
             "previous_id":contract_id, "contract_number":item.contract_number}
 
