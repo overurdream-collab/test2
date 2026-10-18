@@ -151,3 +151,7 @@ Exact-SHA run 39136573522 FAILED six new test cases; all classified MISSING_ATTA
 
 ## Tested limitation — original price missing
 The six-case synthetic suite exposed that missing `unit_price` is fail-closed at `build_a1_snapshot` (`A1SourceBlocked`) rather than a G6 HUMAN_REVIEW packet. This is a real adapter gap, not a passed human-review acceptance criterion; preserve fail-closed and implement missing-input triage only in a separately tested follow-up. All complete rows still require verified SHA and arithmetic evidence.
+
+
+## CHECKPOINT — 2026-10-18 unified input/audit requirements synchronization
+Read owner-approved docs/MCIAS_UNIFIED_INPUTS_AUDIT_REQUIREMENTS_AR.md at 808a70806e6c5931b4dd5f7110e4c4d1a0a6b63e, plus related input clause triage and DG-001 branch notes; see docs/agents/A1_UNIFIED_INPUTS_IMPACT_AR.md. A1 needs service-date versioned contract/category/beneficiary-family/coverage/limits reads, no double count, append-only original/version lineage and shared tenant-safe audit events. These are **dependencies, not implemented capabilities**. Do not import unmerged PR22/PR25 code or create separate authorization/audit engines. Keep G2 invoice arithmetic and G6 HUMAN_REVIEW running. Previous SHA dfa4b9ab CI all workflows successful. Institutional digital signing remains deferred; super-admin-only reference edits is handover policy pending implementation. Next: verify CI on new SHA, resume missing-price fail-closed human review triage as separate scoped stage1 work.
