@@ -1,0 +1,3 @@
+# DG-001 — Contract preview regex correction
+Base 448ce4f8e1313fbb97039d2e4f4b0f53f14a86a6. Strict CI: https://github.com/overurdream-collab/test2/actions/runs/39133636955.
+Real Chromium reached G2 manifest but contract preview returned HTTP 409. Exact inspection of input_clause_api.py revealed raw Python regex strings contained doubled literal backslashes (\\\\s, \\\\d), preventing the synthetic PDF source quote from matching; corrected to single regex escapes. Also corrected Pydantic value input regex. No inference engine introduced; no G3/G5 financial change. Result must be verified in strict CI before PASS.

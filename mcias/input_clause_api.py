@@ -98,7 +98,7 @@ from sqlalchemy import select as _select
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord
 from mcias.tenant import require_sensitive_field
 
-_SYN_CLAUSE = re.compile(r"Service\\s+([A-Za-z0-9_.:-]{1,100})\\s+Price\\s+(\\d+(?:\\.\\d{1,4})?)\\s+([A-Z]{3})\\s+effective\\s+(\\d{4}-\\d{2}-\\d{2})", re.I)
+_SYN_CLAUSE = re.compile(r"Service\s+([A-Za-z0-9_.:-]{1,100})\s+Price\s+(\d+(?:\.\d{1,4})?)\s+([A-Z]{3})\s+effective\s+(\d{4}-\d{2}-\d{2})", re.I)
 
 def _contract_candidates(db, user, document_id):
     document = db.get(IngestionDocument, document_id)
@@ -142,7 +142,7 @@ def preview_contract_document(document_id: str, authorization: str | None = Head
 class ConfirmContract(BaseModel):
     source_record_id: str
     service_code: str = Field(pattern=r"^[A-Za-z0-9_.:-]{1,100}$")
-    corrected_value: str = Field(pattern=r"^\\d+(?:\\.\\d{1,4})?$")
+    corrected_value: str = Field(pattern=r"^\d+(?:\.\d{1,4})?$")
     effective_from: date
     human_confirmed: bool = False
 
