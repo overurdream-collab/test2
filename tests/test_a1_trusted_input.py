@@ -281,7 +281,14 @@ def test_original_invoice_explicit_fee_kind_is_preserved_without_financial_autho
         assert preview["financial_decision"]=="NOT_AUTHORIZED"
         assert "approved_unit_mapping" in preview["missing_evidence"]
         assert "approved_contract_fee_clause" in preview["missing_evidence"]
-        assert preview["review_packet"]["financial_decision_authorized"] is False
+        packet=preview["review_packet"]
+        assert packet["financial_decision_authorized"] is False
+        assert packet["classification_is_final"] is False
+        assert packet["provisional_four_way_code"]=="HUMAN_REVIEW"
+        assert "approved_contract_fee_clause" in packet["missing_evidence"]
+        assert packet["signed_g5_financial_policy_fingerprint"] is None
+        assert packet["g6_authorized_reviewer_decision"]=="PENDING"
+        assert packet["g7_realized_savings"] is None
     finally:
         db.close();engine.dispose()
 

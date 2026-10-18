@@ -135,3 +135,7 @@ Guard بعد hash: لا تقبل G4 ClaimEntry إن لم تطابق قيمها �
 6. A1 يواصل التحليل للقراءة فقط، وتظل نتائج الرسوم غير ذات الدليل `NOT_VERIFIED` / `NOT_AUTHORIZED`. لا يبدأ مشروع توقيع أو A2 بسبب هذا القرار.
 
 **نقطة الاستئناف:** لا تكرر بناء آلية توقيع رسوم الآن. عند بدء مرحلة التهيئة للجهة، راجع جميع المسارات القابلة للكتابة والـRBAC وعبور المستأجرين واختبر حصر الكتابة بالسوبر أدمن والنسخ المتعاقبة والتوثيق؛ لا تغيّرها ضمن PR20 بلا مهمة صريحة.
+
+
+## A1 safeguard after deferring institution-signature workflow
+Synthetic source-declared fee items must keep G6 review packet as provisional HUMAN_REVIEW, propagate approved_contract_fee_clause missing, and never invent signed G5 policy, reviewer decision, or G7 realized savings. This is only a test guard. Super-admin-only restrictions remain a handover policy pending separately authorized server-side enforcement.
