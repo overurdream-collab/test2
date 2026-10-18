@@ -2914,7 +2914,9 @@ function inputClauseWorkspace(ctx) {
     const importAction = actionButton(ctx, L("استيراد ملف (رفع المصدر)", "Import file (source upload)"),
       "ingestion.upload", () => uploadClauseSource(ctx, section), "button");
     const addAction = actionButton(ctx, L("إضافة", "Add"), "reference.write",
-      () => openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button");
+      () => section === "contracts"
+        ? openDrawer(L("إضافة عقد", "Add contract"), manualContractDraftForm(ctx))
+        : openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button");
     const editAction = actionButton(ctx, L("تعديل", "Edit"), "reference.write",
       () => {
         if (!selectedRecord || selectedRecord.section !== section) return;
@@ -2983,6 +2985,44 @@ function inputClauseWorkspace(ctx) {
     load();
   }
   draw(selected);
+}
+function manualContractDraftForm(ctx) {
+  const organization = ctx.context.organization;
+  const form = operation(ctx, L("إضافة عقد يدوي", "Create manual contract draft"),
+    L("المؤسسة: ", "Organization: ") + (organization?.name || L("غير متاحة", "Unavailable")) +
+      " — " + L("حفظ مسودة G3 فقط دون اعتماد أو تأثير مالي", "G3 draft only; no approval or financial activation"),
+    [
+      {name:"contract_number",label:L("رقم العقد","Contract number"),maxLength:100,
+        pattern:"[A-Za-z0-9_.:-]+"},
+      {name:"provider_code",label:L("رمز مقدم الخدمة","Provider code"),maxLength:80,
+        pattern:"[A-Za-z0-9_.:-]+"},
+      {name:"effective_from",label:L("تاريخ البداية","Start date"),type:"date"},
+      {name:"effective_until",label:L("تاريخ النهاية","End date"),type:"date"},
+      {name:"contract_notes",label:L("معلومات العقد","Contract information"),
+        type:"textarea",required:false,maxLength:1000},
+      {name:"precedence",label:L("أولوية العقد","Contract precedence"),
+        type:"number",value:"0",min:0,max:10000},
+    ],
+    "reference.write", async values => {
+      if (values.effective_from >= values.effective_until)
+        throw new Error(L("يجب أن تكون النهاية بعد البداية", "End date must follow start date"));
+      const payload = {contract_number:values.contract_number, provider_code:values.provider_code,
+        effective_from:values.effective_from,effective_until:values.effective_until,
+        contract_notes:values.contract_notes || "",precedence:Number(values.precedence)};
+      const created = await ctx.api.request("/api/v1/reference/contracts",
+        {method:"POST",body:payload});
+      if (created.status !== "draft" || !created.id)
+        throw new Error(L("لم يثبت حفظ المسودة", "Draft persistence not confirmed"));
+      const saved = await ctx.api.request("/api/v1/reference/contracts/drafts/" + safeId(created.id));
+      if (saved.id !== created.id || saved.contract_number !== payload.contract_number ||
+          saved.provider_code !== payload.provider_code || saved.effective_from !== payload.effective_from ||
+          saved.effective_until !== payload.effective_until || saved.contract_notes !== payload.contract_notes ||
+          saved.status !== "draft" || saved.authorization_id)
+        throw new Error(L("القراءة بعد الحفظ غير متطابقة", "Persisted contract differs from submission"));
+      return saved;
+    });
+  form.dataset.testid = "manual-g3-contract-draft";
+  return form;
 }
 function clauseDraftForm(ctx, section, previous = null) {
   const tariff = section === "tariffs";

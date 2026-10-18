@@ -15,10 +15,16 @@ def _tenant(actor, organization_id):
     if not actor.active or actor.organization_id != organization_id:
         raise ReferenceConflict("organization access denied")
 
-def create_draft(db, actor, provider_code, start, end, precedence=0):
+def create_draft(db, actor, provider_code, start, end, precedence=0, *, contract_number=None, contract_notes=""):
     _tenant(actor, actor.organization_id)
     if not provider_code or len(provider_code) > 80 or start >= end or precedence < 0:
         raise ReferenceConflict("invalid contract draft")
+    if contract_number is not None:
+        import re
+        if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,100}", contract_number):
+            raise ReferenceConflict("invalid contract number")
+    if len(contract_notes) > 1000:
+        raise ReferenceConflict("contract notes exceed limit")
     # Serialise allocation of the next version per organization/provider.
     if db.bind.dialect.name == "postgresql":
         from sqlalchemy import text
@@ -27,12 +33,19 @@ def create_draft(db, actor, provider_code, start, end, precedence=0):
     current = db.scalar(select(__import__("sqlalchemy").func.max(ContractVersion.version)).where(
         ContractVersion.organization_id == actor.organization_id,
         ContractVersion.provider_code == provider_code)) or 0
+    if contract_number and db.scalar(select(ContractVersion.id).where(
+        ContractVersion.organization_id == actor.organization_id,
+        ContractVersion.contract_number == contract_number,
+        ContractVersion.version == current + 1)):
+        raise ReferenceConflict("duplicate contract number for version")
     item = ContractVersion(organization_id=actor.organization_id, provider_code=provider_code,
+                           contract_number=contract_number, contract_notes=contract_notes,
                            version=current + 1, effective_from=start, effective_until=end,
                            precedence=precedence, status="draft", created_by=actor.id)
     db.add(item); db.flush()
     _audit(db, actor, "contract_draft_created", "contract_version", item.id,
-           {"version": item.version, "provider_code": provider_code})
+           {"version": item.version, "provider_code": provider_code,
+            "contract_number": contract_number})
     db.commit()
     return item
 

@@ -165,7 +165,69 @@ try:
             record(page,"06-confirmed-contract-draft")
             results["source_review_preview"]="PASS"
             results["import"]="PASS"
-            results["add"]="BLOCKED"
+            # Manual Add is G3 ContractVersion, not a generic InputClause entry.
+            from mcias.models_reference import ContractVersion
+            page.locator("#drawer").get_by_role("button",name="إغلاق",exact=True).click()
+            page.get_by_role("button",name="إضافة",exact=True).click()
+            form=page.locator("#drawer [data-testid='manual-g3-contract-draft']")
+            expect(form).to_be_visible()
+            record(page,"07-manual-add-empty")
+            contract_number="SYN-CONTRACT-"+tag
+            form.get_by_label("رقم العقد",exact=True).fill(contract_number)
+            form.get_by_label("رمز مقدم الخدمة",exact=True).fill("SYN_HOSP")
+            form.get_by_label("تاريخ البداية",exact=True).fill("2026-11-01")
+            form.get_by_label("تاريخ النهاية",exact=True).fill("2027-11-01")
+            form.get_by_label("معلومات العقد",exact=True).fill("Synthetic medical provider contract — draft only")
+            record(page,"08-manual-add-filled")
+            with Session(engine) as db:
+                assert not db.scalars(select(ContractVersion).where(
+                    ContractVersion.organization_id==organization_id,
+                    ContractVersion.contract_number==contract_number)).first(), "Premature contract persistence"
+            with page.expect_response(lambda r: r.url.endswith("/api/v1/reference/contracts") and r.request.method=="POST") as create_response:
+                form.get_by_role("button",name="تنفيذ الطلب",exact=True).click()
+            assert create_response.value.status==201, "G3 manual contract HTTP "+str(create_response.value.status)
+            expect(form).to_contain_text(contract_number,timeout=10000)
+            record(page,"09-manual-add-saved-and-read")
+            with Session(engine) as db:
+                matches=db.scalars(select(ContractVersion).where(
+                    ContractVersion.organization_id==organization_id,
+                    ContractVersion.contract_number==contract_number)).all()
+                assert len(matches)==1, "G3 PostgreSQL contract write/readback mismatch"
+                contract=matches[0]
+                assert contract.provider_code=="SYN_HOSP"
+                assert contract.effective_from.isoformat()=="2026-11-01"
+                assert contract.effective_until.isoformat()=="2027-11-01"
+                assert contract.contract_notes=="Synthetic medical provider contract — draft only"
+                assert contract.status=="draft" and contract.authorization_id is None
+                assert contract.version==1
+                results["manual_add_db_evidence"]={"id":contract.id,"contract_number":contract.contract_number,
+                    "organization_id":organization_id,"provider_code":contract.provider_code,
+                    "effective_from":contract.effective_from.isoformat(),
+                    "effective_until":contract.effective_until.isoformat(),
+                    "status":contract.status,"version":contract.version,
+                    "authorization_id":contract.authorization_id,"notes":contract.contract_notes}
+            # Authorized duplicate is rejected; a reader cannot create a contract even via HTTP.
+            manual_payload={"contract_number":contract_number,"provider_code":"SYN_HOSP",
+                "effective_from":"2026-11-01","effective_until":"2027-11-01",
+                "contract_notes":"Synthetic medical provider contract — draft only","precedence":0}
+            dup=page.request.post("http://127.0.0.1:8000/api/v1/reference/contracts",
+                headers={"Authorization":"Bearer "+writer_token},data=manual_payload)
+            assert dup.status==409, "Duplicate manual contract number was accepted"
+            denied_add=page.request.post("http://127.0.0.1:8000/api/v1/reference/contracts",
+                headers={"Authorization":"Bearer "+reader_token},data={**manual_payload,"contract_number":"SYN-DENIED-"+tag})
+            assert denied_add.status==403, "Unauthorized reader created G3 draft"
+            invalid=page.request.post("http://127.0.0.1:8000/api/v1/reference/contracts",
+                headers={"Authorization":"Bearer "+writer_token},
+                data={**manual_payload,"contract_number":"SYN-DATE-"+tag,
+                      "effective_from":"2027-11-01","effective_until":"2026-11-01"})
+            assert invalid.status==409, "Invalid contract dates were accepted"
+            with Session(engine) as db:
+                assert db.scalar(select(__import__("sqlalchemy").func.count()).select_from(ContractVersion).where(
+                    ContractVersion.organization_id==organization_id,
+                    ContractVersion.contract_number==contract_number))==1
+            results["manual_add_validation"]={"duplicate_status":dup.status,
+                "reader_denial_status":denied_add.status,"invalid_dates_status":invalid.status}
+            results["add"]="PASS"
             results["edit"]="BLOCKED"
         finally:
             try: record(page,"99-last-browser-state")

@@ -41,7 +41,7 @@ CATALOG = {
     "claims": (ClaimEntry, "claims.read", ("id", "batch_id", "claim_reference", "service_date", "claimed_amount", "currency")),
     "documents": (IngestionDocument, "ingestion.read", ("id", "status", "sha256", "revision_of", "created_at")),
     "jobs": (IngestionJob, "ingestion.read", ("id", "document_id", "status", "created_at")),
-    "contracts": (ContractVersion, "reference.read", ("id", "provider_code", "version", "status", "effective_from", "effective_until")),
+    "contracts": (ContractVersion, "reference.read", ("id", "contract_number", "provider_code", "version", "status", "effective_from", "effective_until")),
     "audits": (AuditSnapshot, "claims.read", ("id", "claim_id", "policy_id", "policy_fingerprint", "created_at")),
     "cases": (GovernanceCase, "claims.read", ("id", "claim_id", "audit_snapshot_id", "created_at")),
     "users": (User, "users.read", ("id", "username", "active", "created_at")),

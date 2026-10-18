@@ -44,6 +44,8 @@ from mcias.reference_service import (
 from mcias.reference import approve_contract
 
 class DraftIn(BaseModel):
+    contract_number: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_.:-]{1,100}$")
+    contract_notes: str = Field(default="", max_length=1000)
     provider_code: str = Field(min_length=1, max_length=80)
     effective_from: date
     effective_until: date
@@ -98,8 +100,10 @@ def _perform(db, operation):
 def create_contract(payload: DraftIn, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user = _actor(db, authorization, "reference.write")
     contract = _perform(db, lambda: create_draft(db, user, payload.provider_code,
-                         payload.effective_from, payload.effective_until, payload.precedence))
-    return {"id": contract.id, "version": contract.version, "status": contract.status}
+                         payload.effective_from, payload.effective_until, payload.precedence,
+                         contract_number=payload.contract_number, contract_notes=payload.contract_notes))
+    return {"id": contract.id, "version": contract.version, "status": contract.status,
+            "contract_number": contract.contract_number}
 
 @router.post("/contracts/{contract_id}/tariffs", status_code=201)
 def create_tariff(contract_id: str, payload: TariffIn, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
@@ -180,3 +184,15 @@ async def import_tariffs(contract_id: str, request: Request, apply: bool = False
     if not preview["complete"] or not preview["accepted"]:
         raise HTTPException(409, "all tariff rows must validate before atomic import")
     return _perform(db, lambda: apply_tariff_batch(db, user, contract_id, preview["accepted"]))
+
+@router.get("/contracts/drafts/{contract_id}")
+def contract_draft_details(contract_id: str, authorization: str | None = Header(default=None),
+                           db: Session = Depends(get_db)):
+    user = _actor(db, authorization, "reference.read")
+    contract = _contract(db, user, contract_id, "reference.read")
+    return {"id": contract.id, "organization_id": contract.organization_id,
+            "provider_code": contract.provider_code, "contract_number": contract.contract_number,
+            "contract_notes": contract.contract_notes, "effective_from": contract.effective_from,
+            "effective_until": contract.effective_until, "precedence": contract.precedence,
+            "version": contract.version, "status": contract.status,
+            "authorization_id": contract.authorization_id}
