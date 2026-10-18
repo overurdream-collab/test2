@@ -1,0 +1,2 @@
+# DG-001 — test fixture SQLAlchemy session identity fix
+Base b33829e2de141cc5e4b40d82bc1ecc5955b1c2ac. Dedicated Chromium run https://github.com/overurdream-collab/test2/actions/runs/39133867320 reached the G2 clause preview and correction step; test then raised DetachedInstanceError because its new PostgreSQL assertion accessed expired ORM org.id after the seeding Session had closed. Capture organization_id before committing the fixture and use the durable scalar for later readback. No change to product, G2 or financial policy. Subsequent strict run decides PASS/FAIL.

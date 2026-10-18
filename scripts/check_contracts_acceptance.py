@@ -48,6 +48,7 @@ with Session(engine) as db:
             nonce=os.urandom(12)
             encrypted=AESGCM(bytes.fromhex(os.environ["MCIAS_MFA_ENCRYPTION_KEY"])).encrypt(nonce,secrets[label],user.id.encode())
             db.add(MFAFactor(user_id=user.id,encrypted_secret=nonce+encrypted,enabled=True))
+    organization_id = org.id
     db.commit()
 
 def record(page,name):
@@ -135,7 +136,7 @@ try:
             record(page,"04-g2-human-preview")
             from mcias.models_input_clauses import InputClause
             with Session(engine) as db:
-                assert db.scalar(select(InputClause).where(InputClause.organization_id==org.id,
+                assert db.scalar(select(InputClause).where(InputClause.organization_id==organization_id,
                     InputClause.section=="contracts")) is None, "Source preview created draft without human confirmation"
             preview.get_by_label("القيمة بعد التصحيح",exact=True).fill("126.00")
             record(page,"05-human-correction-before-confirm")
@@ -150,7 +151,7 @@ try:
                 page.get_by_role("button",name="تأكيد الحقول وإنشاء مسودة",exact=True).click()
             assert confirmation.value.status == 201, "Confirmed draft HTTP " + str(confirmation.value.status)
             with Session(engine) as db:
-                rows=db.scalars(select(InputClause).where(InputClause.organization_id==org.id,
+                rows=db.scalars(select(InputClause).where(InputClause.organization_id==organization_id,
                     InputClause.section=="contracts")).all()
                 assert len(rows)==1, "Expected precisely one confirmed contract draft"
                 point=rows[0]
