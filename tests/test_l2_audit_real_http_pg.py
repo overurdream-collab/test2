@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from mcias.app import get_db, get_settings
 from mcias.auth import resolve_user
-from mcias.tenant import require_organization
+from mcias.tenant import require_organization, require_sensitive_field
 from mcias.models import Organization, User, SessionToken, AuditLog
 
 DB = os.environ["MCIAS_L2_ISOLATED_DATABASE_URL"]
@@ -48,6 +48,13 @@ def test_http_rejected_mutation_rolls_back_and_audits_exactly_once():
         org.name = "L2-UNAUTHORIZED-MUTATION"
         require_organization(db, user, ORG, "l2.sec001.nonexistent.write")
         return {"unsafe": True}
+
+    @app.post("/l2/medical-denial")
+    def medical_denial(authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+        user, _ = resolve_user(db, authorization)
+        db.get(Organization, ORG).name = "L2-UNAPPROVED"
+        require_sensitive_field(db, user, ORG, "diagnosis")
+        return {"allowed": True}
 
     with TestClient(app, raise_server_exceptions=True) as client:
         response = client.post("/l2/denied", headers={"Authorization": "Bearer " + token})
@@ -90,4 +97,14 @@ def test_http_rejected_mutation_rolls_back_and_audits_exactly_once():
         assert independent.scalar(select(AuditLog).where(
             AuditLog.actor_id == ACTOR,
             AuditLog.action == "tenant_access_denied")).id == event.id
+    with TestClient(app, raise_server_exceptions=True) as client:
+        second = client.post("/l2/medical-denial", headers={"Authorization": "Bearer " + token})
+    assert second.status_code == 403
+    with Session(engine) as verify:
+        assert verify.get(Organization, ORG).name == before
+        events = verify.scalars(select(AuditLog).where(
+            AuditLog.actor_id == ACTOR, AuditLog.action == "tenant_access_denied")).all()
+        assert len(events) == 2
+        assert len({e.id for e in events}) == 2
+        assert all(e.details.get("organization_id") == ORG for e in events)
     engine.dispose()
