@@ -98,3 +98,17 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 - Independent identity guarantee boundary: newly created Docker container ID, image and network give independent provenance within the trusted GitHub-hosted job, but do not defend against compromised runner, CI definition, Docker daemon or adversarial job privileges. Runtime's selector alone still cannot attest server identity.
 - G1-G7, G8, G9, Enterprise full independent reference gates on this final SHA remain UNVERIFIED (workflow path filters may not trigger). Gate: **BLOCKED / NO MERGE**.
 - NEXT: obtain completed run ID/logs for isolated L1 workflow and same-SHA reference gates; examine failed step and adjust only proven defect, re-run; record exact SHA. Require independent approval before merge.
+
+
+## L1 isolated CI correction — 2026-10-20 — evidence from real Actions logs
+- Pre-change branch SHA: `639a796b6d0e30d43d893f4f90961b7a02d1f007`.
+- Source: [Run #39323237655](https://github.com/overurdream-collab/test2/actions/runs/39323237655), job `118302379462`, completed FAILURE.
+- Verified GitHub job steps: checkout PASS, dependency installation PASS, original ten-test suite PASS, ambiguous target refusal PASS, PostgreSQL 16 creation PASS, target verification FAIL, offline/online migrations, schema verification and reference PostgreSQL/restore regression all SKIPPED.
+- Raw job log showed `docker inspect ... Ports` printed `{}`, then Go template failed `index of untyped nil`. Container SQL output confirmed PostgreSQL 16.15. Root cause is `docker network create --internal` combined with host port publishing: host-port binding was not present.
+- Minimum fix commit `cc25fd26d8edbd4bc85f5484884ce415b1b9be50`: change network to user-defined bridge without `--internal`, retain `-p 127.0.0.1:55432:5432` and Docker port checks. This permits the runner-only published port while retaining temporary credentials and dedicated test container.
+- Added positive runner-side psycopg connection to `MCIAS_TEST_DATABASE_URL` and equality check of PostgreSQL `pg_control_system().system_identifier` against value read by docker exec from the exact fresh container. Explicitly clears inherited `MCIAS_DATABASE_URL` in job environment before migration. Connection is only to workflow-generated loopback port.
+- Scope: ONLY `.github/workflows/l1-alembic-target-isolated.yml` plus this worklog. No `alembic/env.py`, test assertion, model, migration, CI reference workflow, L2, Shared Audit, main, or production changes.
+- Isolation limitations: normal bridge restores container egress; security property comes from generated temporary credentials, localhost-only published endpoint, exclusive CI-owned service ID verification and absence of production secrets/URLs. Does not defend against compromised runner or daemon; no offline proof of server identity.
+- Actual execution of corrected workflow, migrations and reference gates: **NOT VERIFIED** at documentation time. Commit status and GitHub PR workflow result queries yielded empty responses, which do not prove success or no run.
+- Next: inspect latest L1 run for this SHA, verify positive runner identity probe PASS, Alembic offline and online PASS, migrated schema PASS, PostgreSQL and restoration tests PASS; inspect G1-G7/G8/G9/Enterprise exact SHA. If any unavailable, keep BLOCKED; no merge.
+- Gate: **BLOCKED / NO MERGE** pending evidence.
