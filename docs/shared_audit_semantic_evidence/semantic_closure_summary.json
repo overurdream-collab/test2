@@ -2,14 +2,13 @@
   "source_artifact_id": 12224321555,
   "source_matches": 1170,
   "processed": 1170,
-  "resolved": 1164,
-  "unresolved": 6,
+  "resolved": 1170,
+  "unresolved": 0,
   "status_counts": {
-    "RESOLVED_REFERENCE_ONLY": 171,
-    "RESOLVED_TRANSACTION_OWNER": 217,
-    "RESOLVED_AUDIT_CONSUMER": 227,
+    "RESOLVED_REFERENCE_ONLY": 175,
+    "RESOLVED_TRANSACTION_OWNER": 218,
+    "RESOLVED_AUDIT_CONSUMER": 228,
     "RESOLVED_NON_AUDIT": 8,
-    "UNRESOLVED": 6,
     "RESOLVED_TEST_OR_FIXTURE": 541
   },
   "consumer_functions": 152,
@@ -17,40 +16,36 @@
   "source_unavailable_files": [],
   "counts_by_ref": {
     "main": {
-      "RESOLVED_REFERENCE_ONLY": 32,
+      "RESOLVED_REFERENCE_ONLY": 33,
       "RESOLVED_TRANSACTION_OWNER": 52,
       "RESOLVED_AUDIT_CONSUMER": 50,
       "RESOLVED_NON_AUDIT": 2,
-      "UNRESOLVED": 1,
       "RESOLVED_TEST_OR_FIXTURE": 118
     },
     "pr25": {
-      "RESOLVED_REFERENCE_ONLY": 70,
+      "RESOLVED_REFERENCE_ONLY": 71,
       "RESOLVED_TRANSACTION_OWNER": 60,
-      "RESOLVED_AUDIT_CONSUMER": 67,
+      "RESOLVED_AUDIT_CONSUMER": 68,
       "RESOLVED_NON_AUDIT": 2,
-      "UNRESOLVED": 2,
       "RESOLVED_TEST_OR_FIXTURE": 122
     },
     "pr28": {
-      "RESOLVED_REFERENCE_ONLY": 36,
-      "RESOLVED_TRANSACTION_OWNER": 52,
-      "UNRESOLVED": 2,
+      "RESOLVED_REFERENCE_ONLY": 37,
+      "RESOLVED_TRANSACTION_OWNER": 53,
       "RESOLVED_AUDIT_CONSUMER": 55,
       "RESOLVED_NON_AUDIT": 2,
       "RESOLVED_TEST_OR_FIXTURE": 145
     },
     "pr29_baseline": {
-      "RESOLVED_REFERENCE_ONLY": 33,
+      "RESOLVED_REFERENCE_ONLY": 34,
       "RESOLVED_TRANSACTION_OWNER": 53,
       "RESOLVED_AUDIT_CONSUMER": 55,
       "RESOLVED_NON_AUDIT": 2,
-      "UNRESOLVED": 1,
       "RESOLVED_TEST_OR_FIXTURE": 156
     }
   },
-  "result": "PARTIAL — EXACT UNRESOLVED ITEMS",
-  "targeted_previous_unresolved": 208,
-  "targeted_verified": 202,
-  "targeted_remaining": 6
+  "result": "CONSUMER INVENTORY COMPLETE — REQUIRES INDEPENDENT ACCEPTANCE",
+  "targeted_previous_unresolved": 6,
+  "targeted_verified": 6,
+  "targeted_remaining": 0
 }
