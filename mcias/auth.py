@@ -63,9 +63,10 @@ def resolve_user(db: Session, authorization: str | None):
 
 def require_permission(db: Session, user: User, permission: str):
     if not has_permission(db, user, permission):
-        db.add(AuditLog(actor_id=user.id, action="permission_denied", resource_type="permission", details={"permission": permission}))
-        db.commit()
-        raise HTTPException(status_code=403, detail="forbidden")
+        from mcias.denial_events import AuthorizationDenied
+        raise AuthorizationDenied(actor_id=user.id, organization_id=user.organization_id,
+                                  action="permission_denied", resource_type="permission",
+                                  reason_code="permission_denied")
 
 def revoke_session(db: Session, session: SessionToken):
     session.revoked_at = datetime.now(timezone.utc)
