@@ -2,47 +2,55 @@
   "source_artifact_id": 12224321555,
   "source_matches": 1170,
   "processed": 1170,
-  "resolved": 962,
-  "unresolved": 208,
+  "resolved": 1164,
+  "unresolved": 6,
   "status_counts": {
-    "RESOLVED_REFERENCE_ONLY": 167,
-    "UNRESOLVED": 208,
-    "RESOLVED_AUDIT_CONSUMER": 153,
-    "RESOLVED_TRANSACTION_OWNER": 141,
-    "RESOLVED_TEST_OR_FIXTURE": 501
+    "RESOLVED_REFERENCE_ONLY": 171,
+    "RESOLVED_TRANSACTION_OWNER": 217,
+    "RESOLVED_AUDIT_CONSUMER": 227,
+    "RESOLVED_NON_AUDIT": 8,
+    "UNRESOLVED": 6,
+    "RESOLVED_TEST_OR_FIXTURE": 541
   },
   "consumer_functions": 152,
   "verified_function_local": 131,
   "source_unavailable_files": [],
   "counts_by_ref": {
     "main": {
-      "RESOLVED_REFERENCE_ONLY": 31,
-      "UNRESOLVED": 48,
-      "RESOLVED_AUDIT_CONSUMER": 34,
-      "RESOLVED_TRANSACTION_OWNER": 33,
-      "RESOLVED_TEST_OR_FIXTURE": 109
+      "RESOLVED_REFERENCE_ONLY": 32,
+      "RESOLVED_TRANSACTION_OWNER": 52,
+      "RESOLVED_AUDIT_CONSUMER": 50,
+      "RESOLVED_NON_AUDIT": 2,
+      "UNRESOLVED": 1,
+      "RESOLVED_TEST_OR_FIXTURE": 118
     },
     "pr25": {
-      "RESOLVED_REFERENCE_ONLY": 69,
-      "UNRESOLVED": 55,
-      "RESOLVED_AUDIT_CONSUMER": 46,
-      "RESOLVED_TRANSACTION_OWNER": 42,
-      "RESOLVED_TEST_OR_FIXTURE": 111
+      "RESOLVED_REFERENCE_ONLY": 70,
+      "RESOLVED_TRANSACTION_OWNER": 60,
+      "RESOLVED_AUDIT_CONSUMER": 67,
+      "RESOLVED_NON_AUDIT": 2,
+      "UNRESOLVED": 2,
+      "RESOLVED_TEST_OR_FIXTURE": 122
     },
     "pr28": {
-      "RESOLVED_REFERENCE_ONLY": 35,
-      "UNRESOLVED": 55,
-      "RESOLVED_AUDIT_CONSUMER": 36,
-      "RESOLVED_TRANSACTION_OWNER": 32,
-      "RESOLVED_TEST_OR_FIXTURE": 134
+      "RESOLVED_REFERENCE_ONLY": 36,
+      "RESOLVED_TRANSACTION_OWNER": 52,
+      "UNRESOLVED": 2,
+      "RESOLVED_AUDIT_CONSUMER": 55,
+      "RESOLVED_NON_AUDIT": 2,
+      "RESOLVED_TEST_OR_FIXTURE": 145
     },
     "pr29_baseline": {
-      "RESOLVED_REFERENCE_ONLY": 32,
-      "UNRESOLVED": 50,
-      "RESOLVED_AUDIT_CONSUMER": 37,
-      "RESOLVED_TRANSACTION_OWNER": 34,
-      "RESOLVED_TEST_OR_FIXTURE": 147
+      "RESOLVED_REFERENCE_ONLY": 33,
+      "RESOLVED_TRANSACTION_OWNER": 53,
+      "RESOLVED_AUDIT_CONSUMER": 55,
+      "RESOLVED_NON_AUDIT": 2,
+      "UNRESOLVED": 1,
+      "RESOLVED_TEST_OR_FIXTURE": 156
     }
   },
-  "result": "PARTIAL — EXACT UNRESOLVED ITEMS"
+  "result": "PARTIAL — EXACT UNRESOLVED ITEMS",
+  "targeted_previous_unresolved": 208,
+  "targeted_verified": 202,
+  "targeted_remaining": 6
 }
