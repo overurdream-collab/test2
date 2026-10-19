@@ -85,3 +85,15 @@ def run(outdir,a1_file):
                 payload=a1_payload(parsed,case) if valid else None
                 analysis=agent.analyze(payload) if payload else None
                 findings=[x for x in analysis["findings"] if x["finding_type"]=="LINE_ARITHMETIC"] if analysis else []
+
+                report={"case":case,"g2_document_id":doc.id,"g2_sha256":doc.sha256,
+                        "g2_ingestion_status":doc.status,"encrypted_roundtrip":True,
+                        "local_pdf_bytes_verified":True,"g2_native_cell_rows_verified":False,
+                        "extracted_values":measured["exact_values"],
+                        "cell_positions":measured["correct_cell_locations"],
+                        "reader_issues":parsed["issues"],"a1_ran":bool(analysis),
+                        "a1_arithmetic_findings":len(findings) if analysis else None,
+                        "ocr_seconds":secs,"outcome":"HUMAN_REVIEW",
+                        "financial_decision":"NOT_AUTHORIZED"}
+                reports.append(report)
+                (out/(case+"_review.json")).write_text(json.dumps(report,indent=2))
