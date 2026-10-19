@@ -2930,7 +2930,10 @@ function inputClauseWorkspace(ctx) {
     editAction.disabled = true;
     fileArea.setAttribute("role", "group");
     fileArea.setAttribute("aria-label", L("إجراءات هذا القسم", "Section actions"));
-    fileArea.append(importAction, addAction, editAction);
+    fileArea.append(importAction, addAction);
+    // Contract Edit is not rendered at all without effective write permission.
+    if (section !== "contracts" || allowed(ctx, "reference.write"))
+      fileArea.append(editAction);
     const hint = el("p", L(
       "اختر «عرض الدليل» من صف موجود لتفعيل التعديل. رفع الملف لا يعني اكتمال استخراج البنود أو اعتمادها.",
       "Select View evidence on a record to enable Edit. Upload alone does not extract or approve clauses."
