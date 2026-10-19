@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          docker network create --internal mcias-l1-ci-private
+          docker network create --driver bridge mcias-l1-ci-private
           DB_PASSWORD="$(openssl rand -hex 24)"
           echo "::add-mask::$DB_PASSWORD"
           CID="$(docker run -d --rm --name "mcias-l1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" --network mcias-l1-ci-private -p 127.0.0.1:55432:5432 -e POSTGRES_USER=mcias_ci -e POSTGRES_PASSWORD="$DB_PASSWORD" -e POSTGRES_DB=mcias_ci postgres:16)"
@@ -71,6 +71,23 @@ jobs:
           printf 'MCIAS_TEST_DATABASE_URL=postgresql+psycopg://mcias_ci:%s@127.0.0.1:55432/mcias_ci\n' "$L1_POSTGRES_PASSWORD" >> "$GITHUB_ENV"
           echo 'MCIAS_ENVIRONMENT=test' >> "$GITHUB_ENV"
           echo 'MCIAS_MIGRATION_TARGET=test' >> "$GITHUB_ENV"
+          echo 'MCIAS_DATABASE_URL=' >> "$GITHUB_ENV"
+      - name: Verify runner connection reaches the exact ephemeral cluster
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(docker exec "$L1_POSTGRES_CID" psql -U mcias_ci -d mcias_ci -Atqc 'SELECT system_identifier FROM pg_control_system()')"
+          actual="$(python - <<'PY'
+          import os
+          import psycopg
+          with psycopg.connect(os.environ['MCIAS_TEST_DATABASE_URL'], connect_timeout=5) as conn:
+              row = conn.execute('SELECT system_identifier FROM pg_control_system()').fetchone()
+              print(row[0])
+          PY
+          )"
+          test -n "$expected"
+          test "$actual" = "$expected"
+          echo 'PASS: runner connected to the specific CI-created PostgreSQL cluster'
       - name: Verify authorized offline migration rendering
         run: python -m alembic upgrade head --sql > /tmp/l1-offline.sql
       - name: Run authorized online migrations on disposable DB
