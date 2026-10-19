@@ -24,3 +24,17 @@ PR #27 security reference: `a0dc6cf993b1c3082f85df1b7bca1287dda16226`.
 - NEXT (PR25-local): under narrowly scoped authorized UI work, hide Edit for nonwriters and add browser test with `to_have_count(0)`, plus an authorized selected-contract visibility test; add isolated foreign-tenant synthetic POST+readback test if allowed by test fixture. Treat any shared guard redesign as outside PR25 scope and escalate.
 - NEXT (PR27 owner): request-owned rollback before independently committed audit, ensure one logical denial and no pending writes, test actual cross-tenant guard in disposable PostgreSQL16 and CI composed with the exact PR25 writer. Do not equate a hypothetical CI run with verified PASS.
 - NO merge, NO deployment, NO writes to main or PR #27.
+
+## Follow-up implementation — 2026-10-19, central supervisor authorized
+- Baseline inspected `421963abf2770db8f477b7f15be0b3517030beb2`; no concurrent head divergence before edits.
+- `05476628d3b4c8b16638bd496f5548c6f3419d45`: contracts toolbar completely omits Edit for actor lacking effective `reference.write`; leaves other sections and RBAC unchanged.
+- `4ce8426a57e533b9844cf7aaa269d79d6973f660`: existing strict real Chromium test now asserts no reader Edit DOM control (count zero) and authorized writer visible/enabled after selecting G3 draft. Added synthetic foreign-organization draft, direct POST revision attempt with writer token for another organization, independent PostgreSQL readback of all original fields, only original version remains, and exactly one sanitized `contract_revision_denied` audit event for this conflict path. Rejection may be 403/404/409 per existing API contract; current service raises ReferenceConflict (409). This proves denial only if exact-SHA CI passes.
+- Historical tests untouched except the specific stricter visibility check and appended foreign-tenant assertions.
+- PR27 coordination request posted on its conversation: https://github.com/overurdream-collab/test2/pull/27#issuecomment-6274174816 . PR27 branch unmodified. Request: exact writer + PostgreSQL, request-owned rollback, single sanitized denial event and no pending changes; distinguish permission-guard 403 from foreign revision business conflict 409.
+- GitHub automatic CI on `4ce8426a57e533b9844cf7aaa269d79d6973f660` observed in progress, strict run https://github.com/overurdream-collab/test2/actions/runs/39301649100, G1–G7 https://github.com/overurdream-collab/test2/actions/runs/39301649172, G8 https://github.com/overurdream-collab/test2/actions/runs/39301649129, G9 https://github.com/overurdream-collab/test2/actions/runs/39301649048, Enterprise https://github.com/overurdream-collab/test2/actions/runs/39301649160.
+- **Acceptance pending CI final status**. PR27 combined guard+writer PostgreSQL integration evidence belongs to PR27 owner and is BLOCKED until confirmed. No merge or deployment.
+
+## HANDOFF update
+- DONE: targeted UI code, real Chromium assertions, foreign-tenant synthetic API/DB/audit test, PR27 coordination.
+- VERIFY: await completed strict browser+PG16 exact-SHA run and inspect job/artifacts. Never claim PASS for unexecuted/new CI.
+- OUT OF SCOPE: modify RBAC, generalized guard, PR27 files, main, merge or deployment.
