@@ -102,3 +102,48 @@ def test_invalid_outcome_and_fields_fail_closed(engine):
             write_event(s, actor=actor, organization_id=org, action="", 
                 resource_type="test", resource_id=None, outcome="success")
         s.rollback()
+
+def test_real_postgres_flush_constraint_failure_rolls_back(engine):
+    """Real PG CHECK violation on flush, not a monkeypatched exception."""
+    from sqlalchemy import text
+    org, uid = _seed(engine)
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE audit_log ADD CONSTRAINT aw_phase2a_no_forbidden CHECK (action <> 'synthetic_success')"))
+    with Session(engine) as s:
+        s.get(Organization, org).name = "UNCOMMITTED"
+        with pytest.raises(__import__("sqlalchemy").exc.IntegrityError):
+            write_event(s, actor=s.get(User, uid), organization_id=org,
+                action="synthetic_success", resource_type="test", resource_id=None,
+                outcome="success")
+        s.rollback()
+    with Session(engine) as s:
+        assert s.get(Organization, org).name == "AW-PHASE1-SYNTHETIC"
+        assert s.scalars(select(AuditLog)).all() == []
+
+def test_real_postgres_deferred_commit_failure_rolls_back(engine):
+    """Deferred PG constraint trigger raises at COMMIT after flush succeeded."""
+    from sqlalchemy import text
+    org, uid = _seed(engine)
+    with engine.begin() as conn:
+        conn.execute(text("""
+            CREATE FUNCTION aw_phase2a_reject_commit() RETURNS trigger
+            LANGUAGE plpgsql AS $$
+            BEGIN RAISE EXCEPTION 'AW synthetic deferred failure'; END; $$
+        """))
+        conn.execute(text("""
+            CREATE CONSTRAINT TRIGGER aw_phase2a_deferred_failure
+            AFTER INSERT ON audit_log DEFERRABLE INITIALLY DEFERRED
+            FOR EACH ROW EXECUTE FUNCTION aw_phase2a_reject_commit()
+        """))
+    with Session(engine) as s:
+        s.get(Organization, org).name = "UNCOMMITTED"
+        evt = write_event(s, actor=s.get(User, uid), organization_id=org,
+            action="synthetic_success", resource_type="test", resource_id=None,
+            outcome="success")
+        eid = evt.id
+        with pytest.raises(__import__("sqlalchemy").exc.DBAPIError):
+            s.commit()
+        s.rollback()
+    with Session(engine) as s:
+        assert s.get(Organization, org).name == "AW-PHASE1-SYNTHETIC"
+        assert s.get(AuditLog, eid) is None
