@@ -112,3 +112,12 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 - Actual execution of corrected workflow, migrations and reference gates: **NOT VERIFIED** at documentation time. Commit status and GitHub PR workflow result queries yielded empty responses, which do not prove success or no run.
 - Next: inspect latest L1 run for this SHA, verify positive runner identity probe PASS, Alembic offline and online PASS, migrated schema PASS, PostgreSQL and restoration tests PASS; inspect G1-G7/G8/G9/Enterprise exact SHA. If any unavailable, keep BLOCKED; no merge.
 - Gate: **BLOCKED / NO MERGE** pending evidence.
+
+## CI connection URL correction — 2026-10-20
+- Pre-change HEAD directly verified: `26d13f47c855e131dda3a9d49e9b265553e89740`.
+- Evidence: GitHub Actions [Run #39324410441](https://github.com/overurdream-collab/test2/actions/runs/39324410441), job `118306405506`, completed FAILURE.
+- Verified successes: historical 10-test suite PASS, unsafe-target rejection PASS, PostgreSQL 16 provisioning PASS, Docker port/container identity PASS. Failed step: runner independent psycopg identity connection. Subsequent Offline/Online Alembic, schema inspection and reference PG/restore tests SKIPPED.
+- Exact root cause in job log: `psycopg.ProgrammingError` for passing `postgresql+psycopg://` SQLAlchemy URL string directly to `psycopg.connect()` (expects libpq connection string or keyword arguments).
+- Minimal fix commit `77d150261ec7a63f7f5aa497308b2c2df0139dd3`: use SQLAlchemy `make_url` to parse, verify expected driver, host=127.0.0.1, port=55432 and database=mcias_ci, pass host/port/dbname/user/password explicitly to `psycopg.connect`, preserve comparison of server `system_identifier` with Docker container.
+- Docker host binding, temporary synthetic credentials, cleanup, original tests, Alembic env and all other workflows UNCHANGED.
+- No execution evidence for post-fix run yet; do not claim PostgreSQL migration or G1–G7/G8/G9/Enterprise success until checked on new SHA. Status BLOCKED / NO MERGE. Resume by inspecting new L1 run and its job logs; isolate new failures, if any.
