@@ -91,6 +91,8 @@ jobs:
       - name: Full combined regression on fresh PostgreSQL
         env:
           MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+          MCIAS_ENVIRONMENT: test
+          MCIAS_MIGRATION_TARGET: test
         run: python -m pytest -q
       - run: python scripts/seed_workspace_e2e.py
       - name: Browser E2E, responsive layouts and WCAG checks
