@@ -1,0 +1,283 @@
+# Reference verification: copies unchanged job definitions from baseline workflow files.
+# Does not modify the original reference workflows or alter any pytest assertion.
+name: MCIAS L1 reference gates isolated verification
+on:
+  push:
+    branches: [fix/mcias-l1-alembic-target-safety]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  g1g7-unit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e '.[test]'
+      - run: python -m compileall -q mcias tests
+      - run: node --check mcias/web_g7/dashboard.js
+      - run: python -m pip wheel . --no-deps -w dist
+      - run: python -c "import glob,zipfile; a=zipfile.ZipFile(glob.glob('dist/mcias-*.whl')[0]); assert all(('mcias/web_g7/'+p) in a.namelist() for p in ('index.html','dashboard.css','dashboard.js'))"
+      - run: python -m pytest -q
+  g1g7-dependency-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip pip-audit
+      - run: python -m pip install -e .
+      - run: pip-audit
+
+  g1g7-postgres-integration:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: ci_only_not_for_production
+          POSTGRES_DB: mcias_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:ci_only_not_for_production@localhost:5432/mcias_ci
+      MCIAS_ENVIRONMENT: test
+      MCIAS_MIGRATION_TARGET: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_postgres_integration.py tests/test_restore_drill.py tests/test_rule_immutability_postgres.py tests/test_g2_ingestion.py tests/test_g2_reader.py tests/test_g2_security.py tests/test_g3_postgres_guards.py tests/test_g3_reference.py tests/test_g3_lifecycle.py tests/test_g3_api_security.py tests/test_g3_tariff_import.py tests/test_g3_signed_authorization.py tests/test_g3_tariff_postgres.py tests/test_g4_normalization.py tests/test_g4_batches.py tests/test_g4_postgres_guards.py tests/test_g5_engine.py tests/test_g5_palermo_hardening.py tests/test_g5_postgres.py tests/test_g5_authorization.py tests/test_g5_registry.py tests/test_g5_policy_drafts.py tests/test_g5_adversarial.py tests/test_g5_lifecycle.py tests/test_g5_policy_api.py tests/test_g6_governance.py tests/test_g6_reaudit_lineage.py tests/test_g6_postgres.py tests/test_g7_reporting.py tests/test_g7_web.py tests/test_g7_postgres.py tests/test_g7_integration.py
+
+  g8-g8-unit-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m compileall -q mcias tests
+      - run: node --check mcias/web_g8/studio.js
+      - run: python -m pytest -q tests/test_g8_intelligence.py tests/test_g8_studio.py tests/test_g8_web.py tests/test_g8_reviews.py
+      - run: python -m pip wheel . --no-deps -w dist
+      - run: |
+          python - <<'PY'
+          import glob,zipfile
+          with zipfile.ZipFile(glob.glob("dist/mcias-*.whl")[0]) as z:
+              for name in ("index.html","studio.css","studio.js"):
+                  assert "mcias/web_g8/"+name in z.namelist(), name
+          PY
+  g8-g8-postgres:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci
+      MCIAS_ENVIRONMENT: test
+      MCIAS_MIGRATION_TARGET: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_g8_postgres.py tests/test_g7_integration.py
+
+  g9-g9-release-security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m compileall -q mcias tests scripts
+      - run: python -m pytest -q tests/test_g9_release_security.py tests/test_g9_operations.py tests/test_deploy_check.py tests/test_acceptance_pack.py
+      - run: python -m mcias.performance_g9 --claims 2000 --repeats 3
+      - run: python -m pip wheel . --no-deps -w dist/wheelhouse
+      - run: |
+          python scripts/g9_release.py build --repo . \
+            --wheels dist/wheelhouse --output dist/g9-candidate \
+            --commit "$(git rev-parse HEAD)"
+          python scripts/g9_release.py verify --directory dist/g9-candidate
+      - name: Verify localhost TLS Compose configuration using synthetic non-secret placeholders
+        run: |
+          mkdir -p deploy/private/encrypted-sources
+          printf 'MCIAS_DATABASE_URL=postgresql+psycopg://synthetic:ci_only@db/mcias\nMCIAS_ENVIRONMENT=production\n' > deploy/private/runtime.env
+          printf 'POSTGRES_DB=mcias\nPOSTGRES_USER=mcias_owner\nPOSTGRES_PASSWORD=ci_dummy_only\n' > deploy/private/postgres-owner.env
+          printf '{}' > deploy/private/authorization-registry.json
+          printf 'synthetic' > deploy/private/tls.crt
+          printf 'synthetic' > deploy/private/tls.key
+          docker compose -f deploy/compose.g9.yml config --quiet
+
+  g9-g9-postgres:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: ci_only_not_for_production
+          POSTGRES_DB: mcias_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:ci_only_not_for_production@localhost:5432/mcias_ci
+      MCIAS_ENVIRONMENT: test
+      MCIAS_MIGRATION_TARGET: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_g9_postgres.py tests/test_restore_drill.py
+
+  enterprise-browser-and-contracts:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci_e2e
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci_e2e"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      MCIAS_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_E2E_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+      MCIAS_BOOTSTRAP_TOKEN: synthetic_browser_tests_only
+      MCIAS_ENABLE_UI_DEMO: 'true'
+      MCIAS_ENVIRONMENT: development
+      MCIAS_STORAGE_DIR: .e2e-output/integrated-sources
+      MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
+      MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: python -m pip install -e '.[test,browser]'
+      - run: python -m playwright install --with-deps chromium
+      - run: npm ci --ignore-scripts
+      - run: npm test && npm run check
+      - name: Dedicated idempotent Seed integration
+        run: |
+          python - <<'PYCODE'
+          import os
+          from sqlalchemy import create_engine, text
+          from sqlalchemy.engine import make_url
+          url = make_url(os.environ['MCIAS_DATABASE_URL'])
+          admin = create_engine(url.set(database='postgres'), isolation_level='AUTOCOMMIT')
+          with admin.connect() as connection:
+              connection.execute(text('CREATE DATABASE mcias_seed_checks_e2e'))
+          admin.dispose()
+          PYCODE
+          export MCIAS_SEED_TEST_DATABASE_URL=postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_seed_checks_e2e
+          MCIAS_E2E_DATABASE_URL="$MCIAS_SEED_TEST_DATABASE_URL" python -m mcias.seed --output .e2e-output/seed-check.json
+          python -m pytest tests/seed -q
+      - name: Full combined regression on fresh PostgreSQL
+        env:
+          MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@localhost:5432/mcias_ci_e2e
+          MCIAS_ENVIRONMENT: test
+          MCIAS_MIGRATION_TARGET: test
+        run: python -m pytest -q
+      - run: python scripts/seed_workspace_e2e.py
+      - name: Browser E2E, responsive layouts and WCAG checks
+        run: |
+          set -e
+          python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 > /tmp/mcias-ui-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health/live >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/check_workspace_browser.py
+          python scripts/check_workspace_live.py --base-url http://127.0.0.1:8000
+          python scripts/check_integrated_workflow.py --base-url http://127.0.0.1:8000
+          python scripts/check_retention_browser.py --base-url http://127.0.0.1:8000
+      - name: Package frontend assets
+        run: |
+          python -m pip wheel . --no-deps -w dist
+          python - <<'PY'
+          import glob,zipfile
+          with zipfile.ZipFile(glob.glob('dist/mcias-*.whl')[0]) as wheel:
+              for name in ('index.html','app.js','api.js','ui.js','views.js','workspace.css','routes.json','icons/audit.svg','fonts/plex-ar-400.woff2','fonts/PLEX-OFL.txt'):
+                  assert 'mcias/web_workspace/'+name in wheel.namelist(), name
+          PY
+      - name: Build portable source and runtime wheelhouse
+        if: github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate'
+        run: |
+          python - <<'PYCODE'
+          from importlib.metadata import distributions
+          from pathlib import Path
+          Path('/tmp/mcias-runtime-constraints.txt').write_text('\n'.join(sorted({d.metadata['Name']+'=='+d.version for d in distributions() if d.metadata.get('Name') and d.metadata['Name'].lower()!='mcias'}))+'\n')
+          PYCODE
+          python -m pip wheel . --constraint /tmp/mcias-runtime-constraints.txt -w dist/wheelhouse
+          python scripts/build_integrated_handoff.py --wheelhouse dist/wheelhouse --output dist/external-handoff
+      - uses: actions/upload-artifact@v4
+        if: success() && (github.head_ref == 'feat/main-consolidation' || github.ref_name == 'main' || github.head_ref == 'feat/mcias-integrated-candidate' || github.ref_name == 'feat/mcias-integrated-candidate')
+        with:
+          name: mcias-external-test-handoff
+          path: dist/external-handoff/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: enterprise-workspace-evidence
+          include-hidden-files: true
+          path: |
+            .e2e-output/*results.json
+            .e2e-output/*.png
+            /tmp/mcias-ui-server.log
