@@ -26,6 +26,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 15
     env:
       MCIAS_ENVIRONMENT: development
+      MCIAS_L2_AUDIT_REQUIRED: "YES"
       MCIAS_L2_ALLOW_ISOLATED_TESTS: "YES"
       MCIAS_L2_ISOLATED_DATABASE_URL: postgresql+psycopg://postgres:l2-synthetic-ci-only@127.0.0.1:5432/mcias_l2_e2e
       MCIAS_TEST_DATABASE_URL: postgresql+psycopg://postgres:l2-synthetic-ci-only@127.0.0.1:5432/mcias_l2_e2e
