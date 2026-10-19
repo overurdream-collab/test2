@@ -30,3 +30,21 @@ def must_reject(call):
     try:call()
     except ValueError:return
     raise AssertionError("invalid source accepted")
+
+def run(outdir,a1_file):
+    out=Path(outdir);out.mkdir(parents=True,exist_ok=True)
+    os.environ["MCIAS_ENVIRONMENT"]="development"
+    os.environ["MCIAS_MALWARE_SCAN"]="disabled"
+    os.environ["MCIAS_LOCAL_OCR"]="disabled"
+    agent=load_a1(a1_file)
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    reports=[];negative=0
+    with tempfile.TemporaryDirectory() as folder:
+        store=EncryptedStore(str(Path(folder)/"objects"),os.urandom(32))
+        with Session(engine) as db:
+            org=Organization(name="synthetic")
+            other=Organization(name="synthetic other")
+            actor=User(username="synthetic-reader",password_hash="fixture")
+            db.add_all([org,other,actor]);db.flush()
+            actor.organization_id=org.id;db.commit()
