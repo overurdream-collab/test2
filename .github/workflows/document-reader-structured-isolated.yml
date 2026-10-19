@@ -5,6 +5,7 @@ on:
     paths:
       - scripts/document_reader_structured_pilot.py
       - scripts/document_reader_a1_bridge_pilot.py
+      - scripts/document_reader_offline_ocr_benchmark.py
       - .github/workflows/document-reader-structured-isolated.yml
   workflow_dispatch:
 permissions:
@@ -72,4 +73,35 @@ jobs:
         with:
           name: reader-to-a1-synthetic-bridge
           path: reader-a1-results/
+          retention-days: 30
+
+  local-tesseract-arabic-english:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install open-source local OCR and language packs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-ara tesseract-ocr-eng fonts-dejavu-core
+          python -m pip install 'Pillow>=11,<13'
+      - name: Run measured synthetic Arabic and English OCR
+        run: |
+          python scripts/document_reader_offline_ocr_benchmark.py reader-ocr-results
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          obj=json.loads(Path("reader-ocr-results/offline_ocr_baseline.json").read_text())
+          assert len(obj["measurements"])==12
+          assert {r["language"] for r in obj["measurements"]}=={"ara","eng"}
+          assert all(r["error"] is None and r["seconds"]>=0 for r in obj["measurements"])
+          assert all(r["normalized_cer"]>=0 for r in obj["measurements"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-local-ocr-synthetic
+          path: reader-ocr-results/
           retention-days: 30
