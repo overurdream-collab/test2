@@ -1,0 +1,38 @@
+name: Shared Audit Writer Phase 1 PostgreSQL 16
+on:
+  pull_request:
+    paths:
+      - 'mcias/audit_writer.py'
+      - 'tests/test_shared_audit_writer_phase1_pg.py'
+      - '.github/workflows/shared-audit-writer-phase1-pg.yml'
+  workflow_dispatch:
+jobs:
+  original-writer-pg16:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: mcias_audit_phase1
+          POSTGRES_PASSWORD: phase1-synthetic-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mcias_audit_phase1"
+          --health-interval 5s --health-timeout 5s --health-retries 15
+    env:
+      MCIAS_AUDIT_PHASE1_ALLOW: "YES"
+      MCIAS_AUDIT_PHASE1_DATABASE_URL: postgresql+psycopg://postgres:phase1-synthetic-only@127.0.0.1:5432/mcias_audit_phase1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install project test dependencies
+        run: python -m pip install -e '.[test]'
+      - name: Assert exact original PR25 blob
+        run: |
+          test "$(git hash-object mcias/audit_writer.py)" = 509ce4124f012cc4a121294fe9122c9384902fd6
+      - name: PostgreSQL isolated tests (mandatory)
+        run: pytest -q tests/test_shared_audit_writer_phase1_pg.py
