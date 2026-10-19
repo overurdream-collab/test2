@@ -37,3 +37,15 @@ STOP / escalation if tests reveal need for PR25 contract implementation, migrati
 - Any failing CI: document exact failing job, root cause and minimal scoped remediation, preserve historical evidence; no silent test weakening.
 - Remaining blocker: shared writer operational availability via an approved long-lived integration/deployment strategy, idempotency semantics across retries and PR25 endpoint-level denial ownership. Separate central security acceptance required before L2 closes.
 - Rollback: do not merge branch, preserve SHA/artifacts, delete only isolated integration branch after review; PR25, PR27 and main remain untouched.
+
+## Verified first complete clean-checkout CI snapshot (2026-10-19)
+Commit 207ea4ae45e3aeb4abb795c53f38b1fc082a0980, all six completed SUCCESS:
+- Mandatory L2 PostgreSQL16: https://github.com/overurdream-collab/test2/actions/runs/39307744196
+- Actual writer HTTP PostgreSQL16: https://github.com/overurdream-collab/test2/actions/runs/39307744378 (real test: 1 passed, 1 warning; two denial requests, distinct events)
+- G1–G7: https://github.com/overurdream-collab/test2/actions/runs/39307744334
+- G9: https://github.com/overurdream-collab/test2/actions/runs/39307744234
+- Enterprise original clean checkout: https://github.com/overurdream-collab/test2/actions/runs/39307744261
+- Enterprise integrated clean checkout: https://github.com/overurdream-collab/test2/actions/runs/39307744251
+- G8 and PR25 Contracts strict acceptance did NOT run on this scoped integration SHA. Since NO PR25 contract or UI modules are imported, standalone Contracts acceptance is OUT OF SCOPE, not PASS; G8 must be explicitly verified before cross-system acceptance. No assertion of final L2 PASS or permission to merge/deploy.
+- Fail-to-persist audit behavior checked by newly added tests/test_l2_audit_failure_propagation.py in the G1–G7 unit suite: exception is not swallowed, request business transaction was rolled back (SQLite unit); independent PostgreSQL audit persistence separately verified by mandatory L2 gate.
+- No source owner branches were changed. The tracked writer is original PR25 blob; no missing import in original Enterprise and no runtime test overlay. No deploy.
