@@ -6,6 +6,7 @@ on:
       - scripts/document_reader_structured_pilot.py
       - scripts/document_reader_a1_bridge_pilot.py
       - scripts/document_reader_offline_ocr_benchmark.py
+      - docs/DG-001_DOCUMENT_READER_PILOT_AR.md
       - .github/workflows/document-reader-structured-isolated.yml
   workflow_dispatch:
 permissions:
