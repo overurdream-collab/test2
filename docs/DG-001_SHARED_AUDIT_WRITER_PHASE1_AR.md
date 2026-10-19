@@ -48,3 +48,10 @@ Rollback before merge: leave branch unmerged; no change to main or source PRs; b
 - A Unit SKIP is NOT a PostgreSQL PASS. Acceptance requires a completed successful dedicated PostgreSQL workflow on the final PR head SHA, plus completed successful G1-G7 including Unit. Check links and final SHA anew before supervisor signoff.
 - Source writer blob remains 509ce4124f012cc4a121294fe9122c9384902fd6; no changes to writer, models, Alembic, main, PR25, or PR28.
 - HANDOFF: verify final CI conclusions on current head; investigate any new failure without weakening assertions; do not merge or deploy; stop for independent Phase 1 acceptance.
+
+## Verified CI after isolation fix
+- Verified CI code HEAD: df095cc81dacb0f99ffdc9d6d047034426120e1b.
+- Dedicated PostgreSQL 16: COMPLETED SUCCESS, https://github.com/overurdream-collab/test2/actions/runs/39316901189 .
+- G1-G7 Unit and suite: COMPLETED SUCCESS, https://github.com/overurdream-collab/test2/actions/runs/39316901390 .
+- This DG-001 documentation-only commit will produce a newer PR head. The supervisor must verify the new HEAD workflows before final signoff. Do not infer a new SHA is green from results on the preceding SHA.
+- No operational acceptance, merge, deployment or Phase 2 authorization.
