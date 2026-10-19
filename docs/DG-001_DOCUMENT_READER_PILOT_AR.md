@@ -68,3 +68,31 @@ Verify both new workflow jobs and inspect generated result artifacts. Check that
 - The English/Arabic OCR benchmark measures image transcription only; these pixels have **not** yet passed a full OCR → structured reader → byte-verified G2 → A1 pipeline. The field-level bridge tests only controlled text. A high OCR score cannot attest line-item identity.
 
 **Acceptance decision: PARTIAL — SPECIFIC BENCHMARK GAPS.** Strictly synthetic read-only tests and pinned A1 arithmetic bridge passed; full medical document understanding and independently attested PDF OCR remain unproven. No merge, no deploy, no claim settlement.
+
+
+## Phase 2 — Single connected image-only PDF → OCR → A1 experiment (2026-10-20)
+
+**Boundary/acceptance: isolated technical pilot ONLY; no merge, deploy, G2 write or claim processing.** Independent review retained PILOT PARTIALLY ACCEPTED — NO INTEGRATION. No patient records.
+
+### New implementation
+- \`scripts/document_reader_scanned_pdf_a1_e2e.py\`, executed through \`.github/workflows/document-reader-structured-isolated.yml\` / job \`scanned-pdf-e2e-quality-gate\`.
+- Reproducibly creates **three** distinct two-page synthetic PDF invoices, with *image-only pages* (no selectable PDF text). A multi-column table includes line ID, code, explicitly printed **unit**, quantity, unit price and line total. Repeats invoice headers and includes a printed malicious instruction which is ignored as untrusted document content.
+- Cases: valid three-line invoice (30.00 + 45.00 + 21.00 = 96.00 USD), swapped 45.00/30.00 line totals with preserved 96.00 stated invoice total, and a missing unit-price cell. Only fixture authored ground truth contains expected values; OCR parses rendered page pixels independently using actual local Tesseract TSV, not strings from ground truth.
+- Reopens the original PDF bytes and computes SHA-256. A tamper regression changes the file's bytes and proves that the original expected SHA is rejected before parsing. Each OCR cell has page, pixel bbox, OCR text, and engine-reported **uncalibrated** confidence; no confidence is hard-coded at 1.0. A1 row references use the **union of all OCR field bounding boxes** in that row. Each individual field retains its own OCR word boxes.
+- The read-only cross-branch A1 function is checked out from **exact SHA** \`b536a94adf4d190ac48856bd435a8a624f3931f4\`; the checkout is verified, code unchanged, and no other PR is modified. A1 sees only explicit OCR-derived unit/code/quantities/prices/totals; no invented unit, tariffs, claim amount or attested performed quantity.
+- No call to \`mcias/agents/a1_trusted_input.py\`: its authorization, encrypted G2 original source verification and row equality **cannot** be claimed by a local PDF byte hash. Every review packet says \`g2_original_verified=false\`, \`g2_rows_verified=false\`, \`financial_decision=NOT_AUTHORIZED\` and \`review_outcome=HUMAN_REVIEW\`. The G4 claim and contract authorities remain intentionally unavailable.
+
+### Independent stage scoring and hard quality gate
+- **Reader stage**: per-case actual OCR outputs, expected vs read fields (invoice metadata and line items), exact-value recall, correct-cell/page bounding-box localization, unresolved field reasons and OCR elapsed seconds. A template-based detector crops predefined cells; therefore perfect fixture results **cannot** be generalized to arbitrary invoices or Arabic layouts.
+- **A1 stage**: independently asserts 0 expected line-arithmetic findings for valid lines and 2 for the deliberately interchanged line totals, even while the invoice-wide sum matches. When one price is blank, A1 is **not** called, \`INSUFFICIENT_EVIDENCE\` is reported, and the source is retained for HUMAN_REVIEW.
+- **Security stage**: altered PDF bytes trigger SHA256 mismatch; malicious written instructions cannot invoke decisions because OCR output is treated only as data, and no LLM or action executor is used.
+- **CI pass condition**: not just successful OCR invocation; exact match of all critical fields and correct visual cell assignment, expected A1 arithmetic counts, no unsupported price filling, no financial decision, and negative source tamper test.
+- For this **updated fixture with explicit unit cells**, 23 critical fields and 18 row-field visual evidence coordinates are expected per complete invoice. The resulting GitHub workflow artifact \`reader-scanned-pdf-e2e-evidence\` includes the PDFs, independently generated gold labels, per-case review packets, and \`summary.json\`. Verify this updated job on the **latest** SHA, not earlier green runs.
+
+### PaddleOCR comparison decision
+- Official code: https://github.com/PaddlePaddle/PaddleOCR (Apache-2.0). The specific lightweight recognition weights candidate \`PaddlePaddle/en_PP-OCRv5_mobile_rec\` lists Apache-2.0: https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec . However the official runtime requires PaddlePaddle 3.x plus supported model artifacts/dependencies: https://www.paddleocr.ai/main/en/quick_start.html .
+- This phase does **not** install or measure PaddleOCR. The model, exact revision, cryptographic weight checksum, inference runtime and transitive dependency conditions have not been pinned and qualified in the isolation job. Comparing absent PaddleOCR numbers with measured Tesseract would be dishonest. **Comparison remains NOT_RUN**, not failed accuracy. No claim that resource exhaustion has been proven.
+- Surya remains NOT_RUN pending exact weight license/commercial-term qualification.
+
+### Handoff / acceptance limits
+The new chain is **synthetic template-constrained**, actual scanned-PDF OCR and A1 advisory arithmetic, not a generic reader or G2 trusted-source integration. A local PDF hash verifies local bytes only; neither original encrypted G2 custody nor independent G2 row equality is proven. The real-world hardest cases (Arabic itemized PDF, mixed orientations, unstructured tables, page-order collisions, contracts and clinical assertions) remain UNPROVEN. **Decision: PILOT PARTIALLY ACCEPTED — NO INTEGRATION.**
