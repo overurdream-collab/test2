@@ -7,6 +7,9 @@ p=pathlib.Path("docs/shared_audit_semantic_evidence/audit_consumer_matrix.csv")
 rows=list(csv.DictReader(p.open(encoding="utf-8",newline="")))
 openrows=[r for r in rows if r["status"]=="UNRESOLVED"]
 assert len(openrows) in (21,0), f"Expected 21 or zero already-closed matrix rows, found {len(openrows)}"
+if not openrows:
+    print("PASS: consumer matrix already contains zero unresolved rows; no rewrite needed")
+    raise SystemExit(0)
 for r in openrows:
     path,fn=r["file"],r["function"]
     if path=="mcias/models.py":
