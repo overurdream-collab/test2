@@ -10,6 +10,9 @@ rows=list(csv.DictReader(path.open(encoding="utf-8",newline="")))
 assert len(rows)==1170
 before=sum(x["final_status"]=="UNRESOLVED" for x in rows)
 assert before in (208,6,0), f"Expected 208, six, or zero already-resolved rows; received {before}"
+if before==0:
+    print("PASS: existing evidence already shows zero unresolved matches; no rewrite needed")
+    raise SystemExit(0)
 cache={}
 def get(row):
     k=(row["sha"],row["file"])
