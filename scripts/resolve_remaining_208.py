@@ -9,7 +9,7 @@ path=base/"semantic_match_resolution.csv"
 rows=list(csv.DictReader(path.open(encoding="utf-8",newline="")))
 assert len(rows)==1170
 before=sum(x["final_status"]=="UNRESOLVED" for x in rows)
-assert before in (208,6), f"Expected 208 or six targeted unresolved, received {before}"
+assert before in (208,6,0), f"Expected 208, six, or zero already-resolved rows; received {before}"
 cache={}
 def get(row):
     k=(row["sha"],row["file"])
