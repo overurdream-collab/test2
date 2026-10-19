@@ -48,9 +48,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          docker network create --internal mcias-l1-ci-private
           DB_PASSWORD="$(openssl rand -hex 24)"
           echo "::add-mask::$DB_PASSWORD"
-          CID="$(docker run -d --rm --name "mcias-l1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" --network bridge -p 127.0.0.1:55432:5432 -e POSTGRES_USER=mcias_ci -e POSTGRES_PASSWORD="$DB_PASSWORD" -e POSTGRES_DB=mcias_ci postgres:16)"
+          CID="$(docker run -d --rm --name "mcias-l1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" --network mcias-l1-ci-private -p 127.0.0.1:55432:5432 -e POSTGRES_USER=mcias_ci -e POSTGRES_PASSWORD="$DB_PASSWORD" -e POSTGRES_DB=mcias_ci postgres:16)"
           docker inspect --format '{{.Id}} {{.Config.Image}} {{.State.Running}} {{json .NetworkSettings.Ports}}' "$CID"
           echo "L1_POSTGRES_CID=$CID" >> "$GITHUB_ENV"
           echo "L1_POSTGRES_PASSWORD=$DB_PASSWORD" >> "$GITHUB_ENV"
@@ -87,3 +88,4 @@ jobs:
         shell: bash
         run: |
           if [ -n "${L1_POSTGRES_CID:-}" ]; then docker rm -f "$L1_POSTGRES_CID" || true; fi
+          docker network rm mcias-l1-ci-private || true
