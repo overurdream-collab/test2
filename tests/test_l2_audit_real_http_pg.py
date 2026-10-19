@@ -68,4 +68,26 @@ def test_http_rejected_mutation_rolls_back_and_audits_exactly_once():
         assert "secret" not in str(event.details).lower()
         assert "patient" not in str(event.details).lower()
         assert "diagnosis" not in str(event.details).lower()
+    # Cross-tenant validation against the real writer: forged organization never logs.
+    from mcias.audit_writer import record_outcome_independent
+    import pytest
+    with Session(engine) as seed:
+        foreign = Organization(name="L2-SYNTHETIC-FOREIGN")
+        seed.add(foreign)
+        seed.commit()
+        foreign_id = foreign.id
+    with pytest.raises(ValueError, match="mismatch"):
+        record_outcome_independent(
+            engine, actor_id=ACTOR, organization_id=foreign_id,
+            action="tenant_access_denied", resource_type="organization",
+            resource_id=foreign_id, outcome="denied",
+            details={"reason_code": "tenant_or_permission_denied",
+                     "medical_secret": "NEVER_LOG_THIS_SECRET"})
+    with Session(engine) as independent:
+        assert independent.scalar(select(AuditLog).where(
+            AuditLog.actor_id == ACTOR,
+            AuditLog.resource_id == foreign_id)) is None
+        assert independent.scalar(select(AuditLog).where(
+            AuditLog.actor_id == ACTOR,
+            AuditLog.action == "tenant_access_denied")).id == event.id
     engine.dispose()
