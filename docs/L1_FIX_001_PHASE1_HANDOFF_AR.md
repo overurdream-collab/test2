@@ -57,3 +57,16 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 - Preserve historical T01–T06 characterization `6 passed` separately; untouched. No test expectations changed.
 - Phase 2 requires explicit approval; safest small fix: reject ambiguities and invalid/unapproved targets before online engine / offline context config, keeping authorized isolated CI path. Recheck workflow environment contracts first.
 - Only documentation updated in this verification cycle. No changes to `alembic/env.py`, migrations, models, current tests, shared-audit branches, main, CI config.
+
+
+## Phase 2 — LIMITED SECURITY FIX (2026-10-19)
+- Authorized scope: Alembic target selection, test contracts, necessary CI environment fields, documentation. No model/schema/migration change.
+- Verified pre-change main SHA `b69defa2f621458ef44d790b510840307a81009a`, branch SHA `1cad03d4c7286c6f3af1ce2b302971cdb54f8dcc`.
+- Changes: `alembic/env.py` now requires explicit `MCIAS_MIGRATION_TARGET=test|runtime`. Test requires `MCIAS_ENVIRONMENT=test`, a full PostgreSQL+psycopg URL, loopback host, and approved synthetic database label; production test selection rejected. Different simultaneous runtime/test URLs rejected; identical aliases allowed only in explicit test mode for existing workspace CI. Failure codes do not include credentials.
+- CI edits: `.github/workflows/{ci,g8,g9,workspace}.yml` test jobs explicitly define `MCIAS_ENVIRONMENT=test` and `MCIAS_MIGRATION_TARGET=test`. Their test URL values were retained.
+- T01-T06 historical pre-fix evidence unchanged; ten original RED test assertions unchanged.
+- **CRITICAL LIMITATION**: URL/role/loopback controls and environment opt-in are NOT independent proof of a PostgreSQL cluster's identity. A privileged local service or malicious environment could impersonate a test database. True identity attestation (e.g., controlled ephemeral service provisioning with an independent expected instance identity) and an end-to-end negative test remain REQUIRED before security acceptance.
+- **VALIDATION BLOCKED**: local `git clone` failed with DNS error `Could not resolve host: github.com`; GitHub connector can fetch/write files but no full checkout or runnable PostgreSQL 16 service was available. Do not claim exact ten-test green, real PostgreSQL integration, or CI pass without run evidence.
+- No migration, DB connection, main merge, deployment, Shared Audit change or PR #28 change.
+- Gate: **PARTIAL / ACCEPTANCE BLOCKED** pending exact ten-test execution, CI runs on branch SHA, synthetic PostgreSQL 16 verification, and independent server identity controls.
+- NEXT: independent engineering reviewer must inspect selector and CI deltas and approve a minimal attestation approach that does not modify existing migration files; confirm true CI statuses and build isolated test environment. Do not merge.
