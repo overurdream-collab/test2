@@ -87,8 +87,9 @@ try:
             other=browser.new_page()
             try:
                 reader_token=login(other,"reader")
-                for name in ("استيراد ملف (رفع المصدر)","إضافة","تعديل"):
+                for name in ("استيراد ملف (رفع المصدر)","إضافة"):
                     expect(other.get_by_role("button",name=name,exact=True)).to_be_disabled()
+                expect(other.get_by_role("button",name="تعديل",exact=True)).to_have_count(0)
                 record(other,"02-reader-denied")
                 results["rbac"]="PASS"
             finally: other.close()
@@ -255,6 +256,7 @@ try:
             choose=page.get_by_role("button",name=contract_number+" — v1",exact=True)
             expect(choose).to_be_visible(timeout=12000)
             choose.click()
+            expect(page.get_by_role("button",name="تعديل",exact=True)).to_be_visible()
             expect(page.get_by_role("button",name="تعديل",exact=True)).to_be_enabled(timeout=10000)
             record(page,"10-selected-existing-g3-contract")
             page.get_by_role("button",name="تعديل",exact=True).click()
@@ -326,6 +328,54 @@ try:
             assert bad_dates.status==409, "Invalid revision effective dates allowed"
             results["revision_guards"]={"stale_version":stale.status,
                 "reader_denied":denied_revision.status,"invalid_dates":bad_dates.status}
+            # Foreign tenant: a writer from this organization cannot revise another tenant's G3 draft.
+            # Assert exact original snapshot, no appended foreign version, and one sanitized rejection.
+            from datetime import date
+            with Session(engine) as db:
+                foreign_org=Organization(name="SYN FOREIGN CONTRACT "+tag)
+                db.add(foreign_org); db.flush()
+                from mcias.models_reference import ContractVersion
+                foreign_contract=ContractVersion(organization_id=foreign_org.id,
+                    provider_code="SYN_FOREIGN_PROVIDER",contract_number="FOREIGN-"+tag,
+                    contract_notes="FOREIGN ORIGINAL UNCHANGED",version=1,
+                    effective_from=date(2026,11,1),effective_until=date(2027,11,1),
+                    precedence=0,status="draft",created_by=db.scalar(
+                        select(User.id).where(User.username==users["writer"])))
+                db.add(foreign_contract); db.commit()
+                foreign_id=foreign_contract.id
+                foreign_org_id=foreign_org.id
+            with Session(engine) as db:
+                initial=db.get(ContractVersion,foreign_id)
+                before=(initial.organization_id,initial.provider_code,initial.contract_number,
+                    initial.contract_notes,initial.version,initial.status,initial.effective_from,
+                    initial.effective_until,initial.precedence,initial.created_by)
+            foreign_attempt=page.request.post(
+                "http://127.0.0.1:8000/api/v1/reference/contracts/drafts/"+foreign_id+"/revise",
+                headers={"Authorization":"Bearer "+writer_token},
+                data={**revised_payload,"contract_notes":"SYN ILLEGAL FOREIGN EDIT"})
+            assert foreign_attempt.status in (403,404,409), (
+                "Cross-tenant G3 write not rejected: "+str(foreign_attempt.status))
+            with Session(engine) as db:
+                unchanged=db.get(ContractVersion,foreign_id)
+                after=(unchanged.organization_id,unchanged.provider_code,unchanged.contract_number,
+                    unchanged.contract_notes,unchanged.version,unchanged.status,unchanged.effective_from,
+                    unchanged.effective_until,unchanged.precedence,unchanged.created_by)
+                assert before==after, "Foreign contract was modified"
+                foreign_versions=db.scalars(select(ContractVersion).where(
+                    ContractVersion.organization_id==foreign_org_id,
+                    ContractVersion.contract_number=="FOREIGN-"+tag)).all()
+                assert len(foreign_versions)==1 and foreign_versions[0].id==foreign_id, (
+                    "Unauthorized cross-tenant version created")
+                foreign_denials=db.scalars(select(AuditLog).where(
+                    AuditLog.action=="contract_revision_denied",
+                    AuditLog.resource_id==foreign_id)).all()
+                assert len(foreign_denials)==1, "Expected exactly one foreign revision denial"
+                assert foreign_denials[0].details.get("outcome")=="denied"
+                assert foreign_denials[0].details.get("organization_id")==organization_id
+                assert "SYN ILLEGAL FOREIGN EDIT" not in str(foreign_denials[0].details)
+                assert "contract_notes" not in foreign_denials[0].details
+            results["cross_tenant_revision"]={"status":"PASS","http":foreign_attempt.status,
+                "original_unchanged":True,"foreign_versions":1,"denial_events":1}
             # Real audit activity endpoint: tenant-scoped, metadata-only, no raw details.
             from mcias.models import AuditLog
             with Session(engine) as db:
