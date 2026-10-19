@@ -12,15 +12,15 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 SIZE=(1650,2200)
-COLUMNS={"id":(90,268),"code":(268,655),"qty":(655,855),
-         "unit_price":(855,1160),"line_total":(1160,1555)}
+COLUMNS={"id":(90,255),"code":(255,595),"unit":(595,740),"qty":(740,880),
+         "unit_price":(880,1190),"line_total":(1190,1555)}
 REGIONS={"invoice_number":(410,126,1050,216),"date":(410,247,1000,334),
          "provider":(410,370,1140,457),"currency":(1290,247,1560,334),
          "stated_total":(1095,920,1550,1025)}
 BASE=[
- {"id":"AA","code":"LAB-CBC","qty":"2","unit_price":"15.00","line_total":"30.00","page":1,"y":615},
- {"id":"BB","code":"XRAY-CHEST","qty":"1","unit_price":"45.00","line_total":"45.00","page":1,"y":805},
- {"id":"CC","code":"RX-AMOX","qty":"3","unit_price":"7.00","line_total":"21.00","page":2,"y":615},
+ {"id":"AA","code":"LAB-CBC","unit":"EA","qty":"2","unit_price":"15.00","line_total":"30.00","page":1,"y":615},
+ {"id":"BB","code":"XRAY-CHEST","unit":"EA","qty":"1","unit_price":"45.00","line_total":"45.00","page":1,"y":805},
+ {"id":"CC","code":"RX-AMOX","unit":"EA","qty":"3","unit_price":"7.00","line_total":"21.00","page":2,"y":615},
 ]
 HEAD={"invoice_number":"INV-2026-101","date":"2026-10-19",
       "provider":"SYNTHETIC CLINIC","currency":"USD","stated_total":"96.00"}
@@ -130,7 +130,7 @@ def extract(path,sha):
                 row[key]=candidate(raw,page,path.stem,sha)
             data["items"].append(row)
     doc.close()
-    patterns={"id":r"[A-Z]{2}","code":r"[A-Z][A-Z0-9-]+","qty":r"[1-9]\d*",
+    patterns={"id":r"[A-Z]{2}","code":r"[A-Z][A-Z0-9-]+","unit":r"[A-Z]{2}","qty":r"[1-9]\d*",
               "unit_price":r"\d+\.\d{2}","line_total":r"\d+\.\d{2}"}
     for i,row in enumerate(data["items"],1):
         for k,pattern in patterns.items():
@@ -194,7 +194,7 @@ def bundle(pred,case):
                    "currency":f["currency"]["value"],"stated_total":f["stated_total"]["value"],
                    "source":f["invoice_number"]["source"],
                    "items":[{"id":r["id"]["value"],"kind":"service","code":r["code"]["value"],
-                             "unit":"unit","quantity":r["qty"]["value"],
+                             "unit":r["unit"]["value"],"quantity":r["qty"]["value"],
                              "unit_price":r["unit_price"]["value"],
                              "line_total":r["line_total"]["value"],
                              "source":row_ref(r)} for r in pred["items"]]},
