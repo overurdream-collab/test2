@@ -84,3 +84,17 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 - Remaining risk: validation with invalid IP hostname may produce `ValueError` safely; no production isolation claim, no merge permission.
 - Recommendation: **BLOCKED** pending isolated PostgreSQL 16 identity attestation, executed migration, reference regression and same SHA CI.
 - Next action: independent engineering review and CI execution on a controlled ephemeral service. Keep separate ownership of Shared Audit Writer.
+
+
+## 2026-10-19 — Isolated CI operational-verification gate (DG-001)
+- Baseline checked before changes: branch `93ddc0075f0a83f82b4ffe4eff1a5ba4bf0afbcb`; main `b69defa2f621458ef44d790b510840307a81009a`.
+- NEW `.github/workflows/l1-alembic-target-isolated.yml` on branch push and matching PR changes; explicitly runs exact ten historical tests from Actions checkout before any database provisioning.
+- Uses temporary random DB password, PostgreSQL 16 disposable container, private Docker internal network and host-only bound TCP port, validates container ID/image/running state and host binding via Docker inspect. Builds target URL only after verification from runner-controlled values; exposes no production secret or environment URL input for these verification steps.
+- Tests rejection with selector-only test, runs offline SQL generation, then online `alembic upgrade head` and PostgreSQL/reference/restore regression on disposable container; container/network cleanup `always()`.
+- Last CI workflow adjustment commit `41247cbda4aac70c056f7c9ff54cb7aa77b35f04`.
+- CRITICAL: workflow creation IS NOT evidence of execution. GitHub workflow-run query and commit status were empty on immediate check; the provider query omits some push runs. Real CI runs, PostgreSQL 16 image ID/check outputs, migration logs, and reference test results are NOT VERIFIED. Do not advertise PASS.
+- Local host lacks Docker/psql and `git ls-remote` failed DNS for github.com; cannot independently run real PostgreSQL migration in this cycle.
+- Existing T01-T06 and exact ten test assertions untouched. No changes to `alembic/env.py`, existing migrations, models, main, PR #25/#28/#29, Shared Audit, deployment.
+- Independent identity guarantee boundary: newly created Docker container ID, image and network give independent provenance within the trusted GitHub-hosted job, but do not defend against compromised runner, CI definition, Docker daemon or adversarial job privileges. Runtime's selector alone still cannot attest server identity.
+- G1-G7, G8, G9, Enterprise full independent reference gates on this final SHA remain UNVERIFIED (workflow path filters may not trigger). Gate: **BLOCKED / NO MERGE**.
+- NEXT: obtain completed run ID/logs for isolated L1 workflow and same-SHA reference gates; examine failed step and adjust only proven defect, re-run; record exact SHA. Require independent approval before merge.
