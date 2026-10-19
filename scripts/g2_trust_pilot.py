@@ -75,3 +75,13 @@ def run(outdir,a1_file):
                 parsed=parse_dynamic(words,doc.id,doc.sha256,style["lang"])
                 measured=score(gold,parsed)
                 valid=not parsed["issues"] and measured["exact_values"]==18 and measured["correct_cell_locations"]==18
+
+                for row in parsed["rows"]:
+                    for field in row.values():
+                        if field:
+                            assert field["source"]["document_id"]==doc.id
+                            assert field["source"]["sha256"]==doc.sha256
+                            assert field["value"]==" ".join(w["text"] for w in field["ocr_word_evidence"])
+                payload=a1_payload(parsed,case) if valid else None
+                analysis=agent.analyze(payload) if payload else None
+                findings=[x for x in analysis["findings"] if x["finding_type"]=="LINE_ARITHMETIC"] if analysis else []
