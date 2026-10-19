@@ -89,7 +89,7 @@ jobs:
           python -m pip install 'Pillow>=11,<13'
       - name: Run measured synthetic Arabic and English OCR
         run: |
-          python scripts/document_reader_offline_ocr_benchmark.py reader-ocr-results
+          PYTHONPATH=. python scripts/document_reader_offline_ocr_benchmark.py reader-ocr-results
           python - <<'PY'
           import json
           from pathlib import Path
