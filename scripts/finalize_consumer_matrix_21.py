@@ -6,7 +6,7 @@ import csv,json,pathlib,collections
 p=pathlib.Path("docs/shared_audit_semantic_evidence/audit_consumer_matrix.csv")
 rows=list(csv.DictReader(p.open(encoding="utf-8",newline="")))
 openrows=[r for r in rows if r["status"]=="UNRESOLVED"]
-assert len(openrows)==21, f"Expected 21 unresolved matrix rows, found {len(openrows)}"
+assert len(openrows) in (21,0), f"Expected 21 or zero already-closed matrix rows, found {len(openrows)}"
 for r in openrows:
     path,fn=r["file"],r["function"]
     if path=="mcias/models.py":
