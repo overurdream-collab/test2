@@ -15,12 +15,16 @@ from mcias.auth import resolve_user
 from mcias.tenant import require_organization, require_sensitive_field
 from mcias.models import Organization, User, SessionToken, AuditLog
 
-DB = os.environ["MCIAS_L2_ISOLATED_DATABASE_URL"]
-ACTOR = os.environ["MCIAS_L2_SYNTHETIC_ACTOR_ID"]
-ORG = os.environ["MCIAS_L2_SYNTHETIC_ORGANIZATION_ID"]
+
 
 
 def test_http_rejected_mutation_rolls_back_and_audits_exactly_once():
+    if not os.environ.get("MCIAS_L2_ISOLATED_DATABASE_URL"):
+        import pytest
+        pytest.skip("L2 dedicated PostgreSQL integration runner required")
+    DB = os.environ["MCIAS_L2_ISOLATED_DATABASE_URL"]
+    ACTOR = os.environ["MCIAS_L2_SYNTHETIC_ACTOR_ID"]
+    ORG = os.environ["MCIAS_L2_SYNTHETIC_ORGANIZATION_ID"]
     assert os.environ["MCIAS_L2_ALLOW_ISOLATED_TESTS"] == "YES"
     assert DB.endswith("/mcias_l2_e2e") and ("@127.0.0.1:" in DB or "@localhost:" in DB)
     engine = create_engine(DB)
