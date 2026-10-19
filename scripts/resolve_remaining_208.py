@@ -9,7 +9,7 @@ path=base/"semantic_match_resolution.csv"
 rows=list(csv.DictReader(path.open(encoding="utf-8",newline="")))
 assert len(rows)==1170
 before=sum(x["final_status"]=="UNRESOLVED" for x in rows)
-assert before==208, f"Expected exactly 208 unresolved, received {before}"
+assert before in (208,6), f"Expected 208 or six targeted unresolved, received {before}"
 cache={}
 def get(row):
     k=(row["sha"],row["file"])
@@ -36,7 +36,13 @@ for row in rows:
     ctx="\n".join(lines[node.lineno-1:node.end_lineno]) if node else current
     p=row["file"]; kind=row["kind"]
     state=None; explanation=None
-    if p.startswith("tests/") or p.startswith("scripts/check_") or p.startswith("scripts/benchmark_"):
+    if p=="mcias/preflight_g9.py" and "has_table_privilege" in ctx and "audit_log" in ctx:
+        state="RESOLVED_REFERENCE_ONLY";explanation="Read-only SQL privilege check for public.audit_log DELETE/UPDATE; no audit row mutation"
+    elif p=="mcias/workspace_api.py" and node and node.name=="activity_history" and "resource_type=" in current:
+        state="RESOLVED_AUDIT_CONSUMER";explanation="Resource metadata for direct activity_read_denied AuditLog in same call at workspace_api.py:116; local commit 119"
+    elif p=="mcias/app.py" and node and node.name=="get_db" and "record_denial_after_rollback(engine, exc)" in current:
+        state="RESOLVED_TRANSACTION_OWNER";explanation="PR28 HTTP get_db: session.rollback at line 64 precedes independent denial writer delegation at line 67; exceptions re-raised"
+    elif p.startswith("tests/") or p.startswith("scripts/check_") or p.startswith("scripts/benchmark_"):
         state="RESOLVED_TEST_OR_FIXTURE";explanation="Pinned source is acceptance/integration test or benchmark script; not application Audit owner"
     elif "SELECT has_table_privilege" in current or "audit_log','UPDATE" in current:
         state="RESOLVED_REFERENCE_ONLY";explanation="SQL checks database privilege; no AuditLog INSERT/UPDATE/DELETE or event creation"
@@ -94,11 +100,11 @@ with path.open("w",encoding="utf-8",newline="") as f:
     w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
 counter=collections.Counter(x["final_status"] for x in rows)
 summary=json.loads((base/"semantic_closure_summary.json").read_text())
-summary.update({"processed":1170,"resolved":1170-counter["UNRESOLVED"],"unresolved":counter["UNRESOLVED"],"status_counts":dict(counter),"targeted_previous_unresolved":208,"targeted_verified":208-counter["UNRESOLVED"],"targeted_remaining":counter["UNRESOLVED"],"result":"CONSUMER INVENTORY COMPLETE — REQUIRES INDEPENDENT ACCEPTANCE" if counter["UNRESOLVED"]==0 else "PARTIAL — EXACT UNRESOLVED ITEMS"})
+summary.update({"processed":1170,"resolved":1170-counter["UNRESOLVED"],"unresolved":counter["UNRESOLVED"],"status_counts":dict(counter),"targeted_previous_unresolved":before,"targeted_verified":before-counter["UNRESOLVED"],"targeted_remaining":counter["UNRESOLVED"],"result":"CONSUMER INVENTORY COMPLETE — REQUIRES INDEPENDENT ACCEPTANCE" if counter["UNRESOLVED"]==0 else "PARTIAL — EXACT UNRESOLVED ITEMS"})
 summary["counts_by_ref"]={ref:dict(collections.Counter(x["final_status"] for x in rows if x["ref"]==ref)) for ref in ("main","pr25","pr28","pr29_baseline")}
 (base/"semantic_closure_summary.json").write_text(json.dumps(summary,indent=2,ensure_ascii=False)+"\n")
 with (base/"targeted_208_resolution.md").open("w",encoding="utf-8") as f:
-    f.write("# Targeted 208-matches evidence\n\nOriginal ledger retained all 1170 IDs. Resolved in this pass: "+str(208-counter["UNRESOLVED"])+"; unresolved: "+str(counter["UNRESOLVED"])+".\n\n")
+    f.write("# Targeted 208-matches evidence\n\nOriginal ledger retained all 1170 IDs. Resolved in this pass: "+str(before-counter["UNRESOLVED"])+"; unresolved: "+str(counter["UNRESOLVED"])+".\n\n")
     for x in rows:
         if x["final_status"]=="UNRESOLVED":
             f.write("- `"+x["source_evidence"]+"` "+x["function"]+": "+x["semantic_reason"]+"\n")
