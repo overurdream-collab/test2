@@ -70,3 +70,17 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 - No migration, DB connection, main merge, deployment, Shared Audit change or PR #28 change.
 - Gate: **PARTIAL / ACCEPTANCE BLOCKED** pending exact ten-test execution, CI runs on branch SHA, synthetic PostgreSQL 16 verification, and independent server identity controls.
 - NEXT: independent engineering reviewer must inspect selector and CI deltas and approve a minimal attestation approach that does not modify existing migration files; confirm true CI statuses and build isolated test environment. Do not merge.
+
+
+## Final verification cycle — 2026-10-19
+- Verified branch HEAD `445e25bea51711e45da6da96ce71695189e405d2` and main HEAD `b69defa2f621458ef44d790b510840307a81009a` before changes.
+- Direct clean `git clone` unavailable (DNS resolving github.com failed); rebuilt an isolated Python test fixture manually from the GitHub-fetched original selector and exact ten assertion contracts. Therefore NOT a successful Git checkout; only a faithful scoped local reproduction.
+- Before minimal fix: `python -m pytest -q tests/test_l1_alembic_target_red.py`: **9 passed, 1 failed, 0 skipped**. Failure `test_reject_malformed_test_url` because SQLAlchemy `make_url` raises `sqlalchemy.exc.ArgumentError` rather than a sanitized `ValueError`.
+- Minimal authorized change: `alembic/env.py` imports/catches `sqlalchemy.exc.ArgumentError` and maps it to `ValueError("ALEMBIC_TARGET_INVALID")`. No assertion altered, no migration/schema/model change. Fix commit `1c81c91fa5482992bec871f4be00b6a8a2592a3f`.
+- After fix, isolated Python reproduction: **10 passed, 0 failed, 0 skipped in 0.13s**; no DB engine, PostgreSQL connection, socket, or migration was invoked by the ten tests.
+- IMPORTANT: No real PostgreSQL 16 on this container; no Docker or PostgreSQL executable. Genuine online migration, isolated server-identity proof, full reference regression, and all required CI are **BLOCKED / unverified**.
+- Current selector does not independently attest server identity. Environment variables, host=loopback, and database name alone cannot guarantee a synthetic server or protect against locally redirected endpoints. This remains a P0 acceptance blocker.
+- CI query on prior SHA returned empty arrays; do not misinterpret as success or failure. Recheck final SHA.
+- Remaining risk: validation with invalid IP hostname may produce `ValueError` safely; no production isolation claim, no merge permission.
+- Recommendation: **BLOCKED** pending isolated PostgreSQL 16 identity attestation, executed migration, reference regression and same SHA CI.
+- Next action: independent engineering review and CI execution on a controlled ephemeral service. Keep separate ownership of Shared Audit Writer.
