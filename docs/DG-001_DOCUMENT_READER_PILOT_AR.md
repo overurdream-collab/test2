@@ -56,3 +56,15 @@ Read docs/agents/A1_DATA_CONTRACT_AR.md, mcias/agents/a1_trusted_input.py, tests
 
 ## HANDOFF for independent reviewer
 Verify both new workflow jobs and inspect generated result artifacts. Check that the SHA-pinned A1 code was loaded unmodified. Do not approve integration until a byte-verified G2 source and independent field/row evidence qualification (including image OCR) passes. No merge, deploy or financial actions.
+
+
+## Measured offline OCR baseline — GitHub CI evidence 2026-10-20
+- Actual local MCIAS Tesseract adapter run, not simulated: [GitHub Actions run #39337544635](https://github.com/overurdream-collab/test2/actions/runs/39337544635) at commit `d73b3f3b0ac839cda7086339c800d227ab466dc7`, three jobs passed (strict structured synthetic text, SHA-pinned PR20 A1 bridge, offline local OCR).
+- Dataset: 12 original synthetic PNG renderings, 4 contents (2 English, 2 Arabic), each in clean, 2° tilted and Gaussian-blurred versions. Actual `tesseract-ocr-eng` and `tesseract-ocr-ara` installed in Linux runner. DejaVu system font, PIL, no patients or external OCR service.
+- Character error rate method: Levenshtein edit distance after removing Unicode whitespace, measured against fixture text; English mean normalized CER `0.000000` (6 images); Arabic mean normalized CER `0.3242082662` (6 images). These small fixtures are **not** a representative statistical accuracy estimate; the mean has few cases, and reading order/RTL normalization can influence it.
+- Time, per-sample outputs, Python process peak RSS and measured CER are saved in the workflow artifact `reader-local-ocr-synthetic` / `offline_ocr_baseline.json`. RSS is process high-water mark, not per-inference incremental memory; no model-specific independent memory comparison.
+- PaddleOCR / PP-StructureV3: upstream source Apache-2.0 per official project, but exact model weights and transitive dependencies require pinned-model approval before benchmark. NOT_RUN; no comparative win established.
+- Surya: upstream source Apache-2.0; model weights published under separately modified OpenRAIL-style terms with commercial conditions. Exact terms must be approved before downloading/using; NOT_RUN.
+- The English/Arabic OCR benchmark measures image transcription only; these pixels have **not** yet passed a full OCR → structured reader → byte-verified G2 → A1 pipeline. The field-level bridge tests only controlled text. A high OCR score cannot attest line-item identity.
+
+**Acceptance decision: PARTIAL — SPECIFIC BENCHMARK GAPS.** Strictly synthetic read-only tests and pinned A1 arithmetic bridge passed; full medical document understanding and independently attested PDF OCR remain unproven. No merge, no deploy, no claim settlement.
