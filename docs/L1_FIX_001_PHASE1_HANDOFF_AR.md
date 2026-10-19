@@ -38,3 +38,22 @@ P0 ambiguous target selection; P0 unintended production target; P1 test-only sel
 2. Run exact new test module using an isolated local checkout, no DB connection; expect six RED and four green.
 3. Supervisor decides whether to authorize phase 2; only then update `alembic/env.py` minimally, preserving old characterization evidence.
 4. Phase 2 validation: fake-only tests then PostgreSQL 16 synthetic isolated tests, CI regression, transaction/restore checks.
+
+
+## Phase 1 Verification — 2026-10-19 — exact ten-test content
+- Verified remote branch HEAD before this documentation update: `600892aac331e78087ddfab6dd1f199a4589ce02`; main `b69defa2f621458ef44d790b510840307a81009a`.
+- Attempted clean `git clone --depth 1 --branch fix/mcias-l1-alembic-target-safety`, but container DNS blocked `github.com` (`Could not resolve host`). Therefore this is NOT a git checkout.
+- Reconstructed a clean isolated directory using the **complete test file and env.py text fetched from GitHub at the confirmed branch**; did not alter those contents. Exact command: `python -m pytest -q tests/test_l1_alembic_target_red.py`.
+- Python pytest execution: **6 failed, 4 passed, 0 skipped, 0 errors, exit 1, 0.08s**. Six RED failures all `Failed: DID NOT RAISE <class 'ValueError'>` for:
+  - `test_reject_ambiguous_two_urls_before_connection`
+  - `test_reject_test_override_in_production`
+  - `test_reject_missing_url`
+  - `test_reject_malformed_test_url`
+  - `test_reject_unapproved_test_database`
+  - `test_reject_implicit_fallback_after_empty_test`
+- Four PASS: `test_allow_explicit_runtime_only`, `test_allow_isolated_test_only`, `test_offline_online_share_same_selector_source`, `test_ci_contract_explicit_test_url_does_not_require_runtime`.
+- No Alembic module imported by the tests, no engine or socket call, no database connection or migration. The test extracts only the original function body by AST; synthetic URLs and mock Settings only. Online/offline coverage is static source inspection, not live execution.
+- GitHub Actions commit workflow query returned `[]` (limited to PR events) and combined status returned `[]`. This does **not** prove all Actions absent; full Actions push-run coverage remains UNVERIFIED. No CI result is counted.
+- Preserve historical T01–T06 characterization `6 passed` separately; untouched. No test expectations changed.
+- Phase 2 requires explicit approval; safest small fix: reject ambiguities and invalid/unapproved targets before online engine / offline context config, keeping authorized isolated CI path. Recheck workflow environment contracts first.
+- Only documentation updated in this verification cycle. No changes to `alembic/env.py`, migrations, models, current tests, shared-audit branches, main, CI config.
