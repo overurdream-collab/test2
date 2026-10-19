@@ -21,6 +21,8 @@ from mcias.models import Organization, User, SessionToken, AuditLog
 def test_http_rejected_mutation_rolls_back_and_audits_exactly_once():
     if not os.environ.get("MCIAS_L2_ISOLATED_DATABASE_URL"):
         import pytest
+        if os.environ.get("MCIAS_L2_AUDIT_REQUIRED") == "YES":
+            pytest.fail("BLOCKED: mandatory PostgreSQL integration unavailable")
         pytest.skip("L2 dedicated PostgreSQL integration runner required")
     DB = os.environ["MCIAS_L2_ISOLATED_DATABASE_URL"]
     ACTOR = os.environ["MCIAS_L2_SYNTHETIC_ACTOR_ID"]
