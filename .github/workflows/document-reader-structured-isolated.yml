@@ -7,6 +7,7 @@ on:
       - scripts/document_reader_a1_bridge_pilot.py
       - scripts/document_reader_offline_ocr_benchmark.py
       - scripts/document_reader_scanned_pdf_a1_e2e.py
+      - scripts/document_reader_dynamic_layout_pilot.py
       - docs/DG-001_DOCUMENT_READER_PILOT_AR.md
       - .github/workflows/document-reader-structured-isolated.yml
   workflow_dispatch:
@@ -153,4 +154,52 @@ jobs:
         with:
           name: reader-scanned-pdf-e2e-evidence
           path: reader-scanned-e2e-results/
+          retention-days: 30
+
+  dynamic-layout-ocr-a1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline language and document runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
+          python -m pip install 'Pillow>=11,<13' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
+      - name: Run dynamic multi-layout invoice OCR and pinned A1
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          python scripts/document_reader_dynamic_layout_pilot.py --out reader-dynamic-layout --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          out=Path('reader-dynamic-layout')
+          results=json.loads((out/'summary.json').read_text())
+          assert len(results['cases'])==3
+          assert {c['case'] for c in results['cases']}=={'english_columnar','english_reordered','arabic_rtl'}
+          for name in ('english_columnar','english_reordered'):
+              c=next(x for x in results['cases'] if x['case']==name)
+              assert c['critical_values']==18 and c['correct_locations']==18
+              assert c['a1_ran'] and c['detected_columns']==6
+          for c in results['cases']:
+              review=json.loads((out/(c['case']+'_human_review.json')).read_text())
+              assert review['financial_decision']=='NOT_AUTHORIZED'
+              assert review['local_pdf_bytes_verified'] is True
+              assert review['g2_encrypted_original_verified'] is False
+              assert review['human_review_required'] is True
+              assert (out/(c['case']+'.pdf')).exists()
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-dynamic-layout-ar-en
+          path: reader-dynamic-layout/
           retention-days: 30
