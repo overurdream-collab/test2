@@ -70,3 +70,8 @@ def run(outdir,a1_file):
 
                 restored=out/(case+'_source.pdf')
                 restored.write_bytes(pdf)
+
+                words,secs=read_pixels_and_words(restored,doc.sha256,style["lang"])
+                parsed=parse_dynamic(words,doc.id,doc.sha256,style["lang"])
+                measured=score(gold,parsed)
+                valid=not parsed["issues"] and measured["exact_values"]==18 and measured["correct_cell_locations"]==18
