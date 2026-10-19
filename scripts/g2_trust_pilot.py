@@ -67,3 +67,6 @@ def run(outdir,a1_file):
                 must_reject(lambda:reopen(db,store,doc.id,other.id,gold["pdf_sha256"]))
                 must_reject(lambda:reopen(db,store,doc.id,org.id,"0"*64))
                 negative+=2
+
+                restored=out/(case+'_source.pdf')
+                restored.write_bytes(pdf)
