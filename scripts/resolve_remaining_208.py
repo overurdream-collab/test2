@@ -23,7 +23,14 @@ def function_body(tree,line):
 for row in rows:
     if row["final_status"]!="UNRESOLVED":continue
     text=get(row); lines=text.splitlines(); line=int(row["line"])
-    assert 1<=line<=len(lines) and lines[line-1].strip().startswith(row["source"].strip()),row["match_id"]
+    if not 1<=line<=len(lines):
+        row["semantic_reason"]="Pinned source line outside file: evidence mismatch"
+        continue
+    # Original inventory includes truncated/multiline SQL literals, whose displayed snippet
+    # is not always the physical line at the start of the AST Constant.
+    if not lines[line-1].strip().startswith(row["source"].strip()) and row["kind"] not in ("multiline_SQL","direct_SQL"):
+        row["semantic_reason"]="Source snippet mismatch at pinned line; preserve unresolved"
+        continue
     tree=ast.parse(text); node=function_body(tree,line)
     current=lines[line-1].strip()
     ctx="\n".join(lines[node.lineno-1:node.end_lineno]) if node else current
