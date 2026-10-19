@@ -13,6 +13,9 @@ from mcias.audit_writer import write_event, record_outcome_independent
 
 @pytest.fixture
 def engine():
+    required = os.getenv("MCIAS_AUDIT_PHASE1_REQUIRED") == "YES"
+    if not required and (os.getenv("MCIAS_AUDIT_PHASE1_ALLOW") != "YES" or not os.getenv("MCIAS_AUDIT_PHASE1_DATABASE_URL")):
+        pytest.skip("Dedicated PostgreSQL fixture unavailable in general Unit runner")
     assert os.getenv("MCIAS_AUDIT_PHASE1_ALLOW") == "YES", "Explicit isolated test consent required"
     url = os.environ["MCIAS_AUDIT_PHASE1_DATABASE_URL"]
     p = urlsplit(url.replace("postgresql+psycopg://", "postgresql://", 1))
