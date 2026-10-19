@@ -44,5 +44,16 @@
       "RESOLVED_TEST_OR_FIXTURE": 147
     }
   },
-  "result": "PARTIAL — EXACT UNRESOLVED ITEMS"
+  "result": "PARTIAL — EXACT UNRESOLVED ITEMS",
+  "consumer_matrix_review": {
+    "total_entries": 152,
+    "remaining_unresolved": 0,
+    "targeted_traced_or_marked_nonoperational": 21,
+    "statuses": {
+      "VERIFIED_FUNCTION_LOCAL": 131,
+      "VERIFIED": 13,
+      "NOT_APPLICABLE": 8
+    },
+    "note": "Entries are per SHA/function, not distinct real-world consumers; VERIFIED is static trace only, not operational acceptance."
+  }
 }
