@@ -48,3 +48,22 @@ def run(outdir,a1_file):
             actor=User(username="synthetic-reader",password_hash="fixture")
             db.add_all([org,other,actor]);db.flush()
             actor.organization_id=org.id;db.commit()
+
+            for case,style in STYLES.items():
+                gold=make_fixture(case,out)
+                original=Path(gold["pdf_path"]).read_bytes()
+                saved=ingest(db,store,org.id,actor.id,case+".pdf",original)
+                assert saved["status"]=="review_required",saved
+                pdf,doc,src=reopen(db,store,saved["document_id"],org.id,gold["pdf_sha256"])
+                assert pdf==original
+                job=db.get(IngestionJob,saved["job_id"])
+                quarantine=db.scalars(select(QuarantineItem).where(
+                    QuarantineItem.job_id==job.id)).all()
+                assert len(quarantine)==1
+                assert db.scalars(select(ExtractedSourceRecord).where(
+                    ExtractedSourceRecord.job_id==job.id)).all()==[]
+                disk=(store.root/src.storage_key).read_bytes()
+                assert disk.startswith(b"MCIAS1") and disk!=pdf
+                must_reject(lambda:reopen(db,store,doc.id,other.id,gold["pdf_sha256"]))
+                must_reject(lambda:reopen(db,store,doc.id,org.id,"0"*64))
+                negative+=2
