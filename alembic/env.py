@@ -13,6 +13,7 @@ def migration_database_url():
     attestation; URL validation is not a database-identity proof.
     """
     from sqlalchemy.engine import make_url
+    from sqlalchemy.exc import ArgumentError
 
     target = os.environ.get("MCIAS_MIGRATION_TARGET", "").strip()
     environment = os.environ.get("MCIAS_ENVIRONMENT", "development").strip().lower()
@@ -48,7 +49,7 @@ def migration_database_url():
                     reject("ALEMBIC_TARGET_FORBIDDEN")
             if parsed.database != "mcias_ci" and not parsed.database.endswith("_e2e"):
                 reject("ALEMBIC_TARGET_FORBIDDEN")
-    except (ValueError, TypeError, AttributeError) as exc:
+    except (ValueError, TypeError, AttributeError, ArgumentError) as exc:
         if str(exc).startswith("ALEMBIC_TARGET_"):
             raise
         reject("ALEMBIC_TARGET_INVALID")
