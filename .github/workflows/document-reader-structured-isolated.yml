@@ -1,0 +1,41 @@
+name: MCIAS Reader Structured Isolated Checks
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/document_reader_structured_pilot.py
+      - .github/workflows/document-reader-structured-isolated.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deterministic-structured:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run isolated synthetic structured field verification
+        run: python scripts/document_reader_structured_pilot.py reader-pilot-structured-results
+      - name: Enforce negative case evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("reader-pilot-structured-results/structured_results.json").read_text())
+          by={x["id"]:x for x in d["results"]}
+          assert len(by)==8
+          assert "AMOUNT_MISMATCH" in " ".join(by["invoice_swap"]["result"]["issues"])
+          assert by["malformed"]["result"]["status"]=="HUMAN_REVIEW"
+          assert by["malicious_instruction"]["result"]["status"]=="SUPPORTED"
+          assert by["multi_page"]["result"]["records"][1]["name"]["page"]==2
+          assert by["lab_value_vs_range"]["result"]["records"][0]["result"]["value"]=="13.5"
+          assert by["lab_value_vs_range"]["result"]["records"][0]["range"]["value"]=="12.0-16.0"
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-structured-synthetic-evidence
+          path: reader-pilot-structured-results/
+          retention-days: 30
