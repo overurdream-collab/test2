@@ -4,6 +4,7 @@ on:
     branches: [feat/mcias-document-reader-isolated-pilot]
     paths:
       - scripts/document_reader_structured_pilot.py
+      - scripts/document_reader_a1_bridge_pilot.py
       - .github/workflows/document-reader-structured-isolated.yml
   workflow_dispatch:
 permissions:
@@ -38,4 +39,37 @@ jobs:
         with:
           name: reader-structured-synthetic-evidence
           path: reader-pilot-structured-results/
+          retention-days: 30
+
+  pinned-a1-read-only-bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify pinned A1 and run synthetic bridge
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          python scripts/document_reader_a1_bridge_pilot.py pinned-a1-readonly/mcias/agents/invoice_integrity.py reader-a1-results
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("reader-a1-results/reader_a1_bridge_results.json").read_text())
+          assert len(data["cases"])==4
+          assert all(x["financial_decision"]=="NOT_AUTHORIZED" for x in data["cases"])
+          assert all(x["integration_status"]=="HUMAN_REVIEW" for x in data["cases"])
+          assert all(x["source_attestation"]=="NOT_ATTESTED_FIXTURE_TEXT_ONLY" for x in data["cases"])
+          assert [x["a1_arithmetic_count"] for x in data["cases"]]==[0,1,2,0]
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-to-a1-synthetic-bridge
+          path: reader-a1-results/
           retention-days: 30
