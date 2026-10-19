@@ -11,6 +11,10 @@ on:
       - "alembic/versions/0015_g8_intelligence.py"
       - "alembic/versions/0016_g8_signal_review.py"
       - "tests/test_g8*"
+      - "mcias/auth.py"
+      - "mcias/tenant.py"
+      - "mcias/audit_writer.py"
+      - "mcias/denial_events.py"
       - "pyproject.toml"
       - ".github/workflows/g8.yml"
 
