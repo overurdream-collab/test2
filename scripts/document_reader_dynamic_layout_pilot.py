@@ -32,12 +32,16 @@ ALIAS={"ID":"id","REF":"id","CODE":"code","SERVICE":"code","UNIT":"unit",
  "MEASURE":"unit","QTY":"qty","COUNT":"qty","PRICE":"price","RATE":"price",
  "TOTAL":"total","AMOUNT":"total",
  "الرقم":"id","الخدمة":"code","الوحدة":"unit","الكمية":"qty","السعر":"price","الإجمالي":"total"}
-PATTERNS={"id":r"[A-Z]{2}","code":r"[A-Z][A-Z0-9-]+","unit":r"[A-Z]{2}",
+PATTERNS={"id":r"[A-Z]{2}","code":r"(?:[A-Z][A-Z0-9-]+|[\u0621-\u064A]+)","unit":r"(?:[A-Z]{2}|[\u0621-\u064A]+)",
  "qty":r"[1-9][0-9]*","price":r"[0-9]+\.[0-9]{2}","total":r"[0-9]+\.[0-9]{2}"}
 
 def make_fixture(label,out):
     """Fixture geometry is used ONLY by renderer and independently authored gold."""
     s=STYLES[label]; rows=[dict(row) for row in BASE]
+    if label=="arabic_rtl":
+        for row,name in zip(rows,("تحليل","أشعة","دواء")):
+            row["code"]=name
+            row["unit"]="مرة"
     if label=="english_reordered":
         rows[0]["total"],rows[1]["total"]=rows[1]["total"],rows[0]["total"]
     im=Image.new("RGB",(1650,1900),"white")
