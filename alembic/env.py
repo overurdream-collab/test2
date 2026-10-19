@@ -27,7 +27,7 @@ def migration_database_url():
     if target == "test":
         if environment == "production":
             reject("ALEMBIC_TARGET_FORBIDDEN")
-        if environment != "test" or not test_url or runtime_url:
+        if environment != "test" or not test_url or (runtime_url and runtime_url != test_url):
             reject("ALEMBIC_TARGET_AMBIGUOUS")
         selected = test_url
     else:
