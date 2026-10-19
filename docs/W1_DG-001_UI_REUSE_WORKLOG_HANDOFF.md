@@ -50,3 +50,10 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 3. Verify actual server-side 403 and tenant isolation against authorized main API with synthetic PostgreSQL; if unavailable mark unverified.
 4. Run relevant regression subset and check CI results on final SHA.
 5. Open Draft PR only after passing tested UI changes; do not merge or deploy.
+
+## Focused verification result — 2026-10-20
+- GitHub Actions Run #39344501343, SHA 28e65b95c4287fbeba6f52ac476af01c30f95a1f: SUCCESS. URL: https://github.com/overurdream-collab/test2/actions/runs/39344501343
+- Steps completed successfully: node --test tests/w1_navigation.test.mjs; npm run check; node --check mcias/web_workspace/w1_navigation.js; npm test (10/10 passed, zero skipped).
+- Verified source: GitHub Actions job 118373729559 logs. CI Node deprecation warning is non-blocking.
+- NOT RUN / NOT VERIFIED: real-browser desktop/mobile flows, AR/EN RTL/LTR and theme in browser; PostgreSQL synthetic negative API auth and cross-tenant isolation; browser UI search/status/loading/error behavior. These remain acceptance blockers.
+- No Draft PR yet because mandatory browser/security gates are not evidenced. No merges or deployment.
