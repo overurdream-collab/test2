@@ -6,6 +6,7 @@ on:
       - scripts/document_reader_structured_pilot.py
       - scripts/document_reader_a1_bridge_pilot.py
       - scripts/document_reader_offline_ocr_benchmark.py
+      - scripts/document_reader_scanned_pdf_a1_e2e.py
       - docs/DG-001_DOCUMENT_READER_PILOT_AR.md
       - .github/workflows/document-reader-structured-isolated.yml
   workflow_dispatch:
@@ -105,4 +106,51 @@ jobs:
         with:
           name: reader-local-ocr-synthetic
           path: reader-ocr-results/
+          retention-days: 30
+
+  scanned-pdf-e2e-quality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated offline PDF and OCR runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng fonts-dejavu-core
+          python -m pip install 'Pillow>=11,<13' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
+      - name: Execute actual image-only PDF to OCR to A1 with strict quality assertions
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          python scripts/document_reader_scanned_pdf_a1_e2e.py --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py --out reader-scanned-e2e-results
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=Path("reader-scanned-e2e-results")
+          x=json.loads((o/"summary.json").read_text())["results"]
+          assert len(x)==3
+          assert [(r["exact"],r["tested"]) for r in x[:2]]==[(20,20),(20,20)]
+          assert [(r["arithmetic_findings"]) for r in x]==[0,2,None]
+          for case in ("valid","swapped","missing_price"):
+              r=json.loads((o/(case+"_human_review.json")).read_text())
+              assert r["financial_decision"]=="NOT_AUTHORIZED"
+              assert r["review_outcome"]=="HUMAN_REVIEW"
+              assert r["local_original_pdf_hash_verified"] is True
+              assert r["g2_original_verified"] is False
+              assert r["g2_rows_verified"] is False
+              assert len(r["reader"]["items"])==3
+              assert (o/(case+"_scanned.pdf")).exists()
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-scanned-pdf-e2e-evidence
+          path: reader-scanned-e2e-results/
           retention-days: 30
