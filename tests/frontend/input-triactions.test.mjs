@@ -9,7 +9,9 @@ test("eight canonical input sections exist and have a unified action toolbar", (
   for (const section of ["contracts","providers","beneficiaries","copays","categories","exclusions","approvals","tariffs"]) {
     assert.match(workspace, new RegExp('\\["' + section + '",'));
   }
-  assert.match(workspace, /fileArea\.append\(importAction, addAction, editAction\)/);
+  assert.match(workspace, /fileArea\.append\(importAction, addAction\)/);
+  assert.match(workspace, /if \(section !== "contracts" \|\| allowed\(ctx, "reference\.write"\)\)\s*fileArea\.append\(editAction\)/);
+  assert.doesNotMatch(workspace, /fileArea\.append\(importAction, addAction, editAction\)/);
   assert.match(workspace, /L\("تعديل", "Edit"\)/);
   assert.match(workspace, /L\("إضافة", "Add"\)/);
   assert.match(workspace, /L\("استيراد ملف \(رفع المصدر\)", "Import file \(source upload\)"\)/);
