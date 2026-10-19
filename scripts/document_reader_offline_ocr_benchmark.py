@@ -56,7 +56,7 @@ def main(dest):
             # Raw OCR line order and spacing can differ: report strictly normalized CER,
             # never pretend this is field-level accuracy.
             import re
-            normalize=lambda s:re.sub(r"\\s+","",s)
+            normalize=lambda s:"".join(s.split())
             truth=normalize("".join(lines)); pred=normalize(predicted)
             rows.append({"fixture":ident,"language":language,"variant":variant,
                          "ground_truth":lines,"prediction":predicted,
