@@ -1,0 +1,89 @@
+name: L1 Alembic isolated PostgreSQL 16 verification
+on:
+  push:
+    branches: [fix/mcias-l1-alembic-target-safety]
+  pull_request:
+    paths: ['alembic/env.py', 'tests/test_l1_alembic_target_red.py', '.github/workflows/l1-alembic-target-isolated.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-postgres16:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: python -m pip install -e '.[test]'
+      - name: Historical RED suite must now be GREEN (no database)
+        run: python -m pytest -q tests/test_l1_alembic_target_red.py
+      - name: Reject unsafe target before attempting any engine
+        run: |
+          python - <<'PY'
+          import ast, os
+          from pathlib import Path
+          t=ast.parse(Path('alembic/env.py').read_text())
+          f=next(n for n in t.body if isinstance(n,ast.FunctionDef) and n.name=='migration_database_url')
+          ns={'os':os}
+          class Settings:
+              database_url='postgresql+psycopg://synthetic:fake@127.0.0.1:5432/mcias_runtime'
+          ns['Settings']=Settings
+          exec(compile(ast.Module(body=[f],type_ignores=[]),'alembic/env.py','exec'),ns)
+          os.environ['MCIAS_MIGRATION_TARGET']='test'
+          os.environ['MCIAS_ENVIRONMENT']='test'
+          os.environ['MCIAS_DATABASE_URL']='postgresql+psycopg://synthetic:fake@127.0.0.1:5432/mcias_runtime'
+          os.environ['MCIAS_TEST_DATABASE_URL']='postgresql+psycopg://synthetic:fake@127.0.0.1:5432/mcias_ci'
+          try: ns['migration_database_url']()
+          except ValueError as exc:
+              assert str(exc).startswith('ALEMBIC_TARGET_')
+          else: raise AssertionError('unsafe target was accepted')
+          print('PASS: ambiguous configuration rejected without engine')
+          PY
+      - name: Create fresh isolated PostgreSQL 16 instance
+        shell: bash
+        run: |
+          set -euo pipefail
+          DB_PASSWORD="$(openssl rand -hex 24)"
+          echo "::add-mask::$DB_PASSWORD"
+          CID="$(docker run -d --rm --name "mcias-l1-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" --network bridge -p 127.0.0.1:55432:5432 -e POSTGRES_USER=mcias_ci -e POSTGRES_PASSWORD="$DB_PASSWORD" -e POSTGRES_DB=mcias_ci postgres:16)"
+          docker inspect --format '{{.Id}} {{.Config.Image}} {{.State.Running}} {{json .NetworkSettings.Ports}}' "$CID"
+          echo "L1_POSTGRES_CID=$CID" >> "$GITHUB_ENV"
+          echo "L1_POSTGRES_PASSWORD=$DB_PASSWORD" >> "$GITHUB_ENV"
+          for i in $(seq 1 40); do
+            if docker exec "$CID" pg_isready -U mcias_ci -d mcias_ci >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          docker exec "$CID" psql -U mcias_ci -d mcias_ci -v ON_ERROR_STOP=1 -c 'SELECT version();'
+      - name: Verify container identity and permit exact local endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(docker inspect -f '{{.State.Running}}' "$L1_POSTGRES_CID")" = true
+          test "$(docker inspect -f '{{.Config.Image}}' "$L1_POSTGRES_CID")" = postgres:16
+          test "$(docker inspect -f '{{(index (index .NetworkSettings.Ports "5432/tcp") 0).HostIp}}' "$L1_POSTGRES_CID")" = 127.0.0.1
+          test "$(docker inspect -f '{{(index (index .NetworkSettings.Ports "5432/tcp") 0).HostPort}}' "$L1_POSTGRES_CID")" = 55432
+          printf 'MCIAS_TEST_DATABASE_URL=postgresql+psycopg://mcias_ci:%s@127.0.0.1:55432/mcias_ci\n' "$L1_POSTGRES_PASSWORD" >> "$GITHUB_ENV"
+          echo 'MCIAS_ENVIRONMENT=test' >> "$GITHUB_ENV"
+          echo 'MCIAS_MIGRATION_TARGET=test' >> "$GITHUB_ENV"
+      - name: Verify authorized offline migration rendering
+        run: python -m alembic upgrade head --sql > /tmp/l1-offline.sql
+      - name: Run authorized online migrations on disposable DB
+        run: python -m alembic upgrade head
+      - name: Check isolated schema and target identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker exec "$L1_POSTGRES_CID" psql -U mcias_ci -d mcias_ci -v ON_ERROR_STOP=1 -tAc 'SELECT version_num FROM alembic_version'
+          docker exec "$L1_POSTGRES_CID" psql -U mcias_ci -d mcias_ci -v ON_ERROR_STOP=1 -tAc "SELECT to_regclass('public.audit_log') IS NOT NULL"
+      - name: Reference PostgreSQL and restore regression
+        run: python -m pytest -q tests/test_postgres_integration.py tests/test_g9_postgres.py tests/test_restore_drill.py
+      - name: Stop isolated instance
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${L1_POSTGRES_CID:-}" ]; then docker rm -f "$L1_POSTGRES_CID" || true; fi
