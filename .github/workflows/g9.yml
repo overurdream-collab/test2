@@ -77,6 +77,8 @@ jobs:
           --health-retries 10
     env:
       MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:ci_only_not_for_production@localhost:5432/mcias_ci
+      MCIAS_ENVIRONMENT: test
+      MCIAS_MIGRATION_TARGET: test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
