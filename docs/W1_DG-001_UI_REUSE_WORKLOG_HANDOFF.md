@@ -32,3 +32,21 @@ Implement a narrow, API-safe, main-native UI adapter. Start with route visibilit
 
 ## Decision
 W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
+
+## W1 implementation continuation (2026-10-20)
+- Source HEAD reverified: Windows 50ffd4bfd58661137cf079f99058159eb831e588; pilot started from f663cd5e7698b7d6b984ceacc8ba24c1e6ed9ee1.
+- Adapted Windows feature_navigation.js pure route matching/grouping to mcias/web_workspace/w1_navigation.js; uses main permissions, never Windows feature entitlements.
+- Modified main app.js minimally: filtered navigation/search, route matching and authorization presentation; server API remains authoritative.
+- Adapted institution.js overview hero/cards into views.js and kept existing main protected report-snapshot dashboard as source of all metrics. No Windows backend or synthetic operational figures.
+- Adapted institutionUsers visual pattern into read-only /admin/users cards with local search/status filter, main /api/v1/workspace/catalog/users API; no POST/PATCH/DELETE actions.
+- Added focused Node tests tests/w1_navigation.test.mjs.
+- IMPORTANT: W1 tests and browser tests are NOT YET EXECUTED. API tenant isolation and negative server authorization NOT VERIFIED in this pilot. UI adaptation is not accepted until tested.
+- Main /institution/users route does not exist; users UI remains on main /admin/users and is Super Admin-gated, not a newly invented institution users API.
+- No RBAC, signatures, migration, audit middleware, registry, AI or deployment changes.
+
+## HANDOFF next actions
+1. Run node --test tests/w1_navigation.test.mjs; fix failures.
+2. Run JS syntax/import checks and browser synthetic authenticated flows at desktop/mobile AR/EN, RTL/LTR, light/dark.
+3. Verify actual server-side 403 and tenant isolation against authorized main API with synthetic PostgreSQL; if unavailable mark unverified.
+4. Run relevant regression subset and check CI results on final SHA.
+5. Open Draft PR only after passing tested UI changes; do not merge or deploy.
