@@ -38,3 +38,13 @@ Phase 2 must add actual PostgreSQL failure injection at flush and commit (includ
 ## DG-001 handoff / rollback
 Before next action: verify exact latest SHA and all workflow conclusions for this branch; check git hash-object of audit_writer.py equals source blob; inspect diff against main to confirm narrow scope. Record actual PostgreSQL CI status; never report scheduled or skipped test as executed PASS.
 Rollback before merge: leave branch unmerged; no change to main or source PRs; branch can be closed only on separate approval. No production deployment or database migrations. Stop after Phase 1 independent review; require explicit Phase 2 authorization.
+
+## DG-001 — Phase 1 CI isolation correction, 2026-10-19
+- Baseline failing HEAD: 00692b8b9fa7af16897e8635e6349c98e2e937f9.
+- Baseline dedicated PostgreSQL 16 PASS: https://github.com/overurdream-collab/test2/actions/runs/39314047117 .
+- Baseline G1-G7 FAIL (Unit): https://github.com/overurdream-collab/test2/actions/runs/39314047743 . Four dedicated tests failed in fixture setup because general Unit does not set MCIAS_AUDIT_PHASE1_ALLOW.
+- Scope-limited fix: tests/test_shared_audit_writer_phase1_pg.py skips its four PG-only tests in general Unit when isolated authorization / URL is unavailable and MCIAS_AUDIT_PHASE1_REQUIRED is not YES. Assertions and test bodies remain intact. Dedicated CI now sets MCIAS_AUDIT_PHASE1_REQUIRED=YES so missing consent, missing URL, wrong target, or unavailable PostgreSQL is a hard failure, never SKIP.
+- CI isolation commits: b4f7470bf4c9d9a28f2585514d40f64bce3fe71e; 2d87dc5b8e4f826a14c0e1e02b128e0616829dd3.
+- A Unit SKIP is NOT a PostgreSQL PASS. Acceptance requires a completed successful dedicated PostgreSQL workflow on the final PR head SHA, plus completed successful G1-G7 including Unit. Check links and final SHA anew before supervisor signoff.
+- Source writer blob remains 509ce4124f012cc4a121294fe9122c9384902fd6; no changes to writer, models, Alembic, main, PR25, or PR28.
+- HANDOFF: verify final CI conclusions on current head; investigate any new failure without weakening assertions; do not merge or deploy; stop for independent Phase 1 acceptance.
