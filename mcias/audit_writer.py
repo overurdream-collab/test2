@@ -6,6 +6,7 @@ Never log secrets, patient fields, unbounded objects, or external free text.
 """
 from sqlalchemy.orm import Session
 from mcias.models import AuditLog, User
+from mcias.audit_contract import validate_event, clean_details
 
 _ALLOWED = {"version", "previous_version", "previous_id", "new_id",
             "effective_from", "effective_until", "reason_code",
@@ -13,16 +14,7 @@ _ALLOWED = {"version", "previous_version", "previous_id", "new_id",
 _MAX = 150
 
 def _safe_details(details):
-    if not isinstance(details, dict):
-        return {}
-    clean = {}
-    for key, value in details.items():
-        if key not in _ALLOWED:
-            continue
-        if not isinstance(value, (str, int, bool)) or len(str(value)) > _MAX:
-            continue
-        clean[key] = value
-    return clean
+    return clean_details(details)
 
 def write_event(db: Session, *, actor: User, organization_id: str,
                 action: str, resource_type: str, resource_id: str | None,
@@ -30,10 +22,7 @@ def write_event(db: Session, *, actor: User, organization_id: str,
     """Stage one immutable event in the *current* business transaction."""
     if not actor.active or not actor.organization_id or actor.organization_id != organization_id:
         raise ValueError("audit actor/organization mismatch")
-    if outcome not in {"success", "denied", "error"}:
-        raise ValueError("invalid audit outcome")
-    if not action or len(action) > 120 or not resource_type or len(resource_type) > 90:
-        raise ValueError("invalid audit event")
+    validate_event(action, resource_type, resource_id, outcome)
     record = AuditLog(actor_id=actor.id, action=action, resource_type=resource_type,
                       resource_id=resource_id,
                       details={"organization_id": organization_id, "outcome": outcome,
