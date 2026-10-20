@@ -12,7 +12,7 @@ def assert_status(fn,status):
     raise AssertionError(f'expected HTTP {status}')
 
 def run(a1,out):
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import sync_playwright, expect
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     port=18767
     with tempfile.TemporaryDirectory(prefix='mcias-human-isolated-') as root:
@@ -68,11 +68,11 @@ def run(a1,out):
                     if page.locator('#pageImage').evaluate('(e)=>e.naturalWidth')>0:break
                     time.sleep(.15)
                 else:raise AssertionError('PDF raster image never loaded in Chromium')
-                assert page.locator('.anchor').count()==18
+                expect(page.locator('.anchor')).to_have_count(18)
                 assert '1 / 2' in page.locator('#pageNumber').inner_text()
-                page.locator('#next').click();assert '2 / 2' in page.locator('#pageNumber').inner_text()
-                assert page.locator('.anchor').count()==0
-                page.locator('#prev').click()
+                page.locator('#next').click();expect(page.locator('#pageNumber')).to_contain_text('2 / 2')
+                expect(page.locator('.anchor')).to_have_count(0)
+                page.locator('#prev').click();expect(page.locator('#pageNumber')).to_contain_text('1 / 2')
                 page.locator('#evidenceList button').first.click()
                 assert page.locator('#cellId').inner_text()
                 assert page.locator('#crop').evaluate('(c)=>c.width')==600
