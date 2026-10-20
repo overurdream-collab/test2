@@ -34,3 +34,10 @@ jobs:
         run: |
           test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
           PYTHONPATH=.:scripts python scripts/g2_trust_pilot.py --out reader-g2-results --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-g2-synthetic-source-replay
+          path: reader-g2-results/
+          retention-days: 30
