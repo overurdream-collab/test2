@@ -83,3 +83,9 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 - Existing role-matrix fixture grants reports.read only to synthetic Super Admin and Admin to satisfy institution dashboard access. No production role or server permission changes.
 - Test code SHA d0acb615de1798f14114697c3c24c1c02b7f1668; focused rerun #39404129037 was in progress at documentation time. A completed PASS is mandatory before Draft PR; do not interpret this handoff as acceptance.
 - The Admin-specific /institution/users route remains absent; the current experiment does not implement it.
+
+## W1 final role-matrix selector correction — 2026-10-20
+- HEAD verified at 0c46f531df25b131ec7c4aa422ed630a664442a9 before change; the saved f['organization_id'] fix and AES-256 fixture keys were already present and were not repeated.
+- Run #39405315426 failed at scripts/check_workspace_live.py:114, Playwright Locator.select_option timeout: #w1-users-status does not exist because ui.js field() generates random DOM IDs and retains name="w1-users-status".
+- Changed only the two selectors in the existing live test to select[name="w1-users-status"]; commit 0b80a4513bc39c034f3299e14073db8dfc9eed11. No UI/backend/security-contract changes.
+- Isolated PostgreSQL 16/FastAPI/Chromium rerun #39480364000 triggered at that commit; final matrix and screenshot artifacts require a completed successful run. Draft PR remains gated on those results.
