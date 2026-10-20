@@ -298,3 +298,8 @@
 
 ### C34 replay assertion precision correction — 2026-10-20
 - First actual C34 [run 39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) FAILED **before inference**: R4 replay asserted an extra `tariff_identity_incomplete` not emitted by the original validator; 7 other tests passed. Correct only this over-specified expected error, retain three required actual errors. New exact SHA CI PENDING; no C34 TP/FP/FN yet.
+
+### C34 measured closure — 2026-10-20
+- PR23 C34 experimental prompt **REJECTED for quality**, NOT rolled into production: exact tested source SHA `16cc288e8c71eeb5731f36fe39a16e617e6f3483`, real Qwen C34 matrix [39481874549](https://github.com/overurdream-collab/test2/actions/runs/39481874549) executed PASS but frozen C33 TP1 FP0 FN5 recall16.67% elapsed819.8s vs same-SHA default C33 [39481874804](https://github.com/overurdream-collab/test2/actions/runs/39481874804) TP2 FP0 FN4 recall33.33% elapsed410.2s. R1 preserved; R2 regressed; R3/R4/R5/R6 unrecovered; separate holdout TP2 FP0 FN4 recall33.33%, 829.1s. Negative FP0; Validator/source/Gold unchanged. No financial acceptance, no merge/deploy.
+- Reference exact-source SHA: DG, G1–G9, Enterprise, LMFE, Decimal, Qwen C33 and C34 execution all complete/success. Earlier R4 pre-inference test failure preserved and repaired, not silently deleted.
+- Next: stop C34 candidate adoption. Technical reviewer may design a NEW independently scoped test for row-literal model quote reliability without changing source validator or source truth. This documentation-only closure creates a new head; its own DG CI must be verified separately from metrics source SHA.

@@ -30,3 +30,41 @@ Initial source commit `b1ecee68bcb240cd72e685c3565c7a21b534279c` used push-only 
 
 ### C34 first attempted run — TEST EXPECTATION FAILURE
 - Source `f18cd41062ac805eabe5e9cabae04e826c0feec8`, [C34 matrix run 39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110): both jobs **FAIL before model generation** at added frozen-output test; 1 failed / 7 passed in each. Test incorrectly demanded `tariff_identity_incomplete` for R4, but unchanged validator correctly returned precisely `invalid_service`, `invalid_logical_key`, `numeric_not_in_source` since its malformed key equals malformed `provider:service`. This is not a model-quality result. Retain all three independent rejection assertions. Repair expected codes only; do not change validator/source/Gold or remove test. Real C34 results still PENDING_CI.
+
+## C34 — FINAL MEASURED FINDING (2026-10-20): REJECT CANDIDATE
+**Exact source-code SHA:** `16cc288e8c71eeb5731f36fe39a16e617e6f3483`. The workflow itself succeeded as **execution**, but the C34 experimental prompt **FAILED quality**. No claim of recall improvement, no release, no activation; the benchmark-only switch remains OFF by default in the production caller.
+
+| Run / dataset | TP | FP | FN | Recall | Total elapsed |
+|---|---:|---:|---:|---:|---:|
+| Historical C33 [39142051824](https://github.com/overurdream-collab/test2/actions/runs/39142051824) | 2 | 0 | 4 | 33.33% | 683.0s |
+| Same-SHA C33 unchanged prompt [39481874804](https://github.com/overurdream-collab/test2/actions/runs/39481874804) | 2 | 0 | 4 | 33.33% | 410.2s |
+| C34 opt-in prompt on **unchanged C33 corpus** [39481874549](https://github.com/overurdream-collab/test2/actions/runs/39481874549) | **1** | **0** | **5** | **16.67%** | **819.8s** |
+| C34 opt-in prompt on **separate C34 holdout** [39481874549](https://github.com/overurdream-collab/test2/actions/runs/39481874549) | **2** | **0** | **4** | **33.33%** | **829.1s** |
+
+The frozen-C33 candidate **lost 1 true positive (R2)**; recall fell by 16.67 percentage points, no FP increase. Same-SHA wall-clock took ~409.6s longer, but shared CI runner variance/model caching prevents a controlled performance attribution. Holdout has different data/gold, so its 33.33% is **not** a before/after recall improvement. Both C34 matrix jobs PASS their execution and negative gates; do **NOT** interpret green Actions as a quality pass.
+
+### Actual C34 generated candidates and independent rejection reasons (not guessed)
+Frozen original C33:
+- R1 Arabic: **TP**, valid `R1:CONSULT 3450`, no validation errors.
+- R2 English: **FN**, generated key `r2-xray`, reject `tariff_identity_incomplete`; legitimate source amount 910.00 is not enough to override unsupported key.
+- R3 provider: **FN**, generated price `4100` but empty currency, errors `invalid_currency`, `tariff_identity_incomplete`.
+- R4 provider: **FN**, `service_code="XRAY 8200"`, empty currency, unsupported `amount="500"`; `invalid_currency`, `invalid_service`, `numeric_not_in_source`, `tariff_identity_incomplete`.
+- R5 Excel: **FN**, quote `12000 YER` is not a literal single cell; `quote_not_in_source`.
+- R6 Excel: **FN**, fabricated amount `950.00` against source `650.00` and quote `650.00 YER` not one cell; `numeric_not_in_source`, `quote_not_in_source`, `tariff_identity_incomplete`.
+- Negative transfer: no accepted tariff; `missing_effective_from`, `tariff_identity_incomplete`.
+
+Separate holdout (independently authored synthetic six-positive/one-negative):
+- Arabic T1 LAB 2750 and second provider T4 CONSULT 9300 **TP2**.
+- English T2 MRI 730 key `t2-mri` rejected: `tariff_identity_incomplete`.
+- T3 XRAY 4600 malformed code rejected: `invalid_logical_key`, `invalid_service`.
+- Sheet T5 `15250 YER` rejected `quote_not_in_source`; Sheet T6 `890.00 YER` rejected `quote_not_in_source`, `tariff_identity_incomplete`.
+- Negative transfer quarantined: `invalid_service`, `missing_effective_from`, `tariff_identity_incomplete`; **FP0**.
+
+### CI and earlier failure preservation
+- Actual C34 [39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) **FAILED before model inference**: original replay test asserted an extra R4 error; corrected without touching validation; keep failure in history.
+- Final [C34 39481874549](https://github.com/overurdream-collab/test2/actions/runs/39481874549): two jobs execution PASS, deterministic replay PASS and actual model outputs as above, **QUALITY REJECTED**.
+- Original C33 [39481874804](https://github.com/overurdream-collab/test2/actions/runs/39481874804) execution PASS; independent original [39481874799](https://github.com/overurdream-collab/test2/actions/runs/39481874799) execution PASS; source-specific [39481874731](https://github.com/overurdream-collab/test2/actions/runs/39481874731) execution PASS.
+- Required [DG-001 39481875094](https://github.com/overurdream-collab/test2/actions/runs/39481875094), [G1–G7 39481875224](https://github.com/overurdream-collab/test2/actions/runs/39481875224), [G8 39481874607](https://github.com/overurdream-collab/test2/actions/runs/39481874607), [G9 39481874512](https://github.com/overurdream-collab/test2/actions/runs/39481874512), [Enterprise 39481874567](https://github.com/overurdream-collab/test2/actions/runs/39481874567), [LMFE 39481875065](https://github.com/overurdream-collab/test2/actions/runs/39481875065), [Decimal 39481874730](https://github.com/overurdream-collab/test2/actions/runs/39481874730) all execution PASS on source-code SHA `16cc288e8c71eeb5731f36fe39a16e617e6f3483`.
+
+### Decision and next controlled experiment
+**REJECT C34 prompt as a quality improvement; do not enable it for applications**. Existing `infer_local` default prompt is byte-for-byte unchanged and C33 successes remain preserved in the default path. Do not use bench opt-in flag to import or approve a tariff. Separate next proposal requires supervised research into model's structured quote/field reliability and explicit source-evidence fidelity, with unchanged strict validator and independent corpus; no autopatching or Gold changes in C34. The small synthetic metrics do not establish real insurance contract clause extraction.
