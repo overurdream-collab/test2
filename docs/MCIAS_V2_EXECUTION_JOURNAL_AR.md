@@ -607,3 +607,14 @@
 - Risks: The reference commit is on another branch and PR23 does not yet include the reference file; event names are proposals, super-admin enforcement and immutable review history not implemented here. Existing tariff benchmark can be misinterpreted as contract prices without clear separation.
 - Next: Verify DG-001 and CI on exact SHA, evaluate C33 Qwen run independently, coordinate eventual shared services architecture; do not start new agent scope.
 - Handoff: Draft PR23 remains unmerged, no publish or financial activation, no production patient files.
+
+
+### HANDOFF-20261020-DG001-ATOMIC — commit-atomic documentation governance repair
+- Scope: PR23 documentation-only rewrite of the prior one non-compliant HANDOFF commit into an atomic three-document commit; inspected source baseline 39a4a9b93e9eb04ea7c09c8c155c3e08f38c6ec0, no code/test/migration/engine changes.
+- Why: DG-001 requires CURRENT_STATE and EXECUTION_JOURNAL and HANDOFF to be modified together in each substantive commit; preserve original historical C33 failure evidence and label model quality correctly.
+- Files: docs/CONTRACT_INTELLIGENCE_HANDOFF_AR.md; docs/MCIAS_V2_CURRENT_STATE_AR.md; docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md.
+- Tests: original source-SHA exact completed G1-G7 #39142051829 PASS, G8 #39142051813 PASS, G9 #39142051863 PASS, Enterprise #39142051799 PASS, DG #39142051833 PASS, LMFE #39142051800 PASS, scoring #39142051864 PASS, real Qwen #39142051770 PASS execution TP3 FP0 FN0, independent #39142051801 PASS execution TP2 FP0 FN4 recall33.33%, C33 #39142051824 PASS execution TP2 FP0 FN4 recall33.33%; commit-local DG-001 check PENDING new-head CI.
+- Result: Atomic DG-001 documentation repair prepared on the exact protected parent; independent/C33 recall remains LOW and blocker persists. No production or institutional acceptance.
+- Risks: historical source model metrics are not the new documentation SHA; limited synthetic gold and no independent Arabic/English clinical contract corpus, provider/service effective-date authority, original G2 medical attestation, production RBAC, Shared Audit, G6/G7 signoff or valid integrated Alembic lineage.
+- Next: match mandatory Actions results to rewritten exact new HEAD and leave model quality blockers OPEN; do not re-run expensive old tests unless CI requires it; no merge, deploy or migration.
+- Handoff: original overwritten-documentation HEAD 6fc2bb6b7ac00be7c7c4610ad7196ff4e9e94955 backed up under backup/dg001-pr23-pre-atomic-20261020; original safe parent 39a4a9b93e9eb04ea7c09c8c155c3e08f38c6ec0 preserved; use a supervised force-with-lease rollback if necessary; read-only Alembic divergence report on PR25 documents incompatible 0019/0020 ancestries.
