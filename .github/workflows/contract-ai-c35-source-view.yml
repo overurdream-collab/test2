@@ -1,0 +1,23 @@
+name: Contract AI C35 source-view deterministic
+on:
+  pull_request:
+    branches: [feat/temporal-reference-inputs-and-four-outcomes]
+    paths:
+      - 'mcias/contract_source_view.py'
+      - 'tests/test_contract_source_view.py'
+      - '.github/workflows/contract-ai-c35-source-view.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deterministic-source-view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install "pytest==8.4.2"
+      - name: C35 deterministic tests and unchanged C33 source checks
+        run: PYTHONPATH=. python -m pytest -q tests/test_contract_source_view.py tests/test_contract_tariff_segments.py tests/test_contract_independent_synthetic.py

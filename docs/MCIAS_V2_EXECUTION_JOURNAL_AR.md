@@ -658,3 +658,10 @@
 - Risks: Tiny synthetic corpus and forced-nonempty diagnostic, unsupported currencies/codes/quotes, model/runtime variance; LLM outputs unsafe as tariff authority, no clinical benchmark/UAT. Do not weaken independent source validation, Gold or the original 20+ adversarial tests.
 - Next: PR23 owner reviews FINAL source-linked report and seeks separately approved narrower source-grounded model/row-format experiment only if appropriate; do not merge/deploy or activate G3/G5 financial tariffs.
 - Handoff: Resume from new PR23 HEAD without reset. C34 final source/test SHA `16cc288e8c71eeb5731f36fe39a16e617e6f3483`; doc-only closure SHA must be checked for DG-001; old failing C34 run [39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) preserved. NO MERGE, NO DEPLOY, NO FINANCIAL AUTHORITY.
+
+### HANDOFF-20261020-038 — C35 Phase 1 deterministic implementation
+- Base `eb48880abf0cf6e0ec227c1981a39a87bd1d3d8a`, PR #23; single atomic DG-001 commit containing implementation, tests, workflow, C35 report, CURRENT_STATE and EXECUTION_JOURNAL.
+- Files: `mcias/contract_source_view.py` (read-only view), `tests/test_contract_source_view.py` (literal source, R1–R6, provider/Excel boundaries, bad references, no Validator mutation), `.github/workflows/contract-ai-c35-source-view.yml` (only deterministic tests), `docs/CONTRACT_INTELLIGENCE_C35_PHASE1_AR.md` (handoff), two DG-001 files.
+- Result: IMPLEMENTED / PENDING_CI at commit authoring. No Qwen/model or old C33/C34 reruns requested. Original model workflow might run automatically on PR push; do not represent it as agent-requested testing.
+- Risks: G2 discards empty/whitespace fields; no A1 coordinates if absent in G2; original source SHA supplied by caller and not recomputed from blocks; SHA IDs identify literal G2 block addresses, not validated business semantics. Fail closed on duplicate address.
+- Next: verify C35 dedicated exact-SHA job and related reference tests; document run IDs and results. No phase 2, merge or deployment.
