@@ -31,3 +31,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: G2 has no verified sheet-name/physical-row ledger; G4 stages all extracted rows; PR #25 unmerged; no E2E integration or trusted source approval.
 - Next: AI CTO/owners review source manifest, row ledger, G4 filtering, event schema and Pillow remediation before any shared change.
 - Handoff: Read `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md` and PR #31; remain draft, no merge/deploy/automatic financial decisions.
+
+### HANDOFF-20261021-004 — CAI-01 Output Contract Review Closure
+- Scope: Append clarifications to existing output contract; beneficiary-not-found versus proved ineligibility, financial approval independence, integration ownership and unresolved policy sources.
+- Why: Approved documentation-only independent review closure; avoid false deterministic rejection and ownership conflicts.
+- Files: `docs/MCIAS_CLAIMS_AUDIT_OUTPUT_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN; documentation-only. Existing tests not repeated. Previous verified CI unit PASS, postgres PASS, dependency-audit FAIL (Pillow 12.3.0, eight CVEs); new commit CI not yet assessed.
+- Result: DOCUMENTATION_REFINED; independent review PENDING; no new implementation.
+- Risks: No approved institutional death source or final rejection rules; G3/G4/G5/G6/G7/G8, PR #25 and #29 shared contracts unapproved; dependency audit remains a separate open blocker.
+- Next: AI CTO and independent owners review section 10 of output contract and approve integration ownership/contracts before implementation.
+- Handoff: Continue from newest PR #31 HEAD, no reset; preserve existing Phase 2 design; no merge/deploy or automatic financial action.

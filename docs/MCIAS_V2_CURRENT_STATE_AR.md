@@ -21,3 +21,9 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Verified PR #31 baseline 28a51ba: unit PASS; PostgreSQL PASS; dependency-audit FAIL, Pillow 12.3.0 eight CVEs (pip-audit fix 13.0.0). No shared dependency modifications.
 - G2 sheet-name/physical-row coverage, G4 approved-sheet filtering and shared audit approvals remain unimplemented; G4/G5 E2E not run.
 - Next: independent AI CTO review before any shared integration; PR #31 draft/unmerged.
+
+## 2026-10-21 — CAI-01 output contract review refinement
+- Appended section 10 to existing `docs/MCIAS_CLAIMS_AUDIT_OUTPUT_CONTRACT_AR.md`; prior requirements preserved.
+- Negative beneficiary lookup is not proof of ineligibility; audit classification and financial approval remain independent; G3–G8/PR #25/PR #29 ownership matrix recorded.
+- Institutional death source and final rejection rules NOT APPROVED; dependency audit Pillow blocker remains separate.
+- Documentation-only; no test reruns or shared runtime changes; independent review pending.
