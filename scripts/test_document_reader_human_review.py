@@ -64,7 +64,10 @@ def run(a1,out):
                 page.locator('#password').fill('demo-reviewer-a-2026')
                 page.locator('#login').click()
                 page.locator('#evidenceList button').first.wait_for(timeout=20000)
-                page.wait_for_function("document.querySelector('#pageImage').naturalWidth>0",timeout=20000)
+                for _ in range(80):
+                    if page.locator('#pageImage').evaluate('(e)=>e.naturalWidth')>0:break
+                    time.sleep(.15)
+                else:raise AssertionError('PDF raster image never loaded in Chromium')
                 assert page.locator('.anchor').count()==18
                 assert '1 / 2' in page.locator('#pageNumber').inner_text()
                 page.locator('#next').click();assert '2 / 2' in page.locator('#pageNumber').inner_text()
