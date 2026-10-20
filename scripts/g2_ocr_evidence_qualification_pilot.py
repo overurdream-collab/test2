@@ -210,3 +210,52 @@ def run(outdir,a1_file):
                     try:examine(db,store,org.id,doc.id,"0"*64,gold,private)
                     except ValueError:negative["SOURCE_SHA_CHANGED"]="DENIED"
                     else:raise AssertionError("invalid source hash accepted")
+
+                    from cryptography.exceptions import InvalidTag
+                    sealed=store.root/src.storage_key
+                    pristine=sealed.read_bytes()
+                    damaged=bytearray(pristine);damaged[-1]^=1
+                    try:
+                        sealed.write_bytes(damaged)
+                        try:examine(db,store,org.id,doc.id,doc.sha256,gold,private)
+                        except InvalidTag:negative["ORIGINAL_ENCRYPTED_BYTES_TAMPERED"]="DENIED"
+                        else:raise AssertionError("tampered encrypted original was accepted")
+                    finally:
+                        sealed.write_bytes(pristine)
+                    restored=examine(db,store,org.id,doc.id,doc.sha256,gold,private)
+                    assert restored["safe_for_advisory_preview"] is True
+            assert len(reports)==3
+            assert all(db.get(IngestionDocument,r["document_id"]).status=="review_required" for r in reports)
+            assert all(not db.scalars(select(ExtractedSourceRecord).where(
+                ExtractedSourceRecord.job_id==source_job_id(db,org.id,r["document_id"]))).all()
+                for r in reports)
+    engine.dispose()
+    by={r["case"]:r for r in reports}
+    for case,n in (("english_columnar",0),("english_reordered",2)):
+        r=by[case]
+        assert r["candidate_count"]==18
+        assert r["independent_synthetic_gold_fields"]==18
+        assert r["independent_synthetic_gold_regions"]==18
+        assert r["a1_pure_advisory_ran"] and r["a1_arithmetic"]==n
+    assert by["arabic_rtl"]["a1_pure_advisory_ran"] is False
+    assert len(negative)==7,negative
+    summary={"status":"SYNTHETIC_OCR_EVIDENCE_CANDIDATES_QUALIFIED_FOR_REVIEW_ONLY",
+             "case_count":3,"candidate_count":sum(r["candidate_count"] for r in reports),
+             "negative_cases":negative,"results":reports,
+             "records_status":"UNVERIFIED_OCR_CANDIDATE",
+             "native_g2_extracted_records_created":0,
+             "a1_trusted_contract_authority":False,
+             "a1_trusted_source_verifications":[],
+             "no_production_schema_or_source_modification":True,
+             "integration_decision":"NO_INTEGRATION",
+             "limitations":"Independent synthetic gold plus repeated Tesseract from reopened G2 pixels is NOT independently authenticated medical evidence; G2 scanner quarantine remains and A1 trusted PDF input is not supported."}
+    (out/"qualification_summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+    print(json.dumps({"status":summary["status"],"candidate_count":summary["candidate_count"],
+                      "negative_count":len(negative),"cases":len(reports)}))
+
+if __name__=="__main__":
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--out",required=True)
+    parser.add_argument("--a1",required=True)
+    args=parser.parse_args()
+    run(args.out,args.a1)
