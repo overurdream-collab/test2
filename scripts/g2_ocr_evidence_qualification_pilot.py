@@ -57,3 +57,61 @@ def create_candidates(db,doc,job,parsed):
             count+=1
     db.flush()
     return count
+
+def examine(db,store,org_id,doc_id,sha,gold,tmpdir):
+    """Reopen G2 original for every check. This is synthetic qualification only."""
+    pdf,doc,source=reopen(db,store,doc_id,org_id,sha)
+    assert hashlib.sha256(pdf).hexdigest()==doc.sha256
+    rows=all_candidates(db,org_id,doc.id)
+    findings=[]
+    if len(rows)!=len(gold["rows"])*len(FIELDS):
+        findings.append("MISSING_OR_EXTRA_CANDIDATE")
+    # Re-extract evidence from pixels of independently reopened encrypted source.
+    transient=Path(tmpdir)/"verification-source.pdf"
+    transient.write_bytes(pdf)
+    tokens,elapsed=read_pixels_and_words(transient,sha,STYLES[gold["case"]]["lang"])
+    parsed=parse_dynamic(tokens,doc.id,sha,STYLES[gold["case"]]["lang"])
+    measured=score(gold,parsed)
+    original_rows={x["id"]["value"]:x for x in parsed["rows"] if x.get("id")}
+    ground_rows={x["id"]:x for x in gold["rows"]}
+    original_boxes={x["id"]:box for x,box in zip(gold["rows"],gold["cell_boxes"])}
+    seen=set()
+    for candidate in rows:
+        key=(candidate.row_id,candidate.field_name)
+        if key in seen:findings.append("DUPLICATE_CANDIDATE")
+        seen.add(key)
+        if candidate.status!="UNVERIFIED_OCR_CANDIDATE":
+            findings.append("CANDIDATE_STATUS_ESCALATION")
+        if candidate.job_id!=source_job_id(db,org_id,doc_id):
+            findings.append("JOB_REFERENCE_MISMATCH")
+        if candidate.source_sha256!=doc.sha256 or candidate.page!=1:
+            findings.append("SOURCE_SHA_OR_PAGE_MISMATCH")
+        original=original_rows.get(candidate.row_id,{}).get(candidate.field_name)
+        declared=ground_rows.get(candidate.row_id,{}).get(candidate.field_name)
+        if original is None or candidate.observed_value!=declared or candidate.observed_value!=original["value"]:
+            findings.append("ROW_VALUE_NOT_IN_SOURCE")
+            continue
+        if candidate.observed_value!=words_text(candidate.ocr_words):
+            findings.append("CANDIDATE_NOT_EQUAL_TO_OCR_WORDS")
+        if candidate.bbox!=original["bbox_pixels"] or candidate.ocr_words!=original["ocr_word_evidence"]:
+            findings.append("LOCATOR_OR_WORD_EVIDENCE_CHANGED")
+        authored=original_boxes[candidate.row_id][candidate.field_name]
+        x0,y0,x1,y1=authored
+        a,v,c,d=candidate.bbox
+        if not (x0-12<=a<=c<=x1+15 and y0-20<=v<=d<=y1+18):
+            findings.append("WRONG_ORIGINAL_CELL_REGION")
+    if measured["exact_values"]!=18 or measured["correct_cell_locations"]!=18:
+        findings.append("INDEPENDENT_SYNTHETIC_GOLD_MISMATCH")
+    if parsed["issues"]:findings.extend(parsed["issues"])
+    return {"issues":sorted(set(findings)),"candidate_count":len(rows),
+            "score":{"fields":measured["exact_values"],"locations":measured["correct_cell_locations"]},
+            "safe_for_advisory_preview":not findings,
+            "trust":"SYNTHETIC_EVIDENCE_CHECK_ONLY_NOT_A1_SOURCE_VERIFICATION",
+            "a1_trusted_source_authorized":False,"ocr_seconds":elapsed}
+
+def source_job_id(db,organization_id,document_id):
+    jobs=db.scalars(select(IngestionJob).where(
+        IngestionJob.document_id==document_id,
+        IngestionJob.organization_id==organization_id)).all()
+    if len(jobs)!=1:raise ValueError("ambiguous source job")
+    return jobs[0].id
