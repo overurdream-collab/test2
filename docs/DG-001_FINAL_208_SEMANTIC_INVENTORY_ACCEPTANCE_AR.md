@@ -43,3 +43,16 @@ Artifacts:
 Existing broader traces at docs/DG-001_PHASE_2B_FINAL_CONSUMER_SEMANTIC_HANDOFF_AR.md and call_path_evidence.md.
 No application code changes, no model/Alembic changes, no PostgreSQL connection for this targeted analysis. GitHub Actions may trigger from documentation/source evidence commits; passing CI does not grant production acceptance.
 **Handoff:** Independent supervisor verifies 1170 row IDs, final matrix statuses, exact source SHA/line anchors, and checks limitations. Operational defects remain backlog and require independent Phase3 scoped authorization. NO MERGE / DEPLOY / MIGRATION.
+
+
+## DG-001 HANDOFF — Shared Audit writer ownership & CAI-01 compatibility review (2026-10-21)
+
+**Scope:** READ-ONLY COMPARISON & MINIMAL COMPATIBILITY PROPOSAL ONLY. No service, tests, schema, Alembic, PR25, PR31, main, or L1 code edits. The technical proposal is recorded in [DG-001_SHARED_AUDIT_WRITER_OWNERSHIP_COMPATIBILITY_REVIEW_AR.md](DG-001_SHARED_AUDIT_WRITER_OWNERSHIP_COMPATIBILITY_REVIEW_AR.md) (documentation commit `6d95a052a0d7a697143dbbf88e2375e04d969502`).
+
+**Verified HEAD at review start:** PR25 `8a616f7f68f506df08deccd62a9faa7d7ec89272`, PR29 `fd1bb1d22f1957f40688baa207cdf449b0690cd9`, PR31 `f9f4038bacbd09e92df4a67aff1c0a633e409dfa`; recheck before any future action.
+
+**Key findings:** PR25 and PR29 writer function signatures and transaction semantics match; only PR29 adds `audit_contract.py` validation and typed details, silently dropping `contract_number`. PR31 has no writer file, its G5 service writes `AuditLog` directly, and actual CAI01 source/rule/reference/evidence/HUMAN_REVIEW linkage is not demonstrated. PR25 other services still write direct AuditLog, 409 is logged as denied, and independently registered PR25 403 may conflict with PR28/L2 owner when composed.
+
+**Ownership recommendation:** PR29 Shared Audit owner exclusively handles shared writer/contract and approved correlation representation; PR25 owner keeps G3 contract APIs/services, event mapping and browser+PG16 acceptance tests, not shared writer edits; CAI-01 owner coordinates synthetic claim/rule/reference/evidence producer contracts. Require written AI CTO and owner approvals before any source change. Proposed isolated PG16 test plan in linked report is NOT executed.
+
+**Outstanding approvals:** AW-C01 file ownership; AW-C02 typed mandatory correlation or durable linked evidence; AW-C04 unified 403 and separate 409 ownership; AW-C05 true composed PG16 synthetic test; AW-C07 later L1-gated request-id/UNKNOWN database work. No merger/deployment, automatic financial decision or exactly-once claim.
