@@ -1,6 +1,6 @@
 # DG-001 — W1 Windows UI reuse pilot — 2026-10-20
 
-Status: ISOLATED / PARTIAL / NOT ACCEPTED. No production deployment or merge.
+Status: ISOLATED / FINAL W1 TEST GATES PASS / DRAFT INDEPENDENT REVIEW PENDING. No production deployment or merge.
 
 ## Source and baseline
 - main: b69defa2f621458ef44d790b510840307a81009a
@@ -89,3 +89,38 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 - Run #39405315426 failed at scripts/check_workspace_live.py:114, Playwright Locator.select_option timeout: #w1-users-status does not exist because ui.js field() generates random DOM IDs and retains name="w1-users-status".
 - Changed only the two selectors in the existing live test to select[name="w1-users-status"]; commit 0b80a4513bc39c034f3299e14073db8dfc9eed11. No UI/backend/security-contract changes.
 - Isolated PostgreSQL 16/FastAPI/Chromium rerun #39480364000 triggered at that commit; final matrix and screenshot artifacts require a completed successful run. Draft PR remains gated on those results.
+
+## DG-001 — W1 final verified result (2026-10-20)
+
+**Scope:** W1 isolated Windows UI reuse pilot; synthetic-only, read-only management interface. This section supersedes historical pending/not-run statements above as to the **current test status only**. It is **not** production approval, permission to merge, or authorization to deploy.
+
+- **Functional code/test SHA:** `0b80a4513bc39c034f3299e14073db8dfc9eed11`.
+- **Completed required browser/security workflow:** [W1 Chromium + PostgreSQL 16, Run #39480364000](https://github.com/overurdream-collab/test2/actions/runs/39480364000): **SUCCESS**, same functional SHA.
+- **Node/UI workflow:** [Run #39480363982](https://github.com/overurdream-collab/test2/actions/runs/39480363982): **SUCCESS**, same functional SHA.
+- **Server authorization and tenant isolation:** `tests/test_enterprise_workspace.py` **72 passed, 1 warning** (Starlette/httpx deprecation only), no mandatory test SKIPs.
+- **Real Chromium/FastAPI/PostgreSQL 16 flow:** `scripts/check_workspace_browser.py` and `scripts/check_workspace_live.py` completed successfully. Historical mock-based browser coverage is supplementary, not substituted for the real-session role matrix.
+- **MFA:** real synthetic Super Admin login with TOTP/encrypted MFA fixture passed. The two synthetic 32-byte test keys passed the dedicated preflight length validation; no application cryptography change.
+- **Evidence artifact:** [Run #39480364000 — w1-chromium-postgres-evidence (artifact #12290428522)](https://github.com/overurdream-collab/test2/actions/runs/39480364000/artifacts/12290428522), 15 archived files according to the successful upload log; contains `.e2e-output/w1-role-matrix.json`, per-role screenshots `w1-super_admin-users.png`, `w1-admin-users.png`, `w1-user-users.png`, plus browser/real-session result outputs. Artifact SHA256 digest: `0825c97e351090272ee78cb2be46457d9b2ecffa9d0e012f294220af71562604`.
+- **Security assertions skipped:** `0` as reported by the completed role-matrix script.
+
+### Actual synthetic role matrix — PASS/FAIL
+
+| Verified requirement | Super Admin | Admin | User |
+| --- | --- | --- | --- |
+| Real authenticated session through FastAPI | PASS | PASS | PASS |
+| MFA on Super Admin session | PASS (TOTP) | Not applicable | Not applicable |
+| Dashboard and navigation AR/EN, RTL/LTR, desktop/mobile | PASS | PASS | PASS |
+| `/admin/users` UI authorization | PASS (read-only cards, no edit/delete buttons) | PASS (access denied) | PASS (access denied) |
+| `GET /api/v1/workspace/catalog/users` | PASS (HTTP 200, scoped fields) | PASS (HTTP 403) | PASS (HTTP 403) |
+| `GET /api/v1/workspace/users/{foreign_user_id}` | PASS (HTTP 404) | PASS (HTTP 403) | PASS (HTTP 403) |
+| Tenant isolation | PASS | PASS | PASS |
+| Current active/inactive filter bound to API boolean `active` | PASS | Not authorized | Not authorized |
+
+All values above are corroborated by the successful workflow execution and its printed role matrix. Super Admin is the only sensitive administrative authorizer in current W1. The non-existent `/institution/users` route remains out of scope.
+
+### HANDOFF — independent review / stop point
+
+1. **Acceptance gate for an isolated Draft PR:** all required W1 CI checks **PASS**, no security skips, JSON/screenshot evidence retained in the linked workflow artifact. Open a **Draft PR only** for independent review.
+2. **Independent reviewer focus:** server-side 403 enforcement independently of hidden navigation; Super Admin read-only management UI; TOTP and tenant boundaries; boolean `active` status mapping; responsive AR/EN navigation; test-only permissions and key fixtures.
+3. **No further W1 coding required for this test scope.** Preserve the existing W1 branch and CI results. Changes in this handoff are documentation-only and do not justify rerunning already successful functional tests.
+4. **Boundaries:** no merge, deploy, production database/patient data, backend RBAC change, Ed25519, `/institution/users` implementation, Shared Audit, or migration changes. Any future integration/rebase needs separate review of current `main` and other active branches.
