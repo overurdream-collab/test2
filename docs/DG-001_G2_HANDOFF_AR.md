@@ -8,3 +8,9 @@ Status: PARTIAL; no integration, merge or deployment.
 - Offline synthetic SQLite, isolated temporary AES-GCM key and fictional organizations.
 - Actual SHA-256 verification occurs after reopening the encrypted PDF.
 - A1 uses its pinned unchanged pure `analyze` function and returns advisory review only.
+
+## Results and safety boundary
+
+- Run #39345192503: SUCCESS on SHA `800e233978e74ef92ee57c0605a49749d599f31d`; 3 synthetic PDF originals reopened from G2 and 6 negative tenant/digest tests passed.
+- Both completed English invoice variants meet 18/18 authored value and 18/18 authored cell-location checks; original pinned A1 reports 0 and 2 arithmetic findings. Arabic date uncertainty blocks A1.
+- G2 intentionally marks scanned PDFs `review_required` when local ingestion OCR is disabled. It produces **zero trusted cell-level `ExtractedSourceRecord` rows** in this test.
