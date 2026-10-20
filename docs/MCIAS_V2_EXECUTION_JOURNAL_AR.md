@@ -71,3 +71,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: No PostgreSQL 16 local executable/Docker/psycopg; G2 full provenance and G4 approved-sheet import missing; G3/G5 approved reference integration and Pillow remediation open.
 - Next: AI CTO/G2/G4/G5/Shared Audit owners approve shared interface scope; provision isolated PostgreSQL 16 runner, then run labeled 4-batch E2E and measure.
 - Handoff: Draft PR #31; no reset, merge, deploy, financial automation, security bypass or other-agent branch edits.
+
+### HANDOFF-20261021-008 — INPUTS-FIRST integration supervision
+- Scope: Verify GitHub PR #31/CI and existing contracts; record six-reference applicability and completeness criteria, ten-case synthetic acceptance matrix and cross-agent ownership.
+- Why: Contract acceptance must distinguish documented design from enforced G4/G5/Shared Audit behavior; prevent missing references/OCR from becoming proven violations.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN (planning only). At baseline HEAD 5b391db CI Run 39507129932 unit/postgres IN_PROGRESS, dependency-audit FAIL; Pillow 12.3.0 eight CVEs confirmed in failed job 118918751659.
+- Result: CONTRACT_PLAN_RECORDED; INTEGRATION_ACCEPTANCE_PENDING.
+- Risks: unapproved sheet manifest, G4 eligible-row gate, G3 effective-dated completeness, G5 reference binding, Shared Audit event contract and dependency remediation.
+- Next: independent G2/G3/G4/G5/PR #29/A1/Document Reader/Contract Intelligence review and AI CTO decisions before implementation.
+- Handoff: Preserve Draft PR #31, no merge/deploy, no cross-agent branch changes, no financial automation.

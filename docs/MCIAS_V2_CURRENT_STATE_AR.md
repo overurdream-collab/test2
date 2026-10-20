@@ -42,3 +42,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Verified baseline 4ed7c4c and CI Run 39506569513 (unit SUCCESS, PostgreSQL SUCCESS, dependency audit FAILURE).
 - Local isolated preflight tests 12 PASS; no PostgreSQL 16 E2E environment available and no integrated four-batch results or throughput/TP/FP/FN metrics measured.
 - Phase 3 integration decision BLOCKED/NOT VERIFIED. See section 10 of source contract and HANDOFF-20261021-007; no shared code changed.
+
+## 2026-10-21 — INPUTS-FIRST contract supervision
+- Section 11 of CAI-01 Excel source contract records six-reference applicability and provenance acceptance, four supervisory evaluation states versus existing five dashboard categories, ten-case synthetic matrix and non-duplicating ownership.
+- Baseline 5b391db Run 39507129932 unit/postgres IN_PROGRESS when inspected; dependency audit FAILED (Pillow 12.3.0, eight CVEs). No new E2E tests executed.
+- Integration acceptance PENDING; security and shared contracts require owner coordination.
