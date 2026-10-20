@@ -628,3 +628,13 @@
 - Risks: Miniature synthetic corpus; model may still hallucinate/return missing values; forced nonempty diagnostic negative; downloads and runtime variance; no alternate approved pricing logic or change to independent validation. Developer/acceptance docs not changed because production behavior/API/schema/financial gate untouched, only optional diagnostic text.
 - Next: PR23 owner inspects exact C34 workflow artifacts and all CI results, compares C33 frozen vs C34 + separately sampled holdout, records real metrics or BLOCKED.
 - Handoff: Resume only from latest PR23 HEAD; do not reset, merge, deploy, change gold or validator. Compare source locators, rejection reasons, raw model candidates, TP/FP/FN and elapsed time before making any quality claim.
+
+### HANDOFF-20261020-035 — C34 exact SHA PR CI trigger
+- Scope: add pull_request event to the already committed isolated C34 workflow; preserve push and workflow_dispatch and matrix jobs.
+- Why: ensure C34 model runs appear alongside other PR23 exact-SHA reference workflow checks, without confusing unobservable push-only runs with PASS.
+- Files: `.github/workflows/contract-ai-c34.yml`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/CONTRACT_INTELLIGENCE_C34_REPORT_AR.md`.
+- Tests: NOT_RUN on this newer SHA; before update prior DG #39481310796 PASS, LMFE #39481310749 PASS, Decimal #39481310905 PASS, others still running; new full CI PENDING_CI.
+- Result: PENDING_CI for new SHA, no real model improvement claimed.
+- Risks: additional CPU CI runtime, duplicated push+PR workflow runs; costs only synthetic runners; no production inputs.
+- Next: PR23 owner review C34 matrix PR jobs after complete, extract TP/FP/FN/timing/candidate rejection and compare baseline and independent holdout; gate on R1/R2 retention and zero new FP.
+- Handoff: branch `feat/mcias-contract-intelligence`, no reset, no RBAC/validator/gold/merges; use new SHA exact workflow links.

@@ -292,3 +292,6 @@
 - Small C34: opt-in benchmark ONLY source-literal guidance to pinned real Qwen; production inference default and validator unchanged; raw candidate rejection trace; C33 frozen cases preserved; separate synthetic holdout and deterministic tamper checks.
 - Test state: NOT_RUN on new commit at authoring; GitHub C34 matrix (C33, independent holdout), DG/G1–G9/Enterprise workflows PENDING_CI. Do not promote success from C33 to C34.
 - Next: read exact SHA CI and artifact diagnostics and publish measured baseline vs candidate; no claim of Recall improvement until real-model metrics verified. No merge, deploy, money authority, A1 or Reader changes.
+
+### C34 workflow visibility correction — 2026-10-20
+- Source commit `b1ecee68bcb240cd72e685c3565c7a21b534279c`: DG governance and LMFE/Decimal green; remaining real Qwen/standard workflows in progress. C34 initial workflow had push-only trigger and GitHub commit-run inspector filters to pull_request runs, so first C34 run not attestable through the same retrieval route. Add standard PR trigger matching PR23 base and preserve push/manual triggers. No model prompt, validator, gold, fixture or financial logic change. New exact-SHA C34 model metrics PENDING_CI; do not infer model result.

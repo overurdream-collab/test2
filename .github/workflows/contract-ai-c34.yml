@@ -1,5 +1,14 @@
 name: Contract AI C34 recall diagnostic (isolated)
 on:
+  pull_request:
+    branches: [feat/temporal-reference-inputs-and-four-outcomes]
+    paths:
+      - 'mcias/contract_intelligence.py'
+      - 'scripts/contract_ai_benchmark.py'
+      - 'scripts/contract_tariff_segments.py'
+      - 'tests/test_contract_c34_rejection_replay.py'
+      - 'tests/fixtures/contract_c34_holdout_synthetic.json'
+      - '.github/workflows/contract-ai-c34.yml'
   push:
     branches: [feat/mcias-contract-intelligence]
     paths:

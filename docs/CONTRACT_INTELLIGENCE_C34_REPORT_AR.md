@@ -24,3 +24,6 @@ One opt-in boolean `benchmark_tariff_literals` in `infer_local`, default FALSE, 
 
 ## DG-001 HANDOFF
 STATUS=IMPLEMENTED_PENDING_CI; SCOPE=isolated test-only model guidance; BASE=30a902f6bf0c1791cc1e80731adac565e1e79984; OWNER=PR23 Contract Intelligence; SOURCE=GitHub C33 log + unmodified fixture and validator; TESTS=run C34 unit/replay and real-model matrix + reference CI; RISK=low actual recall, model variability, tiny synthetic set, forced nonempty even negative, model weights download; NEXT=inspect latest exact-SHA run artifacts and compare candidate vs baseline without altering validator; NO FINANCIAL AUTHORITY.
+
+## C34 workflow visibility note
+Initial source commit `b1ecee68bcb240cd72e685c3565c7a21b534279c` used push-only C34 workflow; because the GitHub PR-run inspection interface does not expose push-only workflows, a subsequent atomic DG-001 commit adds a PR trigger. New C34 metrics remain PENDING_CI until the two PR matrix jobs finish; old C33 values are baseline only.
