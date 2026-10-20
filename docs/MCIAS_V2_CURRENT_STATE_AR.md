@@ -67,3 +67,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Full Worklog, Decision Register, File Ownership, Integration Matrix, Evidence Register, Blocker Register and resumption steps saved in `docs/CAI01_COMPLETE_ENGINEERING_HANDOFF_AR.md`.
 - Verified baseline `484385ea2bd3edfad595dbd5267ff7b4529aaffd`, Run 39508972686 unit/postgres SUCCESS and dependency-audit FAILURE. Four dedicated PG16 acceptance cases not executed; no Shared Audit event IDs or real coverage denominator.
 - DG-001 HANDOFF-20261021-012; documentation prepared, engineering acceptance BLOCKED. No shared runtime edits.
+
+## 2026-10-21 — CAI-01 Shared Audit compatibility gate
+- Verified HEAD `9c3fc6cb8ebf32498f5c378e60fa45a2bde8c1ea`; Run 39509631819 unit/postgres PASS, dependency-audit FAIL.
+- PR #25/#29 both modify audit_writer.py; PR #29's bounded metadata drops CAI-01 source/ref/rule fields unless contract is extended by owner.
+- `docs/CAI01_SHARED_AUDIT_INTEGRATION_GATE_AR.md` and HANDOFF-20261021-013 capture exact blocker. No actual twelve-case PG16 run or Shared Audit evidence.
