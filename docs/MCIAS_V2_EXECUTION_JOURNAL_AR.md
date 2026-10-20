@@ -21,3 +21,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: No signed rejection policy, no trusted death record, G3/G4/G5/G6/G7/G8 integration unverified; shared docs overlap unmerged #23; no financial acceptance.
 - Next: CAI-01 requests independent specification review and coordination on data ownership and rejection authority before shared code changes.
 - Handoff: Read `docs/MCIAS_CLAIMS_AUDIT_OUTPUT_CONTRACT_AR.md` and PR #31; keep draft/unmerged; do not infer CI or operational acceptance from documentation.
+
+### HANDOFF-20261021-003 — CAI-01 Phase 2 source contract and security triage
+- Scope: Isolated design and verification of Excel-to-G4 source identity, sheet classification, reconciliation, G5 output categories and dependency-audit failure.
+- Why: Owner-approved Phase 2; prevent non-claim sheets, silent source loss, duplicate amounts and tenant bypass before any shared integration.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN for new contract (documentation-only). Existing HEAD 28a51ba: unit PASS, postgres-integration PASS, dependency-audit FAIL; reviewed failed job 118912523331.
+- Result: DESIGN_ONLY. Pillow 12.3.0: eight pip-audit CVEs, fix listed 13.0.0; local mcias package skipped (not on PyPI). No shared dependency changes.
+- Risks: G2 has no verified sheet-name/physical-row ledger; G4 stages all extracted rows; PR #25 unmerged; no E2E integration or trusted source approval.
+- Next: AI CTO/owners review source manifest, row ledger, G4 filtering, event schema and Pillow remediation before any shared change.
+- Handoff: Read `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md` and PR #31; remain draft, no merge/deploy/automatic financial decisions.

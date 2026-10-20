@@ -15,3 +15,9 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Documentation only, no runtime G3–G8 modification, no new clinical/financial decision capability.
 - Prior SHA `b550e232`: Unit 356 PASS / 19 SKIP, PostgreSQL 144 PASS, dependency-audit FAIL (Pillow 12.3.0). New SHA checks not yet verified.
 - Next: AI CTO independent review and shared ownership coordination before integration. Draft PR #31 remains unmerged.
+
+## 2026-10-21 — CAI-01 Phase 2 source contract
+- Added `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md` (design-only source manifest, row dispositions, per-currency reconciliation, tenant controls, five audit classifications, compatibility matrix and synthetic E2E plan).
+- Verified PR #31 baseline 28a51ba: unit PASS; PostgreSQL PASS; dependency-audit FAIL, Pillow 12.3.0 eight CVEs (pip-audit fix 13.0.0). No shared dependency modifications.
+- G2 sheet-name/physical-row coverage, G4 approved-sheet filtering and shared audit approvals remain unimplemented; G4/G5 E2E not run.
+- Next: independent AI CTO review before any shared integration; PR #31 draft/unmerged.
