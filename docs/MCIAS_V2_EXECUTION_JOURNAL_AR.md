@@ -131,3 +131,15 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: shared writer sanitization drops unapproved CAI-01 metadata; G2/G3/G4/G5 contracts unimplemented; Pillow CVEs.
 - Next: owner-approved shared event lineage contract, then owner-scoped minimum fixes and real PG16 integration tests.
 - Handoff: Preserve Draft PR #31, no merge/deploy/financial automation.
+
+### HANDOFF-20261021-014 — Integration recovery: direct CI logs and PR #29 coordination
+- Scope: Verify current heads and CI on PR #25/#29/#31/#28; read original failing PR #29 unit and dependency logs; inspect actual `mcias/rate_limits.py`, `mcias/app.py`, `tests/test_operational_controls.py`, `.github/workflows/ci.yml`; open owner coordination comment.
+- Why: Distinguish confirmed failures from unproven hypotheses before minimal owner-approved changes.
+- Files: `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md` only. No runtime code changes.
+- Tests: NOT_RUN. PR #29 `c7769edfdf6e287824ff7afbd8a74389547d7b53` Run 39512526509: unit FAIL (429 test 200), postgres PASS, dependency-audit FAIL (PyPI mcias/0.1.0 HTTP 503). PR #31 `f9f4038bacbd09e92df4a67aff1c0a633e409dfa` Run 39511759535: unit/postgres PASS, dependency-audit FAIL. PR #25 and PR #28 latest CI green.
+- Root cause status: 429 fixed-minute rollover is a candidate, NOT PROVEN; record actual RateLimitBucket window/count before change. Audit 503 is proven against locally editable `mcias/0.1.0`; dependency scan configuration must exclude only local distribution without excluding installed third-party packages, and Pillow vulnerabilities require independent remediation.
+- Coordination: PR #29 comment https://github.com/overurdream-collab/test2/pull/29#issuecomment-6304135390 asks writer/rate-limit ownership and PHI-safe event correlation approval. **Comment posted; owner acceptance not yet received.**
+- Result: INVESTIGATED_AND_COORDINATION_REQUESTED; NO FIX VERIFIED; CAI01_PG16_E2E_BLOCKED.
+- Risks: 429 failure, PyPI 503, Pillow 12.3.0 CVEs, unapproved G2/G3/G4/G5/Shared Audit contract.
+- Next: await explicit owner coordination; prove 429 window issue then owner-scoped minimal patch and targeted CI; separate security branch fix; run real PG16 only after contracts.
+- Handoff: No reset/rebase/amend/force push/merge/deploy/production migrations or automated financial decisions.

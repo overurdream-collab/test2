@@ -72,3 +72,9 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Verified HEAD `9c3fc6cb8ebf32498f5c378e60fa45a2bde8c1ea`; Run 39509631819 unit/postgres PASS, dependency-audit FAIL.
 - PR #25/#29 both modify audit_writer.py; PR #29's bounded metadata drops CAI-01 source/ref/rule fields unless contract is extended by owner.
 - `docs/CAI01_SHARED_AUDIT_INTEGRATION_GATE_AR.md` and HANDOFF-20261021-013 capture exact blocker. No actual twelve-case PG16 run or Shared Audit evidence.
+
+## 2026-10-21 — CAI-01 direct CI failure investigation
+- PR #29 HEAD c7769edf, unit 429 test FAIL, dependency audit PyPI mcias/0.1.0 HTTP 503 FAIL; PR #31 baseline f9f4038b unit/postgres PASS, audit FAIL. PR #25 and #28 green on their heads.
+- Actual rate-limit code uses fixed minute windows; rollover is a hypothesis, not established root cause. No runtime fix or new PG16 E2E.
+- Owner coordination requested in PR #29 comment https://github.com/overurdream-collab/test2/pull/29#issuecomment-6304135390. No approval claimed.
+- HANDOFF-20261021-014 documents evidence, blockers and next owner action.
