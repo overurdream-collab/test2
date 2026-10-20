@@ -34,8 +34,8 @@ jobs:
       MCIAS_ENABLE_UI_DEMO: 'true'
       MCIAS_ENVIRONMENT: development
       MCIAS_STORAGE_DIR: .e2e-output/integrated-sources
-      MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
-      MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
+      MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
+      MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,6 +50,20 @@ jobs:
           python -m pip install -e '.[test,browser]'
           python -m playwright install --with-deps chromium
           npm ci --ignore-scripts
+      - name: Validate isolated synthetic encryption key lengths
+        run: |
+          python - <<'PY'
+          import os
+          for name in ('MCIAS_STORAGE_KEY', 'MCIAS_MFA_ENCRYPTION_KEY'):
+              raw = os.environ[name]
+              try:
+                  key = bytes.fromhex(raw)
+              except ValueError as exc:
+                  raise SystemExit(f'{name}: expected 64 hexadecimal characters') from exc
+              if len(raw) != 64 or len(key) != 32:
+                  raise SystemExit(f'{name}: expected exactly 32 bytes encoded as 64 hex characters')
+          print('Synthetic storage and MFA key lengths validated (no key values logged).')
+          PY
       - name: Existing server authorization and tenant isolation tests
         run: python -m pytest tests/test_enterprise_workspace.py -q
       - name: Prepare isolated synthetic PostgreSQL fixture
