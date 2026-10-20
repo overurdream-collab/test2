@@ -41,3 +41,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: No approved institutional death source or final rejection rules; G3/G4/G5/G6/G7/G8, PR #25 and #29 shared contracts unapproved; dependency audit remains a separate open blocker.
 - Next: AI CTO and independent owners review section 10 of output contract and approve integration ownership/contracts before implementation.
 - Handoff: Continue from newest PR #31 HEAD, no reset; preserve existing Phase 2 design; no merge/deploy or automatic financial action.
+
+### HANDOFF-20261021-005 — CAI-01 Phase 2 multi-batch verification and performance plan
+- Scope: Extend existing Excel-to-G4 contract with multi-batch synthetic acceptance cases, G4 bounded import/resume design, security evidence and dependencies.
+- Why: Owner request for multi-batch duplicate, tariff, cost-share, cap, family and scalability coverage without changing shared systems.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN (documentation-only); existing PR #31 HEAD f11d696 unit PASS and PostgreSQL PASS, dependency-audit FAIL. Verified failed job 118914182878, eight Pillow 12.3.0 CVEs; no rerun.
+- Result: DESIGN_COMPLETE_FOR_REVIEW, IMPLEMENTATION_BLOCKED pending G2/G4/Shared Audit owners and independent test execution.
+- Risks: G2 physical-row coverage/approved sheet inventory unavailable; G4 stages all rows and reads full record set; no verified Excel→G4→G5 E2E; Pillow remediation pending.
+- Next: AI CTO independent review; coordinate owners before changing shared files or dependencies.
+- Handoff: Draft PR #31; preserve existing contracts; stop after documentation; no merge/deploy/automatic financial action.

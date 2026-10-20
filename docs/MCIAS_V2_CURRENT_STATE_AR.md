@@ -27,3 +27,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Negative beneficiary lookup is not proof of ineligibility; audit classification and financial approval remain independent; G3–G8/PR #25/PR #29 ownership matrix recorded.
 - Institutional death source and final rejection rules NOT APPROVED; dependency audit Pillow blocker remains separate.
 - Documentation-only; no test reruns or shared runtime changes; independent review pending.
+
+## 2026-10-21 — CAI-01 Phase 2 multi-batch test and scaling addendum
+- Appended sections 7–8 to `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`: four synthetic batches, G5 reference scenarios, accounting invariants, bounded import and restart/concurrency acceptance plan.
+- Current verified HEAD f11d696: unit PASS, postgres PASS, dependency audit FAIL (Pillow 12.3.0, eight CVEs). No new tests run.
+- Shared integration blocked pending owner approval, trustworthy sheet inventory, physical-row ledger and G4 server-side approved-row filter. Documentation-only; independent review next.
