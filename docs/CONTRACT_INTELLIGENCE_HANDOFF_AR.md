@@ -204,3 +204,23 @@ Read mcias/contract_intelligence.py validation of provider/service/currency: PDF
 - **غير منفذ في PR #23:** إدارة شروط فقط عبر UI، مراجعة واعتماد السوبر أدمن، immutable human corrections، stable IDs + clause version persistence، قفل التعارض والزمن، اختيار نسخة معتمدة بتاريخ الخدمة، shared outbox/audit event integrations ومصفوفة الصلاحيات التفصيلية. تتطلب خدمات Unified Input Management العامة والتكامل مع G2/G3/G5 وموافقة مؤسسية.
 - **C33 دون تغيير:** يبقى benchmark التعرفة الاصطناعي R3/R4 مجرّد أداة تشخيص ويستمر تشغيله وقياسه كما هو. لا تعديل للنموذج/validator/fixtures/الأسعار، ولا إدراج تعرفات كمدخلات بنود العقود. نتيجة Qwen الحقيقية لـC33 تُقرأ مستقلة عن هذا التوثيق ولا تُعد دليلًا على جهوزية الإنتاج.
 - **قرار النشر:** PR #23 مسودة، لا merge/deploy/تفعيل مالي/مستندات حقيقية/توقيع إلكتروني. تبعيات RBAC/Audit/versioning تنتظر الخدمات المشتركة وتعيين أصحاب القرار.
+
+
+## DG-001 — 2026-10-20 exact-SHA documentation reconciliation
+**Baseline inspected:** PR #23 Draft `39a4a9b93e9eb04ea7c09c8c155c3e08f38c6ec0`. This section records newly inspected *completed CI* on that exact source SHA; earlier C31/C32/C33 model failures/successes and their dates remain historical, not overwritten.
+**Ten completed successful workflows on inspected source SHA:**
+- G1-G7 [39142051829](https://github.com/overurdream-collab/test2/actions/runs/39142051829) PASS (unit, dependency audit, PostgreSQL).
+- G8 [39142051813](https://github.com/overurdream-collab/test2/actions/runs/39142051813) PASS.
+- G9 [39142051863](https://github.com/overurdream-collab/test2/actions/runs/39142051863) PASS.
+- Enterprise [39142051799](https://github.com/overurdream-collab/test2/actions/runs/39142051799) PASS.
+- Documentation governance [39142051833](https://github.com/overurdream-collab/test2/actions/runs/39142051833) PASS.
+- Contract LMFE schema no-model [39142051800](https://github.com/overurdream-collab/test2/actions/runs/39142051800) PASS.
+- Contract Decimal benchmark no-model [39142051864](https://github.com/overurdream-collab/test2/actions/runs/39142051864) PASS.
+- Real pretrained Qwen synthetic baseline [39142051770](https://github.com/overurdream-collab/test2/actions/runs/39142051770) PASS job: **TP3 FP0 FN0** in its small diagnostic source-specific set; does not establish general extraction.
+- Independent synthetic model benchmark [39142051801](https://github.com/overurdream-collab/test2/actions/runs/39142051801) PASS *execution*, **TP2 FP0 FN4, Recall 33.33%** on 6 ground-truth positives; substantial extraction quality blocker.
+- C33 isolated tariff segmentation [39142051824](https://github.com/overurdream-collab/test2/actions/runs/39142051824) PASS *execution*, **TP2 FP0 FN4, Recall 33.33%** on same limited independent synthetic cases; segmentation not proven to improve recall on that SHA.
+
+**Crucial distinction:** CI SUCCESS means the model ran, validator and quality-reporting workflow completed as designed. It does **NOT** mean its model recall/coverage passed a production quality threshold. Preserve model negatives and falsifiable benchmarks. Metrics reflect synthetic tariffs and remain separate from governed Contract Intelligence clause activation. Tariffs are not to be promoted from C33 into approved G3/G5 units or A1 fee authority.
+**Missing functional approvals:** real independently expert-labelled multi-layout Arabic/English PDF clause benchmark, contract clause management and service-date legal versioning, super_admin-only server-side governance, original encrypted G2 evidence and source-level Palermo reattestation, Shared Audit integrated correction history, G6/G7 operational human signoff. No activation, autonomous financial decision, merge or deploy.
+**Migration compatibility READ-ONLY:** PR23 `alembic/versions/0019_reference_points.py` (parent 0018) → `0020_contract_proposals.py` vs PR25's `0019_input_clauses.py` (parent 0018) → `0020_manual_contract_metadata.py`. These are divergent chains, not a duplicate literal revision ID. Standalone green CI is not a proof that a combined Alembic head is valid. Independent cross-branch report is recorded on PR25 as `docs/DG-001_ALEMBIC_BRANCH_COMPATIBILITY_READ_ONLY_20261020_AR.md` at https://github.com/overurdream-collab/test2/blob/feat/mcias-input-triactions-e2e/docs/DG-001_ALEMBIC_BRANCH_COMPATIBILITY_READ_ONLY_20261020_AR.md . No Alembic command, migration, merger or DB write was executed.
+**SHA freshness:** this documentation correction itself creates a new PR23 commit. The ten listed green runs are for `39a4a9b...` only; check the new head and its own CI, and never copy earlier green to a new SHA without matching evidence. **NO MERGE / NO DEPLOY / NO PRODUCTION CONTRACT AUTHORITY.**
