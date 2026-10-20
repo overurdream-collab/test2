@@ -97,3 +97,13 @@ def run(outdir,a1_file):
                         "financial_decision":"NOT_AUTHORIZED"}
                 reports.append(report)
                 (out/(case+"_review.json")).write_text(json.dumps(report,indent=2))
+
+    engine.dispose()
+    by={r["case"]:r for r in reports}
+    for case,n in (("english_columnar",0),("english_reordered",2)):
+        r=by[case]
+        assert r["extracted_values"]==18 and r["cell_positions"]==18
+        assert r["a1_ran"] and r["a1_arithmetic_findings"]==n
+        assert r["g2_ingestion_status"]=="review_required"
+    assert by["arabic_rtl"]["a1_ran"] is False
+    assert negative==6
