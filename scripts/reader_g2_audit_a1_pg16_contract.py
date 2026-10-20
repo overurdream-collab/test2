@@ -5,7 +5,7 @@ The contract event rows belong to a disposable test fixture; no Alembic/producti
 schema, no substitute audit service, no real claims, no medical/financial action.
 """
 from __future__ import annotations
-import argparse, hashlib, importlib.util, json, os, sys, tempfile, threading, uuid
+import argparse, hashlib, importlib.util, json, os, re, sys, tempfile, threading, uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -21,7 +21,7 @@ from mcias.storage import EncryptedStore
 from g2_trust_pilot import reopen
 from g2_ocr_evidence_qualification_pilot import Candidate, create_candidates, all_candidates
 from document_reader_dynamic_layout_pilot import (
-    STYLES, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, load_a1)
+    STYLES, PATTERNS, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, load_a1)
 from reader_reviewed_ocr_contract import ReviewedOCREvidence, CellLocator, VersionRecord
 
 class ReviewVersion(Base):
@@ -96,10 +96,15 @@ def source_candidate(db,store,actor,cid,expected_sha):
     try:
         data,doc,src=reopen(db,store,c.document_id,actor.organization_id,expected_sha)
     except Exception as exc:raise ContractRejected("ORIGINAL_G2_SOURCE_INVALID") from exc
-    if (c.source_sha256!=doc.sha256 or c.status!="UNVERIFIED_OCR_CANDIDATE"
+    if (c.source_sha256!=doc.sha256 or doc.status!="review_required"
+        or c.status!="UNVERIFIED_OCR_CANDIDATE"
         or c.page!=1 or len(c.bbox)!=4 or not c.ocr_words
         or c.observed_value!=" ".join(w["text"] for w in c.ocr_words)):
         raise ContractRejected("UNVERIFIED_CANDIDATE_CHANGED")
+    job=db.scalar(select(IngestionJob).where(
+        IngestionJob.id==c.job_id, IngestionJob.document_id==doc.id,
+        IngestionJob.organization_id==actor.organization_id))
+    if job is None:raise ContractRejected("OCR_JOB_DOCUMENT_OR_TENANT_MISMATCH")
     a,b,x,y=c.bbox
     if not(0<=a<x<=1650 and 0<=b<y<=1900):
         raise ContractRejected("OCR_SOURCE_REGION_INVALID")
@@ -131,7 +136,8 @@ def submit(engine,store,writer,token,req,source_hash,*,reject_audit=True):
             if req.expected_version!=len(existing):raise ContractRejected("STALE_REVIEW_VERSION")
             if req.action=="correct":
                 if (not req.corrected_value or req.corrected_value==c.observed_value
-                    or len(req.reason_code)<4):
+                    or not re.fullmatch(PATTERNS[c.field_name],req.corrected_value)
+                    or req.reason_code not in ("transcription_error","synthetic_price_correction","unclear_source")):
                     raise ContractRejected("CORRECTION_NEEDS_VALUE_AND_REASON")
             elif req.corrected_value is not None:
                 raise ContractRejected("UNAUTHORIZED_FIELD_VALUE")
@@ -399,6 +405,11 @@ def run(outdir,url,pr29,pr20):
                 Candidate.document_id==cases["english_columnar"]["doc"],
                 Candidate.row_id=="AA",Candidate.field_name=="price"))
             price_id=c.id
+        expect_rejection(lambda:submit(engine,store,writer,token,
+            req(price_id,str(uuid.uuid4()),version=1,action="correct",
+                corrected_value="NOT_A_PRICE",reason_code="synthetic_price_correction"),
+            cases["english_columnar"]["sha"]),
+            "NON_NUMERIC_PRICE_CORRECTION",negative)
         corrected=submit(engine,store,writer,token,
             req(price_id,str(uuid.uuid4()),version=1,action="correct",
                 corrected_value="16.00",reason_code="synthetic_price_correction"),
