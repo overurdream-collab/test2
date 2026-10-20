@@ -1066,14 +1066,14 @@ function w1UsersReadOnly(ctx) {
     target.replaceChildren();
     const q = search.input.value.trim().toLocaleLowerCase(), st = status.input.value;
     const selected = rows.filter(u => (!q || [u.username,u.full_name_ar,u.email].some(v => String(v||"").toLocaleLowerCase().includes(q)))
-      && (!st || String(u.status||"").toLowerCase() === st));
+      && (!st || (u.active === true ? "active" : "disabled") === st));
     if (!selected.length) { target.append(empty(L("لا توجد نتائج", "No matching users"), L("لا توجد حسابات مطابقة في الصفحة الحالية", "No matching accounts on this page"))); return; }
     const list = el("div", null, "staff-list");
     for (const u of selected) {
       const row = el("article", null, "staff-card"), identity = el("div");
       identity.append(el("h3", u.full_name_ar || u.username || L("مستخدم", "User")),
         el("p", u.username || "—", "muted"));
-      row.append(identity, badge(u.status || L("غير محدد", "Unknown")));
+      row.append(identity, badge(u.active === true ? L("نشط", "Active") : L("غير نشط", "Inactive")));
       list.append(row);
     }
     target.append(list);
