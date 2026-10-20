@@ -1,8 +1,25 @@
 name: MCIAS Synthetic Reader G2 Custody
 on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/g2_trust_pilot.py
+      - .github/workflows/g2-reader-custody-pilot.yml
+      - docs/DG-001_DOCUMENT_READER_PILOT_AR.md
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   custody:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
