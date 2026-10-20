@@ -665,3 +665,13 @@
 - Result: IMPLEMENTED / PENDING_CI at commit authoring. No Qwen/model or old C33/C34 reruns requested. Original model workflow might run automatically on PR push; do not represent it as agent-requested testing.
 - Risks: G2 discards empty/whitespace fields; no A1 coordinates if absent in G2; original source SHA supplied by caller and not recomputed from blocks; SHA IDs identify literal G2 block addresses, not validated business semantics. Fail closed on duplicate address.
 - Next: verify C35 dedicated exact-SHA job and related reference tests; document run IDs and results. No phase 2, merge or deployment.
+
+### HANDOFF-20261020-039 — C35 workflow dependencies; historic DG-001 blocker
+- Scope: Fix only C35 deterministic CI setup by installing the existing declared project/test dependencies; no test, source-view adapter, Validator, Gold or model changes.
+- Why: [C35 run 39485834413](https://github.com/overurdream-collab/test2/actions/runs/39485834413) stopped at conftest import before collecting any tests: `ModuleNotFoundError: No module named 'sqlalchemy'`. [DG run 39485834271](https://github.com/overurdream-collab/test2/actions/runs/39485834271) separately failed historical commit `be85b39016cdd0868c7812f57f2087487773afbc` for missing Scope/Why/Tests/Handoff. Per-commit governance cannot be fixed by adding a new note.
+- Files: `.github/workflows/contract-ai-c35-source-view.yml`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`.
+- Tests: Prior C35 [39485834413](https://github.com/overurdream-collab/test2/actions/runs/39485834413) FAIL at import; no test results yet. CI on this new exact SHA PENDING. Prior unrelated G1-G9 and Enterprise success not proof of C35 tests. No model run requested.
+- Result: Minimal dependency fix committed; C35 deterministic verification PENDING_CI. DG-001 historical noncompliance explicitly BLOCKED pending independent authorization; this commit itself includes all eight structured fields.
+- Risks: Historical `be85b39016cdd0868c7812f57f2087487773afbc` fails DG-001 permanently under existing immutable per-commit check unless independently authorized exception or rewrite; do not weaken enforcement silently. Additional test failures may be exposed after dependencies load.
+- Next: Check exact-SHA C35 run and test count; inspect any genuine failures. Escalate precise historical DG-001 exception proposal without implementing it; no history rewrite.
+- Handoff: PR #23 `feat/mcias-contract-intelligence` continue from latest HEAD without reset; no amend/rebase/force push/merge/deploy/model execution. Preserve existing tests and source-view implementation.
