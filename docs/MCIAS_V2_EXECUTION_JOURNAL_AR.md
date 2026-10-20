@@ -638,3 +638,13 @@
 - Risks: additional CPU CI runtime, duplicated push+PR workflow runs; costs only synthetic runners; no production inputs.
 - Next: PR23 owner review C34 matrix PR jobs after complete, extract TP/FP/FN/timing/candidate rejection and compare baseline and independent holdout; gate on R1/R2 retention and zero new FP.
 - Handoff: branch `feat/mcias-contract-intelligence`, no reset, no RBAC/validator/gold/merges; use new SHA exact workflow links.
+
+### HANDOFF-20261020-036 — C34 precise validator replay expectation
+- Scope: Correct only R4 C33 raw replay's over-specified expected error; keep all original rejection gates, model/fixtures/schema unchanged.
+- Why: Exact C34 [39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) both matrix jobs FAILED pre-inference with 1 failed 7 passed: validator emitted invalid_service, invalid_logical_key, numeric_not_in_source, but not tariff_identity_incomplete (malformed key still internally consistent with malformed service).
+- Files: `tests/test_contract_c34_rejection_replay.py`, `docs/CONTRACT_INTELLIGENCE_C34_REPORT_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`.
+- Tests: Actual prior C34 job [39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) FAIL before model; new exact-SHA unit, model and reference CI PENDING_CI; no model recall result from failing jobs.
+- Result: PENDING_CI; regression repaired by making strict assertion match actual independent validator, not by relaxing validator.
+- Risks: real model recall may remain low; CI uses forced nonempty diagnostic; no production or financial authority.
+- Next: PR23 owner verify real pinned Qwen C34 original and holdout runs and compare positive recall, FP and runtime on exact SHA.
+- Handoff: Resume from latest PR23 HEAD, no reset, no other branches, no paid models, no merge/deploy. Preserve original C33 TP2 FP0 FN4 683s and C34 pre-model failure history.

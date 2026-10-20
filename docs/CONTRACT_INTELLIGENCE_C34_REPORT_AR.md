@@ -7,7 +7,7 @@ Source PR23 SHA `30a902f6bf0c1791cc1e80731adac565e1e79984`. [Actual Qwen C33 #39
 
 Raw C33 outputs vs unchanged `validate_candidates`:
 - R3 CONSULT 4100: model `rule_type=duration`, `currency=null`, `amount=null`, key literal `provider_code:service_code`. Reject `tariff_identity_incomplete`; no supported tariff price candidate.
-- R4 XRAY 8200: `service_code="XRAY 8200"`, `logical_key="R4:XRAY 8200"`, `amount="150000"`. Reject `invalid_service`, `invalid_logical_key`, `tariff_identity_incomplete`, `numeric_not_in_source`; original 8200 must remain only valid source amount.
+- R4 XRAY 8200: `service_code="XRAY 8200"`, `logical_key="R4:XRAY 8200"`, `amount="150000"`. Reject `invalid_service`, `invalid_logical_key`, `numeric_not_in_source` (the malformed logical key still equals malformed provider+service, so it does NOT emit `tariff_identity_incomplete`); original 8200 remains only valid source price.
 - R5 MRI 12000: source XLSX field `price="12000"`; model quote `12000 YER` crosses fields, reject `quote_not_in_source`.
 - R6 LAB 650: source XLSX field `price="650.00"`; model quote `LAB 650.00 YER 2026-01-01 2027-01-01` crosses fields, reject `quote_not_in_source`.
 - Source quote must be verbatim within ONE field; other XLSX identities/dates may be verified in the SAME G2 row. Raw output diagnostics and negative replays are not accepted candidates.
@@ -27,3 +27,6 @@ STATUS=IMPLEMENTED_PENDING_CI; SCOPE=isolated test-only model guidance; BASE=30a
 
 ## C34 workflow visibility note
 Initial source commit `b1ecee68bcb240cd72e685c3565c7a21b534279c` used push-only C34 workflow; because the GitHub PR-run inspection interface does not expose push-only workflows, a subsequent atomic DG-001 commit adds a PR trigger. New C34 metrics remain PENDING_CI until the two PR matrix jobs finish; old C33 values are baseline only.
+
+### C34 first attempted run — TEST EXPECTATION FAILURE
+- Source `f18cd41062ac805eabe5e9cabae04e826c0feec8`, [C34 matrix run 39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110): both jobs **FAIL before model generation** at added frozen-output test; 1 failed / 7 passed in each. Test incorrectly demanded `tariff_identity_incomplete` for R4, but unchanged validator correctly returned precisely `invalid_service`, `invalid_logical_key`, `numeric_not_in_source` since its malformed key equals malformed `provider:service`. This is not a model-quality result. Retain all three independent rejection assertions. Repair expected codes only; do not change validator/source/Gold or remove test. Real C34 results still PENDING_CI.

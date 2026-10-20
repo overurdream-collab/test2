@@ -295,3 +295,6 @@
 
 ### C34 workflow visibility correction — 2026-10-20
 - Source commit `b1ecee68bcb240cd72e685c3565c7a21b534279c`: DG governance and LMFE/Decimal green; remaining real Qwen/standard workflows in progress. C34 initial workflow had push-only trigger and GitHub commit-run inspector filters to pull_request runs, so first C34 run not attestable through the same retrieval route. Add standard PR trigger matching PR23 base and preserve push/manual triggers. No model prompt, validator, gold, fixture or financial logic change. New exact-SHA C34 model metrics PENDING_CI; do not infer model result.
+
+### C34 replay assertion precision correction — 2026-10-20
+- First actual C34 [run 39481536110](https://github.com/overurdream-collab/test2/actions/runs/39481536110) FAILED **before inference**: R4 replay asserted an extra `tariff_identity_incomplete` not emitted by the original validator; 7 other tests passed. Correct only this over-specified expected error, retain three required actual errors. New exact SHA CI PENDING; no C34 TP/FP/FN yet.
