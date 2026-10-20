@@ -111,9 +111,9 @@ with sync_playwright() as pw:
    assert page.locator('main button').filter(has_text='تعديل').count()==0
    # The API exposes boolean active, never a status string.
    assert all(isinstance(x['active'],bool) for x in items)
-   page.locator('#w1-users-status').select_option('active')
+   page.locator('select[name="w1-users-status"]').select_option('active')
    assert page.locator('.staff-card').count()==sum(x['active'] for x in items)
-   page.locator('#w1-users-status').select_option('disabled')
+   page.locator('select[name="w1-users-status"]').select_option('disabled')
    assert page.locator('.staff-card').count()==sum(not x['active'] for x in items)
   else:
    assert api.status==403 and detail.status==403,(role,api.status,detail.status)
