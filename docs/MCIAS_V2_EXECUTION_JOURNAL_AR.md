@@ -143,3 +143,14 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: 429 failure, PyPI 503, Pillow 12.3.0 CVEs, unapproved G2/G3/G4/G5/Shared Audit contract.
 - Next: await explicit owner coordination; prove 429 window issue then owner-scoped minimal patch and targeted CI; separate security branch fix; run real PG16 only after contracts.
 - Handoff: No reset/rebase/amend/force push/merge/deploy/production migrations or automated financial decisions.
+
+### HANDOFF-20261021-015 — Verified resumption checkpoint; contract approvals pending
+- Scope: Recheck PR #25/#29/#31 HEAD, check runs, owner coordination comments, pull-request reviews, and PR #31 tracked CAI-01 files before attempting changes.
+- Why: Resume from the exact saved state without duplicate edits or unapproved cross-owner changes.
+- Files: docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md and docs/MCIAS_V2_CURRENT_STATE_AR.md only; no runtime, tests, or workflow modifications.
+- Tests: NOT_RUN in this checkpoint. PR #31 SHA 5fba094b06829eddcf991a149bbe4aa501dfd680, GitHub Actions Run 39515442663: unit PASS, postgres-integration PASS, dependency-audit FAIL. PR #29 SHA c7769edfdf6e287824ff7afbd8a74389547d7b53, Run 39512526509: unit FAIL (429 test), dependency-audit FAIL, postgres-integration PASS. PR #25 SHA 8a616f7f68f506df08deccd62a9faa7d7ec89272: displayed checks PASS.
+- Reviews: GitHub pull-request reviews API returned zero reviews on #25, #29 and #31. Existing issue comments on #25/#29/#31 are coordination requests, not explicit owner sign-off; do not repeat them or infer approval.
+- Verified tree: CAI-01 preflight implementation mcias/claims_batch_preflight.py and isolated tests/test_cai01_batch_preflight.py plus tests/test_cai01_inputs_first_source_contract.py already exist; integration documents already exist. No dedicated complete PG16 Excel→G2→G4→G3→G5→Shared Audit acceptance proof, claim ID or audit event ID verified.
+- Result: STATE_VERIFIED; CONTRACT_APPROVAL_PENDING; E2E_NOT_EXECUTED. No owner files edited.
+- Next: obtain explicit owner decisions on G2 sheet classification/source SHA and row; G4 claim-only persisted mapping; G3 six service-date effective approved complete references; G5 four semantic outcomes; PR #29 writer PHI-safe bounded correlation/idempotency. Only after approval add isolated native-service PG16 workflow/test on PR #31 and record real post-commit IDs. Dependency-audit failures remain independent CI blockers.
+- Handoff: no reset, force push, merge, deployment, production migrations or automated financial decisions.
