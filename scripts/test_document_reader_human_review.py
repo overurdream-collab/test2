@@ -64,7 +64,7 @@ def run(a1,out):
                 page.locator('#password').fill('demo-reviewer-a-2026')
                 page.locator('#login').click()
                 page.locator('#evidenceList button').first.wait_for(timeout=20000)
-                assert page.locator('#pageImage').evaluate('(e)=>e.naturalWidth')>0
+                page.wait_for_function("document.querySelector('#pageImage').naturalWidth>0",timeout=20000)
                 assert page.locator('.anchor').count()==18
                 assert '1 / 2' in page.locator('#pageNumber').inner_text()
                 page.locator('#next').click();assert '2 / 2' in page.locator('#pageNumber').inner_text()
