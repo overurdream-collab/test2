@@ -74,3 +74,13 @@ PYTHONPATH=.:scripts python scripts/document_reader_human_review_pilot.py \
 - تستكمل التجربة الإضافية على أحدث SHA قيد التحقق اختبار التصحيح مع **نوع الحقل الصحيح**، ورفض كتابة النص في حقل السعر، وعودة A1 بتناقض حسابي بعد تعديل سعر بشرط إصدار مراجعة جديد، مع بقاء قرار المطالبة `HUMAN_REVIEW`.
 
 **قرار الاعتماد مرهون بنجاح آخر CI على SHA المحدث، ولا يتعدى نطاق Human Review المعزول.**
+
+## Final independent QA evidence — 2026-10-20
+
+- Updated strict-field correction checks **passed** on `9e5a2f3fb51ae6dfb740ee1f3ae7d30ec72eb617`; the final documentation-head verification on the same code **passed** in [Run #39403907977](https://github.com/overurdream-collab/test2/actions/runs/39403907977) at `fbd084e739b8500b39bec971e5a04e4bee41b573`.
+- Report: 3 synthetic documents; 18 visual source anchors in Chromium; 2-page navigation demonstrated; **41 synthetic decisions** including versioned correction, A1 arithmetic 0 / 2 before correction and 1 after a deliberate synthetic price amendment, pending/reject/unresolved; hash/event immutability and cross-tenant/identity controls tested.
+- Artifact: `reader-human-review-browser-and-api-synthetic` in Run #39403907977, containing `human_review_results.json`, `server.log` and `review_ui_after_accept.png`. QA inspected the screenshot: original PDF raster, source-cell overlays, zoom crop, accepted state and page controls rendered correctly.
+- All attestation actions were scripted by tests, **not performed by a real independent reviewer**; this is not a qualification of human visual correctness.
+- Source rows remain `UNVERIFIED_OCR_CANDIDATE` and the G2 documents remain `review_required`. There is no new production table, migration, Shared Audit service, live data, deployed interface or financial outcome. A1 `a1_trusted_input` remains unmodified and unused.
+- **Decision: ISOLATED HUMAN REVIEW PILOT ACCEPTED** for functional synthetic HTTP/Chromium review, append-only demonstration and advisory A1 preview only. Formal OCR review permissions, Shared Audit integration, resilient centralized event retention and trusted PDF row authorization remain future separately approved work. **NO MERGE / NO DEPLOY.**
+
