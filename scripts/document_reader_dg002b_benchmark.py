@@ -85,7 +85,7 @@ def tesseract_run(png,language):
         raise RuntimeError("TESSERACT_TSV_FAILED: "+run.stderr.decode(errors="replace")[-400:])
     words=[]
     for r in csv.DictReader(io.StringIO(run.stdout.decode()),delimiter="\t"):
-        text=r.get("text","").strip()
+        text=r.get("text","").strip().replace("\u200e","").replace("\u200f","")
         if not text:continue
         left,top,w,h=(int(r[z]) for z in ("left","top","width","height"))
         words.append({"text":text,"bbox":[left,top,left+w,top+h],
@@ -96,7 +96,7 @@ def tesseract_run(png,language):
     if text_run.returncode:raise RuntimeError("TESSERACT_TEXT_FAILED")
     return words,text_run.stdout.decode(errors="replace").strip(),time.perf_counter()-start
 
-def associate_fields(words):
+def associate_fields(words,language="en"):
     """Label/row matching only from OCR TSV. No gold/fixture field values, no fixed cells."""
     grouped={}
     for w in words:grouped.setdefault(w["line_key"],[]).append(w)
@@ -112,7 +112,7 @@ def associate_fields(words):
         if key is None:continue
         values=[w for w in ordered if w["bbox"][0]>=300]
         if not values:continue
-        values.sort(key=lambda w:w["bbox"][0])
+        values.sort(key=lambda w:w["bbox"][0],reverse=language=="ar")
         value=" ".join(w["text"] for w in values)
         box=[min(w["bbox"][0] for w in values),min(w["bbox"][1] for w in values),
              max(w["bbox"][2] for w in values),max(w["bbox"][3] for w in values)]
@@ -131,7 +131,7 @@ def run_tesseract(root):
         t0=time.perf_counter()
         words,text,secs=tesseract_run(png,item["language"])
         total_runtime+=secs
-        fields=associate_fields(words)
+        fields=associate_fields(words,item["language"])
         docs.append({"id":item["id"],"sha256":item["image_sha256"],
                      "language":item["language"],"pages":[{"page":1,"text":text}],
                      "fields":fields})
