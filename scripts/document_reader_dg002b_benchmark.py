@@ -144,7 +144,8 @@ def run_tesseract(root):
         language_checksum[lang]="INSTALLED" if lang in t.stdout.split() or lang in t.stderr.split() else "MISSING"
     pred={"engine":"Tesseract "+version,"documents":docs,
           "runtime_seconds":round(total_runtime,3),
-          "peak_rss_mb":round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024,3),
+          "peak_rss_mb":round(max(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+                                   resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss)/1024,3),
           "peak_vram_mb":None,
           "machine":platform.platform(),"backend":"CPU",
           "confidence_status":"UNCALIBRATED_HUMAN_REVIEW_ONLY"}
@@ -155,6 +156,20 @@ def run_tesseract(root):
        "all_fields_review_required":True,"model_folds":"tiny synthetic fixed evaluation only",
        "bbox_coordinates":"image pixels","automatic_medical_or_financial_decisions":False}
     jsonsave(root/"metrics_tesseract.json",report)
+    error_cases=[]
+    for detail in report["details"]:
+        if not detail["exact_value"] and not detail["correct_page_row_and_iou"]:
+            cls="READING_AND_ASSOCIATION_FAILURE"
+        elif not detail["exact_value"]:
+            cls="OCR_OR_FIELD_READING_FAILURE"
+        elif not detail["correct_page_row_and_iou"]:
+            cls="EVIDENCE_ASSOCIATION_FAILURE"
+        else:
+            continue
+        error_cases.append({"classification":cls,**detail})
+    jsonsave(root/"error_analysis.json",{"errors":error_cases,
+        "separate_reading_and_association":True,
+        "memory_metric":"maximum parent or child process peak RSS on Linux; not summed concurrent RSS"})
     print(json.dumps({"engine":version,"documents":len(docs),"fields_expected":report["fields_expected"],
       "fields_exact":report["fields_exact"],"source_aligned":report["evidence_source_aligned"],
       "CER":report["cer_whitespace_ignored"],"WER":report["wer_whitespace_tokenized"],
