@@ -1,0 +1,8 @@
+name: MCIAS Synthetic Reader G2 Custody
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  custody:
+    runs-on: ubuntu-latest
