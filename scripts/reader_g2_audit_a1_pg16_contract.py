@@ -14,7 +14,8 @@ from pydantic import BaseModel as Schema, ConfigDict, Field, ValidationError
 from sqlalchemy import create_engine, select, inspect, text, String, Integer, JSON, ForeignKey, UniqueConstraint
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, Mapped, mapped_column
-from mcias.models import Base, Organization, User, SessionToken, SourceFile, AuditLog, uid
+from mcias.models import Base, Organization, User, SessionToken, SourceFile, AuditLog, Role, Permission, RolePermission, UserRole, uid
+from mcias.policy import has_permission
 from mcias.models_ingestion import IngestionDocument, IngestionJob
 from mcias.storage import EncryptedStore
 from g2_trust_pilot import reopen
@@ -81,6 +82,8 @@ def session_actor(db,token):
     actor=db.get(User,active.user_id)
     if actor is None or not actor.active or not actor.organization_id:
         raise ContractRejected("REVIEWER_NOT_ACTIVE_IN_TENANT")
+    if not has_permission(db,actor,"ingestion.review"):
+        raise ContractRejected("REVIEWER_ROLE_PERMISSION_MISSING")
     return actor
 
 def versions(db,cid):
