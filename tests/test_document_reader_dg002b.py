@@ -32,6 +32,15 @@ class DG002B(unittest.TestCase):
         self.assertEqual(pred[0]['value'],"Amoxicillin")
         self.assertEqual(pred[0]['bbox'],[435,200,670,240])
         self.assertTrue(pred[0]['review_required'])
+    def test_arabic_tokens_use_rtl_reading_order(self):
+        words=[
+          {"text":"DRUG","bbox":[65,300,190,350],"line_key":(1,1,2),"confidence_uncalibrated":90.},
+          {"text":"واحدة","bbox":[600,300,710,350],"line_key":(1,1,2),"confidence_uncalibrated":86.},
+          {"text":"كبسولة","bbox":[790,300,910,350],"line_key":(1,1,2),"confidence_uncalibrated":88.}
+        ]
+        self.assertEqual(associate_fields(words,"ar")[0]["value"],"كبسولة واحدة")
+        self.assertEqual(associate_fields(words,"en")[0]["value"],"واحدة كبسولة")
+
     def test_swapped_label_and_region_is_not_success(self):
         with tempfile.TemporaryDirectory() as path:
             make_fixtures(path)
