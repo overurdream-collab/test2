@@ -57,3 +57,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Added section 13: ownership matrix and file boundaries, proposed SourceRowEvidenceV1/ApplicableReferenceSnapshotV1/ClaimAuditCoverageV1/AuditEvidenceEventV1, one-row real PostgreSQL 16 acceptance plan and missing/incomplete/expired reference negatives.
 - Baseline f846f280 CI Run 39507690176 unit/postgres SUCCESS, dependency audit FAILURE. No reruns or new E2E tests.
 - Integration acceptance BLOCKED pending component-owner approval and verified real G4→G5→Shared Audit passage.
+
+## 2026-10-21 — CAI-01 minimal implementation gate
+- Verified HEAD 5d8cdbc, Run 39508338821 unit/postgres PASS, dependency audit FAIL; verified independent Draft PR #20/#25/#29.
+- Actual G2/G4/G5 code reviewed. Mixed-sheet one-row import is blocked by missing G4 approved-row gate; G3 completeness and Shared Audit event linkage not verified.
+- Section 14 and HANDOFF-20261021-011 record owner/file assignments and four-case PostgreSQL 16 acceptance pending. No E2E executed or shared code edited.

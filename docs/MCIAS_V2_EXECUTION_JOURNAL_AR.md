@@ -101,3 +101,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: G2 source approval, G3 six-family versioned completeness, G4 gate, G5 coverage, PR #29 shared events, and Pillow 12.3.0 CVEs remain unresolved.
 - Next: AI CTO approves ownership and authorizes component owners to implement minimal shared contracts; run actual PostgreSQL 16 one-row fixture and negative references, record events and evidence.
 - Handoff: Preserve Draft PR #31; no shared code changes, merge, deploy or automatic financial decisions.
+
+### HANDOFF-20261021-011 — CAI-01 coordinated minimal execution gate
+- Scope: Reverify PR #31 and CI, inspect actual G2/G4/G5 implementation, identify shared ownership blockers and specify real PG16 four-case one-row acceptance.
+- Why: Existing G4 imports all extracted rows and G3 completeness/Shared Audit integration are not established; simulated results would violate acceptance.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN; baseline Run 39508338821 unit PASS, postgres PASS, dependency-audit FAIL. Four PG16 acceptance fixtures NOT_EXECUTED; no audit event IDs measured.
+- Result: COORDINATION_REQUESTED_IN_DOCS; INTEGRATION_ACCEPTANCE_BLOCKED. No claim that agents have accepted assignments.
+- Risks: G2 sheet identity/raw ledger, G3 six-family completeness, G4 approved-sheet gate, G5 per-check coverage, PR #29 shared writer, security blocker.
+- Next: AI CTO explicitly assigns shared file owners and authorizes minimal changes; run real PG16 end-to-end before acceptance.
+- Handoff: Draft PR #31; no shared edits, cross-branch changes, merge, deployment or financial automation.
