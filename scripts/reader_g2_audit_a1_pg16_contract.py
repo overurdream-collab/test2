@@ -375,10 +375,19 @@ def run(outdir,url,pr29,pr20):
             with Session(engine) as db:
                 cs=all_candidates(db,primary_org,info["doc"])
                 ids=[z.id for z in cs]
+                price_hold=next((z.id for z in cs if z.row_id=="BB" and z.field_name=="price"),None)
             for c in ids:
-                if case=="english_columnar" and c==cid:continue
+                if case=="english_columnar" and c in (cid,price_hold):continue
                 saved=submit(engine,store,writer,token,req(c,str(uuid.uuid4())),info["sha"])
                 assert saved["version"]==1 and not saved["replay"]
+            if case=="english_columnar":
+                with Session(engine) as db:
+                    active_actor=db.scalar(select(User).where(User.username=="pg16-ocr-reviewer"))
+                    suspended=advisory(db,store,active_actor,info["doc"],info["parsed"],a1)
+                    assert suspended["blocked"]==["TRANSCRIPTION_NOT_ATTESTED"]
+                    negative.append("MISSING_PRICE_REVIEW_HOLDS_A1")
+                approved=submit(engine,store,writer,token,req(price_hold,str(uuid.uuid4())),info["sha"])
+                assert approved["version"]==1
             with Session(engine) as db:
                 actor=db.scalar(select(User).where(User.username=="pg16-ocr-reviewer"))
                 report=advisory(db,store,actor,info["doc"],info["parsed"],a1)
@@ -398,6 +407,20 @@ def run(outdir,url,pr29,pr20):
                     "shared_audit_success":len(logs),"a1_arithmetic":expected,
                     "contract_sample":contract.model_dump(mode="json"),
                     "financial_decision":"NOT_AUTHORIZED"})
+        # Actual PR29 independent denial path must record only server-owned actor/tenant,
+        # after denied business review rolls back.
+        with Session(engine) as db:
+            denials=db.scalars(select(AuditLog).where(
+                AuditLog.action=="ocr_transcription_denied")).all()
+            assert len(denials)>=2,denials
+            assert all(row.details.get("reason_code")=="permission_denied" and
+                       row.details.get("outcome")=="denied" and
+                       "amount" not in row.details and "patient_name" not in row.details
+                       for row in denials)
+            foreign_actor=db.scalar(select(User).where(User.username=="pg16-foreign"))
+            assert any(row.actor_id==foreign_actor.id and
+                       row.details.get("organization_id")==second_org for row in denials)
+            negative.append("ORIGINAL_SHARED_AUDIT_INDEPENDENT_DENIAL")
         # One correction preserves old event and creates exactly one new audit reference.
         with Session(engine) as db:
             c=db.scalar(select(Candidate).where(
