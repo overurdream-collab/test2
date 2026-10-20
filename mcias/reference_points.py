@@ -76,7 +76,7 @@ def _source(db, org, document_id):
     return doc
 
 
-def create_draft(db, actor, data):
+def create_draft(db, actor, data, *, on_created=None):
     _validate(data)
     org = actor.organization_id
     section, key = data["section"], data["logical_key"]
@@ -119,6 +119,8 @@ def create_draft(db, actor, data):
         resource_type="reference_point", resource_id=point.id,
         details={"section":section,"logical_key":key,"version":point.version,
                  "supersedes_id":point.supersedes_id,"source_sha256":point.source_sha256}))
+    if on_created is not None:
+        on_created(point)  # append promotion event within the SAME transaction
     db.commit()
     return point
 

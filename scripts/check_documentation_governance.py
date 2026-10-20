@@ -15,7 +15,9 @@ JOURNAL = "docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md"
 STATE = "docs/MCIAS_V2_CURRENT_STATE_AR.md"
 EXEMPT = frozenset((JOURNAL, STATE))
 REQUIRED = ("Scope", "Why", "Files", "Tests", "Result", "Risks", "Next", "Handoff")
-ENTRY = re.compile(r"^\+### HANDOFF-\d{8}-[A-Za-z0-9_.-]+\s*$", re.M)
+# Accept a short human-readable heading suffix only after a structured ID.
+# All eight per-commit proof fields remain independently mandatory.
+ENTRY = re.compile(r"^\+### HANDOFF-\d{8}-[A-Za-z0-9_.-]+(?:[ \t]+[—–:-][ \t]+[^\r\n]+)?[ \t]*$", re.M)
 FIELDS = {key: re.compile(r"^\+\- " + re.escape(key) + r":\s*\S", re.M)
           for key in REQUIRED}
 

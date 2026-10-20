@@ -1,0 +1,28 @@
+name: Contract LMFE schema runtime probe
+
+on:
+  pull_request:
+    branches:
+      - feat/temporal-reference-inputs-and-four-outcomes
+    paths:
+      - 'tests/test_contract_lmfe_runtime.py'
+      - 'scripts/contract_ai_benchmark.py'
+      - '.github/workflows/contract-lmfe-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-no-model:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install only pinned LM Format Enforcer and pytest
+        run: python -m pip install 'lm-format-enforcer==0.11.2' 'pytest>=8,<9'
+      - name: Check actual C25 schema character-by-character without a model
+        run: python -m pytest -q --noconftest tests/test_contract_lmfe_runtime.py
