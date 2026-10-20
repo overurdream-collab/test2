@@ -4,6 +4,7 @@ on:
     branches: [feat/mcias-document-reader-isolated-pilot]
     paths:
       - scripts/g2_ocr_evidence_qualification_pilot.py
+      - scripts/g2_ocr_a1_trusted_contract_probe.py
       - .github/workflows/g2-ocr-evidence-qualification.yml
       - docs/DG-001_OCR_EVIDENCE_QUALIFICATION_HANDOFF_AR.md
   workflow_dispatch:
@@ -32,52 +33,10 @@ jobs:
         run: |
           test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
           PYTHONPATH=.:scripts python scripts/g2_ocr_evidence_qualification_pilot.py --out ocr-qualification-results --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
-      - name: Verify pinned A1 trusted adapter rejects unverified scanned PDF
+      - name: Verify actual pinned A1 refuses unverified PDF source
         run: |
           cd pinned-a1-readonly
-          python - <<'PY'
-          import os, tempfile
-          from pathlib import Path
-          from pydantic import ValidationError
-          from sqlalchemy import create_engine
-          from sqlalchemy.orm import Session
-          from mcias.models import Base, Organization, User
-          from mcias.storage import EncryptedStore
-          from mcias.ingestion.orchestrator import ingest
-          from mcias.agents.a1_trusted_input import SourceVerification, A1SourceBlocked, _verify_csv_source
-          for flags in [(False,False),(True,False),(False,True)]:
-              try:
-                  SourceVerification.model_validate({
-                      "document_id":"synthetic","sha256":"a"*64,
-                      "original_sha256_verified":flags[0],
-                      "extracted_rows_equal_original":flags[1]})
-              except ValidationError:
-                  pass
-              else:
-                  raise AssertionError("unverified source claimed as A1 trusted")
-          os.environ["MCIAS_ENVIRONMENT"]="development"
-          os.environ["MCIAS_LOCAL_OCR"]="disabled"
-          os.environ["MCIAS_MALWARE_SCAN"]="disabled"
-          engine=create_engine("sqlite+pysqlite:///:memory:")
-          Base.metadata.create_all(engine)
-          with tempfile.TemporaryDirectory() as root, Session(engine) as db:
-              store=EncryptedStore(root,os.urandom(32))
-              org=Organization(name="isolated A1 contract")
-              actor=User(username="a1-contract-fixture",password_hash="fixture")
-              db.add_all([org,actor]);db.flush()
-              actor.organization_id=org.id;db.commit()
-              original=Path("../ocr-qualification-results/english_columnar.pdf").read_bytes()
-              item=ingest(db,store,org.id,actor.id,"synthetic.pdf",original)
-              assert item["status"]=="review_required"
-              try:
-                  _verify_csv_source(db,store,org.id,item["document_id"],item["sha256"])
-              except A1SourceBlocked as exc:
-                  assert "unavailable_untrusted_tenant_source" in str(exc),str(exc)
-              else:
-                  raise AssertionError("A1 trusted adapter accepted an OCR-only PDF")
-          engine.dispose()
-          print("A1_TRUSTED_PDF_SOURCE_REJECTED")
-          PY
+          PYTHONPATH=. python ../scripts/g2_ocr_a1_trusted_contract_probe.py ../ocr-qualification-results/english_columnar.pdf
       - name: Enforce independent synthetic qualification and untrusted-boundary gates
         run: |
           python - <<'PY'
