@@ -29,3 +29,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
           python -m pip install -e .
+
+      - name: Replay decrypted original through OCR and A1
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          PYTHONPATH=.:scripts python scripts/g2_trust_pilot.py --out reader-g2-results --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
