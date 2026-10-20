@@ -49,7 +49,7 @@ with Session(engine) as db:
    actor=User(organization_id=org.id,username=username,password_hash=hash_password(password))
    db.add(actor);db.flush()
    db.add(UserRole(user_id=actor.id,role_id=role.id))
-  for code in ('profile.read','claims.read','users.read'):
+  for code in ('profile.read','claims.read','reports.read','users.read'):
    perm=db.scalar(select(Permission).where(Permission.code==code))
    if perm is None:
     perm=Permission(code=code);db.add(perm);db.flush()
