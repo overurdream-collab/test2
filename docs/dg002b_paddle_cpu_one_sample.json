@@ -1,0 +1,32 @@
+{
+  "engine": "PaddleOCR-VL-1.6 native CPU smoke",
+  "source_workflow_run": "https://github.com/overurdream-collab/test2/actions/runs/39481903613",
+  "original_artifact_id": 12291753556,
+  "model_revision": "676e2aad67375fec9c7dcc9740babec7a0d0d110",
+  "model_weight_sha256": "85a479d506a11e724e7285d395c551be69f41dbc16b6342d3cacfb189aed71db",
+  "dependency_versions": {
+    "paddlepaddle": "3.2.1",
+    "paddleocr": "3.7.0",
+    "huggingface-hub": "0.36.0"
+  },
+  "dataset_documents": 8,
+  "completed_documents": 1,
+  "status": "PARTIAL_INFERENCE_CPU_TIME_LIMIT",
+  "model_output": [
+    {
+      "id": "invoice_en",
+      "sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+      "page": 1,
+      "page_bbox": [
+        0,
+        0,
+        1280,
+        1040
+      ],
+      "elapsed_seconds": 376.992,
+      "ocr_block_text": "MEDICAL INVOICE\nSERVICE    Complete blood count\nQUANTITY    2\nUNITPRICE    15.00\nAMOUNT    30.00"
+    }
+  ],
+  "box_origin": "Paddle output parsing_res_list.block_bbox is whole page because use_layout_detection=False; no cell/row evidence boxes",
+  "subset_note": "Lossless text and bbox projection of one actually completed Paddle result. Full raw model JSON remains in immutable GitHub Actions artifact; no invented remaining documents."
+}
