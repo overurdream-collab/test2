@@ -51,3 +51,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: G2 physical-row coverage/approved sheet inventory unavailable; G4 stages all rows and reads full record set; no verified Excel→G4→G5 E2E; Pillow remediation pending.
 - Next: AI CTO independent review; coordinate owners before changing shared files or dependencies.
 - Handoff: Draft PR #31; preserve existing contracts; stop after documentation; no merge/deploy/automatic financial action.
+
+### HANDOFF-20261021-006 — CAI-01 mandatory inputs-first alignment
+- Scope: Document owner-mandated six reference families, service-date snapshots, mandatory check coverage, historical/clinical risks and 200-million monetary-volume clarification.
+- Why: Prevent claim acceptance without approved effective-dated references and prevent false rejection on missing evidence.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN (documentation only); no claims of full G5 reference integration.
+- Result: DESIGN_POLICY_ALIGNED, runtime enforcement and independent review PENDING.
+- Risks: Six-family approved reference snapshots and completeness not verified; historical/clinical checks and full-coverage performance unproven; Pillow dependency-audit blocker remains open.
+- Next: AI CTO assigns G3/A1/Contract Intelligence/Document Reader/PR #25/PR #29/G4/G5 owners for independent contract review and staged acceptance.
+- Handoff: Preserve previous work on PR #31, no merge/deploy, no parallel engine or automated financial decisions.

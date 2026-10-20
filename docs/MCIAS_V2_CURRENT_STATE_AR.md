@@ -32,3 +32,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Appended sections 7–8 to `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`: four synthetic batches, G5 reference scenarios, accounting invariants, bounded import and restart/concurrency acceptance plan.
 - Current verified HEAD f11d696: unit PASS, postgres PASS, dependency audit FAIL (Pillow 12.3.0, eight CVEs). No new tests run.
 - Shared integration blocked pending owner approval, trustworthy sheet inventory, physical-row ledger and G4 server-side approved-row filter. Documentation-only; independent review next.
+
+## 2026-10-21 — Mandatory INPUTS-FIRST directive
+- Added policy alignment to CAI-01 source contract: six approved reference families, effective-dated version binding, audit coverage and missing-evidence distinction, existing G5 ownership and independent financial decisions.
+- Monetary scale clarified as 200 million total claimed value over two months, **not row count**; throughput and end-to-end completeness remain unverified.
+- Documentation only, no test reruns, no shared runtime edits; separate Pillow dependency-audit blocker remains open.
