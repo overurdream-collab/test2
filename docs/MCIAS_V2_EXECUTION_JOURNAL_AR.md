@@ -61,3 +61,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: Six-family approved reference snapshots and completeness not verified; historical/clinical checks and full-coverage performance unproven; Pillow dependency-audit blocker remains open.
 - Next: AI CTO assigns G3/A1/Contract Intelligence/Document Reader/PR #25/PR #29/G4/G5 owners for independent contract review and staged acceptance.
 - Handoff: Preserve previous work on PR #31, no merge/deploy, no parallel engine or automated financial decisions.
+
+### HANDOFF-20261021-007 — CAI-01 Phase 3 controlled verification evidence
+- Scope: Verify current PR HEAD/CI, run available isolated CAI-01 preflight tests, record actual Phase 3 E2E and environment gaps without inventing results.
+- Why: Owner approved isolated integration tests/minimal fixes, but acceptance must be based on executed PostgreSQL 16 evidence.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: local `PYTHONPATH=. python -m pytest -q tests/test_cai01_batch_preflight.py` = 12 PASS, 0 FAIL, 0 SKIP (0.46s); first bare pytest invocation failed collection due to module path. Existing CI Run 39506569513 unit PASS, postgres PASS, dependency-audit FAIL. NO new PostgreSQL 16 E2E run; no performance or confusion matrix measured.
+- Result: BLOCKED_NOT_VERIFIED for Phase 3 integration; isolated source preflight passed only.
+- Risks: No PostgreSQL 16 local executable/Docker/psycopg; G2 full provenance and G4 approved-sheet import missing; G3/G5 approved reference integration and Pillow remediation open.
+- Next: AI CTO/G2/G4/G5/Shared Audit owners approve shared interface scope; provision isolated PostgreSQL 16 runner, then run labeled 4-batch E2E and measure.
+- Handoff: Draft PR #31; no reset, merge, deploy, financial automation, security bypass or other-agent branch edits.

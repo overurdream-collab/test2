@@ -37,3 +37,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Added policy alignment to CAI-01 source contract: six approved reference families, effective-dated version binding, audit coverage and missing-evidence distinction, existing G5 ownership and independent financial decisions.
 - Monetary scale clarified as 200 million total claimed value over two months, **not row count**; throughput and end-to-end completeness remain unverified.
 - Documentation only, no test reruns, no shared runtime edits; separate Pillow dependency-audit blocker remains open.
+
+## 2026-10-21 — CAI-01 Phase 3 verification gate
+- Verified baseline 4ed7c4c and CI Run 39506569513 (unit SUCCESS, PostgreSQL SUCCESS, dependency audit FAILURE).
+- Local isolated preflight tests 12 PASS; no PostgreSQL 16 E2E environment available and no integrated four-batch results or throughput/TP/FP/FN metrics measured.
+- Phase 3 integration decision BLOCKED/NOT VERIFIED. See section 10 of source contract and HANDOFF-20261021-007; no shared code changed.

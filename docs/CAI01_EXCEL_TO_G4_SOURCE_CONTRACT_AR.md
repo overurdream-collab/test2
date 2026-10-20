@@ -129,3 +129,30 @@ All shared paths above require AI CTO approval before editing; **no shared code 
 - Scale target is **up to 200 million in total claimed monetary value over two months**, not 200 million rows. Capacity planning must derive actual row counts, claim-line cardinality, historical lookback, source sizes and service-level targets from measured datasets; batch/keyset import, resumable checkpoints, idempotency, tenant isolation and complete reconciliation remain prerequisites.
 - Dependencies/ownership: G3 owns effective-dated references and source completeness attestations; A1 invoice/medical evidence integrity; Contract Intelligence extracts candidates but cannot activate clauses without approval; Document Reader supplies source-linked OCR evidence not financial truth; G2 source manifest; G4 imports eligible rows; G5 deterministic checks; G6 human decisions; G7 coverage/risk reporting; G8 independent validation; PR #25 unified inputs; PR #29 Shared Audit immutable evidence/events. All require independent integration review before shared edits.
 - **Status:** G2 Excel locator and G4 stage/resume and isolated CAI-01 preflight exist, but full six-family approved reference binding, source completeness, historical cross-batch G5 execution, clinical checks, comprehensive end-to-end verification and production throughput are **not proven**. No new engine, no financial decision automation, no shared change authorized by this addendum.
+
+## 10. Phase 3 controlled verification evidence and stop gates (2026-10-21)
+**Verified HEAD before work:** `4ed7c4c67cc5eb7fe6ea39d5178ee69579fbcd8e`. GitHub Actions Run `39506569513`: unit SUCCESS (job 118916862510), postgres-integration SUCCESS (job 118916862472), dependency-audit FAILURE (job 118916862108). These existing green checks are **not** the required multi-batch Excel → G4 → G5 acceptance.
+**Executed in isolated local CAI-01 sandbox:** `PYTHONPATH=. python -m pytest -q tests/test_cai01_batch_preflight.py` → **12 passed in 0.46s**, no skips/fails. An initial direct `pytest -q` invocation failed during collection (`ModuleNotFoundError: mcias`), resolved by invoking via `python -m pytest` with `PYTHONPATH=.`; no code was modified. This tests read-only preflight only; **not** PostgreSQL/G4/G5 end-to-end.
+**Environment limitation:** local runtime has no `psql`, `postgres`, `pg_ctl` or Docker command available; `psycopg` not installed. No PostgreSQL 16 test instance, database connection or real multi-batch execution established. Do not misrepresent existing CI PostgreSQL pass as a Phase 3 acceptance run.
+
+### Phase 3 verification matrix — actual evidence, not inferred
+| Required assertion | Phase 3 verified? | Blocker |
+|---|---|---|
+| Original Excel file SHA, sheet name/type, physical row provenance | NO | G2 locator lacks attested worksheet name/type and full physical-row ledger |
+| Exclude PAYMENT/FAMILY_SUMMARY and exact financial/date/currency reconciliation | NO end-to-end | Existing preflight is read-only; approved sheet manifest not enforced in G4 |
+| G4 → G5 eligible-only source rows | NO | G4 stages all extracted rows; no approved-row filter |
+| Beneficiary/employee/dependent effective-dated reference checks | NO | G3 approved versioned reference snapshot and fixture binding not demonstrated |
+| Tariff/provider/contract/version, copay, caps, cumulative history | NO | shared G3/G5 integration and double-count-safe ledger unverified |
+| Intra/inter-batch semantic duplicate, restart, tenant isolation | NO end-to-end | PostgreSQL 16 multi-batch controlled run not executed |
+| Chronic refill, clinical conflicts, suspicious unperformed service, valid negatives | NO | approved rules/evidence and G5 evaluation fixtures not executed |
+| Claim/line TP FP FN Precision Recall | NOT MEASURABLE | no executed labeled E2E outcomes; no invented scores |
+| Rows/sec, RSS, import/check time, resume time, SQL cumulative query cost | NOT MEASURED | no PostgreSQL 16 end-to-end/load run |
+| Existing isolated source preflight unit tests | YES, 12/12 local | narrower than Phase 3 acceptance |
+| Shared dependency security audit | FAIL | Pillow 12.3.0 eight CVEs; security owner coordination needed |
+
+### Acceptance data accounting (not yet collected)
+- Number of Phase 3 PostgreSQL 16 executed batches: **0**; actual source worksheets: **0**; actual accepted/excluded/held/imported row totals: **NOT MEASURED**; no claim of zero defects.
+- Synthetic scenarios remain specified in sections 7–9 but unexecuted as an integrated chain. No approved clinical policy or institutional death source may be fabricated for test acceptance.
+- The absence of production-scale measurements is not proof of poor or good throughput; 200 million is monetary claim value, not row count.
+- Required next authorized step: provide a runnable PostgreSQL 16 isolated CI workflow or compatible test environment and approve narrowly scoped G2 provenance / G4 approved-row import contract changes with respective owners. Then execute four-batch fixtures, capture immutable run IDs/artifacts, SQL and RSS metrics, claim/line confusion matrix and reconciliation before any readiness change.
+**Integration readiness decision: BLOCKED / NOT VERIFIED.** No shared code changes, merge, deployment, financial decisions, or dependency bypass performed.
