@@ -80,6 +80,8 @@ def run(a1,out):
                 page.locator('#info').get_by_text('سُجل القرار',exact=False).wait_for(timeout=12000)
                 page.screenshot(path=str(out/'review_ui_after_accept.png'),full_page=True)
                 browser.close()
+            initial=client.get(f'/api/documents/{by["english_columnar"]}/a1-preview',headers=head).json()
+            assert initial['status']=='HUMAN_REVIEW' and 'FIELD_NOT_TRANSCRIPTION_ATTESTED' in initial['blocked']
             valid_fields=cases['english_columnar']['fields']
             first=valid_fields[0]
             # Accept from browser is exactly one real appended event.
@@ -97,11 +99,15 @@ def run(a1,out):
             # C: Arabic uncertain date blocks preview independently of OCR row transcription.
             ar=client.get(f'/api/documents/{by["arabic_rtl"]}/a1-preview',headers=head).json()
             assert ar['status']=='HUMAN_REVIEW' and ar['blocked']
-            # Accepted value cannot change without new event; amended version is append-only.
-            assert_status(lambda:decide(accepted,'correct',0,'correct a deliberate simulation','42.00'),409)
-            assert_status(lambda:decide(accepted,'correct',1,'', '42.00'),422)
-            new,_=decide(accepted,'correct',1,'Synthetic deliberate transcription correction for regression','42.00')
+            # Amend a reviewed PRICE, never silently change the OCR source or its record.
+            price=next(x for x in valid_fields if x['field']=='price')
+            assert_status(lambda:decide(price,'correct',0,'correct a deliberate simulation','16.00'),409)
+            assert_status(lambda:decide(price,'correct',1,'','16.00'),422)
+            assert_status(lambda:decide(price,'correct',1,'Transcription field type must match','NOT-PRICE'),422)
+            new,_=decide(price,'correct',1,'Synthetic reviewer correction for price evidence','16.00')
             assert new['event']['version']==2 and new['event']['previous_status']=='TRANSCRIPTION_ACCEPTED'
+            revised=client.get(f'/api/documents/{by["english_columnar"]}/a1-preview',headers=head).json()
+            assert revised['status']=='HUMAN_REVIEW' and revised['a1_arithmetic_count']==1
             # Retry same operation = same event, distinct operation with stale version = conflict.
             f=cases['english_reordered']['fields'][0]
             fresh=client.get(f'/api/documents/{by["english_reordered"]}/evidence',headers=head).json()['fields'][0]
@@ -127,6 +133,8 @@ def run(a1,out):
             assert_status(lambda:decide(a[0],'reject',reason='short'),422)
             decide(a[0],'reject',reason='Text not sufficiently readable to attest')
             decide(a[1],'unresolved',reason='Multiple possible readings within OCR region')
+            pending,_=decide(a[2],'pending')
+            assert pending['event']['new_status']=='PENDING_HUMAN_REVIEW'
             assert client.get(f'/api/documents/{by["arabic_rtl"]}/a1-preview',headers=head).json()['status']=='HUMAN_REVIEW'
             # Reject altered audit trail and altered original candidate table rows (SQLite append-only triggers).
             con=sqlite3.connect(str(Path(root)/'pilot.sqlite3'))
