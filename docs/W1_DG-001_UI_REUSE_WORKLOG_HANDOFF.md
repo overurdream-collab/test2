@@ -57,3 +57,14 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 - Verified source: GitHub Actions job 118373729559 logs. CI Node deprecation warning is non-blocking.
 - NOT RUN / NOT VERIFIED: real-browser desktop/mobile flows, AR/EN RTL/LTR and theme in browser; PostgreSQL synthetic negative API auth and cross-tenant isolation; browser UI search/status/loading/error behavior. These remain acceptance blockers.
 - No Draft PR yet because mandatory browser/security gates are not evidenced. No merges or deployment.
+
+
+## W1-FINAL-VERIFY resumed — 2026-10-20
+- Reverified W1 branch HEAD before changes: d4798a3dfac67c115f181846023db9c5fd40525f; no reset or modifications to other branches.
+- Accepted existing W1-T1 GitHub Actions Run #39344578716 on that exact SHA: SUCCESS. No Node test rerun requested.
+- Existing reusable browser suites confirmed: scripts/check_workspace_browser.py (Chromium AR/EN, RTL/LTR, themes, responsive, mock API), scripts/check_workspace_live.py (real server login, PostgreSQL claim reads, logout). Existing tests/test_enterprise_workspace.py includes negative 403 authorization, tenant-scoped reads, super_admin + users.read gating, sensitive-field checks.
+- Created .github/workflows/w1-browser-security.yml on W1 branch, commit d79306c2c842bac364864b68983cabdc3d1fe24f. Isolated PostgreSQL 16 service, Chromium, synthetic fixture, existing pytest security tests and both existing browser scripts, screenshot and JSON evidence upload.
+- IMPORTANT: Creating a workflow is NOT a successful execution. Chromium/PostgreSQL results and three-role real browser acceptance remain UNVERIFIED until a completed GitHub Actions run demonstrates them.
+- The existing browser scripts do NOT establish a three-role real-session matrix; they cover mock reader and real reader session. W1-T2 full Super Admin/Admin/User browser matrix is therefore still an explicit gap.
+- /admin/users uses the current Super Admin read-only UI and existing users catalog; /institution/users is not implemented and is not claimed complete.
+- No Draft PR or production acceptance until actual successful browser/security evidence is checked. No deployment or merge.
