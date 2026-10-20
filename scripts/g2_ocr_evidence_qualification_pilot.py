@@ -172,3 +172,41 @@ def run(outdir,a1_file):
                         "human_review":"REQUIRED","financial_decision":"NOT_AUTHORIZED"}
                 reports.append(report)
                 (out/(case+"_candidate_review.json")).write_text(json.dumps(report,ensure_ascii=False,indent=2))
+
+                if case=="english_columnar":
+                    def ensure_review(tag):
+                        result=examine(db,store,org.id,doc.id,doc.sha256,gold,private)
+                        assert result["safe_for_advisory_preview"] is False,(tag,result)
+                        negative[tag]=result["issues"]
+                    price=next(x for x in all_candidates(db,org.id,doc.id)
+                               if x.row_id=="BB" and x.field_name=="price")
+                    savepoint=db.begin_nested()
+                    db.delete(price);db.flush()
+                    ensure_review("MISSING_PRICE_CELL")
+                    savepoint.rollback()
+                    amount=next(x for x in all_candidates(db,org.id,doc.id)
+                                if x.row_id=="AA" and x.field_name=="total")
+                    different=next(x for x in all_candidates(db,org.id,doc.id)
+                                   if x.row_id=="BB" and x.field_name=="total")
+                    savepoint=db.begin_nested()
+                    amount.bbox=list(different.bbox);db.flush()
+                    ensure_review("WRONG_AMOUNT_CELL_LOCATION")
+                    savepoint.rollback()
+                    qty=next(x for x in all_candidates(db,org.id,doc.id)
+                             if x.row_id=="AA" and x.field_name=="qty")
+                    savepoint=db.begin_nested()
+                    qty.observed_value="999";db.flush()
+                    ensure_review("CHANGED_QUANTITY_VALUE")
+                    savepoint.rollback()
+                    item=next(x for x in all_candidates(db,org.id,doc.id)
+                              if x.row_id=="AA" and x.field_name=="code")
+                    savepoint=db.begin_nested()
+                    item.status="TRUSTED";db.flush()
+                    ensure_review("ILLEGAL_STATUS_PROMOTION")
+                    savepoint.rollback()
+                    try:examine(db,store,other.id,doc.id,doc.sha256,gold,private)
+                    except ValueError:negative["CROSS_ORGANIZATION"]="DENIED"
+                    else:raise AssertionError("cross-organization read accepted")
+                    try:examine(db,store,org.id,doc.id,"0"*64,gold,private)
+                    except ValueError:negative["SOURCE_SHA_CHANGED"]="DENIED"
+                    else:raise AssertionError("invalid source hash accepted")
