@@ -1,0 +1,49 @@
+name: MCIAS Reader DG-002B Paddle CPU Raw Sample Score (No Weights)
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - docs/dg002b_paddle_cpu_one_sample.json
+      - scripts/document_reader_dg002b_paddle_offline_score.py
+      - .github/workflows/document-reader-dg002b-paddle-offline-score.yml
+permissions:
+  contents: read
+jobs:
+  score-verified-partial-sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recreate fixed synthetic oracle without running any OCR model
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core
+          python -m pip install 'Pillow==11.3.0' 'reportlab==4.4.9'
+          PYTHONPATH=. python scripts/document_reader_dg002b_benchmark.py --out dg002b-same-assets --generate-only
+      - name: Score only actually completed Paddle image with no source-box inflation
+        run: |
+          PYTHONPATH=. python scripts/document_reader_dg002b_paddle_offline_score.py \
+            --snapshot docs/dg002b_paddle_cpu_one_sample.json \
+            --gold dg002b-same-assets/gold.json --out dg002b-paddle-single-score
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("dg002b-paddle-single-score/paddle_partial_metrics.json").read_text())
+          assert r["full_corpus_coverage"]=={"executed":1,"expected":8,
+                "eligible_for_full_eight_document_comparison":False}
+          assert r["fields_expected"]==4 and r["fields_exact"]==4
+          assert r["fields_exact_and_aligned"]==0
+          assert r["cer_whitespace_ignored"]==0 and r["wer_whitespace_tokenized"]==0
+          assert r["review_or_missing_fields"]==4 and r["unsafe_accepted_fields"]==0
+          assert r["source_binding_qualification"]=="UNQUALIFIED_PAGE_WIDE_BBOX"
+          print("PADDLE_PARTIAL_ONE_DOCUMENT_TEXT_ONLY_NO_FIELD_EVIDENCE")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-dg002b-paddle-actual-one-image-partial-metrics
+          path: dg002b-paddle-single-score/
+          retention-days: 30
