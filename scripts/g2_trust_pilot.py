@@ -107,3 +107,16 @@ def run(outdir,a1_file):
         assert r["g2_ingestion_status"]=="review_required"
     assert by["arabic_rtl"]["a1_ran"] is False
     assert negative==6
+
+    summary={"status":"PASS_G2_ENCRYPTED_SOURCE_CUSTODY_SYNTHETIC",
+             "negative_source_checks":negative,"cases":reports,
+             "g2_original_bytes_verified":True,"g2_ocr_cell_rows_verified":False,
+             "a1_trusted_input_used":False,
+             "warning":"G2 quarantines scanned pages with OCR off; synthetic gold matching does not establish native G2 row evidence."}
+    (out/"g2_source_results.json").write_text(json.dumps(summary,indent=2))
+    print(json.dumps({"gate":summary["status"],"cases":len(reports),"negative":negative}))
+
+if __name__=="__main__":
+    p=argparse.ArgumentParser()
+    p.add_argument("--out",required=True);p.add_argument("--a1",required=True)
+    a=p.parse_args();run(a.out,a.a1)
