@@ -59,7 +59,7 @@ def run(a1,out):
             # Chromium UI verifies real image overlays, original-cell crop and page navigation.
             with sync_playwright() as pw:
                 browser=pw.chromium.launch(headless=True,args=['--no-sandbox'])
-                page=pw.chromium.new_page(viewport={'width':1480,'height':980})
+                page=browser.new_page(viewport={'width':1480,'height':980})
                 page.goto(f'http://127.0.0.1:{port}/')
                 page.locator('#password').fill('demo-reviewer-a-2026')
                 page.locator('#login').click()
