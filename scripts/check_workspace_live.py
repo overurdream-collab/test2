@@ -84,7 +84,7 @@ with sync_playwright() as pw:
   assert len(tokens)==1,role+' real backend token absent'
   headers={'Authorization':'Bearer '+tokens[0]}
   context=page.request.get(args.base_url+'/api/v1/workspace/context',headers=headers)
-  assert context.status==200 and context.json()['organization']['id']==org.id
+  assert context.status==200 and context.json()['organization']['id']==f['organization_id']
   assert ('super_admin' in context.json()['roles'])==(role=='super_admin')
   expect(page.locator('#sidebar nav')).to_be_visible()
   page.get_by_role('button',name='EN',exact=True).click()
