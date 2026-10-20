@@ -618,3 +618,13 @@
 - Risks: historical source model metrics are not the new documentation SHA; limited synthetic gold and no independent Arabic/English clinical contract corpus, provider/service effective-date authority, original G2 medical attestation, production RBAC, Shared Audit, G6/G7 signoff or valid integrated Alembic lineage.
 - Next: match mandatory Actions results to rewritten exact new HEAD and leave model quality blockers OPEN; do not re-run expensive old tests unless CI requires it; no merge, deploy or migration.
 - Handoff: original overwritten-documentation HEAD 6fc2bb6b7ac00be7c7c4610ad7196ff4e9e94955 backed up under backup/dg001-pr23-pre-atomic-20261020; original safe parent 39a4a9b93e9eb04ea7c09c8c155c3e08f38c6ec0 preserved; use a supervised force-with-lease rollback if necessary; read-only Alembic divergence report on PR25 documents incompatible 0019/0020 ancestries.
+
+### HANDOFF-20261020-034 — C34 source-literal Qwen diagnostic
+- Scope: PR #23 isolated synthetic C34 guidance and trace, no approved tariffs or production model prompt change.
+- Why: Actual C33 seven outputs on 6-positive SYN corpus TP2 FP0 FN4; R3/R4 incorrectly typed/hallucinated and R5/R6 stitched nonliteral sheet quotes.
+- Files: `mcias/contract_intelligence.py`, `scripts/contract_ai_benchmark.py`, `.github/workflows/contract-ai-c34.yml`, `tests/test_contract_c34_rejection_replay.py`, `tests/fixtures/contract_c34_holdout_synthetic.json`, `docs/CONTRACT_INTELLIGENCE_C34_REPORT_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`.
+- Tests: NOT_RUN on new commit yet; GitHub Actions C34 real Qwen + frozen C33 replay + independent holdout, DG-001 and standard reference CI scheduled by branch push, to be verified on actual SHA.
+- Result: PENDING_CI. C33 original [39142051824](https://github.com/overurdream-collab/test2/actions/runs/39142051824) TP2 FP0 FN4 33.33% 683.0s, NOT C34.
+- Risks: Miniature synthetic corpus; model may still hallucinate/return missing values; forced nonempty diagnostic negative; downloads and runtime variance; no alternate approved pricing logic or change to independent validation. Developer/acceptance docs not changed because production behavior/API/schema/financial gate untouched, only optional diagnostic text.
+- Next: PR23 owner inspects exact C34 workflow artifacts and all CI results, compares C33 frozen vs C34 + separately sampled holdout, records real metrics or BLOCKED.
+- Handoff: Resume only from latest PR23 HEAD; do not reset, merge, deploy, change gold or validator. Compare source locators, rejection reasons, raw model candidates, TP/FP/FN and elapsed time before making any quality claim.

@@ -47,7 +47,7 @@ CASES=[
   "gold":[]},
 ]
 
-def main(output, cases=None, split_multi_tariff=False):
+def main(output, cases=None, split_multi_tariff=False, diagnostic_tariff_literals=False):
     os.environ["HF_HUB_DISABLE_TELEMETRY"]="1"
     # Alternative fully instruction-tuned Apache-2.0 model, test only; same schema and validation.
     torch.set_num_threads(2)
@@ -105,15 +105,24 @@ def main(output, cases=None, split_multi_tariff=False):
             request_start=monotonic()
             error=None
             proposals=[]
+            diagnostics=[]
             hashes={}
             for segment_blocks in block_batches:
                 try:
                     inference=infer_local(segment_blocks,endpoint=f"http://127.0.0.1:{http.server_port}/v1/chat/completions",
-                        model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=180)
+                        model_id=MODEL_ID,model_revision=MODEL_REVISION,timeout=180,
+                        benchmark_tariff_literals=diagnostic_tariff_literals)
                     hashes[str(len(hashes)+1)]={"request":inference["request_sha256"],"response":inference["response_sha256"]}
-                    proposals.extend(validate_candidates(inference["candidates"],segment_blocks,
+                    checked=validate_candidates(inference["candidates"],segment_blocks,
                         source_sha256=sha256(case["source"].encode()).hexdigest(),
-                        model_id=MODEL_ID,model_revision=MODEL_REVISION))
+                        model_id=MODEL_ID,model_revision=MODEL_REVISION)
+                    proposals.extend(checked)
+                    # The benchmark is synthetic-only: retain full model-vs-validator
+                    # trace for diagnosis, never reinterpret quarantined proposals.
+                    diagnostics.extend({"raw_candidate":raw,"validation_errors":validated["validation_errors"],
+                        "evidence_status":validated["evidence_status"],
+                        "source_locator":validated["source_locator"]}
+                        for raw,validated in zip(inference["candidates"],checked))
                 except ContractExtractionError as exc:
                     error=type(exc).__name__
             valid=[p for p in proposals if p["evidence_status"]=="verified_source_anchor"
@@ -128,7 +137,7 @@ def main(output, cases=None, split_multi_tariff=False):
                             "gold":case["gold"],"predicted":[list(v) for v in sorted(predicted)],
                             "candidate_count":len(proposals),"quarantined":len(proposals)-len(valid),
                             "source_segments":[{"locator":block[0]["locator"],"source_sha256":sha256(block[0]["fields"]["text"].encode()).hexdigest()} for block in block_batches if "text" in block[0]["fields"]],
-                            "tp":a,"fp":b,"fn":c,"error":error,"inference_sha256":hashes,
+                            "tp":a,"fp":b,"fn":c,"error":error,"candidate_diagnostics":diagnostics,"inference_sha256":hashes,
                             "elapsed_s":round(monotonic()-request_start,2)})
             print("EVALUATED",case["id"],"TP",a,"FP",b,"FN",c,"ERROR",error,flush=True)
     finally:
@@ -139,7 +148,7 @@ def main(output, cases=None, split_multi_tariff=False):
     # known-negative prompts to expose whether the model can fill grounded fields.
     # This is NOT acceptable production clause-selection behavior.
     result={"fixture_mode":"SYNTHETIC_ONLY","diagnostic_mode":"NONEMPTY_ALL_CASES_INCLUDING_NEGATIVE",
-        "runner":"CPU","model_id":MODEL_ID,
+        "runner":"CPU","diagnostic_tariff_literals":diagnostic_tariff_literals,"model_id":MODEL_ID,
         "model_revision":MODEL_REVISION,"pytorch":torch.__version__,
         "transformers":"4.57.1","generated_calls":inference_calls,
         "generated_output_count":sum(1 for x in inference_calls if "output_sha256" in x),
@@ -168,6 +177,8 @@ if __name__=="__main__":
     parser.add_argument("--output",default="contract-model-benchmark.json")
     parser.add_argument("--cases-file",default=None)
     parser.add_argument("--split-multi-tariff",action="store_true")
+    parser.add_argument("--diagnostic-tariff-literals",action="store_true",
+                        help="Opt-in C34 source-literal instructions (benchmark only)")
     args=parser.parse_args()
     cases=json.loads(Path(args.cases_file).read_text(encoding="utf-8")) if args.cases_file else None
-    main(args.output,cases,args.split_multi_tariff)
+    main(args.output,cases,args.split_multi_tariff,args.diagnostic_tariff_literals)

@@ -285,3 +285,10 @@
 - نماذج Qwen الاصطناعية: تشغيل source-specific #39142051770 TP3/FP0/FN0، بينما المستقل #39142051801 وC33 #39142051824 ينتجان TP2/FP0/FN4، Recall=33.33%. نجاح Workflow لا يساوي قبول جودة الاستخراج.
 - PR23 يبقى DRAFT / NO INTEGRATION / NO PROD; تعارض Alembic مع سلسلة PR25 0019_input_clauses و0020_manual_contract_metadata موثق في تقرير DG-001 للقراءة فقط، بلا ترحيل.
 - التحديث توثيقي فقط؛ إغلاق CI للـSHA الجديد مرهون بنتائج Actions على SHA الجديد دون نقل نتائج السابق إليه.
+
+### Contract Intelligence C34 — isolated recall guidance (2026-10-20)
+- Branch: `feat/mcias-contract-intelligence` — Draft PR #23; baseline `30a902f6bf0c1791cc1e80731adac565e1e79984`; proposed next commit atomic per DG-001.
+- C33 actual [run 39142051824](https://github.com/overurdream-collab/test2/actions/runs/39142051824): TP=2 FP=0 FN=4 Recall=33.33% elapsed=683.0s. R1/R2 correct; R3 missing amount/currency and wrong kind; R4 hallucinated amount + malformed service; R5/R6 not literal quotes of one XLSX field.
+- Small C34: opt-in benchmark ONLY source-literal guidance to pinned real Qwen; production inference default and validator unchanged; raw candidate rejection trace; C33 frozen cases preserved; separate synthetic holdout and deterministic tamper checks.
+- Test state: NOT_RUN on new commit at authoring; GitHub C34 matrix (C33, independent holdout), DG/G1–G9/Enterprise workflows PENDING_CI. Do not promote success from C33 to C34.
+- Next: read exact SHA CI and artifact diagnostics and publish measured baseline vs candidate; no claim of Recall improvement until real-model metrics verified. No merge, deploy, money authority, A1 or Reader changes.
