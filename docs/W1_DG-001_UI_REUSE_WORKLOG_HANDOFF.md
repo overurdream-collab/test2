@@ -68,3 +68,11 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 - The existing browser scripts do NOT establish a three-role real-session matrix; they cover mock reader and real reader session. W1-T2 full Super Admin/Admin/User browser matrix is therefore still an explicit gap.
 - /admin/users uses the current Super Admin read-only UI and existing users catalog; /institution/users is not implemented and is not claimed complete.
 - No Draft PR or production acceptance until actual successful browser/security evidence is checked. No deployment or merge.
+
+
+## W1 final role matrix extension — 2026-10-20
+- Previous isolated Chromium/PostgreSQL 16 Run #39401345142 completed SUCCESS at SHA d79306c2c842bac364864b68983cabdc3d1fe24f; W1 Node Run #39401365910 completed SUCCESS at c865138f8c9477c8ba07dd7991e9574dee1813a5.
+- One targeted UI compatibility fix: w1UsersReadOnly() uses the server's existing boolean `active` rather than absent `status`; filter and display use active/inactive mapping. No backend contract changes.
+- Reused scripts/check_workspace_live.py, adding actual FastAPI login with synthetic PostgreSQL sessions for super_admin (real encrypted MFA/TOTP), admin, and existing reader; navigation/RTL-LTR/mobile, Super Admin-only /admin/users, server API 403, foreign-organization user detail 404 and bounded current-organization list, plus synthetic screenshots and JSON role matrix.
+- Existing PostgreSQL/Chromium workflow now preserves .e2e-output/w1-role-matrix.json and per-role screenshots. Current role-matrix verification Run #39402706752 at SHA c8114507a0c42ff05ac568703a25058e3fd6e65c was triggered; final PASS/FAIL must be determined from the completed run, not from this document.
+- /institution/users remains unsupported for Admin. No RBAC/Ed25519, migrations, production data, deploy or merge. Draft PR withheld pending completed mandatory security evidence.
