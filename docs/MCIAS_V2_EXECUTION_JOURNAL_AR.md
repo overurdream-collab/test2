@@ -81,3 +81,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: unapproved sheet manifest, G4 eligible-row gate, G3 effective-dated completeness, G5 reference binding, Shared Audit event contract and dependency remediation.
 - Next: independent G2/G3/G4/G5/PR #29/A1/Document Reader/Contract Intelligence review and AI CTO decisions before implementation.
 - Handoff: Preserve Draft PR #31, no merge/deploy, no cross-agent branch changes, no financial automation.
+
+### HANDOFF-20261021-009 — CAI-01 isolated INPUTS-FIRST source verification
+- Scope: Add ten isolated preflight source-contract assertions and record actual G4/G5/Shared Audit acceptance blockers.
+- Why: Distinguish source validation from six-family reference audit and financial approval; avoid simulated E2E success.
+- Files: `tests/test_cai01_inputs_first_source_contract.py`, `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: Newly added tests NOT YET VERIFIED on this commit at handoff; previous baseline CI Run 39507267717 unit PASS, postgres PASS, dependency-audit FAIL. No G4/G5 E2E tests run.
+- Result: ISOLATED_TESTS_ADDED; INTEGRATION_ACCEPTANCE_PENDING.
+- Risks: no trusted sheet manifest G4 enforcement, six-family approved reference completeness, or Shared Audit integration evidence; Pillow security failure remains.
+- Next: review new CI, coordinate G2/G3/G4/G5/PR #29 owners, provision approved PostgreSQL 16 E2E and record real case outcomes.
+- Handoff: Draft PR #31, no merge/deploy/financial automation.

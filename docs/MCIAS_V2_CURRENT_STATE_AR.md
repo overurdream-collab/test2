@@ -47,3 +47,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Section 11 of CAI-01 Excel source contract records six-reference applicability and provenance acceptance, four supervisory evaluation states versus existing five dashboard categories, ten-case synthetic matrix and non-duplicating ownership.
 - Baseline 5b391db Run 39507129932 unit/postgres IN_PROGRESS when inspected; dependency audit FAILED (Pillow 12.3.0, eight CVEs). No new E2E tests executed.
 - Integration acceptance PENDING; security and shared contracts require owner coordination.
+
+## 2026-10-21 — CAI-01 isolated INPUTS-FIRST test addition
+- Added ten preflight assertions under `tests/test_cai01_inputs_first_source_contract.py`, not a G4/G5 simulator. Section 12 records end-to-end ten-case BLOCKED matrix and no measured six-reference/Shared Audit coverage.
+- Baseline Run 39507267717 unit/postgres SUCCESS, dependency audit FAILURE; new commit tests pending CI verification.
+- Shared integration acceptance PENDING.
