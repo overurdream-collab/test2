@@ -1,0 +1,63 @@
+name: MCIAS Reader DG-002B Medical OCR Synthetic Benchmark
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/document_reader_dg002b_benchmark.py
+      - scripts/document_reader_dg002b_paddle_preflight.py
+      - tests/test_document_reader_dg002b.py
+      - .github/workflows/document-reader-dg002b-benchmark.yml
+      - docs/DG-002B_OCR_COMPARISON_HANDOFF_AR.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dg002b-tiny-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install small offline OCR dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
+          python -m pip install 'Pillow>=11,<13' 'reportlab>=4.4.9,<5'
+      - name: Verify frozen generator and source-link scorer without rerunning older pilots
+        run: |
+          PYTHONPATH=. python -m unittest tests.test_document_reader_dg002b -v
+      - name: Generate eight independent gold documents and execute real Tesseract
+        run: |
+          PYTHONPATH=. python scripts/document_reader_dg002b_benchmark.py --out dg002b-evidence
+      - name: Record PaddleOCR-VL-1.6 safe budget and exact revision before any large weight download
+        run: |
+          python scripts/document_reader_dg002b_paddle_preflight.py --output dg002b-evidence/paddle_resource_check.json
+      - name: Enforce honest benchmark files and zero automated decisions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path("dg002b-evidence")
+          gold=json.loads((d/"gold.json").read_text())
+          pred=json.loads((d/"predictions_tesseract.json").read_text())
+          score=json.loads((d/"metrics_tesseract.json").read_text())
+          check=json.loads((d/"paddle_resource_check.json").read_text())
+          assert len(gold["documents"])==len(pred["documents"])==8
+          assert score["fields_expected"]==30
+          assert score["engine"].startswith("Tesseract")
+          assert score["status"]=="DG002_SCORING_ONLY_NOT_MODEL_QUALIFICATION"
+          assert all(f["review_required"] is True for doc in pred["documents"] for f in doc["fields"])
+          assert check["execution_performed"] is False and check["predictions"] is None
+          assert (d/"raw_tesseract.json").exists() and (d/"error_analysis.json").exists()
+          assert all((d/x["image"]).exists() and (d/x["pdf"]).exists()
+                     for x in json.loads((d/"manifest.json").read_text())["fixtures"])
+          print("DG002B_TESSERACT_ACTUAL_INFERENCE_AND_PADDLE_PREFLIGHT_ONLY")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-dg002b-medical-ocr-gold-predictions-metrics
+          path: dg002b-evidence/
+          retention-days: 30
