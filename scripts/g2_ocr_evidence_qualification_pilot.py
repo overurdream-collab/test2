@@ -115,3 +115,60 @@ def source_job_id(db,organization_id,document_id):
         IngestionJob.organization_id==organization_id)).all()
     if len(jobs)!=1:raise ValueError("ambiguous source job")
     return jobs[0].id
+
+def run(outdir,a1_file):
+    out=Path(outdir);out.mkdir(parents=True,exist_ok=True)
+    os.environ["MCIAS_ENVIRONMENT"]="development"
+    os.environ["MCIAS_MALWARE_SCAN"]="disabled"
+    os.environ["MCIAS_LOCAL_OCR"]="disabled"
+    a1=load_a1(a1_file)
+    engine=create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    reports=[];negative={}
+    with tempfile.TemporaryDirectory(prefix="mcias-qualified-reader-") as private:
+        store=EncryptedStore(str(Path(private)/"sealed"),os.urandom(32))
+        with Session(engine) as db:
+            org=Organization(name="synthetic qualification")
+            other=Organization(name="synthetic unrelated organization")
+            actor=User(username="synthetic_ocr_qualification",password_hash="not-real")
+            db.add_all([org,other,actor]);db.flush()
+            actor.organization_id=org.id;db.commit()
+            for case,style in STYLES.items():
+                gold=make_fixture(case,out)
+                original=Path(gold["pdf_path"]).read_bytes()
+                registered=ingest(db,store,org.id,actor.id,case+".pdf",original)
+                assert registered["status"]=="review_required"
+                original_reopened,doc,src=reopen(db,store,registered["document_id"],org.id,gold["pdf_sha256"])
+                assert original_reopened==original
+                job=db.get(IngestionJob,registered["job_id"])
+                assert job.status=="review_required"
+                assert db.scalars(select(ExtractedSourceRecord).where(
+                    ExtractedSourceRecord.job_id==job.id)).all()==[]
+                pdfpath=Path(private)/(case+"_source.pdf")
+                pdfpath.write_bytes(original_reopened)
+                tokens,elapsed=read_pixels_and_words(pdfpath,doc.sha256,style["lang"])
+                parsed=parse_dynamic(tokens,doc.id,doc.sha256,style["lang"])
+                total=create_candidates(db,doc,job,parsed)
+                db.commit()
+                assert total==18
+                baseline=examine(db,store,org.id,doc.id,doc.sha256,gold,private)
+                assert baseline["candidate_count"]==18
+                assert baseline["score"]=={"fields":18,"locations":18}
+                assert all(x.status=="UNVERIFIED_OCR_CANDIDATE" for x in all_candidates(db,org.id,doc.id))
+                # Only use existing A1 pure arithmetic preview, never the trusted G4/G2 adapter.
+                preview=a1_payload(parsed,case) if baseline["safe_for_advisory_preview"] else None
+                findings=a1.analyze(preview) if preview else None
+                arithmetic=[f for f in findings["findings"] if f["finding_type"]=="LINE_ARITHMETIC"] if findings else []
+                report={"case":case,"document_id":doc.id,"sha256":doc.sha256,
+                        "candidate_count":total,"candidate_status":"UNVERIFIED_OCR_CANDIDATE",
+                        "independent_synthetic_gold_fields":baseline["score"]["fields"],
+                        "independent_synthetic_gold_regions":baseline["score"]["locations"],
+                        "qualification":baseline["issues"] or ["SYNTHETIC_MATCH_NOT_AUTHORITY"],
+                        "a1_pure_advisory_ran":bool(findings),
+                        "a1_arithmetic":len(arithmetic) if findings else None,
+                        "g2_status":doc.status,"g2_trusted_rows_created":False,
+                        "a1_source_verifications":[],
+                        "g2_ocr_evidence_trusted":False,
+                        "human_review":"REQUIRED","financial_decision":"NOT_AUTHORIZED"}
+                reports.append(report)
+                (out/(case+"_candidate_review.json")).write_text(json.dumps(report,ensure_ascii=False,indent=2))
