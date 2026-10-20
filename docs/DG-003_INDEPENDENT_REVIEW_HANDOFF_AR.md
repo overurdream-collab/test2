@@ -2,7 +2,7 @@
 
 **الحالة:** DG-003 DOCUMENTED — OWNER REVIEW PENDING  
 **النطاق:** Documentation and owner coordination only. NO MIGRATION / MERGE / DEPLOY.  
-**الوثيقة الكاملة:** DG-003_SHARED_INTEGRATION_CONTRACT_READ_ONLY_AR.md أُعدت خارج GitHub (285 سطرًا بعد تحديث HEAD) ولم تُرفع بعد؛ لا يجوز اعتبار هذه المذكرة بديلًا عن النص الكامل.
+**الوثيقة الكاملة الأصلية:** [DG-003 — Shared Integration Contract & Readiness](./DG-003_SHARED_INTEGRATION_CONTRACT_READINESS_AR.md) — محفوظة كاملة دون اختصار في فرع التوثيق (285 سطرًا). هذه المذكرة مجرد تسليم ومصفوفة قرارات، وليست بديلًا عن التقرير الكامل.
 
 ## المراجع المثبتة بتاريخ 2026-10-20
 
@@ -41,6 +41,5 @@
 4. اعتماد خطة Alembic مع المحافظة على تاريخ PR23/PR25.
 5. اعتماد فصل OCR عن التصديق الطبي والتعرفة والصرف، ومراجعة أحدث Reader SHA.
 6. مراجعة المستهلكين المباشرين لـAuditLog.
-7. رفع النسخة الكاملة من DG-003 إلى فرع التوثيق لإغلاق التسليم النصي.
 
 **لا توجد موافقة موثقة من أصحاب المكونات حتى الآن.**
