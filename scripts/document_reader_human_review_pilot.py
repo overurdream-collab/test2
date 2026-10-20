@@ -5,7 +5,7 @@ Reuses existing EncryptedStore, G2 ORM and Reader OCR fixtures; append-only loca
 review decisions never upgrade G2 ingestion or A1 source-verification authority.
 """
 from __future__ import annotations
-import argparse, hashlib, io, json, os, secrets, tempfile, uuid
+import argparse, hashlib, io, json, os, re, secrets, tempfile, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
@@ -19,7 +19,7 @@ from mcias.models import Base, Organization, User, SourceFile, uid
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord
 from mcias.ingestion.orchestrator import ingest
 from mcias.storage import EncryptedStore
-from document_reader_dynamic_layout_pilot import STYLES, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, load_a1
+from document_reader_dynamic_layout_pilot import STYLES, PATTERNS, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, load_a1
 from g2_trust_pilot import reopen
 from g2_ocr_evidence_qualification_pilot import Candidate, create_candidates, all_candidates, FIELDS
 
@@ -244,6 +244,8 @@ class Demo:
             if req.corrected_value.strip()==c.observed_value:
                 raise HTTPException(422,'CORRECTION_MUST_DIFFER_FROM_OCR')
             new_value=req.corrected_value.strip()
+            if not re.fullmatch(PATTERNS[c.field_name],new_value):
+                raise HTTPException(422,'CORRECTED_VALUE_WRONG_FIELD_TYPE')
         elif req.corrected_value is not None:
             raise HTTPException(422,'VALUE_ALLOWED_ONLY_FOR_CORRECTION')
         else:new_value=c.observed_value if req.action=='accept' else None
