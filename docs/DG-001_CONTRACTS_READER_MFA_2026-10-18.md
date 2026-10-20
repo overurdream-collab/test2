@@ -1,0 +1,5 @@
+# DG-001 — Contracts strict reader MFA fixture repair (2026-10-18)
+Baseline e9ef52154e36ec8714b9d8ec541dfd745a303c88; failing run https://github.com/overurdream-collab/test2/actions/runs/39076524704.
+Observed: writer reached contracts; reader POST /api/v1/auth/login returned HTTP 401. In scripts/check_contracts_acceptance.py both synthetic users receive super_admin role, but only writer had enabled MFAFactor and supplied TOTP. mcias/auth.py requires an enabled MFA factor and TOTP for super_admin.
+Change: create independent synthetic TOTP secrets and enabled encrypted MFA factors for both users, supply each user's valid TOTP via actual login form. No authentication bypass, role change, production data, or financial-policy change. Retains negative authorization checks for reader's missing reference.write and ingestion.upload.
+Scope: reader login and contracts-screen access only. Import/add/edit failures after login are separate blockers; do not modify them in this cycle. New strict CI + Chromium screenshots must be consulted to claim PASS. No merge/deploy.

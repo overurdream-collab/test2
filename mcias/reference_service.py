@@ -15,10 +15,16 @@ def _tenant(actor, organization_id):
     if not actor.active or actor.organization_id != organization_id:
         raise ReferenceConflict("organization access denied")
 
-def create_draft(db, actor, provider_code, start, end, precedence=0):
+def create_draft(db, actor, provider_code, start, end, precedence=0, *, contract_number=None, contract_notes=""):
     _tenant(actor, actor.organization_id)
     if not provider_code or len(provider_code) > 80 or start >= end or precedence < 0:
         raise ReferenceConflict("invalid contract draft")
+    if contract_number is not None:
+        import re
+        if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,100}", contract_number):
+            raise ReferenceConflict("invalid contract number")
+    if len(contract_notes) > 1000:
+        raise ReferenceConflict("contract notes exceed limit")
     # Serialise allocation of the next version per organization/provider.
     if db.bind.dialect.name == "postgresql":
         from sqlalchemy import text
@@ -27,14 +33,58 @@ def create_draft(db, actor, provider_code, start, end, precedence=0):
     current = db.scalar(select(__import__("sqlalchemy").func.max(ContractVersion.version)).where(
         ContractVersion.organization_id == actor.organization_id,
         ContractVersion.provider_code == provider_code)) or 0
+    if contract_number and db.scalar(select(ContractVersion.id).where(
+        ContractVersion.organization_id == actor.organization_id,
+        ContractVersion.contract_number == contract_number)):
+        raise ReferenceConflict("duplicate contract number for version")
     item = ContractVersion(organization_id=actor.organization_id, provider_code=provider_code,
+                           contract_number=contract_number, contract_notes=contract_notes,
                            version=current + 1, effective_from=start, effective_until=end,
                            precedence=precedence, status="draft", created_by=actor.id)
     db.add(item); db.flush()
-    _audit(db, actor, "contract_draft_created", "contract_version", item.id,
-           {"version": item.version, "provider_code": provider_code})
+    from mcias.audit_writer import write_event
+    write_event(db, actor=actor, organization_id=actor.organization_id,
+                action="contract_draft_created", resource_type="contract_version",
+                resource_id=item.id, outcome="success",
+                details={"version": item.version, "contract_number": contract_number})
     db.commit()
     return item
+
+
+def revise_contract_draft(db, actor, original_id, *, contract_notes, start, end, precedence):
+    """Optimistic append-only G3 draft revision; old row and tariffs unchanged."""
+    from sqlalchemy import func, text
+    original = db.get(ContractVersion, original_id)
+    if original is None or original.organization_id != actor.organization_id:
+        raise ReferenceConflict("contract not accessible")
+    _tenant(actor, original.organization_id)
+    if original.status != "draft" or not original.contract_number:
+        raise ReferenceConflict("only numbered draft contracts may be revised")
+    if start >= end or precedence < 0 or precedence > 10000 or len(contract_notes) > 1000:
+        raise ReferenceConflict("invalid revision fields")
+    if db.bind.dialect.name == "postgresql":
+        db.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:key, 0))"),
+                   {"key": original.organization_id + ":" + original.provider_code})
+    current = db.scalar(select(func.max(ContractVersion.version)).where(
+        ContractVersion.organization_id == original.organization_id,
+        ContractVersion.provider_code == original.provider_code)) or 0
+    if original.version != current:
+        raise ReferenceConflict("stale contract version; reload latest")
+    # Existing G3 independent precedence/impact checks remain mandatory for APPROVAL.
+    revision = ContractVersion(organization_id=original.organization_id,
+        provider_code=original.provider_code, contract_number=original.contract_number,
+        contract_notes=contract_notes, effective_from=start, effective_until=end,
+        precedence=precedence, version=current + 1, status="draft", created_by=actor.id)
+    db.add(revision)
+    db.flush()
+    from mcias.audit_writer import write_event
+    write_event(db, actor=actor, organization_id=original.organization_id,
+                action="contract_draft_revised", resource_type="contract_version",
+                resource_id=revision.id, outcome="success",
+                details={"previous_id": original.id, "previous_version": original.version,
+                         "version": revision.version, "contract_number": original.contract_number})
+    db.commit()
+    return revision
 
 def add_tariff(db, actor, contract_id, service_code, amount, currency):
     contract = db.get(ContractVersion, contract_id, with_for_update=True)

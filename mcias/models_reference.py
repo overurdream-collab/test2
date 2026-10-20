@@ -10,6 +10,8 @@ class ContractVersion(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
     organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False, index=True)
     provider_code: Mapped[str] = mapped_column(String(80), nullable=False)
+    contract_number: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    contract_notes: Mapped[str] = mapped_column(String(1000), nullable=False, default="")
     version: Mapped[int] = mapped_column(__import__("sqlalchemy").Integer, nullable=False)
     effective_from: Mapped[date] = mapped_column(Date, nullable=False)
     effective_until: Mapped[date] = mapped_column(Date, nullable=False)
@@ -20,6 +22,7 @@ class ContractVersion(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, nullable=False)
     __table_args__ = (
         UniqueConstraint("organization_id", "provider_code", "version", name="uq_contract_version"),
+        UniqueConstraint("organization_id", "contract_number", "version", name="uq_contract_number_version"),
         CheckConstraint("effective_from < effective_until", name="ck_contract_dates"),
     )
 

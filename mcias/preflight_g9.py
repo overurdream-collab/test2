@@ -16,7 +16,7 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives.serialization import Encoding
 from mcias.release_g9 import ReleaseBlocked
 
-EXPECTED_MIGRATION="0019_input_clauses"
+EXPECTED_MIGRATION="0020_manual_contract_metadata"
 MAX_CERT_DAYS=30
 HEX64=re.compile(r"^[0-9a-fA-F]{64}$")
 

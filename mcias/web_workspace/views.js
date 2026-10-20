@@ -2896,6 +2896,7 @@ function inputClauseWorkspace(ctx) {
   const tabs = el("div", null, "input-tabs"), content = el("div");
   const fileArea = el("div", null, "input-actions");
   let selected = "contracts";
+  let selectedRecord = null;
   for (const [section, ar, en] of clauseSections) {
     const tab = button(L(ar, en), () => draw(section), "button input-tab");
     tab.dataset.section = section;
@@ -2909,12 +2910,35 @@ function inputClauseWorkspace(ctx) {
       tab.setAttribute("aria-pressed", String(tab.dataset.section === section));
     fileArea.replaceChildren();
     content.replaceChildren();
-    fileArea.append(
-      actionButton(ctx, L("إضافة ملف", "Upload file"), "ingestion.upload", () => uploadClauseSource(ctx, section), "button"),
-      actionButton(ctx, L("إضافة بند جديد", "New clause"), "reference.write",
-        () => openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button"),
-      button(L("تحديث السجل", "Refresh list"), () => load(0), "button"),
-    );
+    selectedRecord = null;
+    const importAction = actionButton(ctx, L("استيراد ملف (رفع المصدر)", "Import file (source upload)"),
+      "ingestion.upload", () => uploadClauseSource(ctx, section), "button");
+    const addAction = actionButton(ctx, L("إضافة", "Add"), "reference.write",
+      () => section === "contracts"
+        ? openDrawer(L("إضافة عقد", "Add contract"), manualContractDraftForm(ctx))
+        : openDrawer(L("مسودة بند جديد", "New clause draft"), clauseDraftForm(ctx, section)), "button");
+    const editAction = actionButton(ctx, L("تعديل", "Edit"), "reference.write",
+      () => {
+        if (!selectedRecord || selectedRecord.section !== section) return;
+        if (section === "contracts" && selectedRecord.g3_id)
+          openDrawer(L("تعديل عقد — إصدار جديد","Revise contract as new version"),
+            editG3ContractDraftForm(ctx,selectedRecord));
+        else if (section !== "contracts")
+          openDrawer(L("إصدار بديل مع حفظ الأصل", "Create replacement version"),
+            clauseDraftForm(ctx, section, selectedRecord));
+      }, "button");
+    editAction.disabled = true;
+    fileArea.setAttribute("role", "group");
+    fileArea.setAttribute("aria-label", L("إجراءات هذا القسم", "Section actions"));
+    fileArea.append(importAction, addAction);
+    // Contract Edit is not rendered at all without effective write permission.
+    if (section !== "contracts" || allowed(ctx, "reference.write"))
+      fileArea.append(editAction);
+    const hint = el("p", L(
+      "اختر «عرض الدليل» من صف موجود لتفعيل التعديل. رفع الملف لا يعني اكتمال استخراج البنود أو اعتمادها.",
+      "Select View evidence on a record to enable Edit. Upload alone does not extract or approve clauses."
+    ), "chart-note");
+    content.append(hint);
     const note = el("p", L(
       "جميع البنود المستخرجة أو المدخلة يدويًا تبقى مسودات حتى موافقة مستقلة. أسعار الخدمات يجب أن ترتبط برمز مقدم الخدمة المحدد.",
       "Imported and manually entered clauses remain drafts until independent approval. Tariffs require their own provider code."
@@ -2923,6 +2947,8 @@ function inputClauseWorkspace(ctx) {
     const listTarget = el("div");
     content.append(listTarget);
     function load(offset = 0) {
+      selectedRecord = null;
+      editAction.disabled = true;
       void fetchPanel(ctx, listTarget,
         "/api/v1/input-clauses/sections/" + section + "?limit=50&offset=" + offset,
         data => {
@@ -2932,6 +2958,8 @@ function inputClauseWorkspace(ctx) {
             hasMore: (data.items || []).length === 50,
             onPage: load,
             open: record => {
+              selectedRecord = {...record, section};
+              editAction.disabled = ctx.demo || !allowed(ctx, "reference.write");
               const drawer = el("div");
               drawer.append(details(record));
               const actions = el("div", null, "actions");
@@ -2962,8 +2990,97 @@ function inputClauseWorkspace(ctx) {
         });
     }
     load();
+    if (section === "contracts") {
+      const g3List = el("div");
+      content.prepend(g3List);
+      void fetchPanel(ctx,g3List,"/api/v1/workspace/catalog/contracts?limit=100",data=>{
+        const choices=(data.items||[]).filter(x=>x.contract_number && x.status==="draft");
+        const row=el("div",null,"input-actions");
+        row.append(el("h3",L("اختر عقد G3 للتعديل","Choose a G3 contract to revise")));
+        for (const contract of choices) {
+          const choose=button(contract.contract_number+" — v"+contract.version,async()=>{
+            try {
+              const found=await ctx.api.request("/api/v1/reference/contracts/drafts/"+safeId(contract.id));
+              selectedRecord={...found,g3_id:contract.id,section:"contracts"};
+              editAction.disabled=ctx.demo || !allowed(ctx,"reference.write");
+              chosen.replaceChildren(details(found));
+            }catch(err){chosen.replaceChildren(errorState(err));}
+          },"button");
+          row.append(choose);
+        }
+        const chosen=el("div");
+        g3List.append(row,chosen);
+      });
+    }
   }
   draw(selected);
+}
+function editG3ContractDraftForm(ctx, previous) {
+  const form=operation(ctx,L("حفظ إصدار عقد جديد","Save new contract revision"),
+    L("تُحفظ النسخة القديمة ولا تُفعّل تعرفة أو موافقة.","Original preserved; no tariff or approval activated."),
+    [
+      {name:"contract_notes",label:L("معلومات العقد","Contract information"),type:"textarea",
+        value:previous.contract_notes,maxLength:1000,required:false},
+      {name:"effective_from",label:L("تاريخ البداية","Start date"),type:"date",value:previous.effective_from},
+      {name:"effective_until",label:L("تاريخ النهاية","End date"),type:"date",value:previous.effective_until},
+      {name:"precedence",label:L("أولوية العقد","Contract precedence"),type:"number",
+        value:String(previous.precedence),min:0,max:10000}
+    ],"reference.write",async values=>{
+      if(values.effective_from>=values.effective_until)
+        throw new Error(L("الفترة غير صحيحة","Invalid date range"));
+      const result=await ctx.api.request("/api/v1/reference/contracts/drafts/"+
+        safeId(previous.g3_id)+"/revise", {method:"POST",body:{
+          contract_notes:values.contract_notes,effective_from:values.effective_from,
+          effective_until:values.effective_until,precedence:Number(values.precedence)
+        }});
+      const history=await ctx.api.request("/api/v1/reference/contracts/drafts/"+
+        safeId(previous.g3_id)+"/history");
+      if(result.status!=="draft" || result.previous_id!==previous.g3_id ||
+          !history.items.some(x=>x.id===previous.g3_id) ||
+          !history.items.some(x=>x.id===result.id))
+        throw new Error(L("فشل إثبات الإصدار","Version evidence mismatch"));
+      return {revision:result,history};
+    });
+  form.dataset.testid="g3-contract-revision-form";
+  return form;
+}
+function manualContractDraftForm(ctx) {
+  const organization = ctx.context.organization;
+  const form = operation(ctx, L("إضافة عقد يدوي", "Create manual contract draft"),
+    L("المؤسسة: ", "Organization: ") + (organization?.name || L("غير متاحة", "Unavailable")) +
+      " — " + L("حفظ مسودة G3 فقط دون اعتماد أو تأثير مالي", "G3 draft only; no approval or financial activation"),
+    [
+      {name:"contract_number",label:L("رقم العقد","Contract number"),maxLength:100,
+        pattern:"[A-Za-z0-9_.:-]+"},
+      {name:"provider_code",label:L("رمز مقدم الخدمة","Provider code"),maxLength:80,
+        pattern:"[A-Za-z0-9_.:-]+"},
+      {name:"effective_from",label:L("تاريخ البداية","Start date"),type:"date"},
+      {name:"effective_until",label:L("تاريخ النهاية","End date"),type:"date"},
+      {name:"contract_notes",label:L("معلومات العقد","Contract information"),
+        type:"textarea",required:false,maxLength:1000},
+      {name:"precedence",label:L("أولوية العقد","Contract precedence"),
+        type:"number",value:"0",min:0,max:10000},
+    ],
+    "reference.write", async values => {
+      if (values.effective_from >= values.effective_until)
+        throw new Error(L("يجب أن تكون النهاية بعد البداية", "End date must follow start date"));
+      const payload = {contract_number:values.contract_number, provider_code:values.provider_code,
+        effective_from:values.effective_from,effective_until:values.effective_until,
+        contract_notes:values.contract_notes || "",precedence:Number(values.precedence)};
+      const created = await ctx.api.request("/api/v1/reference/contracts",
+        {method:"POST",body:payload});
+      if (created.status !== "draft" || !created.id)
+        throw new Error(L("لم يثبت حفظ المسودة", "Draft persistence not confirmed"));
+      const saved = await ctx.api.request("/api/v1/reference/contracts/drafts/" + safeId(created.id));
+      if (saved.id !== created.id || saved.contract_number !== payload.contract_number ||
+          saved.provider_code !== payload.provider_code || saved.effective_from !== payload.effective_from ||
+          saved.effective_until !== payload.effective_until || saved.contract_notes !== payload.contract_notes ||
+          saved.status !== "draft" || saved.authorization_id)
+        throw new Error(L("القراءة بعد الحفظ غير متطابقة", "Persisted contract differs from submission"));
+      return saved;
+    });
+  form.dataset.testid = "manual-g3-contract-draft";
+  return form;
 }
 function clauseDraftForm(ctx, section, previous = null) {
   const tariff = section === "tariffs";
@@ -3022,6 +3139,71 @@ function uploadClauseSource(ctx, section) {
         "راجع حالة الاستخراج والحجر، ثم أدخل البنود في القسم المناسب باستخدام معرف المستند.",
         "Review extraction/quarantine status, then add source-linked clauses in the proper section."
       )));
+      if (section === "contracts") {
+        const documentId = response?.document_id || response?.id;
+        if (typeof documentId === "string" && /^[a-zA-Z0-9_-]{1,120}$/.test(documentId)) {
+          const check = actionButton(ctx,
+            L("فحص بيان مصدر العقد من G2", "Inspect G2 contract source manifest"),
+            "ingestion.read", async () => {
+              try {
+                const manifest = await ctx.api.request(
+                  "/api/v1/ingestion/documents/" + safeId(documentId) + "/manifest");
+                preview.replaceChildren(details(manifest));
+                // Contract-only: authoritative candidate is reconstructed from persisted G2
+                // source records by the server, never from model-supplied financial rules.
+                const extracted = await ctx.api.request(
+                  "/api/v1/input-clauses/contracts/documents/" + safeId(documentId) + "/preview");
+                if (extracted.status !== "REVIEW_REQUIRED" || extracted.clauses?.length !== 1)
+                  throw new Error(L("لا توجد بنود موثقة", "No verified source clauses"));
+                const clause = extracted.clauses[0];
+                const review = el("section");
+                review.dataset.testid = "g2-contract-fields-preview";
+                review.append(el("h3", L("معاينة البند قبل الحفظ", "Contract clause review before saving")));
+                const facts = el("table");
+                const tbody = el("tbody");
+                for (const [name, value] of [
+                  [L("نوع البند","Clause type"), clause.type],
+                  [L("رمز الخدمة","Service code"), clause.service_code],
+                  [L("القيمة الأصلية","Original amount"),clause.original_value + " " + clause.currency],
+                  [L("النص الأصلي","Source quote"),clause.original_quote],
+                  [L("موضع المصدر","Source locator"),JSON.stringify(clause.source_locator)]
+                ]) {
+                  const tr = el("tr");
+                  tr.append(el("th",name),el("td",String(value)));
+                  tbody.append(tr);
+                }
+                facts.append(tbody);
+                const amount = field("corrected_amount",L("القيمة بعد التصحيح","Reviewed amount"),
+                  {value:clause.value,pattern:"[0-9]+(\\.[0-9]{1,4})?",maxLength:30});
+                const human = field("human_confirmed",L("أؤكد مراجعة البند ومصدره","I confirm source review"),{type:"checkbox"});
+                const outcome=el("div");
+                const submit = actionButton(ctx,
+                  L("تأكيد الحقول وإنشاء مسودة","Confirm fields and create draft"),
+                  "reference.write",async()=>{
+                    if (!human.input.checked || !amount.input.reportValidity()) {
+                      outcome.replaceChildren(errorState(new Error(L("مراجعة بشرية صريحة مطلوبة","Explicit review required"))));
+                      return;
+                    }
+                    try {
+                      const created = await ctx.api.request(
+                        "/api/v1/input-clauses/contracts/documents/" + safeId(documentId) + "/confirm",{
+                        method:"POST",body:{source_record_id:clause.source_record_id,
+                          service_code:clause.service_code,corrected_value:amount.input.value,
+                          effective_from:clause.effective_from,human_confirmed:true}
+                      });
+                      outcome.replaceChildren(details(created));
+                      submit.disabled=true;
+                    }catch(err){outcome.replaceChildren(errorState(err));}
+                  },"button primary");
+                review.append(facts,amount.wrap,human.wrap,submit,outcome);
+                preview.append(review);
+              } catch (err) { preview.replaceChildren(errorState(err)); }
+            }, "button");
+          const preview = el("div");
+          preview.setAttribute("aria-live", "polite");
+          result.append(check, preview);
+        }
+      }
     }catch(e){result.replaceChildren(errorState(e));}
   },"button primary");
   const result=el("div");result.setAttribute("aria-live","polite");

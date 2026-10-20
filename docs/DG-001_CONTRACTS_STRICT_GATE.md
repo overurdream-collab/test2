@@ -1,0 +1,5 @@
+# DG-001 — Dedicated contracts acceptance gate
+Date: 2026-10-18. Source baseline: 84806f23de1828df03e9a484b430e7c6b9bb7b8c. Draft PR #25.
+This commit introduces a separate **strict**, deliberately failing, real-Chromium + PostgreSQL-16 GitHub Actions workflow, independent of broad CI suites. It seeds synthetic authorized/unauthorized users, uploads a generated PDF through the real browser, captures browser screenshots and preserves JSON evidence even on failure. It explicitly refuses to equate ingestion manifest display with a G2 extracted-fields human preview.
+No business functionality or G3/G5 finance rules altered. This is a test-gate only; no production data, deployment, approval or main merge.
+Important limitation: Add/Edit database assertions are not yet implemented in the dedicated harness; both remain BLOCKED and cannot pass. The test fails closed after G2 import validation is proven. A subsequent narrow test change is required to complete these assertions. A green generic CI result cannot override a red or missing strict acceptance result.
