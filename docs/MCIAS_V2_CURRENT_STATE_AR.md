@@ -52,3 +52,8 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Added ten preflight assertions under `tests/test_cai01_inputs_first_source_contract.py`, not a G4/G5 simulator. Section 12 records end-to-end ten-case BLOCKED matrix and no measured six-reference/Shared Audit coverage.
 - Baseline Run 39507267717 unit/postgres SUCCESS, dependency audit FAILURE; new commit tests pending CI verification.
 - Shared integration acceptance PENDING.
+
+## 2026-10-21 — CAI-01 cross-agent integration contract closure
+- Added section 13: ownership matrix and file boundaries, proposed SourceRowEvidenceV1/ApplicableReferenceSnapshotV1/ClaimAuditCoverageV1/AuditEvidenceEventV1, one-row real PostgreSQL 16 acceptance plan and missing/incomplete/expired reference negatives.
+- Baseline f846f280 CI Run 39507690176 unit/postgres SUCCESS, dependency audit FAILURE. No reruns or new E2E tests.
+- Integration acceptance BLOCKED pending component-owner approval and verified real G4→G5→Shared Audit passage.

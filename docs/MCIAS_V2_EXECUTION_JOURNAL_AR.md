@@ -91,3 +91,13 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: no trusted sheet manifest G4 enforcement, six-family approved reference completeness, or Shared Audit integration evidence; Pillow security failure remains.
 - Next: review new CI, coordinate G2/G3/G4/G5/PR #29 owners, provision approved PostgreSQL 16 E2E and record real case outcomes.
 - Handoff: Draft PR #31, no merge/deploy/financial automation.
+
+### HANDOFF-20261021-010 — CAI-01 cross-agent contract closure planning
+- Scope: Verify HEAD/CI/security logs; define file ownership, four proposed compatibility contracts and PostgreSQL 16 one-row real-path acceptance plan with three negative references.
+- Why: Prevent simulated contract compliance and cross-agent branch conflicts; identify smallest legitimate G2→G4→G5→Shared Audit integration.
+- Files: `docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md`, `docs/MCIAS_V2_EXECUTION_JOURNAL_AR.md`, `docs/MCIAS_V2_CURRENT_STATE_AR.md`.
+- Tests: NOT_RUN (planning only). Baseline CI Run 39507690176 unit PASS, postgres PASS, dependency-audit FAIL; prior ten new isolated assertions included in successful unit workflow, but per-test count not separately asserted.
+- Result: CONTRACTS_PROPOSED; INTEGRATION_ACCEPTANCE_BLOCKED.
+- Risks: G2 source approval, G3 six-family versioned completeness, G4 gate, G5 coverage, PR #29 shared events, and Pillow 12.3.0 CVEs remain unresolved.
+- Next: AI CTO approves ownership and authorizes component owners to implement minimal shared contracts; run actual PostgreSQL 16 one-row fixture and negative references, record events and evidence.
+- Handoff: Preserve Draft PR #31; no shared code changes, merge, deploy or automatic financial decisions.
