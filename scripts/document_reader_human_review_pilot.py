@@ -305,7 +305,7 @@ def create_app(demo):
     @app.get('/',response_class=HTMLResponse)
     def page():
         return Response(LOGIN_HTML.read_text(encoding='utf-8'),media_type='text/html',
-                        headers={'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'"})
+                        headers={'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'none'"})
     @app.post('/api/login')
     def login(data:dict):
         if set(data)!={'username','password'}:raise HTTPException(400,'LOGIN_FIELDS')
