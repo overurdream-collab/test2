@@ -63,3 +63,15 @@ STATUS: PARTIAL; Enterprise fix committed, new exact-SHA CI pending. NEXT: verif
 - L2 shared writer composed rollback + exact-once per distinct HTTP request: **PASS in isolated L2 suite**, BUT actual contract revise route integrated across PR branches, legacy L2 suite and retry de-dup policy: **BLOCKED / separate owner**.
 - No source changes needed. This documentation-only checkpoint changes HEAD; require confirming fresh exact-new-SHA CI before making an unqualified final SHA PASS claim.
 - Resume: recheck head and CI for this documentation commit; if all green, PR25 standalone technically ready for independent review; keep overall combined L2 integration blocked pending owner evidence. No merge/deploy.
+
+
+## DG-001 Documentation closure — verified source HEAD and CI (2026-10-20)
+**Source/CI baseline (before documentation changes):** PR #25 `a9d23ddcf4b34e5fced4dd6ef50dcee308ee1fc1`, open/Draft. This supersedes earlier `ef2397abb...` *as the currently inspected source* and preserves its historical CI record.
+- G1-G7 [39302929531](https://github.com/overurdream-collab/test2/actions/runs/39302929531) — **PASS**, unit `349 passed, 19 skipped, 1 warning`, PostgreSQL integration and dependency audit successful.
+- G8 [39302929688](https://github.com/overurdream-collab/test2/actions/runs/39302929688) — **PASS** (unit assets + PostgreSQL).
+- G9 [39302929586](https://github.com/overurdream-collab/test2/actions/runs/39302929586) — **PASS** (security + PostgreSQL).
+- Contracts strict [39302929540](https://github.com/overurdream-collab/test2/actions/runs/39302929540) — **PASS**, real Chromium/FastAPI/PostgreSQL synthetic Import/Add/Edit/RBAC and evidence; `contracts-acceptance-evidence` Artifact 12210758895. Foreign-contract revision rejection observed as **HTTP 409 conflict** in its business path; do not mislabel it as the shared 403 guard.
+- Enterprise [39302929533](https://github.com/overurdream-collab/test2/actions/runs/39302929533) — **PASS**, browser-and-contracts job, `enterprise-workspace-evidence` Artifact 12211079514.
+**Explicit gaps remain:** PR27 L2 request-owned rollback and once-per-attempt denial across composed actual endpoints, independent Shared Audit writer acceptance and privacy/deduplication, rejected privilege denial vs business 409 semantics, temporal cross-branch contracts/G2 admission, production RBAC super_admin-only reference mutation (policy not enforcement). Five green standalone workflows do not accept composition with PR23/PR27/PR29 or production.
+**Read-only Alembic compatibility result:** `docs/DG-001_ALEMBIC_BRANCH_COMPATIBILITY_READ_ONLY_20261020_AR.md` on this branch documents the 0018→0019_reference_points→0020_contract_proposals vs 0018→0019_input_clauses→0020_manual_contract_metadata divergence. Source-only result; no migration or DB changes executed.
+**Documentation SHA caveat:** Writing this closure creates additional SHAs after the verified source `a9d23dd...`. Only future real completed CI bound to a new documentation HEAD can qualify that new SHA; prior runs remain scoped to the source version. **NO MERGE / NO DEPLOY / NO MIGRATION.**
