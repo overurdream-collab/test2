@@ -76,3 +76,10 @@ W1 pilot is NOT COMPLETE. No integration or production acceptance authorized.
 - Reused scripts/check_workspace_live.py, adding actual FastAPI login with synthetic PostgreSQL sessions for super_admin (real encrypted MFA/TOTP), admin, and existing reader; navigation/RTL-LTR/mobile, Super Admin-only /admin/users, server API 403, foreign-organization user detail 404 and bounded current-organization list, plus synthetic screenshots and JSON role matrix.
 - Existing PostgreSQL/Chromium workflow now preserves .e2e-output/w1-role-matrix.json and per-role screenshots. Current role-matrix verification Run #39402706752 at SHA c8114507a0c42ff05ac568703a25058e3fd6e65c was triggered; final PASS/FAIL must be determined from the completed run, not from this document.
 - /institution/users remains unsupported for Admin. No RBAC/Ed25519, migrations, production data, deploy or merge. Draft PR withheld pending completed mandatory security evidence.
+
+## W1 synthetic CI blocker fix — 2026-10-20
+- Confirmed failed Run #39402706752: existing server tests and browser baseline passed; role matrix stopped at AESGCM MFA fixture setup (ValueError: invalid AES key length).
+- Workflow now uses 64-character hexadecimal synthetic values (32 bytes) for both MCIAS_MFA_ENCRYPTION_KEY and MCIAS_STORAGE_KEY, with a fail-fast no-secret-print validation step. No application cryptography changed.
+- Existing role-matrix fixture grants reports.read only to synthetic Super Admin and Admin to satisfy institution dashboard access. No production role or server permission changes.
+- Test code SHA d0acb615de1798f14114697c3c24c1c02b7f1668; focused rerun #39404129037 was in progress at documentation time. A completed PASS is mandatory before Draft PR; do not interpret this handoff as acceptance.
+- The Admin-specific /institution/users route remains absent; the current experiment does not implement it.
