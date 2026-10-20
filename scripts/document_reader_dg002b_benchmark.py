@@ -152,6 +152,26 @@ def run_tesseract(root):
     jsonsave(root/"predictions_tesseract.json",pred)
     jsonsave(root/"raw_tesseract.json",{"pages":results,"engine":version,"languages":language_checksum})
     report=evaluate(json.loads((root/"gold.json").read_text()),pred)
+    # Per-language CER/WER on exactly the same page text. Mixed English labels
+    # remain part of Arabic pages: these rates are for bilingual documents, not
+    # an isolated Arabic-script test. No change to DG-002A scorer or gold.
+    from scripts.document_reader_dg002_score import canonical,edit_distance
+    gs={d["id"]:d for d in json.loads((root/"gold.json").read_text())["documents"]}
+    language_dist={}
+    for lang in ("en","ar"):
+        cdist=clen=wdist=wlen=0
+        for doc in docs:
+            if doc["language"]!=lang:continue
+            truth=canonical(gs[doc["id"]]["pages"][0]["text"])
+            observed=canonical(doc["pages"][0]["text"])
+            a,b="".join(truth.split()),"".join(observed.split())
+            cdist+=edit_distance(a,b);clen+=len(a)
+            ta,tb=truth.split(),observed.split()
+            wdist+=edit_distance(ta,tb);wlen+=len(ta)
+        language_dist[lang]={"cer_whitespace_ignored":round(cdist/clen,6) if clen else None,
+          "wer_whitespace_tokenized":round(wdist/wlen,6) if wlen else None,
+          "page_text_contains_english_labels":True}
+    report["text_metrics_by_document_language"]=language_dist
     report["benchmark_notes"]={"model_inference":"ACTUAL_TESSERACT_LOCAL",
        "all_fields_review_required":True,"model_folds":"tiny synthetic fixed evaluation only",
        "bbox_coordinates":"image pixels","automatic_medical_or_financial_decisions":False}
