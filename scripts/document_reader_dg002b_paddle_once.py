@@ -30,7 +30,7 @@ def main():
         root.mkdir(exist_ok=True)
         before=time.monotonic()
         loc=snapshot_download(repo_id=MODEL,revision=REVISION,local_dir=str(root),
-          allow_patterns=["*.json","*.py","*.jinja","*.model","*.txt","*.safetensors"],
+          allow_patterns=["*.json","*.py","*.jinja","*.model","*.txt","*.yml","*.yaml","*.safetensors"],
           max_workers=1)
         weight=Path(loc)/"model.safetensors"
         if not weight.exists():raise RuntimeError("PINNED_WEIGHTS_MISSING")
