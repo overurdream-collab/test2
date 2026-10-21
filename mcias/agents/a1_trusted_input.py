@@ -18,7 +18,7 @@ from mcias.models_reference import ContractVersion, ProviderTariff
 from mcias.ingestion.parsers import csv_parser
 from mcias.policy import has_permission
 from mcias.claim_normalization import FIELDS as G4_ORIGINAL_FIELDS, normalize
-from mcias.agents.invoice_integrity import analyze
+from mcias.agents.invoice_integrity import digest, RULESET_VERSION
 
 SCHEMA_VERSION="mcias.a1.input.v1"
 REQUIRED_LINE=("line_item_id","service_code","unit","quantity","unit_price",
@@ -183,7 +183,7 @@ def _verify_csv_source(db,store,organization_id,document_id,expected_sha=None):
         if point in seen or point not in originals or originals[point]!=row.values or row.confidence!=100:
             raise A1SourceBlocked("stored_extraction_not_equal_original")
         seen.add(point)
-    return {"document":doc,"records":persisted}
+    return {"document":doc,"records":persisted,"job":job}
 
 def _ref(doc,locator):
     if not isinstance(locator,dict) or not isinstance(locator.get("row"),int) or locator["row"]<1:
@@ -195,6 +195,50 @@ def _ref(doc,locator):
     else:
         raise A1SourceBlocked("unsupported_tabular_locator")
     return {"document_id":doc.id,"sha256":doc.sha256,"locator":loc}
+
+def _claim_lineage(db,actor,claim,batch,checked,record):
+    """Recheck additive native G4 lineage instead of discarding its metadata.
+
+    Legacy byte-verified rows retain their exact-coordinate contract. Native
+    approved-scope rows must also be in the existing server-verified CLAIMS set.
+    """
+    try:
+        from mcias.claim_batches import source_scope
+    except ImportError as exc:
+        if claim.source_locator==record.locator:
+            return None
+        raise A1SourceBlocked("native_claim_source_scope_unverified") from exc
+    try:
+        scope=source_scope(db,actor,checked["document"].id)
+    except ValueError as exc:
+        raise A1SourceBlocked("native_claim_source_scope_unverified") from exc
+    if (scope.get("job_id")!=checked["job"].id
+        or scope.get("source_sha256")!=batch.source_sha256
+        or record.id not in scope.get("eligible_record_ids",[])
+        or record.id in scope.get("excluded_record_ids",[])):
+        raise A1SourceBlocked("native_claim_source_scope_mismatch")
+    if not scope.get("approval_id"):
+        if claim.source_locator==record.locator and not scope.get("mapping_version"):
+            return None
+        raise A1SourceBlocked("native_claim_source_scope_mismatch")
+    expected=dict(record.locator)
+    expected.update(document_id=checked["document"].id,job_id=checked["job"].id,
+        source_sha256=checked["document"].sha256,
+        source_scope_approval_id=scope.get("approval_id"),
+        mapping_version=scope.get("mapping_version"),sheet_type="CLAIMS")
+    if (not scope.get("approval_id") or not scope.get("mapping_version")
+        or claim.source_locator!=expected):
+        raise A1SourceBlocked("native_claim_source_scope_mismatch")
+    return {"approval_id":scope["approval_id"],"mapping_version":scope["mapping_version"],
+            "sheet_type":"CLAIMS"}
+
+def _row_evidence(checked,row,fields):
+    ref=_ref(checked["document"],row.locator)
+    return {"source_file_id":checked["document"].source_id,"source_record_id":row.id,
+            "source":ref,"field_sources":{
+                name:{**ref,"source_file_id":checked["document"].source_id,"source_record_id":row.id,
+                      "locator":ref["locator"]+":field:"+name}
+                for name in fields if name in row.values}}
 
 def _g3_historical_reference(db,claim):
     contracts=db.scalars(select(ContractVersion).where(
@@ -235,8 +279,9 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
         raise A1SourceBlocked("claim_batch_missing")
     source=_verify_csv_source(db,store,org,batch.ingestion_document_id,batch.source_sha256)
     record=[r for r in source["records"] if r.id==claim.extracted_record_id]
-    if len(record)!=1 or record[0].values!=claim.source_values or record[0].locator!=claim.source_locator:
+    if len(record)!=1 or record[0].values!=claim.source_values:
         raise A1SourceBlocked("claim_not_equal_original_record")
+    native_scope=_claim_lineage(db,actor,claim,batch,source,record[0])
     try:
         original=normalize(record[0].values)
     except ValueError as exc:
@@ -277,15 +322,15 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
                 kind=v.get("item_kind","service")
                 if kind not in ("service","fee"):
                     raise ValueError("invalid item_kind")
-                items.append({"id":v["line_item_id"],"kind":kind,
+                items.append(Line.model_validate({"id":v["line_item_id"],"kind":kind,
                               "code":v["service_code"],"unit":v["unit"],
                               "quantity":v["quantity"],"unit_price":v["unit_price"],
                               "line_total":v["line_total"],
-                              "source":_ref(checked["document"],row.locator)})
+                              "source":_ref(checked["document"],row.locator)}).model_dump(mode="json"))
             totals={r.values["invoice_total"] for r in checked["records"]}
             if len(totals)!=1:
                 raise ValueError("inconsistent stated totals")
-            total=next(iter(totals))
+            total=_decimal(next(iter(totals)))
             invoice_source=_ref(checked["document"],checked["records"][0].locator)
         except (ValueError,KeyError):
             items=[];total=None;invoice_source=None
@@ -317,17 +362,44 @@ def build_a1_snapshot(db,actor,claim_id,store,*,run_id):
         # authorization. Even a valid historical service tariff is NOT a fee grant.
         g3_reference["additional_fee_authority"]="NOT_ESTABLISHED"
         g3_reference["additional_fee_reason"]="G3_provider_tariff_is_not_approved_fee_clause"
-    return {"snapshot":snapshot,"g3_reference":g3_reference,
+    # This projection carries original field evidence, not financial authority.
+    # In particular a source row does not establish gross/net, discount, tax or
+    # rounding semantics. G5 must independently verify its rule and those facts.
+    claim_evidence=_row_evidence(source,record[0],G4_ORIGINAL_FIELDS)
+    claim_evidence.update(provider_code=claim.provider_code,service_code=claim.service_code,
+        service_date=claim.service_date.isoformat(),currency=claim.currency,source_scope=native_scope)
+    invoice_lines=[]
+    if len(candidates)==1:
+        checked=candidates[0]
+        for row in checked["records"]:
+            v=row.values
+            invoice_lines.append({"line_item_id":v["line_item_id"],"kind":v.get("item_kind","service"),
+                "code":v["service_code"],"unit":v["unit"],"currency":v["currency"],
+                "quantity":v["quantity"],"unit_price":v["unit_price"],"line_total":v["line_total"],
+                **_row_evidence(checked,row,REQUIRED_LINE)})
+    source_evidence={"claim":claim_evidence,
+        "invoice":{"document_id":invoice_id,"stated_total":total,"source":invoice_source},
+        "invoice_lines":invoice_lines,
+        "arithmetic_qualification":{"source_qualified":bool(snapshot.invoice.items),
+            "qualified":False,"ruleset_version":RULESET_VERSION,
+            "gaps":["explicit_adjustment_context","approved_arithmetic_rule",
+                    *(["valid_itemized_invoice"] if not snapshot.invoice.items else [])]},
+        "unit_price_authority":"NOT_ESTABLISHED"}
+    return {"snapshot":snapshot,"g3_reference":g3_reference,"source_evidence":source_evidence,
+            "source_evidence_fingerprint":digest(source_evidence),
             "status":"READ_ONLY_VERIFIED_CSV_NO_UNIT_AUTHORITY"}
 
 def preview_a1_from_g4(db,actor,claim_id,store,*,run_id):
     data=build_a1_snapshot(db,actor,claim_id,store,run_id=run_id)
     # Real on-prem medical data is never sent to an AI inference backend here.
+    from mcias.agents.invoice_integrity import analyze
     result=analyze(data["snapshot"].analysis_bundle())
     from mcias.agents.a1_review_packet import packet_from_preview
     preview={"a1":result,"missing_evidence":data["snapshot"].missing_evidence,
             "g3_historical_diagnostic":data["g3_reference"],
             "status":data["status"],"financial_decision":"NOT_AUTHORIZED",
+            "source_evidence":data["source_evidence"],
+            "source_evidence_fingerprint":data["source_evidence_fingerprint"],
             "source_verifications":[v.model_dump() for v in data["snapshot"].source_verifications]}
     preview["review_packet"]=packet_from_preview(preview)
     return preview

@@ -1,7 +1,7 @@
 """Synthetic G2 encrypted original -> G4 -> A1 invoice arithmetic and provenance."""
 import pytest
 from mcias.models_claims import ClaimAttachment
-from mcias.agents.a1_trusted_input import preview_a1_from_g4, build_a1_snapshot, A1SourceBlocked
+from mcias.agents.a1_trusted_input import preview_a1_from_g4, build_a1_snapshot
 from tests.test_a1_trusted_input import _setup, _claim, _document
 
 
@@ -30,13 +30,6 @@ def test_g2_g4_a1_decimal_source_cases(tmp_path, label, code, kind, qty, price, 
             organization_id=org.id, claim_id=claim.id, ingestion_document_id=doc.id,
             document_sha256=doc.sha256, linked_by=actor.id))
         db.commit()
-        if label == "medicine_missing_price":
-            # G2 keeps the original empty price, and A1 refuses to fabricate it.
-            # Current adapter blocks before emitting a review packet: known gap.
-            with pytest.raises(A1SourceBlocked, match="invalid_unverified_invoice_fields"):
-                build_a1_snapshot(db, actor, claim.id, store, run_id="SYN-" + label)
-            assert doc.sha256 and len(rows) == 1
-            return
         state = build_a1_snapshot(db, actor, claim.id, store, run_id="SYN-" + label)
         preview = preview_a1_from_g4(db, actor, claim.id, store, run_id="SYN-preview-" + label)
         packet = preview["review_packet"]
@@ -47,6 +40,12 @@ def test_g2_g4_a1_decimal_source_cases(tmp_path, label, code, kind, qty, price, 
         assert packet["g6_authorized_reviewer_decision"] == "PENDING"
         assert packet["g7_realized_savings"] is None
         assert state["snapshot"].contracts == []
+        evidence = packet["source_evidence"]
+        assert evidence["unit_price_authority"] == "NOT_ESTABLISHED"
+        assert evidence["arithmetic_qualification"]["qualified"] is False
+        assert evidence["invoice_lines"][0]["unit_price"] == price
+        assert evidence["invoice_lines"][0]["source_record_id"] == rows[0].id
+        assert evidence["invoice_lines"][0]["field_sources"]["unit_price"]["locator"] == "csv:row:2:field:unit_price"
         assert all(v.original_sha256_verified and v.extracted_rows_equal_original
                    for v in state["snapshot"].source_verifications)
         assert doc.sha256 in [v.sha256 for v in state["snapshot"].source_verifications]

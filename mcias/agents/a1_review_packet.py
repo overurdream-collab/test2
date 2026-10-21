@@ -4,6 +4,7 @@ This is a versioned interface, NOT an automatic G6 decision or activated
 ReferencePoint. Defer to G5 signed policy and independent Palermo review.
 """
 from datetime import datetime, timezone
+from copy import deepcopy
 
 SCHEMA_VERSION="mcias.a1.review.v1"
 
@@ -32,6 +33,10 @@ def packet_from_preview(preview):
         "provisional_four_way_code":disposition,
         "classification_is_final":False,
         "source_verification_status":preview.get("status"),
+        # Optional additive producer evidence; consumers must reverify the G2
+        # source and rule. A packet assertion never grants financial authority.
+        "source_evidence":deepcopy(preview.get("source_evidence")),
+        "source_evidence_fingerprint":preview.get("source_evidence_fingerprint"),
         "missing_evidence":sorted(set(missing)),
         "findings":[{"type":f.get("finding_type"),"origin":origin(f),
                      "status":f.get("finding_status"),"line_item_id":f.get("line_item_id"),
