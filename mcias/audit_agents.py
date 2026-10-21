@@ -47,9 +47,10 @@ def _claim_source(db, claim, actor):
             "source_sha256":document.sha256,"source_scope_approval_id":scope["approval_id"]}
 
 
-def inspect_claim(db,claim:ClaimEntry,policy=None,*,actor=None,review_only=False):
+def inspect_claim(db,claim:ClaimEntry,policy=None,*,actor=None,review_only=False,
+                  a1_review_packet=None,evidence_store=None):
     if review_only:
-        return _inspect_inputs_first_review(db, claim, actor)
+        return _inspect_inputs_first_review(db, claim, actor, a1_review_packet, evidence_store)
     from mcias.reference_service import applicable_reference_snapshots
     certificates=applicable_reference_snapshots(db,claim,policy)
     refs={item["family"]:item for item in certificates}
@@ -297,7 +298,114 @@ def _execution_evidence(db, claim, quantity, unit):
     return sorted(set(evidence_ids)), sorted(set(issues))
 
 
-def _inspect_inputs_first_review(db, claim, actor):
+def _a1_source_signals(evidence, claim):
+    """Recompute advisory contradictions from server-rebuilt original values.
+
+    These comparisons do not establish gross/net arithmetic, a fee grant,
+    performed quantity or clinical facts. No A1 finding/status is trusted.
+    """
+    signals = []
+    lines = evidence.get("invoice_lines", [])
+    invoice = evidence.get("invoice", {})
+    stated = _review_number(invoice.get("stated_total")) if isinstance(invoice, dict) else None
+    valid_lines = []
+    for line in lines:
+        quantity = _review_number(line.get("quantity"), positive=True)
+        price = _review_number(line.get("unit_price"))
+        total = _review_number(line.get("line_total"))
+        if quantity is None or price is None or total is None:
+            continue
+        valid_lines.append((line, quantity, price, total))
+        if quantity * price != total:
+            signals.append({"code": "invoice_line_arithmetic_conflict", "line_item_id": line["line_item_id"],
+                "source_record_ids": [line["source_record_id"]], "observed_value": str(total),
+                "comparison_value": str(quantity * price)})
+    if stated is not None and valid_lines and len(valid_lines) == len(lines):
+        summed = sum((row[3] for row in valid_lines), Decimal(0))
+        if summed != stated:
+            signals.append({"code": "invoice_total_arithmetic_conflict",
+                "source_record_ids": [row[0]["source_record_id"] for row in valid_lines],
+                "observed_value": str(stated), "comparison_value": str(summed)})
+        if stated != claim.claimed_amount:
+            signals.append({"code": "invoice_claim_amount_conflict",
+                "source_record_ids": [claim.extracted_record_id, *[row[0]["source_record_id"] for row in valid_lines]],
+                "observed_value": str(claim.claimed_amount), "comparison_value": str(stated)})
+    # A claim has no native line-item mapping. Compare its values only against
+    # one uniquely corresponding service line; multiple invoice rows are held.
+    if len(valid_lines) == len(lines) == 1:
+        line, quantity, price, _ = valid_lines[0]
+        if (line.get("kind") == "service" and line.get("code") == claim.service_code
+            and line.get("unit") == claim.source_values.get("unit") and line.get("currency") == claim.currency):
+            for field, actual, expected in (("quantity", _review_number(claim.source_values.get("quantity"), positive=True), quantity),
+                                             ("unit_price", _review_number(claim.source_values.get("unit_price")), price)):
+                if actual is not None and actual != expected:
+                    signals.append({"code": "invoice_" + field + "_conflict", "line_item_id": line["line_item_id"],
+                        "source_record_ids": [claim.extracted_record_id, line["source_record_id"]],
+                        "observed_value": str(actual), "comparison_value": str(expected)})
+    return signals
+
+
+def _a1_review_evidence(db, claim, actor, packet, store):
+    """Gate the existing optional A1 packet through its native source builder.
+
+    Fingerprints in the old abbreviated packet are trace identifiers, not
+    independently verifiable A1 execution attestations. Source checksums and
+    all invoice values are instead checked against a fresh server-side rebuild.
+    """
+    import json
+    import re
+    from hashlib import sha256
+    result = {"schema_version": "mcias.a1.review.v1", "audit_state": "UNRESOLVED",
+        "source_evidence_verified": False, "a1_input_fingerprint_verified": False,
+        "a1_output_fingerprint_verified": False, "signals": [], "gaps": []}
+    def held(reason):
+        result["gaps"] = [reason]
+        return result
+    if not isinstance(packet, dict) or packet.get("schema_version") != result["schema_version"]:
+        return held("a1_packet_contract_invalid")
+    if packet.get("tenant_id") != claim.organization_id or packet.get("claim_id") != claim.id:
+        return held("a1_packet_claim_scope_mismatch")
+    run = packet.get("audit_run_id")
+    hashes = ("a1_input_fingerprint", "a1_output_fingerprint", "source_evidence_fingerprint")
+    if (not isinstance(run, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}", run)
+        or any(not isinstance(packet.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", packet[key]) for key in hashes)):
+        return held("a1_packet_fingerprint_or_run_invalid")
+    if packet.get("classification_is_final") is not False or packet.get("financial_decision_authorized") is not False:
+        return held("a1_packet_authority_invalid")
+    evidence = packet.get("source_evidence")
+    try:
+        encoded = json.dumps(evidence, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError, OverflowError):
+        return held("a1_packet_source_invalid")
+    if len(encoded) > 262144 or sha256(encoded).hexdigest() != packet["source_evidence_fingerprint"]:
+        return held("a1_packet_source_fingerprint_mismatch")
+    result.update({key: packet[key] for key in hashes}, audit_run_id=run)
+    if store is None:
+        return held("source_verification_unavailable")
+    try:
+        # This read-only builder checks existing field permissions, tenant,
+        # original encrypted bytes, G2 rows and the G4 CLAIMS source scope.
+        # Importing it does not load or execute the A1/AI analysis path.
+        from mcias.agents.a1_trusted_input import build_a1_snapshot, A1AccessDenied, A1SourceBlocked
+    except ImportError:
+        return held("a1_source_adapter_unavailable")
+    try:
+        rebuilt = build_a1_snapshot(db, actor, claim.id, store, run_id=run)
+    except (A1AccessDenied, A1SourceBlocked, OSError, ValueError):
+        return held("a1_original_source_verification_failed")
+    expected = rebuilt.get("source_evidence")
+    if not isinstance(expected, dict) or expected != evidence:
+        return held("a1_packet_source_values_mismatch")
+    result["source_evidence_verified"] = True
+    result["signals"] = _a1_source_signals(expected, claim)
+    # Native invoice bytes cannot establish the missing gross/net/adjustment
+    # context or an approved arithmetic rule. Candidate/OCR flags never fill
+    # these gaps. G3 has no such approved policy contract in this version.
+    result["gaps"] = ["explicit_adjustment_context_missing", "approved_arithmetic_rule_missing"]
+    return result
+
+
+def _inspect_inputs_first_review(db, claim, actor, a1_review_packet=None, evidence_store=None):
     """Existing advisory agents with approved source-backed G3 dataset facts."""
     from datetime import date, timedelta
     from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP
@@ -314,7 +422,12 @@ def _inspect_inputs_first_review(db, claim, actor):
         findings.append({"agent": agent, "status": "pass" if state == "MATCH_VERIFIED" else "review" if state == "VIOLATION_PROVEN" else "hold",
             "audit_state": state, "reason": reason, "rule_id": agent, "rule_version": 2,
             "reference_families": list(families),
-            "reference": [record["source_record_id"] for record in records if record.get("source_record_id")]})
+            "reference": [record["source_record_id"] for record in records if record.get("source_record_id")],
+            "reference_context": [{"family": family, "reference_id": refs.get(family, {}).get("reference_id"),
+                "version": refs.get(family, {}).get("version"), "service_date": claim.service_date.isoformat(),
+                "effective_from": refs.get(family, {}).get("effective_from"),
+                "effective_until": refs.get(family, {}).get("effective_until"),
+                "source_evidence": refs.get(family, {}).get("source_evidence", [])} for family in families]})
 
     beneficiaries = _matching_records(refs.get("beneficiary", {}), beneficiary_token=claim.beneficiary_token) if ready("beneficiary") else []
     beneficiary = _record_values(beneficiaries[0]) if len(beneficiaries) == 1 else {}
@@ -458,6 +571,9 @@ def _inspect_inputs_first_review(db, claim, actor):
         history_coverage_until=refs.get("history", {}).get("coverage_until"))
 
     execution_ids, evidence_issues = _execution_evidence(db, claim, quantity, unit)
+    a1_evidence = _a1_review_evidence(db, claim, actor, a1_review_packet, evidence_store) if a1_review_packet is not None else None
+    if a1_evidence is not None:
+        evidence_issues = sorted(set(evidence_issues + a1_evidence["gaps"]))
     if source is None:
         add("evidence", "AUDIT_UNAVAILABLE", "source_unavailable", ())
     elif evidence_issues or (policy.get("requires_execution_evidence") is not False and not execution_ids):
@@ -467,6 +583,8 @@ def _inspect_inputs_first_review(db, claim, actor):
     else:
         add("evidence", "MATCH_VERIFIED", "source_and_required_execution_evidence", ("policy",))
     findings[-1]["reference"] = execution_ids
+    if a1_evidence is not None:
+        findings[-1]["a1_evidence"] = a1_evidence
     assert tuple(item["agent"] for item in findings) == AGENTS
     if source is None:
         # Invalid claim provenance cannot support even a check-local proof.

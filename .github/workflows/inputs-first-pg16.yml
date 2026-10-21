@@ -27,6 +27,8 @@ jobs:
       MCIAS_INPUTS_AUDIT_DATABASE_URL: postgresql+psycopg://postgres:synthetic-only@127.0.0.1:5432/mcias_inputs_audit
       MCIAS_INPUTS_AUDIT_ALLOW: 'YES'
       MCIAS_E1_REVIEW_EVIDENCE_OUTPUT: e1-review-evidence.jsonl
+      MCIAS_G7_EVIDENCE_OUTPUT: g7-report-evidence.jsonl
+      MCIAS_A1_BRIDGE_EVIDENCE_OUTPUT: a1-g5-bridge-evidence.jsonl
       MCIAS_ENVIRONMENT: development
       MCIAS_MALWARE_SCAN: disabled
       PGPASSWORD: synthetic-only
@@ -49,11 +51,16 @@ jobs:
           tests/test_g3_reference_datasets.py
           tests/test_g5_inputs_first.py tests/test_g5_agent_order.py
           tests/test_g5_inputs_first_review.py tests/test_g5_snapshot_read_contract.py
+          tests/test_g5_a1_evidence_gate.py tests/test_g5_a1_native_bridge.py
+          tests/test_g7_inputs_first_reporting.py
           tests/test_shared_audit_contract_v2.py
           tests/test_shared_audit_inputs_pg16.py tests/test_operational_controls.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: inputs-first-native-pg16-known-truth
-          path: e1-review-evidence.jsonl
+          path: |
+            e1-review-evidence.jsonl
+            g7-report-evidence.jsonl
+            a1-g5-bridge-evidence.jsonl
           if-no-files-found: error

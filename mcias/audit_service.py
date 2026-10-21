@@ -18,11 +18,14 @@ def fingerprint_policy(policy):
        for key,value in asdict(policy).items()}
     return sha256(json.dumps(d,sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
-def run_audit(db,actor,claim_id,policy:AuditPolicy=None,*,verified_authorization=None,review_only=False):
+def run_audit(db,actor,claim_id,policy:AuditPolicy=None,*,verified_authorization=None,review_only=False,
+              a1_review_packet=None,evidence_store=None):
     if type(review_only) is not bool:
         raise PolicyBlocked("review_only must be an explicit boolean")
     if review_only:
-        return _run_inputs_first_review(db, actor, claim_id)
+        return _run_inputs_first_review(db, actor, claim_id, a1_review_packet, evidence_store)
+    if a1_review_packet is not None or evidence_store is not None:
+        raise PolicyBlocked("A1 evidence is restricted to advisory review_only execution")
     # The caller must supply a verified, tenant-bound authorization from a
     # trusted G1 signer; a client-side 'approved=True' flag is insufficient.
     # A caller-supplied dictionary is not proof of a cryptographic signature.
@@ -110,7 +113,22 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy=None,*,verified_authorization
     return snapshot
 
 
-def _run_inputs_first_review(db, actor, claim_id):
+def _review_findings_identity(findings):
+    """Exclude only unverified A1 execution trace from advisory result identity.
+
+    Preserve every source, value, rule, version, outcome and verification flag.
+    The first immutable snapshot retains its complete original trace metadata.
+    """
+    from copy import deepcopy
+    result = deepcopy(findings)
+    for finding in result.get("agents", []):
+        if finding.get("agent") == "evidence" and isinstance(finding.get("a1_evidence"), dict):
+            for key in ("a1_input_fingerprint", "a1_output_fingerprint", "audit_run_id"):
+                finding["a1_evidence"].pop(key, None)
+    return result
+
+
+def _run_inputs_first_review(db, actor, claim_id, a1_review_packet=None, evidence_store=None):
     """Persist existing INPUTS-FIRST findings without authorizing any payment.
 
     The existing Super Admin and claims.read grants are checked on the durable
@@ -130,7 +148,8 @@ def _run_inputs_first_review(db, actor, claim_id):
         ClaimEntry.organization_id == user.organization_id).with_for_update())
     if claim is None:
         raise PolicyBlocked("claim not accessible")
-    checks = inspect_claim(db, claim, actor=user, review_only=True)
+    checks = inspect_claim(db, claim, actor=user, review_only=True,
+        a1_review_packet=a1_review_packet, evidence_store=evidence_store)
     findings = {"agents": checks["findings"], "audit_state": checks["audit_state"],
         "audit_state_schema_version": 2, "reason_code": checks["reason_code"],
         "reference_certificates": checks["reference_certificates"],
@@ -139,14 +158,15 @@ def _run_inputs_first_review(db, actor, claim_id):
     # Fingerprint the actual validated source, versions and findings. Replaying
     # the same evidence returns one immutable snapshot/event; a later trusted
     # reference version creates a separate traceable snapshot.
+    identity = _review_findings_identity(findings)
     context = {"mode": "inputs_first_review", "schema_version": 2,
-        "claim_id": claim.id, "findings": findings}
+        "claim_id": claim.id, "findings": identity}
     fp = sha256(json.dumps(context, sort_keys=True, separators=(",", ":"),
         ensure_ascii=False, allow_nan=False).encode()).hexdigest()
     existing = db.scalar(select(AuditSnapshot).where(AuditSnapshot.claim_id == claim.id,
         AuditSnapshot.policy_fingerprint == fp))
     if existing is not None:
-        if existing.findings != findings:
+        if _review_findings_identity(existing.findings) != identity:
             raise PolicyBlocked("immutable review snapshot differs from its evidence")
         return existing
     calculation = {"status": "held", "reason": "advisory_review_only",

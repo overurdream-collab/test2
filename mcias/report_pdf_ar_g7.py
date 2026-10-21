@@ -91,5 +91,11 @@ def render_arabic_pdf(report):
     story.extend([tbl, Spacer(1, 18),
         Paragraph(rtl("ملاحظة: المطالبات المعلقة والمرفوضة وغير المعتمدة لا تدخل في صافي المستحقات."), body),
         Paragraph(rtl("البيانات الشخصية وأرقام المستفيدين غير مدرجة في التقرير التنفيذي."), body)])
+    audit = report.summary.get("audit")
+    if audit:
+        story.extend([Spacer(1, 12), Paragraph(rtl("نتائج التدقيق الاستشارية — الإصدار 2، دون قرار مالي"), body)])
+        for state, count in audit["outcome_counts"].items():
+            story.append(Paragraph(escape(f"{state}: {count}"), body))
+        story.append(Paragraph(rtl(f"المكتمل تدقيقها: {audit['completed_audit_count']}، غير المكتمل: {audit['incomplete_audit_count']}، دون نتيجة مسجلة: {audit['unclassified_count']}"), body))
     doc.build(story)
     return output.getvalue()

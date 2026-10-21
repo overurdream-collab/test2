@@ -166,5 +166,108 @@
   ],
   "baseline_remote_head": "a0f5ed864dad35a415e7173aea82c1b0441b07d8",
   "remote_tracking": "PR34؛ روابط التشغيل النهائية في وصف PR وملف .e2e-output/verified_ci_20261021.json بعد التنفيذ",
-  "checkpoint_updated_at_utc": "2026-10-21T11:26:40Z"
+  "checkpoint_updated_at_utc": "2026-10-21T11:26:40Z",
+  "integration_cycle_20261021": {
+    "baseline_remote_sha": "1503c16ae373db52fd9472fe562ebb6a23a7f87e",
+    "baseline_local_sha": "ba1ec6bdb578eaefa19920985fddfbcc8bede945",
+    "baseline_tree": "d68bfb8db7637c0aca4c5dc8dcd5bc1b3bc4072a",
+    "evidence": "docs/INTEGRATION_CYCLE_20261021_AR.md",
+    "tasks": [
+      {
+        "id": "E3-G5",
+        "owner": "integration_rules",
+        "worktree": "integration-g5",
+        "handoff": "406",
+        "status": "INTEGRATION VERIFIED",
+        "depends": [
+          "E4-A1"
+        ],
+        "sha": "b5a1778bc7aeb50eb2677eb6e2e106235e054fd7",
+        "evidence": "docs/E3_RULES_EVIDENCE_INTEGRATION_AR.md",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      },
+      {
+        "id": "E4-A1",
+        "owner": "a1_evidence",
+        "worktree": "a1-validation",
+        "handoff": "405",
+        "status": "INTEGRATION VERIFIED",
+        "depends": [
+          "G2 source_scope"
+        ],
+        "sha": "19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5",
+        "evidence": "docs/E4_A1_BRIDGE_AR.md",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      },
+      {
+        "id": "E4-READER",
+        "owner": "resume_reader",
+        "worktree": "document-evidence",
+        "handoff": "404",
+        "status": "QUALITY BLOCKED",
+        "depends": [
+          "A1 explicit service_date contract"
+        ],
+        "sha": "49c14e6136c7d32cbca844c28656d38270986df7",
+        "evidence": "PR35 + docs/E4_READER_QUALITY_AR.md in owner branch",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      },
+      {
+        "id": "E4-CONTRACT",
+        "owner": "contract_quality",
+        "worktree": "contract-evidence",
+        "handoff": "403",
+        "status": "QUALITY BLOCKED",
+        "depends": [
+          "existing validator contract"
+        ],
+        "sha": "fedd53c05f7573d9a7dfc1bccfa9451dcc6dfa4f",
+        "evidence": "PR32 + docs/E4_CONTRACT_QUALITY_AR.md in owner branch",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      },
+      {
+        "id": "E5-G7",
+        "owner": "e5_reporting",
+        "worktree": "integration-g7",
+        "handoff": "401",
+        "status": "INTEGRATION VERIFIED",
+        "depends": [
+          "G5 schema2",
+          "Shared Audit v2"
+        ],
+        "sha": "df849b96efc0741eca8157c77e08b1a67fed2b16",
+        "evidence": "docs/E5_REPORTING_INTEGRATION_AR.md",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      },
+      {
+        "id": "PERFORMANCE",
+        "owner": "native_performance",
+        "worktree": "integration-bench",
+        "handoff": "402",
+        "status": "INTEGRATION VERIFIED",
+        "depends": [
+          "existing G2-G6 services"
+        ],
+        "sha": "0526403073a0b634c78ebd2974feb65930b5c361",
+        "evidence": "docs/E6_NATIVE_PERFORMANCE_AR.md",
+        "acceptance": "REVIEW PENDING; synthetic scope only"
+      }
+    ],
+    "note": "IN_PROGRESS is task execution metadata, not a canonical audit outcome; historical task records above are preserved.",
+    "results": "docs/INTEGRATION_CYCLE_RESULTS_AR.md",
+    "verified_at_utc": "2026-10-21T21:05:11.730913+00:00",
+    "reference_names_source": "docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md section9; docs/DG001_INPUTS_G3.md",
+    "canonical_states": [
+      "MATCH_VERIFIED",
+      "VIOLATION_PROVEN",
+      "UNRESOLVED",
+      "AUDIT_UNAVAILABLE"
+    ],
+    "published_heads": {
+      "PR32": "28987af828cc5d9c40f4a61cb85321dfec64b67e",
+      "PR20": "c9a98ae32a798a42f79241d86df0da2e64231096",
+      "PR35_initial_cycle": "44c99cac1a8d4f272e7a364fba284a5f116b10e2"
+    },
+    "ci": "New composed PR34 exact-head CI is pending publication; final run receipts retained in PR descriptions and .e2e-output checkpoint; prior historical task records remain archival."
+  }
 }

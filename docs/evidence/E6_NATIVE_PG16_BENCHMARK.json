@@ -1,0 +1,670 @@
+{
+  "kind": "bounded_native_synthetic_inputs_first_benchmark",
+  "method": {
+    "cpu": "process_time client process; RUSAGE_CHILDREN parser child user+system CPU separately; excludes PG server",
+    "database": "local PostgreSQL16, disposable schema per size, ORM metadata creation; not migration verification",
+    "memory": "Linux getrusage ru_maxrss*1024: fresh client lifetime high water; maximum single parser child separately; not sum; excludes PG server",
+    "process": "fresh Linux Python process per size; sequential concurrency=1",
+    "retry": "one same-byte workbook reimport plus first/last G5 snapshot and G6 open_case replay; no duplicate hold request",
+    "scope": "fully sourced matching synthetic claims only; not quality precision/recall, concurrency, SLA, OCR or production readiness",
+    "setup_overlap": "g3_reference_source_setup and execution_source_and_attachment_setup include their G2 ingestion/readback; never sum all timing fields",
+    "timing": "perf_counter wall seconds; G3 inclusive reference lookup nested in inspection nested in G5; partition subtracts overlap"
+  },
+  "raw_evidence": {
+    "archive": "E6_NATIVE_PG16_BENCHMARK.json.gz",
+    "gzip_bytes": 57247,
+    "gzip_sha256": "06bb7695430b0e195207d58dc5e3c6effcf275d278d954525f569628a562fac3",
+    "note": "All original claim/reference/rule/event trace records retained in gzip archive; this JSON omits repetitive trace only.",
+    "script_sha256": "31ef798e2b83259bcefd5955a98ff029e49d3c32c3bb6c5bf99dc204d63cd76a",
+    "source_local_head": "ba1ec6bdb578eaefa19920985fddfbcc8bede945",
+    "uncompressed_bytes": 1729212,
+    "uncompressed_sha256": "3d7d62f8599ca2419a96ce1845ca404c087f51d4fa1ef0fc4b4ca4bb7df56bca",
+    "verified_postcommit_claims": 135
+  },
+  "report_schema": 1,
+  "requested_sizes": [
+    10,
+    25,
+    100
+  ],
+  "samples": [
+    {
+      "automatic_retries": 0,
+      "claims_per_pipeline_second": 0.47661463223317624,
+      "client_cpu_seconds": 6.435845038,
+      "client_peak_rss_bytes": 84803584,
+      "concurrency": 1,
+      "durable_counts": {
+        "cases": 10,
+        "claim_audit_events": 10,
+        "claims": 10,
+        "documents": 8,
+        "holds": 10,
+        "snapshots": 10
+      },
+      "errors": 0,
+      "expected_state": "MATCH_VERIFIED",
+      "g2_claim_workbook_ingest_seconds": 2.1624274280002282,
+      "g5_timing_partition": {
+        "g5_total_seconds": 5.211973953999404,
+        "inspection_inclusive_seconds": 4.315129990998685,
+        "persistence_and_orchestration_seconds": 0.8968439630007197,
+        "reference_seconds": 3.4188441289916227,
+        "rules_and_source_validation_seconds": 0.896285862007062
+      },
+      "human_hold_routing": {
+        "denominator": 10,
+        "fraction": 1.0,
+        "numerator": 10
+      },
+      "human_review_flag": {
+        "denominator": 10,
+        "fraction": 1.0,
+        "numerator": 10
+      },
+      "mandatory_check_coverage": {
+        "denominator": 80,
+        "fraction": 1.0,
+        "numerator": 80
+      },
+      "max_single_child_peak_rss_bytes": 78249984,
+      "measured_calls": {
+        "encrypted_original_readback": 8,
+        "execution_source_and_attachment_setup": 1,
+        "g2_ingest_all_sources": 8,
+        "g3_reference_source_setup": 1,
+        "g4_approve_normalize": 1,
+        "g5_audit_and_shared_event": 10,
+        "g6_case_and_hold": 10,
+        "inspection_inclusive": 10,
+        "postcommit_validation": 1,
+        "reference_lookup_inclusive": 10,
+        "reimport_and_retry": 1,
+        "schema_cleanup": 1,
+        "schema_setup": 1
+      },
+      "measured_work_counts_initial_audits_only": {
+        "claims_scope_rows_validated": 110,
+        "reference_certificate_rows_returned": 330
+      },
+      "measurement_status": "INTEGRATION VERIFIED",
+      "normalize_calls": 1,
+      "outcomes": {
+        "MATCH_VERIFIED": 10
+      },
+      "parser_children_cpu_seconds": 11.285903000000001,
+      "pipeline_wall_seconds": 20.981311365001602,
+      "postgres_version_num": 160015,
+      "qualified_evidence_coverage": {
+        "denominator": 10,
+        "fraction": 1.0,
+        "numerator": 10
+      },
+      "quarantined_records": 0,
+      "reference_coverage": {
+        "denominator": 60,
+        "fraction": 1.0,
+        "numerator": 60
+      },
+      "retry": {
+        "audit_retries": 2,
+        "case_open_retries": 2,
+        "counts_after": {
+          "cases": 10,
+          "claim_audit_events": 10,
+          "claims": 10,
+          "documents": 8,
+          "holds": 10,
+          "snapshots": 10
+        },
+        "counts_before": {
+          "cases": 10,
+          "claim_audit_events": 10,
+          "claims": 10,
+          "documents": 8,
+          "holds": 10,
+          "snapshots": 10
+        },
+        "file_reimports": 1
+      },
+      "sample_deadline_seconds": 300,
+      "sample_wall_seconds_including_setup_validation_cleanup": 23.147898843999428,
+      "schema": "bench_inputs_9604a1a84b4a4ce59685ac9ce20a7d4f",
+      "schema_removed": true,
+      "size": 10,
+      "sources": [
+        {
+          "bytes": 6182,
+          "document_id": "53f93c7e-3ca2-4268-b8b2-2958db49e8b3",
+          "encrypted_original_verified": true,
+          "filename": "SYN-claims.xlsx",
+          "records": 11,
+          "sha256": "3ba7d59c4b8403c0774212d474784269d0b14af9c2bd6ead1aced6140abb5e0d"
+        },
+        {
+          "bytes": 3000,
+          "document_id": "d6ad6ae0-546a-48f9-97f1-3bc815c1d2c9",
+          "encrypted_original_verified": true,
+          "filename": "SYN-beneficiary.csv",
+          "records": 10,
+          "sha256": "8f36e213519b0f7b0e6ae5f2df4cef026f0a4aa01e201581362c16531e9fb0fb"
+        },
+        {
+          "bytes": 256,
+          "document_id": "5890936c-db8a-4339-a99d-239a415796e9",
+          "encrypted_original_verified": true,
+          "filename": "SYN-contract.csv",
+          "records": 1,
+          "sha256": "92d9e9ec10a24e2a66c31331a852ed9f9a6a84878bab0a8dcdd210c6ae5c3045"
+        },
+        {
+          "bytes": 351,
+          "document_id": "9cc811a5-9971-4ffd-9b7a-f486b8e9c66c",
+          "encrypted_original_verified": true,
+          "filename": "SYN-tariff.csv",
+          "records": 1,
+          "sha256": "52145ae0ceafe6bd8b1412833ed8365da046c75a4e8c0acf31ef81e26921de74"
+        },
+        {
+          "bytes": 463,
+          "document_id": "5cf6715a-a548-4ae6-929d-06aa4629f3ce",
+          "encrypted_original_verified": true,
+          "filename": "SYN-policy.csv",
+          "records": 1,
+          "sha256": "1dfd6c5d56f8495db316abd881942fee80ccedb9bec6d4988eac6c9f1e23fbd3"
+        },
+        {
+          "bytes": 4720,
+          "document_id": "f405b0bb-839f-49bb-bfc0-3e4e34d5fa37",
+          "encrypted_original_verified": true,
+          "filename": "SYN-caps.csv",
+          "records": 10,
+          "sha256": "15d5cce00390c75b9ca2bc7327d582033c3fc8853c83b1430c3636e44e76f8ad"
+        },
+        {
+          "bytes": 3810,
+          "document_id": "f7e3e97c-d678-407c-b5fe-b6f14b90c649",
+          "encrypted_original_verified": true,
+          "filename": "SYN-history.csv",
+          "records": 10,
+          "sha256": "db94b762f9fcaa75f53a4998ef3524670fe8d32539be3acf5c67700b0b5bb365"
+        },
+        {
+          "bytes": 1085,
+          "document_id": "7f4b61ef-db34-4b5b-b068-90baf751f169",
+          "encrypted_original_verified": true,
+          "filename": "SYN-execution.csv",
+          "records": 10,
+          "sha256": "b13193b74253621bc99acc116ca42c288494998911ba50bbebd597d071321cd4"
+        }
+      ],
+      "stalls": 0,
+      "timings_seconds": {
+        "encrypted_original_readback": 0.005966533994069323,
+        "execution_source_and_attachment_setup": 1.6018383449991234,
+        "g2_ingest_all_sources": 12.269956216001447,
+        "g3_reference_source_setup": 9.912570975000563,
+        "g4_approve_normalize": 0.2640324120002333,
+        "g5_audit_and_shared_event": 5.211973953999404,
+        "g6_case_and_hold": 1.0336644679919118,
+        "inspection_inclusive": 4.315129990998685,
+        "postcommit_validation": 0.3348676380010147,
+        "reference_lookup_inclusive": 3.4188441289916227,
+        "reimport_and_retry": 0.6481179000002157,
+        "schema_cleanup": 0.0475261909996334,
+        "schema_setup": 0.8367486790011753
+      },
+      "unavailable_fraction": {
+        "denominator": 10,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "unresolved_fraction": {
+        "denominator": 10,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "worker_exit_code": 0,
+      "workload": {
+        "all_source_data_records": 54,
+        "claims": 10,
+        "excel_data_rows": 11,
+        "excel_files": 1,
+        "excel_rows_including_headers": 13,
+        "excel_sheets": 2,
+        "execution_data_records": 10,
+        "files": 8,
+        "independent_beneficiaries": 10,
+        "payment_rows_excluded": 1,
+        "reference_data_records": 33,
+        "source_bytes": 19867
+      }
+    },
+    {
+      "automatic_retries": 0,
+      "claims_per_pipeline_second": 0.6188213351850822,
+      "client_cpu_seconds": 13.791814801000001,
+      "client_peak_rss_bytes": 84492288,
+      "concurrency": 1,
+      "durable_counts": {
+        "cases": 25,
+        "claim_audit_events": 25,
+        "claims": 25,
+        "documents": 8,
+        "holds": 25,
+        "snapshots": 25
+      },
+      "errors": 0,
+      "expected_state": "MATCH_VERIFIED",
+      "g2_claim_workbook_ingest_seconds": 4.144786819000728,
+      "g5_timing_partition": {
+        "g5_total_seconds": 8.52616908600612,
+        "inspection_inclusive_seconds": 7.259069433002878,
+        "persistence_and_orchestration_seconds": 1.2670996530032426,
+        "reference_seconds": 6.220910553991416,
+        "rules_and_source_validation_seconds": 1.038158879011462
+      },
+      "human_hold_routing": {
+        "denominator": 25,
+        "fraction": 1.0,
+        "numerator": 25
+      },
+      "human_review_flag": {
+        "denominator": 25,
+        "fraction": 1.0,
+        "numerator": 25
+      },
+      "mandatory_check_coverage": {
+        "denominator": 200,
+        "fraction": 1.0,
+        "numerator": 200
+      },
+      "max_single_child_peak_rss_bytes": 77938688,
+      "measured_calls": {
+        "encrypted_original_readback": 8,
+        "execution_source_and_attachment_setup": 1,
+        "g2_ingest_all_sources": 8,
+        "g3_reference_source_setup": 1,
+        "g4_approve_normalize": 1,
+        "g5_audit_and_shared_event": 25,
+        "g6_case_and_hold": 25,
+        "inspection_inclusive": 25,
+        "postcommit_validation": 1,
+        "reference_lookup_inclusive": 25,
+        "reimport_and_retry": 1,
+        "schema_cleanup": 1,
+        "schema_setup": 1
+      },
+      "measured_work_counts_initial_audits_only": {
+        "claims_scope_rows_validated": 650,
+        "reference_certificate_rows_returned": 1950
+      },
+      "measurement_status": "INTEGRATION VERIFIED",
+      "normalize_calls": 1,
+      "outcomes": {
+        "MATCH_VERIFIED": 25
+      },
+      "parser_children_cpu_seconds": 21.366982,
+      "pipeline_wall_seconds": 40.39938279200214,
+      "postgres_version_num": 160015,
+      "qualified_evidence_coverage": {
+        "denominator": 25,
+        "fraction": 1.0,
+        "numerator": 25
+      },
+      "quarantined_records": 0,
+      "reference_coverage": {
+        "denominator": 150,
+        "fraction": 1.0,
+        "numerator": 150
+      },
+      "retry": {
+        "audit_retries": 2,
+        "case_open_retries": 2,
+        "counts_after": {
+          "cases": 25,
+          "claim_audit_events": 25,
+          "claims": 25,
+          "documents": 8,
+          "holds": 25,
+          "snapshots": 25
+        },
+        "counts_before": {
+          "cases": 25,
+          "claim_audit_events": 25,
+          "claims": 25,
+          "documents": 8,
+          "holds": 25,
+          "snapshots": 25
+        },
+        "file_reimports": 1
+      },
+      "sample_deadline_seconds": 300,
+      "sample_wall_seconds_including_setup_validation_cleanup": 47.30157242700079,
+      "schema": "bench_inputs_230db862bbe445e8a07a53334d605126",
+      "schema_removed": true,
+      "size": 25,
+      "sources": [
+        {
+          "bytes": 6858,
+          "document_id": "a2bf7fb2-1da3-4e1b-8c3b-f65fc0f47b8f",
+          "encrypted_original_verified": true,
+          "filename": "SYN-claims.xlsx",
+          "records": 26,
+          "sha256": "5f437bafdf53196d2cc2614e99728bc3451a66a5527a378a8f1cac7812c58cf2"
+        },
+        {
+          "bytes": 7470,
+          "document_id": "dd4d6360-485f-486d-8e08-d7cf1c781c37",
+          "encrypted_original_verified": true,
+          "filename": "SYN-beneficiary.csv",
+          "records": 25,
+          "sha256": "6d88849f1a1e52d0b741ef28fa6414300a93a4111c0bc1c388bcabe4b6fd33ef"
+        },
+        {
+          "bytes": 256,
+          "document_id": "449252f2-fc3c-4d64-9dfa-ed827ece89c5",
+          "encrypted_original_verified": true,
+          "filename": "SYN-contract.csv",
+          "records": 1,
+          "sha256": "92d9e9ec10a24e2a66c31331a852ed9f9a6a84878bab0a8dcdd210c6ae5c3045"
+        },
+        {
+          "bytes": 351,
+          "document_id": "c3fe56ec-99a4-4812-a15e-3236fa4e5f32",
+          "encrypted_original_verified": true,
+          "filename": "SYN-tariff.csv",
+          "records": 1,
+          "sha256": "52145ae0ceafe6bd8b1412833ed8365da046c75a4e8c0acf31ef81e26921de74"
+        },
+        {
+          "bytes": 463,
+          "document_id": "89655893-0a4a-4ece-bd3e-77cd6278ec4a",
+          "encrypted_original_verified": true,
+          "filename": "SYN-policy.csv",
+          "records": 1,
+          "sha256": "1dfd6c5d56f8495db316abd881942fee80ccedb9bec6d4988eac6c9f1e23fbd3"
+        },
+        {
+          "bytes": 11770,
+          "document_id": "38932eb1-ac13-464c-98b8-63140efe1449",
+          "encrypted_original_verified": true,
+          "filename": "SYN-caps.csv",
+          "records": 25,
+          "sha256": "0d01e033b830c1ca753499cc4729dce3929b8823cacf65bce326f0a065dac1db"
+        },
+        {
+          "bytes": 9495,
+          "document_id": "515ec7c4-4f5c-48e0-933b-a8e15002fadc",
+          "encrypted_original_verified": true,
+          "filename": "SYN-history.csv",
+          "records": 25,
+          "sha256": "964afbfa0c17ca0aa39b2e4b22139cdc20c6903720c6cb46c13532ef60bc7d80"
+        },
+        {
+          "bytes": 2525,
+          "document_id": "a9e6beaf-4749-4cdf-9cc9-6d7dd8fd5458",
+          "encrypted_original_verified": true,
+          "filename": "SYN-execution.csv",
+          "records": 25,
+          "sha256": "86c5486156cf6e0441d53b0de9d41271eb287bb305c33321cea6059354208661"
+        }
+      ],
+      "stalls": 0,
+      "timings_seconds": {
+        "encrypted_original_readback": 0.005259989004116505,
+        "execution_source_and_attachment_setup": 1.9948416160004854,
+        "g2_ingest_all_sources": 27.00043784800073,
+        "g3_reference_source_setup": 22.66903154800093,
+        "g4_approve_normalize": 1.1169817120025982,
+        "g5_audit_and_shared_event": 8.52616908600612,
+        "g6_case_and_hold": 1.2828437099960865,
+        "inspection_inclusive": 7.259069433002878,
+        "postcommit_validation": 1.5430009279989463,
+        "reference_lookup_inclusive": 6.220910553991416,
+        "reimport_and_retry": 3.953847325003153,
+        "schema_cleanup": 0.189530203002505,
+        "schema_setup": 0.8234647319986834
+      },
+      "unavailable_fraction": {
+        "denominator": 25,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "unresolved_fraction": {
+        "denominator": 25,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "worker_exit_code": 0,
+      "workload": {
+        "all_source_data_records": 129,
+        "claims": 25,
+        "excel_data_rows": 26,
+        "excel_files": 1,
+        "excel_rows_including_headers": 28,
+        "excel_sheets": 2,
+        "execution_data_records": 25,
+        "files": 8,
+        "independent_beneficiaries": 25,
+        "payment_rows_excluded": 1,
+        "reference_data_records": 78,
+        "source_bytes": 39188
+      }
+    },
+    {
+      "automatic_retries": 0,
+      "claims_per_pipeline_second": 1.2779301728862933,
+      "client_cpu_seconds": 39.164889486,
+      "client_peak_rss_bytes": 88412160,
+      "concurrency": 1,
+      "durable_counts": {
+        "cases": 100,
+        "claim_audit_events": 100,
+        "claims": 100,
+        "documents": 8,
+        "holds": 100,
+        "snapshots": 100
+      },
+      "errors": 0,
+      "expected_state": "MATCH_VERIFIED",
+      "g2_claim_workbook_ingest_seconds": 0.9858793519997562,
+      "g5_timing_partition": {
+        "g5_total_seconds": 54.19304816798467,
+        "inspection_inclusive_seconds": 42.955339579013526,
+        "persistence_and_orchestration_seconds": 11.237708588971145,
+        "reference_seconds": 28.336985576021107,
+        "rules_and_source_validation_seconds": 14.618354002992419
+      },
+      "human_hold_routing": {
+        "denominator": 100,
+        "fraction": 1.0,
+        "numerator": 100
+      },
+      "human_review_flag": {
+        "denominator": 100,
+        "fraction": 1.0,
+        "numerator": 100
+      },
+      "mandatory_check_coverage": {
+        "denominator": 800,
+        "fraction": 1.0,
+        "numerator": 800
+      },
+      "max_single_child_peak_rss_bytes": 79794176,
+      "measured_calls": {
+        "encrypted_original_readback": 8,
+        "execution_source_and_attachment_setup": 1,
+        "g2_ingest_all_sources": 8,
+        "g3_reference_source_setup": 1,
+        "g4_approve_normalize": 1,
+        "g5_audit_and_shared_event": 100,
+        "g6_case_and_hold": 100,
+        "inspection_inclusive": 100,
+        "postcommit_validation": 1,
+        "reference_lookup_inclusive": 100,
+        "reimport_and_retry": 1,
+        "schema_cleanup": 1,
+        "schema_setup": 1
+      },
+      "measured_work_counts_initial_audits_only": {
+        "claims_scope_rows_validated": 10100,
+        "reference_certificate_rows_returned": 30300
+      },
+      "measurement_status": "INTEGRATION VERIFIED",
+      "normalize_calls": 4,
+      "outcomes": {
+        "MATCH_VERIFIED": 100
+      },
+      "parser_children_cpu_seconds": 12.292752,
+      "pipeline_wall_seconds": 78.25153683799726,
+      "postgres_version_num": 160015,
+      "qualified_evidence_coverage": {
+        "denominator": 100,
+        "fraction": 1.0,
+        "numerator": 100
+      },
+      "quarantined_records": 0,
+      "reference_coverage": {
+        "denominator": 600,
+        "fraction": 1.0,
+        "numerator": 600
+      },
+      "retry": {
+        "audit_retries": 2,
+        "case_open_retries": 2,
+        "counts_after": {
+          "cases": 100,
+          "claim_audit_events": 100,
+          "claims": 100,
+          "documents": 8,
+          "holds": 100,
+          "snapshots": 100
+        },
+        "counts_before": {
+          "cases": 100,
+          "claim_audit_events": 100,
+          "claims": 100,
+          "documents": 8,
+          "holds": 100,
+          "snapshots": 100
+        },
+        "file_reimports": 1
+      },
+      "sample_deadline_seconds": 300,
+      "sample_wall_seconds_including_setup_validation_cleanup": 85.68835315400065,
+      "schema": "bench_inputs_c208a33a734f47d782d46a3361edecb2",
+      "schema_removed": true,
+      "size": 100,
+      "sources": [
+        {
+          "bytes": 10060,
+          "document_id": "97facaf1-cf58-4b2c-9a65-f752c156a00b",
+          "encrypted_original_verified": true,
+          "filename": "SYN-claims.xlsx",
+          "records": 101,
+          "sha256": "90ca0f7ebea30f97d6d9c596bb091e66fc04a04424c73848276cbb5bf4bef294"
+        },
+        {
+          "bytes": 29820,
+          "document_id": "36bbaab2-b866-4ad3-a7c0-c7fc4804276c",
+          "encrypted_original_verified": true,
+          "filename": "SYN-beneficiary.csv",
+          "records": 100,
+          "sha256": "b102203c7fe5fd15f0592adc54484b3e6e6f24b740f5d1c80e5494078acb3c1c"
+        },
+        {
+          "bytes": 256,
+          "document_id": "ddca33c2-dfb8-4672-92db-4ad803cd10d4",
+          "encrypted_original_verified": true,
+          "filename": "SYN-contract.csv",
+          "records": 1,
+          "sha256": "92d9e9ec10a24e2a66c31331a852ed9f9a6a84878bab0a8dcdd210c6ae5c3045"
+        },
+        {
+          "bytes": 351,
+          "document_id": "de13c44b-ff76-4d07-8eda-b93967ad8402",
+          "encrypted_original_verified": true,
+          "filename": "SYN-tariff.csv",
+          "records": 1,
+          "sha256": "52145ae0ceafe6bd8b1412833ed8365da046c75a4e8c0acf31ef81e26921de74"
+        },
+        {
+          "bytes": 463,
+          "document_id": "3966596e-fde8-46d0-b196-37b942b2cf2e",
+          "encrypted_original_verified": true,
+          "filename": "SYN-policy.csv",
+          "records": 1,
+          "sha256": "1dfd6c5d56f8495db316abd881942fee80ccedb9bec6d4988eac6c9f1e23fbd3"
+        },
+        {
+          "bytes": 47020,
+          "document_id": "794f1412-6b06-4dcc-9add-f8438d7c5292",
+          "encrypted_original_verified": true,
+          "filename": "SYN-caps.csv",
+          "records": 100,
+          "sha256": "d25d7e4ed6117535db920f955a5867586458b537ec0498ac9b82d32858de4c18"
+        },
+        {
+          "bytes": 37920,
+          "document_id": "5c44dabb-34a8-4b51-a120-d9f5d32a13a8",
+          "encrypted_original_verified": true,
+          "filename": "SYN-history.csv",
+          "records": 100,
+          "sha256": "226ed46400fc447e8416eea1c6949c5092ec22bd686e130b07b7f3d08be48b5c"
+        },
+        {
+          "bytes": 9725,
+          "document_id": "1ebb8a2d-b8a6-4fd3-a2d4-66ac27130969",
+          "encrypted_original_verified": true,
+          "filename": "SYN-execution.csv",
+          "records": 100,
+          "sha256": "b7e864b22fbf58ba2419fb668830bc71088299432fcf9bab0343a3f522857628"
+        }
+      ],
+      "stalls": 0,
+      "timings_seconds": {
+        "encrypted_original_readback": 0.009355849000712624,
+        "execution_source_and_attachment_setup": 5.2946773059993575,
+        "g2_ingest_all_sources": 14.126533672999358,
+        "g3_reference_source_setup": 11.354636437001318,
+        "g4_approve_normalize": 0.523306268001761,
+        "g5_audit_and_shared_event": 54.19304816798467,
+        "g6_case_and_hold": 5.048533725981542,
+        "inspection_inclusive": 42.955339579013526,
+        "postcommit_validation": 4.091015383000922,
+        "reference_lookup_inclusive": 28.336985576021107,
+        "reimport_and_retry": 0.7919157420001284,
+        "schema_cleanup": 0.07263195999985328,
+        "schema_setup": 2.1322318330021517
+      },
+      "unavailable_fraction": {
+        "denominator": 100,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "unresolved_fraction": {
+        "denominator": 100,
+        "fraction": 0.0,
+        "numerator": 0
+      },
+      "worker_exit_code": 0,
+      "workload": {
+        "all_source_data_records": 504,
+        "claims": 100,
+        "excel_data_rows": 101,
+        "excel_files": 1,
+        "excel_rows_including_headers": 103,
+        "excel_sheets": 2,
+        "execution_data_records": 100,
+        "files": 8,
+        "independent_beneficiaries": 100,
+        "payment_rows_excluded": 1,
+        "reference_data_records": 303,
+        "source_bytes": 135615
+      }
+    }
+  ],
+  "started_at_utc": "2026-10-21T15:33:52.989372+00:00",
+  "stopped_after_failure": false
+}

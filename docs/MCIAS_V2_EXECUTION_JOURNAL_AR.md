@@ -329,3 +329,71 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: CI السابق949 يثبت الشيفرة السابقة فقط؛ HEAD المصحح ينتظر CI، ويبقى القبول المستقل الأشمل والجودة والإنتاج خارج هذه الحالات.
 - Next: نشر الشجرة المطابقة علىPR34 القائم ومراجعة CI والـartifact الكامل دون إعادة اختبارات نجحت على الشيفرة ذاتها.
 - Handoff: المشرف؛ تفاصيل RED/SQLite/PG والمراجعة في G5_LOOKBACK_REVIEW_CLOSURE_AR.md؛ لاMerge أوDeployment أوForcePush أوبيانات حقيقية.
+
+
+### HANDOFF-20261021-400 — استلام دورة التكامل الحالية وتوزيع الملكية
+- Scope: استلام أحدث PR/CI وشجرة PR34 النظيفة، وتكليف ستة وكلاء حاليين E3/G5 وE4/A1/Reader/Contract وE5/G7 والأداء، مع حفظ المراحل التاريخية.
+- Why: متابعة التنفيذ من ba1ec6b/remote1503c16 دون تكرار المصدر أو إصلاح Pillow أو قياس OCR الأصلي؛ فصل خط الأساس عن تغييرات الدورة الجديدة.
+- Files: docs/INTEGRATION_CYCLE_20261021_AR.md؛ docs/ENGINEERING_TASK_REGISTER_AR.json؛ state/journal.
+- Tests: فحص GitHub لرؤوس PR20/23/25/29/31/32/33/34/35 وL1/L2؛ مطابقة شجرة PR34؛ ستة CI ناجحة على1503c16؛ artifact24 متوقع=فعلي وبصمة ZIP محفوظة. لا تشغيل مكرر لاختبارات خط الأساس.
+- Result: INTEGRATION VERIFIED للخط السابق G2→G6 ضمن24 حالة؛ QUALITY BLOCKED لجودة العربية والعقود؛ تكليفات التنفيذ الجديدة أرسلت فعليًا وقيد المتابعة، لا ادعاء قبولها.
+- Risks: أرقام المجموعة الاصطناعية لا تمثل انتشار المخالفات أو الأداء أو جودة النموذج؛ G7 وحزمة A1 وقياس الأداء ما زالت قيد التنفيذ، وسلاسل L1/L2 غير مركبة.
+- Next: مراجعة Commits المالكين، تنفيذ PG16 مركزي للمنتج/المستهلك وG7 والقياس، نشر الفروع القائمة فقط ثم التحقق من CI على SHA الجديد.
+- Handoff: المشرف؛ العقد الإضافي A1 source_evidence للربط فقط وليس سلطة حسابية؛ DATE العام لا يثبت تاريخ الخدمة؛ حالات schema2 القائمة محفوظة؛ لا merge/deploy/reset/force أو موارد مدفوعة أو بيانات مرضى.
+
+
+### HANDOFF-20261021-402 — قياس PG16 أصلي مع إعادة قراءة وحفظ الدليل
+- Scope: سكربت قياس محدود لخدماتG2→G6 القائمة، واختبارات الحواجز وملخص ودليل القياس الكامل المضغوط، بلا تعديل خدمات الإنتاج.
+- Why: قياس عدد الصفوف والأزمنة وCPU/RSS وإعادة المحاولة فعليًا، دون اشتقاق عدد المطالبات من القيمة المالية أو إعادة مجموعة24 السابقة.
+- Files: scripts/benchmark_inputs_first.py؛ tests/test_benchmark_inputs_first.py؛ docs/E6_NATIVE_PERFORMANCE_AR.md؛ docs/evidence/E6_NATIVE_PG16_BENCHMARK.json وjson.gz؛ state/journal.
+- Tests: مالك الأداة20PASS pure قبل القياس؛ المشرف3/3عيناتPG16.15 بأحجام10/25/100،135مطالبةبعدCommit، worker_exit0/schema_removedtrue لكلعينة، وثباتعداداتإعادةالاستيرادوالتدقيق.
+- Result: INTEGRATION VERIFIED ضمن نطاق القياس فقط؛ ملفات8لكلعينة،PAYMENTمستبعد، ستشهاداتودليلتنفيذوفحوصكاملة،135event/hold، لاقرارمالي؛ الأصلالكاملمحفوظبالبصمة.
+- Risks: عملية عميل واحدة متسلسلة،3عينات فقط؛ لاقياسOCRأوPGservermemoryأوتزامن، ولاSLA. رُصد عملتربيعيn(n+1) لإعادةفحصscope و3n(n+1) لصفوفالشهادات، دونإصلاحهفيهذاالتسليم.
+- Next: مالكاG2/G4وG3بالتنسيقمعG5يحددانتقليلإعادةالقراءةمعحفظالنسخوالعزل؛ rootينشرنفسالشجرةويراجعCI؛ لا إعادةالعيناتالناجحة.
+- Handoff: أداةnative_performance؛ أكملالمشرفالحفظبعدتوقفالوكيلبحدالاستخدام؛ sourceba1ec6b/remote1503c16 وscriptSHAفيالتقرير؛ لاmerge/deploy/reset/force أوبياناتحقيقية.
+
+
+## HANDOFF-20261021-401 — G7 نتائج التدقيق والتتبع الآمن
+- Scope: امتداد التقرير والخدمة وexplorer وXLSX/PDF القائمة في G7 واختباراتها؛ بيانات اصطناعية فقط، دون تعديل ملكية G3/G5/Shared Audit أوترحيلات.
+- Why: freeze_batch كان يعرض held/approved المالي دون نتائج INPUTS-FIRST أو اكتمال الفحوص؛ والمراجعة أثبتت ضرورة ربط الاكتمال بحدث نتيجة محفوظ وتنقية أدلة legacy.
+- Files: mcias/reporting_g7.py؛ mcias/reporting_g7_explorer.py؛ mcias/report_exports_g7.py؛ mcias/report_pdf_ar_g7.py؛ tests/test_g7_inputs_first_reporting.py؛ docs/E5_REPORTING_INTEGRATION_AR.md؛ سجل التنفيذ والحالة الحالية.
+- Tests: pure/legacy/read/export قبل التشديد35PASS/7deselected،2.24s؛ native SQLite أولي4PASS/14deselected،32.24s؛ RED حدث مفقود1FAILED،0.23s ثم GREEN30pure/4deselected،0.41s؛ بعد gate نوع/نتيجة الحدث مرشح14PASS/22deselected،0.41s. لاجمع متداخل. المشرف أثبتWeb8PASS،0.68s/XML=/tmp/g7-web-root.xml؛ التعليق المحلي AnyIO لم يتكرر بالسياق المسموح وسببه غير محسوم. git diff --check ناجح؛ PG16/CI النهائي معلقان.
+- Result: IMPLEMENTED/ISOLATED VERIFIED بنطاق pure الموثق؛ أربع حالات schema2 مستقلة عن المالي، completed يحتاج6شهادات سارية و8قواعد صالحة ومصدرًا مطابقًا وحدثًا واحدًا متوافقًا، missing غير مكتمل وduplicate/conflict محجوب، UUID/enum فقط في الأدلة ولاraw roster. مراجعة contract_quality قراءةً فقط أغلقت ملاحظاتها دون ادعاء اختبار مستقل.
+- Risks: native4 السابقة سبقت التشديد الأخير؛ التزامن وPG16 والاستدامة النهائية وCI على Commit النهائي والقبول المخول لم تنجز بعد عند تسليم المالك؛ لا قبول إنتاجي أو مالي أو استنتاج جودة OCR/عقود من هذا الدليل.
+- Next: المشرف يشغل مرشح native_services من اختبار G7 مع MCIAS_TEST_DATABASE_URL=PG16، ويحفظ MCIAS_G7_EVIDENCE_OUTPUT، ثم اختبارات G7 الفيزيائية القائمة وCI المطابق دون إعادة baseline بلاسبب؛ لا دمج أو نشر.
+- Handoff: أساس ba1ec6bdb578eaefa19920985fddfbcc8bede945؛ واجهة create_snapshot(db,actor,batch_id) محفوظة، summary.audit إضافية وdataset schema2؛ مرجع الاستئناف والدليل docs/E5_REPORTING_INTEGRATION_AR.md؛ لا reset/force/merge/deploy أوبيانات حقيقية.
+
+
+### HANDOFF-20261021-406 — بوابة أدلة A1 في G5
+- Scope: استهلاك اختياري داخلي لعقد A1 review.v1 داخل review_only القائم؛ لا API أو محرك أو حالات جديدة.
+- Why: لا تصل أدلة الفاتورة إلى G5، واختلاف quantity*unit_price لا يثبت خطأ حسابيًا دون سياق الخصم/الضريبة وقاعدة معتمدة.
+- Files: mcias/audit_agents.py؛ mcias/audit_service.py؛ tests/test_g5_a1_evidence_gate.py؛ docs/E3_RULES_EVIDENCE_INTEGRATION_AR.md؛ سجل التنفيذ والحالة الحالية. لا ملفات منتج A1/G3/Reader/CI/Shared Audit.
+- Tests: اختبار gate النقي المحلي 24 PASS/0.16s؛ git diff --check ناجح. المنتج الحقيقي وPG16 وCI بملكية المشرف ولا تدعيها هذه النتيجة.
+- Result: ISOLATED VERIFIED؛ إعادة تحقق المصدر تستعمل build_a1_snapshot القائم، ومؤشرات Decimal تظل UNRESOLVED مع نقص السياق/القاعدة، وغياب packet يحفظ معيار Excel الحالي.
+- Risks: بصمتا input/output A1 غير موثقتين بإعادة الحساب؛ حُفظ ذلك صراحة. reference_context يحمل IDs/SHA وتواريخ/نسخة فقط ويغير بصمة snapshot الجديد؛ حدث Shared Audit بلا قيم/PHI ولم يتغير.
+- Next: المشرف يثبت producer→G5→G7 على PG16 باختباره الحقيقي ونسخة مركبة ثابتة؛ نقص السلطة الحسابية يبقى عائقًا لمالك G3/A1 ولا يُعالج بافتراضات.
+- Handoff: أساس ba1ec6bdb578eaefa19920985fddfbcc8bede945؛ الاتفاق المكتوب بين G5/A1 والمشرف محفوظ في التقرير. لا merge/deploy/force/reset أو بيانات حقيقية أو حكم مالي تلقائي.
+
+تحديث406 من المشرف: المنتج الحقيقي A1→G5→Shared Audit→G6→G7 اجتاز4/4 علىPG16 في34.64s؛ الحالاتinvoiceمتسق/متعارض/rehashedswap/missingstore كلهاUNRESOLVED،sourceverifiedللأوليين،وretryبحدثواحد وCommitreadback وG6hold وG7incomplete. تطابق SHA256 لملفيG5 مع التقرير، ولا تغييرruntimeبعده. الدليلA1_G5_NATIVE_PG16.jsonl/XMLبملكيةالمشرف؛ لا ادعاءتحققالفرعكلهأوCIجديد.
+
+
+### HANDOFF-20261021-406b — ثبات هوية نتيجة A1 المعاد توليدها
+- Scope: إسقاط حتمي ضيق لهوية review findings ومقارنة snapshot القائمة داخل G5 فقط، واختبارات هوية موجهة.
+- Why: أثبت المراجع تضمين created_at في بصمة إخراج A1؛ وأثبت المشرف RED على PG16 لإعادة preview بنفس المصدر والتشغيل:1 FAILED،3 DESELECTED،7.33s مع تكرار snapshot.
+- Files: mcias/audit_service.py؛ tests/test_g5_a1_evidence_gate.py؛ docs/E3_RULES_EVIDENCE_INTEGRATION_AR.md؛ journal/state. لا تعديل في المنتج أو G3 أو Shared Audit أو audit_agents.py.
+- Tests: هوية نقية19 PASS،24 DESELECTED،0.43s وdiff check ناجح؛ ثم تحقق المشرف PG16 المصحح1 PASS،3 DESELECTED،12.10s على SHA الخدمة نفسه. دليلا RED/GREEN واختبار المنتج الحقيقي بملكية المشرف.
+- Result: INTEGRATION VERIFIED لإصلاح fresh-preview retry المحدد؛ يستبعد الإسقاط حصريًا input/output/run غير الموثقة داخل evidence.a1_evidence، وتحتفظ snapshot الأولى بالتتبع الأصلي. بقي snapshot/event/report واحدًا رغم تغير بصمة إخراج المنتج.
+- Risks: لا تصديق لبصمات تنفيذ A1 ولا تعديل للسجلات التاريخية؛ هوية no-packet والبصمات المالية دون تغيير؛ تبقى أدلة المصدر والقيم والقواعد والنسخ والحالة وflags ضمن الهوية. لا ادعاء تحقق كل الفرع.
+- Next: تركيب Commit المالك الثابت وCI المركب ومراجعة مستقلة محدودة؛ لا إعادة لمجموعات ناجحة دون تغيير مؤثر.
+- Handoff: أساس341a991a8d933364c6bfa49e98e2a8b327d6dace؛ service SHA-256 b3c3eaaa06232023399264af8b579e757cda719a827b8c0400c554938c2336e5؛ التفصيل والأمر في تقرير E3. لا Merge/Deploy/Force/Reset أو بيانات حقيقية أو حكم مالي.
+
+
+### HANDOFF-20261021-400B — تركيب الجسر القائم وG7 وأدلةPG16 وملاحظةإعادةالمنتج
+- Scope: نقلأربعةملفاتA1القائمةبموافقةمالكهاوبصماتها،واختبارnativeA1→G5→Audit→G6→G7،ودليلG7والقياسوعقدCIوتحديثسجلالملكية.
+- Why: إغلاقحدودالمنتج/المستهلكمننقطةالاستئنافدوننظامموازٍ؛حفظالتحققفعليًاوفصلالنجاحالأولعنعيبfreshproducerretryاللاحق.
+- Files: mcias/agents/{__init__,invoice_integrity,a1_trusted_input,a1_review_packet}.py؛tests/test_g5_a1_native_bridge.py؛inputs-first-pg16.yml؛docs/E4_A1_BRIDGE_AR.md؛E4_A1_OWNER_SOURCE_MANIFEST.json؛G7/A1native/RED/GREENevidence؛INTEGRATION_CYCLE_RESULTS_AR.md؛taskregister؛state/journal.
+- Tests: G7sourceDF849B:4PGPASS/19.51sوالتزامن؛A1native4PASS/34.64sقبلfreshretry؛RED1FAILED7.33sثمG51PASS12.10sلفريشpreview؛gate24PASSثمidentity19PASS؛A1110PASS13.89s؛Contract93PASSو5CIعلى28987af؛جميعالأعدادمفصولةدونجمعمتداخل.
+- Result: INTEGRATION VERIFIED ضمنالسيناريوهاتالموثقة؛كلنتائجA1تبقىUNRESOLVEDلانقصauthority/context؛G7لايصفمكتملًا دونحدثمطابق،والتصديرمنقح؛أغلقالمراجععيبيG7وهويةG5قراءةًفقط.
+- Risks: CIالجديدللشجرةالمركبةمعلّقحتىالنشر؛ReaderQUALITYBLOCKEDوبوابةCIتاريخيةفاشلةقيدمواءمةالحجب؛Recallالعقود2/6باقٍ؛القياسرصدعملاًتربيعيًادونإصلاحه؛لاادعاءإنتاجأوقبولشامل.
+- Next: نشرالشجرةالمطابقةعلىPR34القائموفحصCIوالـartifact؛متابعةتصحيحبوابةReaderPR35وCIA1PR20؛تسجيلآخرHEADوروابطالنتائجفيالإيصالوالـPRدونإعادةاختبارناجحللوثائق.
+- Handoff: sourceA1runtime6aca/seal19c9وموافقتهفيمانيفست؛G5b5a1778؛G7df849b9؛performance0526403؛تقريرالدورةيوضحالأولوالناقصوالمالكين؛لاreset/force/merge/deploymentأوبيناتمرضىأوقرارمالي.
