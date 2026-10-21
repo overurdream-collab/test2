@@ -89,7 +89,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr tesseract-ocr-ara tesseract-ocr-eng fonts-dejavu-core
-          python -m pip install 'Pillow>=11,<13'
+          python -m pip install 'Pillow>=13.0.0,<14'
       - name: Run measured synthetic Arabic and English OCR
         run: |
           PYTHONPATH=. python scripts/document_reader_offline_ocr_benchmark.py reader-ocr-results
@@ -126,7 +126,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr tesseract-ocr-eng fonts-dejavu-core
-          python -m pip install 'Pillow>=11,<13' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
+          python -m pip install 'Pillow>=13.0.0,<14' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
       - name: Execute actual image-only PDF to OCR to A1 with strict quality assertions
         run: |
           test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
@@ -173,7 +173,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
-          python -m pip install 'Pillow>=11,<13' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
+          python -m pip install 'Pillow>=13.0.0,<14' 'reportlab>=4.4.9,<5' 'pymupdf>=1.24,<2'
       - name: Run dynamic multi-layout invoice OCR and pinned A1
         run: |
           test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
@@ -188,7 +188,8 @@ jobs:
           for name in ('english_columnar','english_reordered'):
               c=next(x for x in results['cases'] if x['case']==name)
               assert c['critical_values']==18 and c['correct_locations']==18
-              assert c['a1_ran'] and c['detected_columns']==6
+              assert c['a1_ran'] is False and c['detected_columns']==6
+              assert c['arithmetic_findings'] is None
           for c in results['cases']:
               review=json.loads((out/(c['case']+'_human_review.json')).read_text())
               assert review['financial_decision']=='NOT_AUTHORIZED'

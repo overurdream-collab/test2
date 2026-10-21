@@ -31,3 +31,13 @@
 - Risks: نجاح Reader على SHA الإصلاح الجديد غير مثبت بعد؛ القياسات السابقة وحدود جودة العربية كما في303 دون تغيير.
 - Next: المشرف يراجع Commit وينشره على فرع Reader الرسمي القائم، ثم يتحقق من التشغيل المطابق ويحتفظ بأي فشل؛ لا merge أو deployment.
 - Handoff: https://github.com/overurdream-collab/test2/actions/runs/39590938187 وdocs/E2_READER_COMPARISON_AR.md؛ فشل المشغّل الأول محفوظ، واختبارات التوافق34 والقياس23 السابقان لا يعادان محليًا.
+
+### HANDOFF-20261021-404 — E4 metadata source roles and conservative A1 gate
+- Scope: فرع Reader القائم من66ab51f، تحليل7أخطاء عربية محفوظة وإصلاح ربط metadata فقط، مع holdout جديد صغير وتوافق workflows/pilots المتأثرة.
+- Why: RED مثبت: أول effective date اختير service_date، ومقدم غير SYNCLINIC لم يقرأ؛ صحة الموضع لا تصحح أخطاء OCR العربية ولا تمنح سلطة مالية.
+- Files: scripts/document_reader_dynamic_layout_pilot.py، scripts/document_reader_e4_quality.py، tests/test_document_reader_e4_metadata.py، caller qualification وcaller reviewed-PG للـReader، workflow structured وshared-audit-reader، docs/E4_READER_QUALITY_AR.md، docs/evidence/e4_reader/* وسجلا DG001.
+- Tests: RED2FAILED/6DESELECTED/2.14s؛ GREEN10PASS/0.82s؛ holdout3PDF فعلية: metadata16/16 نص وربط، الجدول23/24 نص و24/24 موضع للحالتين غير المتعارضتين؛ تعارض التاريخ وعبث المصدر محجوبان. diff/compile PASS؛ لا إعادة23اختبارًا أو8صور أوAudit أوPG.
+- Result: ISOLATED VERIFIED لربط الحقول المحدد، QUALITY BLOCKED للعربية والأهلية المالية. جميع A1 payloads محجوبة بسبب ثقة rowid، والثالث أيضًا بسبب تعارض service_date. DATE العام لا يعود تاريخ خدمة؛ قيم Gold القديمة لم تتغير. Pillow13 في القيود الثلاثة للـworkflow المتأثر.
+- Risks: عينة صغيرة بتسميات مضبوطة ومعظم metadata إنجليزي؛ CER0.011968/WER0.024390 لا يقارنان بالمجموعة القديمة؛ العربية السابقة8/15 لم تتحسن. لا شهادة G2 أو تعرفة معتمدة أو قرار مالي.
+- Next: المشرف ينشر Commit على PR35 القائم ويشغل CI المطابق؛ مراجعة مستقلة لأهلية الاستهلاك قبل أي تكامل موثوق، دون توسيع تجارب هذه الوحدة.
+- Handoff: docs/E4_READER_QUALITY_AR.md وdocs/evidence/e4_reader؛ جميع المرشحات UNATTESTED_OCR_CANDIDATE وHUMAN_REVIEW، وبقيت أعلام G2/A1 المالية false؛ لا merge/deploy/force push/real data.

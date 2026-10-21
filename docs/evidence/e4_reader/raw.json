@@ -1,0 +1,1870 @@
+{
+  "documents": [
+    {
+      "id": "shifted_invoice",
+      "words": [
+        {
+          "text": "SYNTHETIC",
+          "bbox": [
+            122,
+            36,
+            292,
+            59
+          ],
+          "confidence_uncalibrated": 0.96606606,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            306,
+            36,
+            429,
+            59
+          ],
+          "confidence_uncalibrated": 0.9178533899999999,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "HOLDOUT",
+          "bbox": [
+            444,
+            36,
+            596,
+            59
+          ],
+          "confidence_uncalibrated": 0.90666794,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            106,
+            273,
+            127
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "FROM",
+          "bbox": [
+            287,
+            106,
+            366,
+            127
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "2025-12-01",
+          "bbox": [
+            902,
+            106,
+            1066,
+            127
+          ],
+          "confidence_uncalibrated": 0.96214935,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE_DATE",
+          "bbox": [
+            123,
+            168,
+            328,
+            196
+          ],
+          "confidence_uncalibrated": 0.9176316099999999,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-04-10",
+          "bbox": [
+            902,
+            168,
+            1067,
+            189
+          ],
+          "confidence_uncalibrated": 0.9654902599999999,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "PROVIDER",
+          "bbox": [
+            123,
+            230,
+            268,
+            251
+          ],
+          "confidence_uncalibrated": 0.96845398,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "SYN-HOSPITAL-42",
+          "bbox": [
+            902,
+            230,
+            1153,
+            251
+          ],
+          "confidence_uncalibrated": 0.88986259,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "SERVICE",
+          "bbox": [
+            122,
+            292,
+            241,
+            313
+          ],
+          "confidence_uncalibrated": 0.9616066,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "DATE",
+          "bbox": [
+            255,
+            292,
+            326,
+            313
+          ],
+          "confidence_uncalibrated": 0.9600207500000001,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-04-09",
+          "bbox": [
+            902,
+            292,
+            1066,
+            313
+          ],
+          "confidence_uncalibrated": 0.96613785,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            354,
+            273,
+            375
+          ],
+          "confidence_uncalibrated": 0.96154854,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "UNTIL",
+          "bbox": [
+            286,
+            354,
+            369,
+            375
+          ],
+          "confidence_uncalibrated": 0.9622759999999999,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-12-31",
+          "bbox": [
+            902,
+            354,
+            1066,
+            375
+          ],
+          "confidence_uncalibrated": 0.96335403,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            123,
+            416,
+            238,
+            437
+          ],
+          "confidence_uncalibrated": 0.95711624,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "INV-2026-731",
+          "bbox": [
+            903,
+            416,
+            1096,
+            437
+          ],
+          "confidence_uncalibrated": 0.92368454,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "CURRENCY",
+          "bbox": [
+            122,
+            478,
+            279,
+            499
+          ],
+          "confidence_uncalibrated": 0.96520164,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "USD",
+          "bbox": [
+            902,
+            478,
+            961,
+            499
+          ],
+          "confidence_uncalibrated": 0.96208183,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "GRANDTOTAL",
+          "bbox": [
+            122,
+            536,
+            317,
+            573
+          ],
+          "confidence_uncalibrated": 0.91338669,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "168.00",
+          "bbox": [
+            903,
+            540,
+            1000,
+            561
+          ],
+          "confidence_uncalibrated": 0.9692948199999999,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "ID",
+          "bbox": [
+            113,
+            846,
+            141,
+            869
+          ],
+          "confidence_uncalibrated": 0.96530815,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "CODE",
+          "bbox": [
+            362,
+            846,
+            448,
+            869
+          ],
+          "confidence_uncalibrated": 0.9695124800000001,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "UNIT",
+          "bbox": [
+            653,
+            846,
+            724,
+            869
+          ],
+          "confidence_uncalibrated": 0.96477524,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "QTY",
+          "bbox": [
+            902,
+            842,
+            962,
+            881
+          ],
+          "confidence_uncalibrated": 0.94267319,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "PRICE",
+          "bbox": [
+            1143,
+            846,
+            1229,
+            869
+          ],
+          "confidence_uncalibrated": 0.9652423899999999,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "TOTAL",
+          "bbox": [
+            1410,
+            846,
+            1508,
+            869
+          ],
+          "confidence_uncalibrated": 0.95850143,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "QX",
+          "bbox": [
+            112,
+            936,
+            154,
+            963
+          ],
+          "confidence_uncalibrated": 0.58948097,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "LAB-X",
+          "bbox": [
+            363,
+            936,
+            450,
+            959
+          ],
+          "confidence_uncalibrated": 0.92158615,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            653,
+            936,
+            691,
+            959
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "2",
+          "bbox": [
+            902,
+            936,
+            917,
+            959
+          ],
+          "confidence_uncalibrated": 0.96993629,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "42.00",
+          "bbox": [
+            1141,
+            936,
+            1227,
+            959
+          ],
+          "confidence_uncalibrated": 0.96877815,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1412,
+            936,
+            1497,
+            959
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "QY",
+          "bbox": [
+            112,
+            1076,
+            153,
+            1103
+          ],
+          "confidence_uncalibrated": 0.92421333,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "RX-Y",
+          "bbox": [
+            363,
+            1076,
+            428,
+            1099
+          ],
+          "confidence_uncalibrated": 0.90403862,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            653,
+            1076,
+            691,
+            1099
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "1",
+          "bbox": [
+            903,
+            1076,
+            917,
+            1099
+          ],
+          "confidence_uncalibrated": 0.94469284,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1142,
+            1076,
+            1227,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1412,
+            1076,
+            1497,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\n\nEFFECTIVE FROM 2025-12-01\n\nINVOICE_DATE 2026-04-10\n\nPROVIDER SYN-HOSPITAL-42\n\nSERVICE DATE 2026-04-09\n\nEFFECTIVE UNTIL 2026-12-31\n\nINVOICE INV-2026-731\n\nCURRENCY USD\n\nGRANDTOTAL 168.00\n\nID CODE UNIT QTY PRICE TOTAL\nQX LAB-X EA 2 42.00 84.00\nQY RX-Y EA 1 84.00 84.00",
+      "engine_seconds": 2.9943006120010978
+    },
+    {
+      "id": "reordered_arabic",
+      "words": [
+        {
+          "text": "SYNTHETIC",
+          "bbox": [
+            122,
+            36,
+            292,
+            59
+          ],
+          "confidence_uncalibrated": 0.96606606,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            306,
+            36,
+            429,
+            59
+          ],
+          "confidence_uncalibrated": 0.9178533899999999,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "HOLDOUT",
+          "bbox": [
+            444,
+            36,
+            596,
+            59
+          ],
+          "confidence_uncalibrated": 0.90666794,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            106,
+            273,
+            127
+          ],
+          "confidence_uncalibrated": 0.96154854,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "UNTIL",
+          "bbox": [
+            286,
+            106,
+            369,
+            127
+          ],
+          "confidence_uncalibrated": 0.9622759999999999,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-12-31",
+          "bbox": [
+            902,
+            106,
+            1066,
+            127
+          ],
+          "confidence_uncalibrated": 0.96335403,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "PROVIDER",
+          "bbox": [
+            123,
+            168,
+            268,
+            189
+          ],
+          "confidence_uncalibrated": 0.96845398,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "SYN-HOSPITAL-73",
+          "bbox": [
+            902,
+            168,
+            1153,
+            189
+          ],
+          "confidence_uncalibrated": 0.8956797799999999,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            230,
+            273,
+            251
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "FROM",
+          "bbox": [
+            287,
+            230,
+            366,
+            251
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-02-01",
+          "bbox": [
+            902,
+            230,
+            1066,
+            251
+          ],
+          "confidence_uncalibrated": 0.9642295799999999,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            123,
+            292,
+            238,
+            313
+          ],
+          "confidence_uncalibrated": 0.95711624,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "INV-2026-842",
+          "bbox": [
+            903,
+            292,
+            1096,
+            313
+          ],
+          "confidence_uncalibrated": 0.92689377,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE_DATE",
+          "bbox": [
+            123,
+            354,
+            328,
+            382
+          ],
+          "confidence_uncalibrated": 0.9176316099999999,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-05-09",
+          "bbox": [
+            902,
+            354,
+            1066,
+            375
+          ],
+          "confidence_uncalibrated": 0.9674855800000001,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "CURRENCY",
+          "bbox": [
+            122,
+            416,
+            279,
+            437
+          ],
+          "confidence_uncalibrated": 0.96520164,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "USD",
+          "bbox": [
+            902,
+            416,
+            961,
+            437
+          ],
+          "confidence_uncalibrated": 0.96208183,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "SERVICE",
+          "bbox": [
+            122,
+            478,
+            241,
+            499
+          ],
+          "confidence_uncalibrated": 0.9616066,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "DATE",
+          "bbox": [
+            255,
+            478,
+            326,
+            499
+          ],
+          "confidence_uncalibrated": 0.9600207500000001,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-05-07",
+          "bbox": [
+            902,
+            478,
+            1066,
+            499
+          ],
+          "confidence_uncalibrated": 0.9642952,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "GRANDTOTAL",
+          "bbox": [
+            122,
+            536,
+            317,
+            573
+          ],
+          "confidence_uncalibrated": 0.91338669,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "168.00",
+          "bbox": [
+            903,
+            540,
+            1000,
+            561
+          ],
+          "confidence_uncalibrated": 0.9692948199999999,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "TOTAL",
+          "bbox": [
+            110,
+            846,
+            208,
+            869
+          ],
+          "confidence_uncalibrated": 0.95850143,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "CODE",
+          "bbox": [
+            392,
+            846,
+            478,
+            869
+          ],
+          "confidence_uncalibrated": 0.9695124800000001,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "QTY",
+          "bbox": [
+            682,
+            842,
+            742,
+            881
+          ],
+          "confidence_uncalibrated": 0.94267319,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "ID",
+          "bbox": [
+            933,
+            846,
+            961,
+            869
+          ],
+          "confidence_uncalibrated": 0.96530815,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "PRICE",
+          "bbox": [
+            1163,
+            846,
+            1249,
+            869
+          ],
+          "confidence_uncalibrated": 0.9652423899999999,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "UNIT",
+          "bbox": [
+            1433,
+            846,
+            1504,
+            869
+          ],
+          "confidence_uncalibrated": 0.96477524,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            112,
+            936,
+            197,
+            959
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "4ه",
+          "bbox": [
+            932,
+            936,
+            974,
+            963
+          ],
+          "confidence_uncalibrated": 0.64192673,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "2",
+          "bbox": [
+            682,
+            936,
+            697,
+            959
+          ],
+          "confidence_uncalibrated": 0.9642619299999999,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "أشعة",
+          "bbox": [
+            392,
+            928,
+            455,
+            959
+          ],
+          "confidence_uncalibrated": 0.89258781,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "42.00",
+          "bbox": [
+            1161,
+            936,
+            1247,
+            959
+          ],
+          "confidence_uncalibrated": 0.96877815,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            1433,
+            936,
+            1471,
+            959
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            112,
+            1076,
+            197,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "دواء",
+          "bbox": [
+            392,
+            1075,
+            440,
+            1107
+          ],
+          "confidence_uncalibrated": 0.92326706,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "1",
+          "bbox": [
+            683,
+            1076,
+            697,
+            1099
+          ],
+          "confidence_uncalibrated": 0.96678917,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "QY",
+          "bbox": [
+            932,
+            1076,
+            973,
+            1103
+          ],
+          "confidence_uncalibrated": 0.92421333,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1162,
+            1076,
+            1247,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            1433,
+            1076,
+            1471,
+            1099
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "10",
+            "3"
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\n\nEFFECTIVE UNTIL 2026-12-31\n\nPROVIDER SYN-HOSPITAL-73\n\nEFFECTIVE FROM 2026-02-01\n\nINVOICE INV-2026-842\n\nINVOICE_DATE 2026-05-09\n\nCURRENCY USD\n\nSERVICE DATE 2026-05-07\n\nGRANDTOTAL 168.00\n\nTOTAL CODE QTY ID PRICE UNIT\n84.00 ‏4ه 2 أشعة‎ 42.00 EA\n84.00 ‏دواء‎ 1 QY 84.00 EA",
+      "engine_seconds": 3.4346675790002337
+    },
+    {
+      "id": "conflicting_dates",
+      "words": [
+        {
+          "text": "SYNTHETIC",
+          "bbox": [
+            122,
+            36,
+            292,
+            59
+          ],
+          "confidence_uncalibrated": 0.96606606,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            306,
+            36,
+            429,
+            59
+          ],
+          "confidence_uncalibrated": 0.9178533899999999,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "HOLDOUT",
+          "bbox": [
+            444,
+            36,
+            596,
+            59
+          ],
+          "confidence_uncalibrated": 0.90666794,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            106,
+            273,
+            127
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "FROM",
+          "bbox": [
+            287,
+            106,
+            366,
+            127
+          ],
+          "confidence_uncalibrated": 0.9620281199999999,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "2025-12-01",
+          "bbox": [
+            902,
+            106,
+            1066,
+            127
+          ],
+          "confidence_uncalibrated": 0.96214935,
+          "line_key": [
+            "1",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE_DATE",
+          "bbox": [
+            123,
+            168,
+            328,
+            196
+          ],
+          "confidence_uncalibrated": 0.9176316099999999,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-04-10",
+          "bbox": [
+            902,
+            168,
+            1067,
+            189
+          ],
+          "confidence_uncalibrated": 0.9654902599999999,
+          "line_key": [
+            "1",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "text": "PROVIDER",
+          "bbox": [
+            123,
+            230,
+            268,
+            251
+          ],
+          "confidence_uncalibrated": 0.96845398,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "SYN-HOSPITAL-42",
+          "bbox": [
+            902,
+            230,
+            1153,
+            251
+          ],
+          "confidence_uncalibrated": 0.88986259,
+          "line_key": [
+            "1",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "text": "SERVICE",
+          "bbox": [
+            122,
+            292,
+            241,
+            313
+          ],
+          "confidence_uncalibrated": 0.9616066,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "DATE",
+          "bbox": [
+            255,
+            292,
+            326,
+            313
+          ],
+          "confidence_uncalibrated": 0.9600207500000001,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-04-09",
+          "bbox": [
+            902,
+            292,
+            1066,
+            313
+          ],
+          "confidence_uncalibrated": 0.96613785,
+          "line_key": [
+            "1",
+            "5",
+            "1"
+          ]
+        },
+        {
+          "text": "SERVICE",
+          "bbox": [
+            122,
+            354,
+            241,
+            375
+          ],
+          "confidence_uncalibrated": 0.9616066,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "DATE",
+          "bbox": [
+            255,
+            354,
+            326,
+            375
+          ],
+          "confidence_uncalibrated": 0.9600207500000001,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-04-11",
+          "bbox": [
+            902,
+            354,
+            1066,
+            375
+          ],
+          "confidence_uncalibrated": 0.96469406,
+          "line_key": [
+            "1",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "text": "EFFECTIVE",
+          "bbox": [
+            123,
+            416,
+            273,
+            437
+          ],
+          "confidence_uncalibrated": 0.96154854,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "UNTIL",
+          "bbox": [
+            286,
+            416,
+            369,
+            437
+          ],
+          "confidence_uncalibrated": 0.9622759999999999,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "2026-12-31",
+          "bbox": [
+            902,
+            416,
+            1066,
+            437
+          ],
+          "confidence_uncalibrated": 0.96335403,
+          "line_key": [
+            "1",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "text": "INVOICE",
+          "bbox": [
+            123,
+            478,
+            238,
+            499
+          ],
+          "confidence_uncalibrated": 0.95711624,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "INV-2026-731",
+          "bbox": [
+            903,
+            478,
+            1096,
+            499
+          ],
+          "confidence_uncalibrated": 0.92368454,
+          "line_key": [
+            "1",
+            "8",
+            "1"
+          ]
+        },
+        {
+          "text": "CURRENCY",
+          "bbox": [
+            122,
+            540,
+            279,
+            561
+          ],
+          "confidence_uncalibrated": 0.96520164,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "USD",
+          "bbox": [
+            902,
+            540,
+            961,
+            561
+          ],
+          "confidence_uncalibrated": 0.96208183,
+          "line_key": [
+            "1",
+            "9",
+            "1"
+          ]
+        },
+        {
+          "text": "GRANDTOTAL",
+          "bbox": [
+            122,
+            598,
+            317,
+            635
+          ],
+          "confidence_uncalibrated": 0.91338669,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "168.00",
+          "bbox": [
+            903,
+            602,
+            1000,
+            623
+          ],
+          "confidence_uncalibrated": 0.9692948199999999,
+          "line_key": [
+            "1",
+            "10",
+            "1"
+          ]
+        },
+        {
+          "text": "ID",
+          "bbox": [
+            113,
+            846,
+            141,
+            869
+          ],
+          "confidence_uncalibrated": 0.96530815,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "CODE",
+          "bbox": [
+            362,
+            846,
+            448,
+            869
+          ],
+          "confidence_uncalibrated": 0.9695124800000001,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "UNIT",
+          "bbox": [
+            653,
+            846,
+            724,
+            869
+          ],
+          "confidence_uncalibrated": 0.96477524,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "QTY",
+          "bbox": [
+            902,
+            842,
+            962,
+            881
+          ],
+          "confidence_uncalibrated": 0.94267319,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "PRICE",
+          "bbox": [
+            1143,
+            846,
+            1229,
+            869
+          ],
+          "confidence_uncalibrated": 0.9652423899999999,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "TOTAL",
+          "bbox": [
+            1410,
+            846,
+            1508,
+            869
+          ],
+          "confidence_uncalibrated": 0.95850143,
+          "line_key": [
+            "1",
+            "11",
+            "1"
+          ]
+        },
+        {
+          "text": "QX",
+          "bbox": [
+            112,
+            936,
+            154,
+            963
+          ],
+          "confidence_uncalibrated": 0.58948097,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "LAB-X",
+          "bbox": [
+            363,
+            936,
+            450,
+            959
+          ],
+          "confidence_uncalibrated": 0.92158615,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            653,
+            936,
+            691,
+            959
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "2",
+          "bbox": [
+            902,
+            936,
+            917,
+            959
+          ],
+          "confidence_uncalibrated": 0.96993629,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "42.00",
+          "bbox": [
+            1141,
+            936,
+            1227,
+            959
+          ],
+          "confidence_uncalibrated": 0.96877815,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1412,
+            936,
+            1497,
+            959
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "11",
+            "2"
+          ]
+        },
+        {
+          "text": "QY",
+          "bbox": [
+            112,
+            1076,
+            153,
+            1103
+          ],
+          "confidence_uncalibrated": 0.92421333,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "text": "RX-Y",
+          "bbox": [
+            363,
+            1076,
+            428,
+            1099
+          ],
+          "confidence_uncalibrated": 0.90403862,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "text": "EA",
+          "bbox": [
+            653,
+            1076,
+            691,
+            1099
+          ],
+          "confidence_uncalibrated": 0.96552536,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "text": "1",
+          "bbox": [
+            903,
+            1076,
+            917,
+            1099
+          ],
+          "confidence_uncalibrated": 0.94469284,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1142,
+            1076,
+            1227,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "text": "84.00",
+          "bbox": [
+            1412,
+            1076,
+            1497,
+            1099
+          ],
+          "confidence_uncalibrated": 0.95576355,
+          "line_key": [
+            "1",
+            "11",
+            "3"
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\n\nEFFECTIVE FROM 2025-12-01\n\nINVOICE_DATE 2026-04-10\n\nPROVIDER SYN-HOSPITAL-42\n\nSERVICE DATE 2026-04-09\n\nSERVICE DATE 2026-04-11\n\nEFFECTIVE UNTIL 2026-12-31\n\nINVOICE INV-2026-731\n\nCURRENCY USD\n\nGRANDTOTAL 168.00\n\nID CODE UNIT QTY PRICE TOTAL\nQX LAB-X EA 2 42.00 84.00\nQY RX-Y EA 1 84.00 84.00",
+      "engine_seconds": 2.4650627080009144
+    }
+  ]
+}

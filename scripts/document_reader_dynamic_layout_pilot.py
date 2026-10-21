@@ -117,24 +117,54 @@ def anchor(words,page,docid,sha):
             "status":"UNATTESTED_OCR_CANDIDATE"}
 
 def meta_fields(lines,header_index,docid,sha):
-    fields={};issues=[]
-    for line in lines[:header_index]:
+    """Bind roles to observed labels; an ISO date alone has no service role."""
+    candidates={};issues=[]
+    iso=r"[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    labelled={
+        "service_date":rf"(SERVICE_DATE|SERVICE DATE|تاريخ الخدمة)\s+({iso})",
+        "document_date":rf"(DATE|INVOICE_DATE|التاريخ)\s+({iso})",
+        "effective_from":rf"(EFFECTIVE_FROM|EFFECTIVE FROM|TARIFF_EFFECTIVE_FROM)\s+({iso})",
+        "effective_until":rf"(EFFECTIVE_UNTIL|EFFECTIVE UNTIL|TARIFF_EFFECTIVE_UNTIL)\s+({iso})",
+        "provider":r"(PROVIDER|PROVIDER_CODE|مقدم الخدمة)\s+([A-Za-z0-9][A-Za-z0-9_.:-]{0,79})"}
+    for index,line in enumerate(lines[:header_index],1):
         ws=line["words"];txt=" ".join(w["text"] for w in ws)
-        # Metadata is recognized from OCR words, NOT passed in from the generator.
-        keys={"invoice_number":r"INV-\d{4}-\d{3}","date":r"\d{4}-\d{2}-\d{2}",
-              "currency":r"\b(?:USD|YER)\b","stated_total":r"\d+\.\d{2}",
-              "provider":r"\bSYNCLINIC\b"}
-        for k,pattern in keys.items():
-            if k=="stated_total" and not any(z in txt.upper() for z in ("GRANDTOTAL","المجموع")):continue
+        date_labelled=False
+        for key,pattern in labelled.items():
+            match=re.fullmatch(pattern,txt)
+            if not match:continue
+            label,value=match.groups()
+            pieces=[w for w in ws if w["text"]==value]
+            if len(pieces)!=1:
+                issues.append("AMBIGUOUS_METADATA_"+key);continue
+            field=anchor(pieces,1,docid,sha)
+            field.update(value=value,source_label=label,source_line=index,
+                         semantic_role="provider_code" if key=="provider" else key)
+            candidates.setdefault(key,[]).append(field)
+            date_labelled=key in {"service_date","document_date","effective_from","effective_until"}
+        if re.search(iso,txt) and not date_labelled:
+            issues.append("UNLABELLED_METADATA_DATE")
+        for key,pattern in {"invoice_number":r"INV-[0-9]{4}-[0-9]{3}",
+                            "currency":r"\b(?:USD|YER)\b","stated_total":r"[0-9]+\.[0-9]{2}"}.items():
+            if key=="stated_total" and not any(z in txt.upper() for z in ("GRANDTOTAL","المجموع")):continue
             match=re.search(pattern,txt)
-            if match and k not in fields:
-                pieces=[w for w in ws if match.group() in w["text"]]
-                if pieces:
-                    field=anchor(pieces,1,docid,sha);field["value"]=match.group()
-                    fields[k]=field
-    for k in ("invoice_number","date","currency","stated_total","provider"):
-        if k not in fields:issues.append("UNRESOLVED_METADATA_"+k)
-    return fields,issues
+            if not match:continue
+            pieces=[w for w in ws if match.group() in w["text"]]
+            if pieces:
+                field=anchor(pieces,1,docid,sha)
+                field.update(value=match.group(),source_line=index,semantic_role=key)
+                candidates.setdefault(key,[]).append(field)
+    fields={}
+    for key,found in candidates.items():
+        if len(found)!=1:
+            issues.append("AMBIGUOUS_METADATA_"+key)
+        elif "AMBIGUOUS_METADATA_"+key not in issues:
+            fields[key]=found[0]
+    # Keep the historical display key, without relabelling a document date as service evidence.
+    if "service_date" in fields:fields["date"]=fields["service_date"]
+    elif "document_date" in fields:fields["date"]=fields["document_date"]
+    for key in ("invoice_number","date","currency","stated_total","provider"):
+        if key not in fields:issues.append("UNRESOLVED_METADATA_"+key)
+    return fields,sorted(set(issues))
 
 def parse_dynamic(words,docid,sha,lang):
     """No access to STYLES, xs, order, row y or authored ground truth."""
@@ -199,8 +229,16 @@ def score(gold,result):
             "correct_cell_locations":locations,"expected_cell_locations":len(gold["rows"])*6,
             "wrong_cell_associations":false_assignment,"details":details}
 
+def a1_block_reasons(parsed):
+    issues=list(parsed.get("issues",[]))
+    if not parsed.get("rows"):issues.append("NO_TABLE_ROWS")
+    if parsed.get("fields",{}).get("service_date",{}).get("semantic_role")!="service_date":
+        issues.append("SERVICE_DATE_NOT_EXPLICIT")
+    return sorted(set(issues))
+
+
 def a1_payload(parsed,label):
-    if parsed["issues"] or not parsed["rows"]:return None
+    if a1_block_reasons(parsed):return None
     f=parsed["fields"]
     refs=f["invoice_number"]["source"]
     items=[]
@@ -215,7 +253,7 @@ def a1_payload(parsed,label):
                       "source":src})
     return {"tenant_id":"SYN-TENANT","run_id":"SYN-DYNAMIC-"+label,
             "claim":{"id":"SYN-UNATTESTED-CLAIM-"+label,"tenant_id":"SYN-TENANT",
-                     "provider_code":f["provider"]["value"],"service_date":f["date"]["value"],
+                     "provider_code":f["provider"]["value"],"service_date":f["service_date"]["value"],
                      "currency":f["currency"]["value"],"amount":None,"source":None},
             "invoice":{"id":f["invoice_number"]["value"],"tenant_id":"SYN-TENANT",
                        "currency":f["currency"]["value"],"stated_total":f["stated_total"]["value"],
@@ -248,6 +286,7 @@ def main(out,a1path):
         review={"case":case,"layout_detected_from_ocr":True,"ocr_language":spec["lang"],
                 "metadata":parsed["fields"],"row_data":parsed["rows"],"reader_issues":parsed["issues"],
                 "reader_score":quality,"a1_ran":analysis is not None,
+                "a1_blocked_reasons":a1_block_reasons(parsed),
                 "a1_result":analysis,"arithmetic_findings":len(arithmetic) if analysis else None,
                 "original_pdf_sha256":gold["pdf_sha256"],"local_pdf_bytes_verified":True,
                 "g2_encrypted_original_verified":False,"g2_row_equality_verified":False,
@@ -276,7 +315,9 @@ def main(out,a1path):
         item=by[name]
         assert item["detected_columns"]==6 and item["detected_rows"]==3,item
         assert item["critical_values"]==18 and item["correct_locations"]==18,item
-        assert item["a1_ran"] and item["arithmetic_findings"]==n,item
+        assert item["a1_ran"] is False and item["arithmetic_findings"] is None,item
+        # Legacy printed DATE is a document date, not proof of service date.
+        assert "SERVICE_DATE_NOT_EXPLICIT" in json.loads((out/(name+"_human_review.json")).read_text())["a1_blocked_reasons"]
     arabic=by["arabic_rtl"]
     assert arabic["detected_columns"]==6 and arabic["detected_rows"]==3,arabic
     assert arabic["outcome"]=="HUMAN_REVIEW"

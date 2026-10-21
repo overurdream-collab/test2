@@ -72,10 +72,11 @@ jobs:
           from pathlib import Path
           import json
           d=json.loads(Path("reader-integration-contract-evidence/pg16_readiness_evidence.json").read_text())
-          assert d["status"]=="PG16_REVIEW_SHARED_AUDIT_A1_ADVISORY_VERIFIED"
+          assert d["status"]=="PG16_REVIEW_SHARED_AUDIT_A1_METADATA_HELD"
           assert d["reviewed_document_count"]==2 and d["reviewed_field_count"]==36
-          assert [r["a1_arithmetic"] for r in d["reviewed_cases"]]==[0,2]
-          assert d["after_correction_a1_arithmetic"]==1
+          assert [r["a1_arithmetic"] for r in d["reviewed_cases"]]==[None,None]
+          assert all(r["a1_blocked_reasons"]==["SERVICE_DATE_NOT_EXPLICIT"] for r in d["reviewed_cases"])
+          assert d["after_correction_a1_arithmetic"] is None
           for negative in ("CROSS_ORGANIZATION","FAKE_CLIENT_ACTOR","ORIGINAL_DIGEST_TAMPERED",
                   "IDEMPOTENT_DUPLICATE","CONCURRENT_VERSION_CONFLICT",
                   "DIRECT_REVIEW_HISTORY_MUTATION","DIRECT_SOURCE_CANDIDATE_TAMPER",

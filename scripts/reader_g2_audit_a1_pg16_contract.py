@@ -21,7 +21,7 @@ from mcias.storage import EncryptedStore
 from g2_trust_pilot import reopen
 from g2_ocr_evidence_qualification_pilot import Candidate, create_candidates, all_candidates
 from document_reader_dynamic_layout_pilot import (
-    STYLES, PATTERNS, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, load_a1)
+    STYLES, PATTERNS, make_fixture, read_pixels_and_words, parse_dynamic, a1_payload, a1_block_reasons, load_a1)
 from reader_reviewed_ocr_contract import ReviewedOCREvidence, CellLocator, VersionRecord
 
 class ReviewVersion(Base):
@@ -219,7 +219,7 @@ def advisory(db,store,actor,doc_id,parsed,a1):
         clone={k:{**field,"value":by_row[rid][k]} for k,field in row.items()}
         rows.append(clone)
     bundle=a1_payload({**parsed,"rows":rows},"pg16-reviewed-ocr-only")
-    if bundle is None:return {"status":"HUMAN_REVIEW","blocked":["A1_PREVIEW_BUNDLE_BLOCKED"],
+    if bundle is None:return {"status":"HUMAN_REVIEW","blocked":a1_block_reasons(parsed),
                                "financial_decision":"NOT_AUTHORIZED"}
     result=a1.analyze(bundle)
     return {"status":"HUMAN_REVIEW","reviewed_evidence_count":len(items),
@@ -392,7 +392,7 @@ def run(outdir,url,pr29,pr20):
                 actor=db.scalar(select(User).where(User.username=="pg16-ocr-reviewer"))
                 report=advisory(db,store,actor,info["doc"],info["parsed"],a1)
                 expected=0 if case=="english_columnar" else 2
-                assert report["a1_arithmetic_count"]==expected,report
+                assert report["blocked"]==["SERVICE_DATE_NOT_EXPLICIT"],report
                 reviewed,holds=qualified(db,store,actor,info["doc"])
                 assert not holds and len(reviewed[0])==18
                 contract=reviewed[0][0]
@@ -404,7 +404,8 @@ def run(outdir,url,pr29,pr20):
                 assert all("amount" not in x.details and "patient_name" not in x.details
                            and "source_sha256" not in x.details for x in logs)
                 measure.append({"case":case,"reviewed_fields":18,
-                    "shared_audit_success":len(logs),"a1_arithmetic":expected,
+                    "shared_audit_success":len(logs),"a1_arithmetic":None,
+                    "a1_blocked_reasons":report["blocked"],
                     "contract_sample":contract.model_dump(mode="json"),
                     "financial_decision":"NOT_AUTHORIZED"})
         # Actual PR29 independent denial path must record only server-owned actor/tenant,
@@ -442,7 +443,7 @@ def run(outdir,url,pr29,pr20):
             actor=db.scalar(select(User).where(User.username=="pg16-ocr-reviewer"))
             revised=advisory(db,store,actor,cases["english_columnar"]["doc"],
                 cases["english_columnar"]["parsed"],a1)
-            assert revised["a1_arithmetic_count"]==1
+            assert revised["blocked"]==["SERVICE_DATE_NOT_EXPLICIT"]
             hist=versions(db,price_id)
             assert len(hist)==2 and hist[0].state=="TRANSCRIPTION_ACCEPTED"
             assert hist[1].state=="TRANSCRIPTION_CORRECTED"
@@ -452,14 +453,14 @@ def run(outdir,url,pr29,pr20):
         from importlib.util import spec_from_file_location,module_from_spec
         # Exact SourceVerification shape cannot be satisfied by OCR review alone.
         # Isolated source verifier is separately pinned in the A1 contract probe.
-        summary={"status":"PG16_REVIEW_SHARED_AUDIT_A1_ADVISORY_VERIFIED",
+        summary={"status":"PG16_REVIEW_SHARED_AUDIT_A1_METADATA_HELD",
                  "reviewed_document_count":len(cases),
                  "reviewed_field_count":36,
                  "original_audit_writer":"PR29_PINNED_UNMODIFIED",
                  "a1_analyzer":"PR20_PINNED_UNMODIFIED",
                  "negative_checks":negative,
                  "reviewed_cases":measure,
-                 "after_correction_a1_arithmetic":revised["a1_arithmetic_count"],
+                 "after_correction_a1_arithmetic":revised.get("a1_arithmetic_count"),
                  "g2_trusted_pdf_rows":False,
                  "a1_trusted_input_used":False,
                  "medical_service_verified":False,
@@ -470,7 +471,7 @@ def run(outdir,url,pr29,pr20):
         (out/"pg16_readiness_evidence.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2))
         print(json.dumps({"gate":summary["status"],"reviewed_fields":36,
             "negatives":negative,"advisory":[x["a1_arithmetic"] for x in measure],
-            "after_correction":1}))
+            "after_correction":revised.get("a1_arithmetic_count")}))
     Base.metadata.drop_all(engine,tables=list(reversed(tables)))
     with engine.begin() as conn:
         conn.execute(text("DROP FUNCTION IF EXISTS reader_isolated_no_change()"))

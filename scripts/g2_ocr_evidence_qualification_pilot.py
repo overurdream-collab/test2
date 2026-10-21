@@ -11,7 +11,7 @@ from mcias.ingestion.orchestrator import ingest
 from mcias.storage import EncryptedStore
 from document_reader_dynamic_layout_pilot import (
     STYLES, make_fixture, read_pixels_and_words, parse_dynamic, score,
-    a1_payload, load_a1
+    a1_payload, a1_block_reasons, load_a1
 )
 from g2_trust_pilot import reopen
 
@@ -165,6 +165,7 @@ def run(outdir,a1_file):
                         "independent_synthetic_gold_regions":baseline["score"]["locations"],
                         "qualification":baseline["issues"] or ["SYNTHETIC_MATCH_NOT_AUTHORITY"],
                         "a1_pure_advisory_ran":bool(findings),
+                        "a1_blocked_reasons":a1_block_reasons(parsed),
                         "a1_arithmetic":len(arithmetic) if findings else None,
                         "g2_status":doc.status,"g2_trusted_rows_created":False,
                         "a1_source_verifications":[],
@@ -236,7 +237,8 @@ def run(outdir,a1_file):
         assert r["candidate_count"]==18
         assert r["independent_synthetic_gold_fields"]==18
         assert r["independent_synthetic_gold_regions"]==18
-        assert r["a1_pure_advisory_ran"] and r["a1_arithmetic"]==n
+        assert r["a1_pure_advisory_ran"] is False and r["a1_arithmetic"] is None
+        assert "SERVICE_DATE_NOT_EXPLICIT" in r["a1_blocked_reasons"]
     assert by["arabic_rtl"]["a1_pure_advisory_ran"] is False
     assert len(negative)==7,negative
     summary={"status":"SYNTHETIC_OCR_EVIDENCE_CANDIDATES_QUALIFIED_FOR_REVIEW_ONLY",

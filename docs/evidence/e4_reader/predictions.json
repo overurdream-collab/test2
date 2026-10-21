@@ -1,0 +1,2271 @@
+{
+  "packets": [
+    {
+      "document_id": "shifted_invoice",
+      "original_sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+      "rendered_page_sha256": "18452fd150c17974f25de8b9afbdfe8056dfb75cad941f7b006e2df65db04a11",
+      "parsed": {
+        "fields": {
+          "effective_from": {
+            "value": "2025-12-01",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              106,
+              1066,
+              127
+            ],
+            "ocr_confidence_uncalibrated": 0.96214935,
+            "ocr_word_evidence": [
+              {
+                "text": "2025-12-01",
+                "bbox": [
+                  902,
+                  106,
+                  1066,
+                  127
+                ],
+                "confidence_uncalibrated": 0.96214935,
+                "line_key": [
+                  "1",
+                  "2",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,106,1066,127"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE FROM",
+            "source_line": 2,
+            "semantic_role": "effective_from"
+          },
+          "document_date": {
+            "value": "2026-04-10",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              168,
+              1067,
+              189
+            ],
+            "ocr_confidence_uncalibrated": 0.9654902599999999,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-04-10",
+                "bbox": [
+                  902,
+                  168,
+                  1067,
+                  189
+                ],
+                "confidence_uncalibrated": 0.9654902599999999,
+                "line_key": [
+                  "1",
+                  "3",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,168,1067,189"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "INVOICE_DATE",
+            "source_line": 3,
+            "semantic_role": "document_date"
+          },
+          "provider": {
+            "value": "SYN-HOSPITAL-42",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              230,
+              1153,
+              251
+            ],
+            "ocr_confidence_uncalibrated": 0.88986259,
+            "ocr_word_evidence": [
+              {
+                "text": "SYN-HOSPITAL-42",
+                "bbox": [
+                  902,
+                  230,
+                  1153,
+                  251
+                ],
+                "confidence_uncalibrated": 0.88986259,
+                "line_key": [
+                  "1",
+                  "4",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,230,1153,251"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "PROVIDER",
+            "source_line": 4,
+            "semantic_role": "provider_code"
+          },
+          "service_date": {
+            "value": "2026-04-09",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              292,
+              1066,
+              313
+            ],
+            "ocr_confidence_uncalibrated": 0.96613785,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-04-09",
+                "bbox": [
+                  902,
+                  292,
+                  1066,
+                  313
+                ],
+                "confidence_uncalibrated": 0.96613785,
+                "line_key": [
+                  "1",
+                  "5",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,292,1066,313"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "SERVICE DATE",
+            "source_line": 5,
+            "semantic_role": "service_date"
+          },
+          "effective_until": {
+            "value": "2026-12-31",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              354,
+              1066,
+              375
+            ],
+            "ocr_confidence_uncalibrated": 0.96335403,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-12-31",
+                "bbox": [
+                  902,
+                  354,
+                  1066,
+                  375
+                ],
+                "confidence_uncalibrated": 0.96335403,
+                "line_key": [
+                  "1",
+                  "6",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,354,1066,375"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE UNTIL",
+            "source_line": 6,
+            "semantic_role": "effective_until"
+          },
+          "invoice_number": {
+            "value": "INV-2026-731",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              416,
+              1096,
+              437
+            ],
+            "ocr_confidence_uncalibrated": 0.92368454,
+            "ocr_word_evidence": [
+              {
+                "text": "INV-2026-731",
+                "bbox": [
+                  903,
+                  416,
+                  1096,
+                  437
+                ],
+                "confidence_uncalibrated": 0.92368454,
+                "line_key": [
+                  "1",
+                  "7",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:903,416,1096,437"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 7,
+            "semantic_role": "invoice_number"
+          },
+          "currency": {
+            "value": "USD",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              478,
+              961,
+              499
+            ],
+            "ocr_confidence_uncalibrated": 0.96208183,
+            "ocr_word_evidence": [
+              {
+                "text": "USD",
+                "bbox": [
+                  902,
+                  478,
+                  961,
+                  499
+                ],
+                "confidence_uncalibrated": 0.96208183,
+                "line_key": [
+                  "1",
+                  "8",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,478,961,499"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 8,
+            "semantic_role": "currency"
+          },
+          "stated_total": {
+            "value": "168.00",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              540,
+              1000,
+              561
+            ],
+            "ocr_confidence_uncalibrated": 0.9692948199999999,
+            "ocr_word_evidence": [
+              {
+                "text": "168.00",
+                "bbox": [
+                  903,
+                  540,
+                  1000,
+                  561
+                ],
+                "confidence_uncalibrated": 0.9692948199999999,
+                "line_key": [
+                  "1",
+                  "9",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:903,540,1000,561"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 9,
+            "semantic_role": "stated_total"
+          },
+          "date": {
+            "value": "2026-04-09",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              292,
+              1066,
+              313
+            ],
+            "ocr_confidence_uncalibrated": 0.96613785,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-04-09",
+                "bbox": [
+                  902,
+                  292,
+                  1066,
+                  313
+                ],
+                "confidence_uncalibrated": 0.96613785,
+                "line_key": [
+                  "1",
+                  "5",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "shifted_invoice",
+              "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+              "locator": "pdf:page:1:bbox:902,292,1066,313"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "SERVICE DATE",
+            "source_line": 5,
+            "semantic_role": "service_date"
+          }
+        },
+        "rows": [
+          {
+            "id": {
+              "value": "QX",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                936,
+                154,
+                963
+              ],
+              "ocr_confidence_uncalibrated": 0.58948097,
+              "ocr_word_evidence": [
+                {
+                  "text": "QX",
+                  "bbox": [
+                    112,
+                    936,
+                    154,
+                    963
+                  ],
+                  "confidence_uncalibrated": 0.58948097,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:112,936,154,963"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "LAB-X",
+              "page": 1,
+              "bbox_pixels": [
+                363,
+                936,
+                450,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.92158615,
+              "ocr_word_evidence": [
+                {
+                  "text": "LAB-X",
+                  "bbox": [
+                    363,
+                    936,
+                    450,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.92158615,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:363,936,450,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                653,
+                936,
+                691,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    653,
+                    936,
+                    691,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:653,936,691,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "2",
+              "page": 1,
+              "bbox_pixels": [
+                902,
+                936,
+                917,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96993629,
+              "ocr_word_evidence": [
+                {
+                  "text": "2",
+                  "bbox": [
+                    902,
+                    936,
+                    917,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96993629,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:902,936,917,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "42.00",
+              "page": 1,
+              "bbox_pixels": [
+                1141,
+                936,
+                1227,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96877815,
+              "ocr_word_evidence": [
+                {
+                  "text": "42.00",
+                  "bbox": [
+                    1141,
+                    936,
+                    1227,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96877815,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:1141,936,1227,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1412,
+                936,
+                1497,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1412,
+                    936,
+                    1497,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:1412,936,1497,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          },
+          {
+            "id": {
+              "value": "QY",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                1076,
+                153,
+                1103
+              ],
+              "ocr_confidence_uncalibrated": 0.92421333,
+              "ocr_word_evidence": [
+                {
+                  "text": "QY",
+                  "bbox": [
+                    112,
+                    1076,
+                    153,
+                    1103
+                  ],
+                  "confidence_uncalibrated": 0.92421333,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:112,1076,153,1103"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "RX-Y",
+              "page": 1,
+              "bbox_pixels": [
+                363,
+                1076,
+                428,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.90403862,
+              "ocr_word_evidence": [
+                {
+                  "text": "RX-Y",
+                  "bbox": [
+                    363,
+                    1076,
+                    428,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.90403862,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:363,1076,428,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                653,
+                1076,
+                691,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    653,
+                    1076,
+                    691,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:653,1076,691,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "1",
+              "page": 1,
+              "bbox_pixels": [
+                903,
+                1076,
+                917,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.94469284,
+              "ocr_word_evidence": [
+                {
+                  "text": "1",
+                  "bbox": [
+                    903,
+                    1076,
+                    917,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.94469284,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:903,1076,917,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1142,
+                1076,
+                1227,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1142,
+                    1076,
+                    1227,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:1142,1076,1227,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1412,
+                1076,
+                1497,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1412,
+                    1076,
+                    1497,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "shifted_invoice",
+                "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+                "locator": "pdf:page:1:bbox:1412,1076,1497,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          }
+        ],
+        "issues": [
+          "AMBIGUOUS_CELL_id"
+        ],
+        "header_fields": 6,
+        "status": "HUMAN_REVIEW"
+      },
+      "a1_advisory_envelope": null,
+      "a1_blocked_reasons": [
+        "AMBIGUOUS_CELL_id"
+      ],
+      "human_review_required": true,
+      "financial_decision": "NOT_AUTHORIZED",
+      "g2_native_rows_verified": false,
+      "a1_trusted_input_eligible": false,
+      "qualified_financial_evidence": false
+    },
+    {
+      "document_id": "reordered_arabic",
+      "original_sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+      "rendered_page_sha256": "baa61e943f242f118b831124bb6ad9e83e30a78dbb16622f9282524af4c9b7b9",
+      "parsed": {
+        "fields": {
+          "effective_until": {
+            "value": "2026-12-31",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              106,
+              1066,
+              127
+            ],
+            "ocr_confidence_uncalibrated": 0.96335403,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-12-31",
+                "bbox": [
+                  902,
+                  106,
+                  1066,
+                  127
+                ],
+                "confidence_uncalibrated": 0.96335403,
+                "line_key": [
+                  "1",
+                  "2",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,106,1066,127"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE UNTIL",
+            "source_line": 2,
+            "semantic_role": "effective_until"
+          },
+          "provider": {
+            "value": "SYN-HOSPITAL-73",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              168,
+              1153,
+              189
+            ],
+            "ocr_confidence_uncalibrated": 0.8956797799999999,
+            "ocr_word_evidence": [
+              {
+                "text": "SYN-HOSPITAL-73",
+                "bbox": [
+                  902,
+                  168,
+                  1153,
+                  189
+                ],
+                "confidence_uncalibrated": 0.8956797799999999,
+                "line_key": [
+                  "1",
+                  "3",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,168,1153,189"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "PROVIDER",
+            "source_line": 3,
+            "semantic_role": "provider_code"
+          },
+          "effective_from": {
+            "value": "2026-02-01",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              230,
+              1066,
+              251
+            ],
+            "ocr_confidence_uncalibrated": 0.9642295799999999,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-02-01",
+                "bbox": [
+                  902,
+                  230,
+                  1066,
+                  251
+                ],
+                "confidence_uncalibrated": 0.9642295799999999,
+                "line_key": [
+                  "1",
+                  "4",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,230,1066,251"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE FROM",
+            "source_line": 4,
+            "semantic_role": "effective_from"
+          },
+          "invoice_number": {
+            "value": "INV-2026-842",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              292,
+              1096,
+              313
+            ],
+            "ocr_confidence_uncalibrated": 0.92689377,
+            "ocr_word_evidence": [
+              {
+                "text": "INV-2026-842",
+                "bbox": [
+                  903,
+                  292,
+                  1096,
+                  313
+                ],
+                "confidence_uncalibrated": 0.92689377,
+                "line_key": [
+                  "1",
+                  "5",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:903,292,1096,313"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 5,
+            "semantic_role": "invoice_number"
+          },
+          "document_date": {
+            "value": "2026-05-09",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              354,
+              1066,
+              375
+            ],
+            "ocr_confidence_uncalibrated": 0.9674855800000001,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-05-09",
+                "bbox": [
+                  902,
+                  354,
+                  1066,
+                  375
+                ],
+                "confidence_uncalibrated": 0.9674855800000001,
+                "line_key": [
+                  "1",
+                  "6",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,354,1066,375"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "INVOICE_DATE",
+            "source_line": 6,
+            "semantic_role": "document_date"
+          },
+          "currency": {
+            "value": "USD",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              416,
+              961,
+              437
+            ],
+            "ocr_confidence_uncalibrated": 0.96208183,
+            "ocr_word_evidence": [
+              {
+                "text": "USD",
+                "bbox": [
+                  902,
+                  416,
+                  961,
+                  437
+                ],
+                "confidence_uncalibrated": 0.96208183,
+                "line_key": [
+                  "1",
+                  "7",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,416,961,437"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 7,
+            "semantic_role": "currency"
+          },
+          "service_date": {
+            "value": "2026-05-07",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              478,
+              1066,
+              499
+            ],
+            "ocr_confidence_uncalibrated": 0.9642952,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-05-07",
+                "bbox": [
+                  902,
+                  478,
+                  1066,
+                  499
+                ],
+                "confidence_uncalibrated": 0.9642952,
+                "line_key": [
+                  "1",
+                  "8",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,478,1066,499"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "SERVICE DATE",
+            "source_line": 8,
+            "semantic_role": "service_date"
+          },
+          "stated_total": {
+            "value": "168.00",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              540,
+              1000,
+              561
+            ],
+            "ocr_confidence_uncalibrated": 0.9692948199999999,
+            "ocr_word_evidence": [
+              {
+                "text": "168.00",
+                "bbox": [
+                  903,
+                  540,
+                  1000,
+                  561
+                ],
+                "confidence_uncalibrated": 0.9692948199999999,
+                "line_key": [
+                  "1",
+                  "9",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:903,540,1000,561"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 9,
+            "semantic_role": "stated_total"
+          },
+          "date": {
+            "value": "2026-05-07",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              478,
+              1066,
+              499
+            ],
+            "ocr_confidence_uncalibrated": 0.9642952,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-05-07",
+                "bbox": [
+                  902,
+                  478,
+                  1066,
+                  499
+                ],
+                "confidence_uncalibrated": 0.9642952,
+                "line_key": [
+                  "1",
+                  "8",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "reordered_arabic",
+              "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+              "locator": "pdf:page:1:bbox:902,478,1066,499"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "SERVICE DATE",
+            "source_line": 8,
+            "semantic_role": "service_date"
+          }
+        },
+        "rows": [
+          {
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                936,
+                197,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    112,
+                    936,
+                    197,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:112,936,197,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "أشعة",
+              "page": 1,
+              "bbox_pixels": [
+                392,
+                928,
+                455,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.89258781,
+              "ocr_word_evidence": [
+                {
+                  "text": "أشعة",
+                  "bbox": [
+                    392,
+                    928,
+                    455,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.89258781,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:392,928,455,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "2",
+              "page": 1,
+              "bbox_pixels": [
+                682,
+                936,
+                697,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.9642619299999999,
+              "ocr_word_evidence": [
+                {
+                  "text": "2",
+                  "bbox": [
+                    682,
+                    936,
+                    697,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.9642619299999999,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:682,936,697,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "id": {
+              "value": "4ه",
+              "page": 1,
+              "bbox_pixels": [
+                932,
+                936,
+                974,
+                963
+              ],
+              "ocr_confidence_uncalibrated": 0.64192673,
+              "ocr_word_evidence": [
+                {
+                  "text": "4ه",
+                  "bbox": [
+                    932,
+                    936,
+                    974,
+                    963
+                  ],
+                  "confidence_uncalibrated": 0.64192673,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:932,936,974,963"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "42.00",
+              "page": 1,
+              "bbox_pixels": [
+                1161,
+                936,
+                1247,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96877815,
+              "ocr_word_evidence": [
+                {
+                  "text": "42.00",
+                  "bbox": [
+                    1161,
+                    936,
+                    1247,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96877815,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:1161,936,1247,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                1433,
+                936,
+                1471,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    1433,
+                    936,
+                    1471,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:1433,936,1471,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          },
+          {
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                1076,
+                197,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    112,
+                    1076,
+                    197,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:112,1076,197,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "دواء",
+              "page": 1,
+              "bbox_pixels": [
+                392,
+                1075,
+                440,
+                1107
+              ],
+              "ocr_confidence_uncalibrated": 0.92326706,
+              "ocr_word_evidence": [
+                {
+                  "text": "دواء",
+                  "bbox": [
+                    392,
+                    1075,
+                    440,
+                    1107
+                  ],
+                  "confidence_uncalibrated": 0.92326706,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:392,1075,440,1107"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "1",
+              "page": 1,
+              "bbox_pixels": [
+                683,
+                1076,
+                697,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.96678917,
+              "ocr_word_evidence": [
+                {
+                  "text": "1",
+                  "bbox": [
+                    683,
+                    1076,
+                    697,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.96678917,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:683,1076,697,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "id": {
+              "value": "QY",
+              "page": 1,
+              "bbox_pixels": [
+                932,
+                1076,
+                973,
+                1103
+              ],
+              "ocr_confidence_uncalibrated": 0.92421333,
+              "ocr_word_evidence": [
+                {
+                  "text": "QY",
+                  "bbox": [
+                    932,
+                    1076,
+                    973,
+                    1103
+                  ],
+                  "confidence_uncalibrated": 0.92421333,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:932,1076,973,1103"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1162,
+                1076,
+                1247,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1162,
+                    1076,
+                    1247,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:1162,1076,1247,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                1433,
+                1076,
+                1471,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    1433,
+                    1076,
+                    1471,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "10",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "reordered_arabic",
+                "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+                "locator": "pdf:page:1:bbox:1433,1076,1471,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          }
+        ],
+        "issues": [
+          "AMBIGUOUS_CELL_id"
+        ],
+        "header_fields": 6,
+        "status": "HUMAN_REVIEW"
+      },
+      "a1_advisory_envelope": null,
+      "a1_blocked_reasons": [
+        "AMBIGUOUS_CELL_id"
+      ],
+      "human_review_required": true,
+      "financial_decision": "NOT_AUTHORIZED",
+      "g2_native_rows_verified": false,
+      "a1_trusted_input_eligible": false,
+      "qualified_financial_evidence": false
+    },
+    {
+      "document_id": "conflicting_dates",
+      "original_sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+      "rendered_page_sha256": "e09c7cb0478ca9aa05ff8e1332dd96c1144fcc4b3737445b9d1f70aa9b1baf35",
+      "parsed": {
+        "fields": {
+          "effective_from": {
+            "value": "2025-12-01",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              106,
+              1066,
+              127
+            ],
+            "ocr_confidence_uncalibrated": 0.96214935,
+            "ocr_word_evidence": [
+              {
+                "text": "2025-12-01",
+                "bbox": [
+                  902,
+                  106,
+                  1066,
+                  127
+                ],
+                "confidence_uncalibrated": 0.96214935,
+                "line_key": [
+                  "1",
+                  "2",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,106,1066,127"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE FROM",
+            "source_line": 2,
+            "semantic_role": "effective_from"
+          },
+          "document_date": {
+            "value": "2026-04-10",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              168,
+              1067,
+              189
+            ],
+            "ocr_confidence_uncalibrated": 0.9654902599999999,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-04-10",
+                "bbox": [
+                  902,
+                  168,
+                  1067,
+                  189
+                ],
+                "confidence_uncalibrated": 0.9654902599999999,
+                "line_key": [
+                  "1",
+                  "3",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,168,1067,189"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "INVOICE_DATE",
+            "source_line": 3,
+            "semantic_role": "document_date"
+          },
+          "provider": {
+            "value": "SYN-HOSPITAL-42",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              230,
+              1153,
+              251
+            ],
+            "ocr_confidence_uncalibrated": 0.88986259,
+            "ocr_word_evidence": [
+              {
+                "text": "SYN-HOSPITAL-42",
+                "bbox": [
+                  902,
+                  230,
+                  1153,
+                  251
+                ],
+                "confidence_uncalibrated": 0.88986259,
+                "line_key": [
+                  "1",
+                  "4",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,230,1153,251"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "PROVIDER",
+            "source_line": 4,
+            "semantic_role": "provider_code"
+          },
+          "effective_until": {
+            "value": "2026-12-31",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              416,
+              1066,
+              437
+            ],
+            "ocr_confidence_uncalibrated": 0.96335403,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-12-31",
+                "bbox": [
+                  902,
+                  416,
+                  1066,
+                  437
+                ],
+                "confidence_uncalibrated": 0.96335403,
+                "line_key": [
+                  "1",
+                  "7",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,416,1066,437"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "EFFECTIVE UNTIL",
+            "source_line": 7,
+            "semantic_role": "effective_until"
+          },
+          "invoice_number": {
+            "value": "INV-2026-731",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              478,
+              1096,
+              499
+            ],
+            "ocr_confidence_uncalibrated": 0.92368454,
+            "ocr_word_evidence": [
+              {
+                "text": "INV-2026-731",
+                "bbox": [
+                  903,
+                  478,
+                  1096,
+                  499
+                ],
+                "confidence_uncalibrated": 0.92368454,
+                "line_key": [
+                  "1",
+                  "8",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:903,478,1096,499"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 8,
+            "semantic_role": "invoice_number"
+          },
+          "currency": {
+            "value": "USD",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              540,
+              961,
+              561
+            ],
+            "ocr_confidence_uncalibrated": 0.96208183,
+            "ocr_word_evidence": [
+              {
+                "text": "USD",
+                "bbox": [
+                  902,
+                  540,
+                  961,
+                  561
+                ],
+                "confidence_uncalibrated": 0.96208183,
+                "line_key": [
+                  "1",
+                  "9",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,540,961,561"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 9,
+            "semantic_role": "currency"
+          },
+          "stated_total": {
+            "value": "168.00",
+            "page": 1,
+            "bbox_pixels": [
+              903,
+              602,
+              1000,
+              623
+            ],
+            "ocr_confidence_uncalibrated": 0.9692948199999999,
+            "ocr_word_evidence": [
+              {
+                "text": "168.00",
+                "bbox": [
+                  903,
+                  602,
+                  1000,
+                  623
+                ],
+                "confidence_uncalibrated": 0.9692948199999999,
+                "line_key": [
+                  "1",
+                  "10",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:903,602,1000,623"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_line": 10,
+            "semantic_role": "stated_total"
+          },
+          "date": {
+            "value": "2026-04-10",
+            "page": 1,
+            "bbox_pixels": [
+              902,
+              168,
+              1067,
+              189
+            ],
+            "ocr_confidence_uncalibrated": 0.9654902599999999,
+            "ocr_word_evidence": [
+              {
+                "text": "2026-04-10",
+                "bbox": [
+                  902,
+                  168,
+                  1067,
+                  189
+                ],
+                "confidence_uncalibrated": 0.9654902599999999,
+                "line_key": [
+                  "1",
+                  "3",
+                  "1"
+                ]
+              }
+            ],
+            "source": {
+              "document_id": "conflicting_dates",
+              "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+              "locator": "pdf:page:1:bbox:902,168,1067,189"
+            },
+            "status": "UNATTESTED_OCR_CANDIDATE",
+            "source_label": "INVOICE_DATE",
+            "source_line": 3,
+            "semantic_role": "document_date"
+          }
+        },
+        "rows": [
+          {
+            "id": {
+              "value": "QX",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                936,
+                154,
+                963
+              ],
+              "ocr_confidence_uncalibrated": 0.58948097,
+              "ocr_word_evidence": [
+                {
+                  "text": "QX",
+                  "bbox": [
+                    112,
+                    936,
+                    154,
+                    963
+                  ],
+                  "confidence_uncalibrated": 0.58948097,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:112,936,154,963"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "LAB-X",
+              "page": 1,
+              "bbox_pixels": [
+                363,
+                936,
+                450,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.92158615,
+              "ocr_word_evidence": [
+                {
+                  "text": "LAB-X",
+                  "bbox": [
+                    363,
+                    936,
+                    450,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.92158615,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:363,936,450,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                653,
+                936,
+                691,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    653,
+                    936,
+                    691,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:653,936,691,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "2",
+              "page": 1,
+              "bbox_pixels": [
+                902,
+                936,
+                917,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96993629,
+              "ocr_word_evidence": [
+                {
+                  "text": "2",
+                  "bbox": [
+                    902,
+                    936,
+                    917,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96993629,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:902,936,917,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "42.00",
+              "page": 1,
+              "bbox_pixels": [
+                1141,
+                936,
+                1227,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.96877815,
+              "ocr_word_evidence": [
+                {
+                  "text": "42.00",
+                  "bbox": [
+                    1141,
+                    936,
+                    1227,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.96877815,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:1141,936,1227,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1412,
+                936,
+                1497,
+                959
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1412,
+                    936,
+                    1497,
+                    959
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "2"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:1412,936,1497,959"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          },
+          {
+            "id": {
+              "value": "QY",
+              "page": 1,
+              "bbox_pixels": [
+                112,
+                1076,
+                153,
+                1103
+              ],
+              "ocr_confidence_uncalibrated": 0.92421333,
+              "ocr_word_evidence": [
+                {
+                  "text": "QY",
+                  "bbox": [
+                    112,
+                    1076,
+                    153,
+                    1103
+                  ],
+                  "confidence_uncalibrated": 0.92421333,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:112,1076,153,1103"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "code": {
+              "value": "RX-Y",
+              "page": 1,
+              "bbox_pixels": [
+                363,
+                1076,
+                428,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.90403862,
+              "ocr_word_evidence": [
+                {
+                  "text": "RX-Y",
+                  "bbox": [
+                    363,
+                    1076,
+                    428,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.90403862,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:363,1076,428,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "unit": {
+              "value": "EA",
+              "page": 1,
+              "bbox_pixels": [
+                653,
+                1076,
+                691,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.96552536,
+              "ocr_word_evidence": [
+                {
+                  "text": "EA",
+                  "bbox": [
+                    653,
+                    1076,
+                    691,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.96552536,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:653,1076,691,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "qty": {
+              "value": "1",
+              "page": 1,
+              "bbox_pixels": [
+                903,
+                1076,
+                917,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.94469284,
+              "ocr_word_evidence": [
+                {
+                  "text": "1",
+                  "bbox": [
+                    903,
+                    1076,
+                    917,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.94469284,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:903,1076,917,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "price": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1142,
+                1076,
+                1227,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1142,
+                    1076,
+                    1227,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:1142,1076,1227,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            },
+            "total": {
+              "value": "84.00",
+              "page": 1,
+              "bbox_pixels": [
+                1412,
+                1076,
+                1497,
+                1099
+              ],
+              "ocr_confidence_uncalibrated": 0.95576355,
+              "ocr_word_evidence": [
+                {
+                  "text": "84.00",
+                  "bbox": [
+                    1412,
+                    1076,
+                    1497,
+                    1099
+                  ],
+                  "confidence_uncalibrated": 0.95576355,
+                  "line_key": [
+                    "1",
+                    "11",
+                    "3"
+                  ]
+                }
+              ],
+              "source": {
+                "document_id": "conflicting_dates",
+                "sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+                "locator": "pdf:page:1:bbox:1412,1076,1497,1099"
+              },
+              "status": "UNATTESTED_OCR_CANDIDATE"
+            }
+          }
+        ],
+        "issues": [
+          "AMBIGUOUS_CELL_id",
+          "AMBIGUOUS_METADATA_service_date"
+        ],
+        "header_fields": 6,
+        "status": "HUMAN_REVIEW"
+      },
+      "a1_advisory_envelope": null,
+      "a1_blocked_reasons": [
+        "AMBIGUOUS_CELL_id",
+        "AMBIGUOUS_METADATA_service_date",
+        "SERVICE_DATE_NOT_EXPLICIT"
+      ],
+      "human_review_required": true,
+      "financial_decision": "NOT_AUTHORIZED",
+      "g2_native_rows_verified": false,
+      "a1_trusted_input_eligible": false,
+      "qualified_financial_evidence": false
+    }
+  ]
+}

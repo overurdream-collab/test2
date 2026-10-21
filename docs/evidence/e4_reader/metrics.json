@@ -1,0 +1,1209 @@
+{
+  "status": "ISOLATED_SOURCE_ROLE_HOLDOUT_NOT_MODEL_QUALIFICATION",
+  "documents": 3,
+  "positive_metadata_fields": 16,
+  "metadata_values_exact": 16,
+  "metadata_field_bindings_correct": 16,
+  "metadata_value_accuracy": 1.0,
+  "metadata_binding_accuracy": 1.0,
+  "page_CER": 0.011968085106382979,
+  "page_WER": 0.024390243902439025,
+  "runtime_seconds": 8.894,
+  "peak_individual_process_rss_mib": 107.45703125,
+  "negative_cases": [
+    {
+      "id": "conflicting_dates",
+      "service_date_abstained": true,
+      "a1_blocked": true,
+      "reasons": [
+        "AMBIGUOUS_CELL_id",
+        "AMBIGUOUS_METADATA_service_date",
+        "SERVICE_DATE_NOT_EXPLICIT"
+      ]
+    }
+  ],
+  "original_byte_tamper_rejected": true,
+  "qualified_financial_fields": 0,
+  "all_human_review": true,
+  "details": [
+    {
+      "document_id": "shifted_invoice",
+      "field": "effective_from",
+      "expected": {
+        "value": "2025-12-01",
+        "label": "EFFECTIVE FROM",
+        "source_line": 2,
+        "bbox": [
+          895,
+          101,
+          1074,
+          132
+        ]
+      },
+      "actual": {
+        "value": "2025-12-01",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          106,
+          1066,
+          127
+        ],
+        "ocr_confidence_uncalibrated": 0.96214935,
+        "ocr_word_evidence": [
+          {
+            "text": "2025-12-01",
+            "bbox": [
+              902,
+              106,
+              1066,
+              127
+            ],
+            "confidence_uncalibrated": 0.96214935,
+            "line_key": [
+              "1",
+              "2",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,106,1066,127"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "EFFECTIVE FROM",
+        "source_line": 2,
+        "semantic_role": "effective_from"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "document_date",
+      "expected": {
+        "value": "2026-04-10",
+        "label": "INVOICE_DATE",
+        "source_line": 3,
+        "bbox": [
+          895,
+          163,
+          1074,
+          194
+        ]
+      },
+      "actual": {
+        "value": "2026-04-10",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          168,
+          1067,
+          189
+        ],
+        "ocr_confidence_uncalibrated": 0.9654902599999999,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-04-10",
+            "bbox": [
+              902,
+              168,
+              1067,
+              189
+            ],
+            "confidence_uncalibrated": 0.9654902599999999,
+            "line_key": [
+              "1",
+              "3",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,168,1067,189"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "INVOICE_DATE",
+        "source_line": 3,
+        "semantic_role": "document_date"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "provider",
+      "expected": {
+        "value": "SYN-HOSPITAL-42",
+        "label": "PROVIDER",
+        "source_line": 4,
+        "bbox": [
+          895,
+          225,
+          1161,
+          256
+        ]
+      },
+      "actual": {
+        "value": "SYN-HOSPITAL-42",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          230,
+          1153,
+          251
+        ],
+        "ocr_confidence_uncalibrated": 0.88986259,
+        "ocr_word_evidence": [
+          {
+            "text": "SYN-HOSPITAL-42",
+            "bbox": [
+              902,
+              230,
+              1153,
+              251
+            ],
+            "confidence_uncalibrated": 0.88986259,
+            "line_key": [
+              "1",
+              "4",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,230,1153,251"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "PROVIDER",
+        "source_line": 4,
+        "semantic_role": "provider_code"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "service_date",
+      "expected": {
+        "value": "2026-04-09",
+        "label": "SERVICE DATE",
+        "source_line": 5,
+        "bbox": [
+          895,
+          287,
+          1074,
+          318
+        ]
+      },
+      "actual": {
+        "value": "2026-04-09",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          292,
+          1066,
+          313
+        ],
+        "ocr_confidence_uncalibrated": 0.96613785,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-04-09",
+            "bbox": [
+              902,
+              292,
+              1066,
+              313
+            ],
+            "confidence_uncalibrated": 0.96613785,
+            "line_key": [
+              "1",
+              "5",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,292,1066,313"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "SERVICE DATE",
+        "source_line": 5,
+        "semantic_role": "service_date"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "effective_until",
+      "expected": {
+        "value": "2026-12-31",
+        "label": "EFFECTIVE UNTIL",
+        "source_line": 6,
+        "bbox": [
+          895,
+          349,
+          1074,
+          380
+        ]
+      },
+      "actual": {
+        "value": "2026-12-31",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          354,
+          1066,
+          375
+        ],
+        "ocr_confidence_uncalibrated": 0.96335403,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-12-31",
+            "bbox": [
+              902,
+              354,
+              1066,
+              375
+            ],
+            "confidence_uncalibrated": 0.96335403,
+            "line_key": [
+              "1",
+              "6",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,354,1066,375"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "EFFECTIVE UNTIL",
+        "source_line": 6,
+        "semantic_role": "effective_until"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "invoice_number",
+      "expected": {
+        "value": "INV-2026-731",
+        "label": "INVOICE",
+        "source_line": 7,
+        "bbox": [
+          895,
+          411,
+          1103,
+          442
+        ]
+      },
+      "actual": {
+        "value": "INV-2026-731",
+        "page": 1,
+        "bbox_pixels": [
+          903,
+          416,
+          1096,
+          437
+        ],
+        "ocr_confidence_uncalibrated": 0.92368454,
+        "ocr_word_evidence": [
+          {
+            "text": "INV-2026-731",
+            "bbox": [
+              903,
+              416,
+              1096,
+              437
+            ],
+            "confidence_uncalibrated": 0.92368454,
+            "line_key": [
+              "1",
+              "7",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:903,416,1096,437"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 7,
+        "semantic_role": "invoice_number"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "currency",
+      "expected": {
+        "value": "USD",
+        "label": "CURRENCY",
+        "source_line": 8,
+        "bbox": [
+          895,
+          473,
+          967,
+          504
+        ]
+      },
+      "actual": {
+        "value": "USD",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          478,
+          961,
+          499
+        ],
+        "ocr_confidence_uncalibrated": 0.96208183,
+        "ocr_word_evidence": [
+          {
+            "text": "USD",
+            "bbox": [
+              902,
+              478,
+              961,
+              499
+            ],
+            "confidence_uncalibrated": 0.96208183,
+            "line_key": [
+              "1",
+              "8",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:902,478,961,499"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 8,
+        "semantic_role": "currency"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "shifted_invoice",
+      "field": "stated_total",
+      "expected": {
+        "value": "168.00",
+        "label": "GRANDTOTAL",
+        "source_line": 9,
+        "bbox": [
+          895,
+          535,
+          1006,
+          566
+        ]
+      },
+      "actual": {
+        "value": "168.00",
+        "page": 1,
+        "bbox_pixels": [
+          903,
+          540,
+          1000,
+          561
+        ],
+        "ocr_confidence_uncalibrated": 0.9692948199999999,
+        "ocr_word_evidence": [
+          {
+            "text": "168.00",
+            "bbox": [
+              903,
+              540,
+              1000,
+              561
+            ],
+            "confidence_uncalibrated": 0.9692948199999999,
+            "line_key": [
+              "1",
+              "9",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "shifted_invoice",
+          "sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+          "locator": "pdf:page:1:bbox:903,540,1000,561"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 9,
+        "semantic_role": "stated_total"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "effective_until",
+      "expected": {
+        "value": "2026-12-31",
+        "label": "EFFECTIVE UNTIL",
+        "source_line": 2,
+        "bbox": [
+          895,
+          101,
+          1074,
+          132
+        ]
+      },
+      "actual": {
+        "value": "2026-12-31",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          106,
+          1066,
+          127
+        ],
+        "ocr_confidence_uncalibrated": 0.96335403,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-12-31",
+            "bbox": [
+              902,
+              106,
+              1066,
+              127
+            ],
+            "confidence_uncalibrated": 0.96335403,
+            "line_key": [
+              "1",
+              "2",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,106,1066,127"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "EFFECTIVE UNTIL",
+        "source_line": 2,
+        "semantic_role": "effective_until"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "provider",
+      "expected": {
+        "value": "SYN-HOSPITAL-73",
+        "label": "PROVIDER",
+        "source_line": 3,
+        "bbox": [
+          895,
+          163,
+          1161,
+          194
+        ]
+      },
+      "actual": {
+        "value": "SYN-HOSPITAL-73",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          168,
+          1153,
+          189
+        ],
+        "ocr_confidence_uncalibrated": 0.8956797799999999,
+        "ocr_word_evidence": [
+          {
+            "text": "SYN-HOSPITAL-73",
+            "bbox": [
+              902,
+              168,
+              1153,
+              189
+            ],
+            "confidence_uncalibrated": 0.8956797799999999,
+            "line_key": [
+              "1",
+              "3",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,168,1153,189"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "PROVIDER",
+        "source_line": 3,
+        "semantic_role": "provider_code"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "effective_from",
+      "expected": {
+        "value": "2026-02-01",
+        "label": "EFFECTIVE FROM",
+        "source_line": 4,
+        "bbox": [
+          895,
+          225,
+          1074,
+          256
+        ]
+      },
+      "actual": {
+        "value": "2026-02-01",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          230,
+          1066,
+          251
+        ],
+        "ocr_confidence_uncalibrated": 0.9642295799999999,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-02-01",
+            "bbox": [
+              902,
+              230,
+              1066,
+              251
+            ],
+            "confidence_uncalibrated": 0.9642295799999999,
+            "line_key": [
+              "1",
+              "4",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,230,1066,251"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "EFFECTIVE FROM",
+        "source_line": 4,
+        "semantic_role": "effective_from"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "invoice_number",
+      "expected": {
+        "value": "INV-2026-842",
+        "label": "INVOICE",
+        "source_line": 5,
+        "bbox": [
+          895,
+          287,
+          1103,
+          318
+        ]
+      },
+      "actual": {
+        "value": "INV-2026-842",
+        "page": 1,
+        "bbox_pixels": [
+          903,
+          292,
+          1096,
+          313
+        ],
+        "ocr_confidence_uncalibrated": 0.92689377,
+        "ocr_word_evidence": [
+          {
+            "text": "INV-2026-842",
+            "bbox": [
+              903,
+              292,
+              1096,
+              313
+            ],
+            "confidence_uncalibrated": 0.92689377,
+            "line_key": [
+              "1",
+              "5",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:903,292,1096,313"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 5,
+        "semantic_role": "invoice_number"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "document_date",
+      "expected": {
+        "value": "2026-05-09",
+        "label": "INVOICE_DATE",
+        "source_line": 6,
+        "bbox": [
+          895,
+          349,
+          1074,
+          380
+        ]
+      },
+      "actual": {
+        "value": "2026-05-09",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          354,
+          1066,
+          375
+        ],
+        "ocr_confidence_uncalibrated": 0.9674855800000001,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-05-09",
+            "bbox": [
+              902,
+              354,
+              1066,
+              375
+            ],
+            "confidence_uncalibrated": 0.9674855800000001,
+            "line_key": [
+              "1",
+              "6",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,354,1066,375"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "INVOICE_DATE",
+        "source_line": 6,
+        "semantic_role": "document_date"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "currency",
+      "expected": {
+        "value": "USD",
+        "label": "CURRENCY",
+        "source_line": 7,
+        "bbox": [
+          895,
+          411,
+          967,
+          442
+        ]
+      },
+      "actual": {
+        "value": "USD",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          416,
+          961,
+          437
+        ],
+        "ocr_confidence_uncalibrated": 0.96208183,
+        "ocr_word_evidence": [
+          {
+            "text": "USD",
+            "bbox": [
+              902,
+              416,
+              961,
+              437
+            ],
+            "confidence_uncalibrated": 0.96208183,
+            "line_key": [
+              "1",
+              "7",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,416,961,437"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 7,
+        "semantic_role": "currency"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "service_date",
+      "expected": {
+        "value": "2026-05-07",
+        "label": "SERVICE DATE",
+        "source_line": 8,
+        "bbox": [
+          895,
+          473,
+          1074,
+          504
+        ]
+      },
+      "actual": {
+        "value": "2026-05-07",
+        "page": 1,
+        "bbox_pixels": [
+          902,
+          478,
+          1066,
+          499
+        ],
+        "ocr_confidence_uncalibrated": 0.9642952,
+        "ocr_word_evidence": [
+          {
+            "text": "2026-05-07",
+            "bbox": [
+              902,
+              478,
+              1066,
+              499
+            ],
+            "confidence_uncalibrated": 0.9642952,
+            "line_key": [
+              "1",
+              "8",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:902,478,1066,499"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_label": "SERVICE DATE",
+        "source_line": 8,
+        "semantic_role": "service_date"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    },
+    {
+      "document_id": "reordered_arabic",
+      "field": "stated_total",
+      "expected": {
+        "value": "168.00",
+        "label": "GRANDTOTAL",
+        "source_line": 9,
+        "bbox": [
+          895,
+          535,
+          1006,
+          566
+        ]
+      },
+      "actual": {
+        "value": "168.00",
+        "page": 1,
+        "bbox_pixels": [
+          903,
+          540,
+          1000,
+          561
+        ],
+        "ocr_confidence_uncalibrated": 0.9692948199999999,
+        "ocr_word_evidence": [
+          {
+            "text": "168.00",
+            "bbox": [
+              903,
+              540,
+              1000,
+              561
+            ],
+            "confidence_uncalibrated": 0.9692948199999999,
+            "line_key": [
+              "1",
+              "9",
+              "1"
+            ]
+          }
+        ],
+        "source": {
+          "document_id": "reordered_arabic",
+          "sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+          "locator": "pdf:page:1:bbox:903,540,1000,561"
+        },
+        "status": "UNATTESTED_OCR_CANDIDATE",
+        "source_line": 9,
+        "semantic_role": "stated_total"
+      },
+      "value_exact": true,
+      "field_binding_correct": true
+    }
+  ],
+  "table_scores": [
+    {
+      "document_id": "shifted_invoice",
+      "exact_values": 12,
+      "expected_values": 12,
+      "correct_cell_locations": 12,
+      "expected_cell_locations": 12,
+      "wrong_cell_associations": 0,
+      "details": [
+        {
+          "line": "QX",
+          "field": "id",
+          "expected": "QX",
+          "observed": "QX",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "code",
+          "expected": "LAB-X",
+          "observed": "LAB-X",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "qty",
+          "expected": "2",
+          "observed": "2",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "price",
+          "expected": "42.00",
+          "observed": "42.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "id",
+          "expected": "QY",
+          "observed": "QY",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "code",
+          "expected": "RX-Y",
+          "observed": "RX-Y",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "qty",
+          "expected": "1",
+          "observed": "1",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "price",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        }
+      ]
+    },
+    {
+      "document_id": "reordered_arabic",
+      "exact_values": 11,
+      "expected_values": 12,
+      "correct_cell_locations": 12,
+      "expected_cell_locations": 12,
+      "wrong_cell_associations": 0,
+      "details": [
+        {
+          "line": "QX",
+          "field": "id",
+          "expected": "QX",
+          "observed": "4ه",
+          "value_exact": false,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "code",
+          "expected": "أشعة",
+          "observed": "أشعة",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "qty",
+          "expected": "2",
+          "observed": "2",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "price",
+          "expected": "42.00",
+          "observed": "42.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "id",
+          "expected": "QY",
+          "observed": "QY",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "code",
+          "expected": "دواء",
+          "observed": "دواء",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "qty",
+          "expected": "1",
+          "observed": "1",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "price",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        }
+      ]
+    },
+    {
+      "document_id": "conflicting_dates",
+      "exact_values": 12,
+      "expected_values": 12,
+      "correct_cell_locations": 12,
+      "expected_cell_locations": 12,
+      "wrong_cell_associations": 0,
+      "details": [
+        {
+          "line": "QX",
+          "field": "id",
+          "expected": "QX",
+          "observed": "QX",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "code",
+          "expected": "LAB-X",
+          "observed": "LAB-X",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "qty",
+          "expected": "2",
+          "observed": "2",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "price",
+          "expected": "42.00",
+          "observed": "42.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QX",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "id",
+          "expected": "QY",
+          "observed": "QY",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "code",
+          "expected": "RX-Y",
+          "observed": "RX-Y",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "unit",
+          "expected": "EA",
+          "observed": "EA",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "qty",
+          "expected": "1",
+          "observed": "1",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "price",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        },
+        {
+          "line": "QY",
+          "field": "total",
+          "expected": "84.00",
+          "observed": "84.00",
+          "value_exact": true,
+          "cell_location_correct": true
+        }
+      ]
+    }
+  ],
+  "gold_sha256": "004175578a2ab4077a53ebdfbab245fe2dd61ed40b542327e5bb32254154e328"
+}
