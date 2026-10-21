@@ -315,3 +315,11 @@
 
 ## INPUTS-FIRST value evidence — 2026-10-21
 Existing C35 source view now returns unique literal field spans with SHA/version/locator; 46 contract tests and 12 independent source tests pass locally. See DG001_INPUTS_CONTRACT_EVIDENCE.md. CI pending. No model qualification or G5 full acceptance.
+
+# Independent security owner state — 2026-10-21
+Pillow13.0.0; real audit65 external packages0 known vulnerabilities;34 actual compatibility tests pass. Local mcias is explicitly source-bound, all external dependencies retained. See DG001_INPUTS_SECURITY.md. Exact-SHA CI pending publication. No institutional acceptance/merge/deployment.
+
+
+Runner followup215: real security audit/unit/Postgres CI PASS on46e4ad8. Enterprise full suite lacked Tesseract; prerequisite now added, new-head verification pending.
+
+Security maintenance adopted from verified independent PR33 without replacing Contract-specific CI tests. Exact new-head CI pending; source-value locations unchanged.

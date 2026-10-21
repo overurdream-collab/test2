@@ -14,3 +14,5 @@ Independent quality on pinned unchanged owner trees:
 - Document Reader `d62e2bf` (full hash in Git): scorer + DG002B + human-review scripts, 15 passed. Existing OCR/model qualification limitations remain; no model weights downloaded or model inference run.
 
 First blocker: complete source-authority and independently approved G3 reference integration remains with G2/G3/G5. Actual-model quality is not inferred from these deterministic tests. CI on the published commit is tracked independently; local reports are not CI acceptance. No merge/deploy/real patient data.
+
+Security adoption: include independently verified maintenance8eef408/4892639 (DraftPR33, latest6454b6d all triggered CI PASS). Same review-source behavior; actual audit65external0known vulnerabilities and34compatibility tests previously run. New-head contract CI required.
