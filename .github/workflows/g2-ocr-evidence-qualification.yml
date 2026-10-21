@@ -51,7 +51,11 @@ jobs:
           assert d["a1_trusted_source_verifications"]==[]
           assert all(x["g2_status"]=="review_required" for x in d["results"])
           assert all(x["financial_decision"]=="NOT_AUTHORIZED" for x in d["results"])
-          assert [x["a1_arithmetic"] for x in d["results"]]==[0,2,None]
+          assert all(x["a1_arithmetic"] is None for x in d["results"])
+          assert all(x["a1_pure_advisory_ran"] is False for x in d["results"])
+          by_case={x["case"]:x for x in d["results"]}
+          for case in ("english_columnar","english_reordered"):
+              assert by_case[case]["a1_blocked_reasons"]==["SERVICE_DATE_NOT_EXPLICIT"]
           assert all(x["independent_synthetic_gold_fields"]==18 for x in d["results"])
           assert all(x["independent_synthetic_gold_regions"]==18 for x in d["results"])
           PY

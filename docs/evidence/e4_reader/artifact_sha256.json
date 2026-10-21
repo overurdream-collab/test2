@@ -1,5 +1,7 @@
 {
   "arabic_error_review.json": "0fb7cde91d8b35b044c44e21fbca4f9137e688af1558f713fd7d579a647ae165",
+  "ci_gate_404b_verification.json": "d0237802f1ae921be2669490739658f30db8b145facdc324b6b719c0e315b4ef",
+  "ci_qualification_summary.json": "79630bac7a315dfdbe29840096a54bec692a0981eecc5ce10fa7bcf8691b4140",
   "conflicting_dates.pdf": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
   "conflicting_dates.png": "e09c7cb0478ca9aa05ff8e1332dd96c1144fcc4b3737445b9d1f70aa9b1baf35",
   "holdout_gold.json": "004175578a2ab4077a53ebdfbab245fe2dd61ed40b542327e5bb32254154e328",

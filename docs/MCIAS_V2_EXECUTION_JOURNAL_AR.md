@@ -41,3 +41,13 @@
 - Risks: عينة صغيرة بتسميات مضبوطة ومعظم metadata إنجليزي؛ CER0.011968/WER0.024390 لا يقارنان بالمجموعة القديمة؛ العربية السابقة8/15 لم تتحسن. لا شهادة G2 أو تعرفة معتمدة أو قرار مالي.
 - Next: المشرف ينشر Commit على PR35 القائم ويشغل CI المطابق؛ مراجعة مستقلة لأهلية الاستهلاك قبل أي تكامل موثوق، دون توسيع تجارب هذه الوحدة.
 - Handoff: docs/E4_READER_QUALITY_AR.md وdocs/evidence/e4_reader؛ جميع المرشحات UNATTESTED_OCR_CANDIDATE وHUMAN_REVIEW، وبقيت أعلام G2/A1 المالية false؛ لا merge/deploy/force push/real data.
+
+### HANDOFF-20261021-404b — G2 OCR CI expectation follows explicit-date hold
+- Scope: أصغر تصحيح لتوقع .github/workflows/g2-ocr-evidence-qualification.yml المملوك لـReader بعد CI الحقيقي على44c99cac؛ لا runtime أو Gold.
+- Why: run39674878822/job119481997556 نجح في التنفيذ ورفض PDF، ثم توقع gate القديم arithmetic0/2 رغم حجب DATE العام المعتمد.
+- Files: workflow G2 OCR وحده، تقرير E4، سجلا DG001، والملخص الحقيقي ودليل assertions وبصماته في docs/evidence/e4_reader.
+- Tests: فُحص artifact12380858567 الحقيقي؛3 حالات و54 مرشحًا و7 سوالب و18/18 Gold لكل حالة، A1 محجوب للجميع. نُفذ مقطع assertions المحدّث على الملخص الحقيقي PASS؛ diff --check PASS. لا OCR أو runtime/Audit/PG أو اختبارات ناجحة معادة.
+- Result: IMPLEMENTED / REVIEW PENDING؛ all arithmetic null وall advisory=false، وأول حالتين SERVICE_DATE_NOT_EXPLICIT صراحة؛ بقيت قيود العزل/المصدر/غياب السلطة المالية وGold كما هي. install-e المشروع يستهلك Pillow13 فلا قيد قديم لتغييره.
+- Risks: نجاح gate المحلي على artifact السابق لا يثبت CI على SHA الإصلاح الجديد؛ جودة العربية وأهلية OCR المالية ما زالتا محجوبتين.
+- Next: المشرف ينشر Commit على PR35 القائم ويطابق نتيجة CI الجديدة؛ لا إعادة استدلال محلية أو توسعة نطاق.
+- Handoff: docs/E4_READER_QUALITY_AR.md وci_gate_404b_verification.json وci_qualification_summary.json؛ ZIP digest محفوظ من تحقق المشرف، والفشل الأصلي39674878822 محفوظ، دون merge/deploy/force push.

@@ -60,3 +60,13 @@ TESSDATA_PREFIX=/workspace/reader-runtime/tessdata OMP_THREAD_LIMIT=1 PYTHONPATH
 الاختبارات الموجهة النهائية: **10 PASS في0.82 ثانية**، ومنها الحجب في caller المراجعة القائم دون استدعاء A1. العينة الجديدة شُغلت مرة واحدة؛ بعد فقد جلسات الأدوات استُعيدت نتائجها المحفوظة دون إعادة OCR. `git diff --check` ناجح، وملفات Python المتأثرة اجتازت compile بلا تنفيذ استدلال. اختبارات23 والمجموعة8 وDependency Audit وPG لم تُعد.
 
 الدليل الكامل في [evidence/e4_reader](evidence/e4_reader/): PDFs/PNGs الأصلية الاصطناعية، Gold المجمد، الخام، التنبؤات، expected/actual ومقاييسها، هوية المحرك والأوزان، RED/GREEN وتحليل الأخطاء السبعة وبصمات الملفات. نُسق شكل packet مع مالكي A1 وG5؛ لا تعديل لملفاتهما. الخطوة التالية: المشرف ينشر Commit على PR35 القائم ويتحقق من CI على SHA المطابق. لا merge/deployment أو قبول إنتاجي؛ جودة العربية وأهلية المصدر المؤسسي ما زالتا محجوبتين.
+
+## متابعة gate الفعلي — HANDOFF-20261021-404b
+
+على SHA المنشور `44c99cac1a8d4f272e7a364fba284a5f116b10e2` نجح تنفيذ qualification ورفض PDF غير الموثق، ثم فشل [تشغيل G2 OCR 39674878822، job119481997556](https://github.com/overurdream-collab/test2/actions/runs/39674878822/job/119481997556) في gate قديم ما زال يتوقع arithmetic `[0,2,null]`. هذا تعارض توقع CI مع حجب DATE المعتمد؛ لا تغيير runtime أو Gold.
+
+فُحص **artifact12380858567 الحقيقي** بعد تنزيل المشرف والتحقق من ZIP SHA-256 `dcd97e341ee3c4a9bff08d1455c221faebc87457a854333cd2390318893fcbfa`. ملخصه المحفوظ هنا `ci_qualification_summary.json` وبصمته `79630bac7a315dfdbe29840096a54bec692a0981eecc5ce10fa7bcf8691b4140` يثبت:3 حالات،54 مرشحًا،7 حالات سالبة؛ كل حسابات A1 null و`a1_pure_advisory_ran=false`. أول حالتين محجوبتان بالسبب الوحيد `SERVICE_DATE_NOT_EXPLICIT`؛ العربية تضيف `UNRESOLVED_METADATA_date/provider`. كل حالة ما زالت18/18 قيمة و18/18 موضع في Gold المستقل، دون ترقية سلطة OCR.
+
+أُصلح توقع workflow G2 OCR المملوك وحده ليتحقق من الحجب وأسباب أول حالتين صراحة، مع إبقاء جميع قيود المرشحات والسوالب وGold وغياب السلطة المالية كما هي. التثبيت فيه أصلًا `pip install -e .` فيستهلك Pillow13 المعتمدة من pyproject؛ لا قيد Pillow قديم إضافي في هذا workflow.
+
+أُنفذ مقطع assertions المحدّث نفسه على الملخص الحقيقي، مع استبدال مسار الملف المحلي فقط: **PASS**. الدليل في `ci_gate_404b_verification.json`. لم يُعد OCR أو اختبار runtime أو PG أو تدقيق الاعتمادات أو الاختبارات الناجحة. `git diff --check` ناجح. حالة إصلاح gate: **IMPLEMENTED / REVIEW PENDING** إلى نشر Commit الجديد والتحقق من CI المطابق؛ يبقى فشل التشغيل الأول محفوظًا.

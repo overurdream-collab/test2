@@ -1,0 +1,104 @@
+{
+  "status": "SYNTHETIC_OCR_EVIDENCE_CANDIDATES_QUALIFIED_FOR_REVIEW_ONLY",
+  "case_count": 3,
+  "candidate_count": 54,
+  "negative_cases": {
+    "MISSING_PRICE_CELL": [
+      "MISSING_OR_EXTRA_CANDIDATE"
+    ],
+    "WRONG_AMOUNT_CELL_LOCATION": [
+      "LOCATOR_OR_WORD_EVIDENCE_CHANGED",
+      "WRONG_ORIGINAL_CELL_REGION"
+    ],
+    "CHANGED_QUANTITY_VALUE": [
+      "ROW_VALUE_NOT_IN_SOURCE"
+    ],
+    "ILLEGAL_STATUS_PROMOTION": [
+      "CANDIDATE_STATUS_ESCALATION"
+    ],
+    "CROSS_ORGANIZATION": "DENIED",
+    "SOURCE_SHA_CHANGED": "DENIED",
+    "ORIGINAL_ENCRYPTED_BYTES_TAMPERED": "DENIED"
+  },
+  "results": [
+    {
+      "case": "english_columnar",
+      "document_id": "1f308820-7593-441f-b75c-eafef9d8b2e1",
+      "sha256": "d9d86a65223bc77ae8b2532ba073c551053c2565005e3d2a8464c38616687e04",
+      "candidate_count": 18,
+      "candidate_status": "UNVERIFIED_OCR_CANDIDATE",
+      "independent_synthetic_gold_fields": 18,
+      "independent_synthetic_gold_regions": 18,
+      "qualification": [
+        "SYNTHETIC_MATCH_NOT_AUTHORITY"
+      ],
+      "a1_pure_advisory_ran": false,
+      "a1_blocked_reasons": [
+        "SERVICE_DATE_NOT_EXPLICIT"
+      ],
+      "a1_arithmetic": null,
+      "g2_status": "review_required",
+      "g2_trusted_rows_created": false,
+      "a1_source_verifications": [],
+      "g2_ocr_evidence_trusted": false,
+      "human_review": "REQUIRED",
+      "financial_decision": "NOT_AUTHORIZED"
+    },
+    {
+      "case": "english_reordered",
+      "document_id": "ed2f2550-2f3c-46b2-ab3f-a9022ec53534",
+      "sha256": "472224f5eed51685d0e0cb05463f74d8ff5779fb385bcb1d0a246b7f8971fdf9",
+      "candidate_count": 18,
+      "candidate_status": "UNVERIFIED_OCR_CANDIDATE",
+      "independent_synthetic_gold_fields": 18,
+      "independent_synthetic_gold_regions": 18,
+      "qualification": [
+        "SYNTHETIC_MATCH_NOT_AUTHORITY"
+      ],
+      "a1_pure_advisory_ran": false,
+      "a1_blocked_reasons": [
+        "SERVICE_DATE_NOT_EXPLICIT"
+      ],
+      "a1_arithmetic": null,
+      "g2_status": "review_required",
+      "g2_trusted_rows_created": false,
+      "a1_source_verifications": [],
+      "g2_ocr_evidence_trusted": false,
+      "human_review": "REQUIRED",
+      "financial_decision": "NOT_AUTHORIZED"
+    },
+    {
+      "case": "arabic_rtl",
+      "document_id": "815e16e4-c215-4420-bcc5-dda375809ed1",
+      "sha256": "7b3eba230bb55bd3f0f28ddb34d76baa53f7dc1e81b50bfd0a9f038800278cba",
+      "candidate_count": 18,
+      "candidate_status": "UNVERIFIED_OCR_CANDIDATE",
+      "independent_synthetic_gold_fields": 18,
+      "independent_synthetic_gold_regions": 18,
+      "qualification": [
+        "UNRESOLVED_METADATA_date",
+        "UNRESOLVED_METADATA_provider"
+      ],
+      "a1_pure_advisory_ran": false,
+      "a1_blocked_reasons": [
+        "SERVICE_DATE_NOT_EXPLICIT",
+        "UNRESOLVED_METADATA_date",
+        "UNRESOLVED_METADATA_provider"
+      ],
+      "a1_arithmetic": null,
+      "g2_status": "review_required",
+      "g2_trusted_rows_created": false,
+      "a1_source_verifications": [],
+      "g2_ocr_evidence_trusted": false,
+      "human_review": "REQUIRED",
+      "financial_decision": "NOT_AUTHORIZED"
+    }
+  ],
+  "records_status": "UNVERIFIED_OCR_CANDIDATE",
+  "native_g2_extracted_records_created": 0,
+  "a1_trusted_contract_authority": false,
+  "a1_trusted_source_verifications": [],
+  "no_production_schema_or_source_modification": true,
+  "integration_decision": "NO_INTEGRATION",
+  "limitations": "Independent synthetic gold plus repeated Tesseract from reopened G2 pixels is NOT independently authenticated medical evidence; G2 scanner quarantine remains and A1 trusted PDF input is not supported."
+}

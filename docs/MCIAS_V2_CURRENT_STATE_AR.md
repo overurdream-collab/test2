@@ -27,3 +27,9 @@
 - RED2 فشل ثم GREEN10 PASS فعلية. holdout3PDF جديدة محفوظة: metadata16/16 نص وربط، الجدول23/24 نص و24/24 موضع للحالتين غير المتعارضتين؛ CER0.011968/WER0.024390،8.894s،107.457MiB لأقصى عملية منفردة. كل payloads محجوبة بثقة rowid والثالث بتعارض التاريخ أيضًا؛ صفر دليل مالي مؤهل.
 - الأخطاء العربية السبعة السابقة أخطاء OCR مع مواضع صحيحة؛ لا تصحيح بالتخمين، ولا إعادة23اختبارًا/8صور/Audit/PG. Pillow13 في workflow structured المتأثر؛ لا أوزان أو تدريب أو network جديد.
 - ISOLATED VERIFIED للنطاق المحدود وQUALITY BLOCKED للعربية والثقة المالية. CI على Commit الجديد REVIEW PENDING؛ نشر PR35 والتحقق المطابق مسؤولية المشرف. التقرير والدليل: E4_READER_QUALITY_AR.md وevidence/e4_reader.
+
+## 2026-10-21 — G2 OCR gate / HANDOFF-20261021-404b
+
+- فشل CI39674878822 على44c99cac في توقع arithmetic القديم بعد نجاح التنفيذ ورفض PDF. فُحص artifact12380858567 الحقيقي: الحجب قائم للجميع، وأول حالتين SERVICE_DATE_NOT_EXPLICIT؛ كل قيود54مرشحًا/7سوالب/18Gold باقية.
+- صُحح workflow G2 OCR وحده ليتحقق من null/عدم تشغيل A1 والأسباب الصريحة، ونُفذت assertions نفسها على actualsummary بنجاح. التثبيت الحالي للمشروع يستهلك Pillow13؛ لا تغيير runtime أو Gold أو إعادة OCR/tests/Audit/PG.
+- IMPLEMENTED / REVIEW PENDING لنشر Commit والتحقق من CI المطابق؛ الملخص وبصمته وZIP digest ودليل gate محفوظة في evidence/e4_reader وتقرير E4.
