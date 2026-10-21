@@ -169,3 +169,5 @@
 
 ### C28 canonical key acceptance
 - Canonicalize erroneous model tariff key after all source/identity/effective-date gates PASS: IMPLEMENTED_PENDING_CI. Wrong-provider, wrong-service and wrong-quote/amount tests added. No general inferred tariff permissions, production finance or automatic approval.
+
+INPUTS-FIRST source-value evidence: `contract_source_view.locate_source_value` returns a unique literal field span for review only; tests and limits: [owner report](DG001_INPUTS_CONTRACT_EVIDENCE.md). No financial activation or E1 extension.

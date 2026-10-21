@@ -675,3 +675,13 @@
 - Risks: Historical `be85b39016cdd0868c7812f57f2087487773afbc` fails DG-001 permanently under existing immutable per-commit check unless independently authorized exception or rewrite; do not weaken enforcement silently. Additional test failures may be exposed after dependencies load.
 - Next: Check exact-SHA C35 run and test count; inspect any genuine failures. Escalate precise historical DG-001 exception proposal without implementing it; no history rewrite.
 - Handoff: PR #23 `feat/mcias-contract-intelligence` continue from latest HEAD without reset; no amend/rebase/force push/merge/deploy/model execution. Preserve existing tests and source-view implementation.
+
+### HANDOFF-20261021-206 — literal value locations for review evidence
+- Scope: Extend existing C35 source view with unique source value spans; no inference or E1 changes.
+- Why: Latest owner-specific INPUTS-FIRST assignment requires auditable provider tariff and effective-date evidence.
+- Files: mcias/contract_source_view.py; tests/test_contract_source_view.py; docs/DG001_INPUTS_CONTRACT_EVIDENCE.md; owner state/journal/developer/acceptance docs; targeted workflow.
+- Tests: 46 contract/source/API tests passed; 12 independent source/segment tests passed. Separate pinned A1 50 and Reader 15 tests passed. Initial socket-restricted API run stalled and was terminated; network-enabled retry passed.
+- Result: TESTED_SYNTHETIC; exact source offsets and ambiguity holds proven. CI PENDING publication.
+- Risks: Source-field locations are not PDF pixel boxes or approval. Model confidence unknown; no inference quality or institutional acceptance claimed.
+- Next: G3/G5 owners review evidence consumer and missing source/reference authority before acceptance.
+- Handoff: Resume from this commit, run commands in owner evidence report, preserve independent quality tests; no merge/deploy/financial automation.

@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from mcias.contract_intelligence import make_source_blocks, validate_candidates, ContractExtractionError
-from mcias.contract_source_view import make_source_view, lookup_source_field
+from mcias.contract_source_view import make_source_view, lookup_source_field, locate_source_value
 from scripts.contract_tariff_segments import isolated_tariff_blocks
 
 CASES = json.loads((Path(__file__).parent / "fixtures" / "contract_independent_synthetic.json").read_text())
@@ -104,3 +104,31 @@ def test_original_validator_unchanged_and_no_candidate_created():
     assert before == after
     assert "quote_not_in_source" in after["validation_errors"]
     assert after["evidence_status"] == "needs_human_review"
+
+
+def test_tariff_provider_and_effective_date_have_exact_field_spans():
+    text = "H1 CONSULT tariff 5000 YER effective 2026-01-01"
+    view = make_source_view([{"record_id": "SYN-P1",
+        "locator": {"kind": "page", "index": 2}, "fields": {"text": text}}],
+        source_sha256=DIGEST)
+    field = view["fields"][0]
+    for value in ("H1", "5000", "2026-01-01"):
+        evidence = locate_source_value(view, field["id"], value)
+        assert text[evidence["source_start"]:evidence["source_end"]] == value
+        assert evidence["source_sha256"] == DIGEST
+        assert evidence["locator"] == {"kind": "page", "index": 2, "field": "text"}
+        assert evidence["model_confidence"] is None
+        assert evidence["human_review_required"]
+
+
+def test_repeated_price_wrong_cell_and_partial_identity_fail_closed():
+    view = make_source_view([{"record_id": "SYN-X",
+        "locator": {"kind": "sheet", "index": 1, "row": 2},
+        "fields": {"price": "5000", "terms": "H10 5000 5000", "date": "2026-01-01"}}],
+        source_sha256=DIGEST)
+    fields = {f["field_name"]: f for f in view["fields"]}
+    for field, value in (("terms", "5000"), ("terms", "H1"), ("price", "2026-01-01")):
+        with pytest.raises(ContractExtractionError, match="unknown or ambiguous"):
+            locate_source_value(view, fields[field]["id"], value)
+    assert locate_source_value(view, fields["price"]["id"], "5000")["source_start"] == 0
+    assert locate_source_value(view, fields["date"]["id"], "2026-01-01")["locator"]["row"] == 2

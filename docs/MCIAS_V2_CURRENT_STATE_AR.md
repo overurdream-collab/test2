@@ -312,3 +312,6 @@
 ### C35 CI dependency correction — 2026-10-20
 - Prior source SHA `be85b39016cdd0868c7812f57f2087487773afbc`: [C35 39485834413](https://github.com/overurdream-collab/test2/actions/runs/39485834413) failed before collection because only pytest was installed, while `tests/conftest.py` imports SQLAlchemy and the application. Correct workflow dependency install to the project's declared `-e ".[test]"`; no test or adapter changes.
 - [DG-001 39485834271](https://github.com/overurdream-collab/test2/actions/runs/39485834271) failed historical commit `be85b39016cdd0868c7812f57f2087487773afbc` missing four mandatory per-commit fields. No rewrite, waiver, or change to governance policy authorized. **BLOCKED until independent approval of narrow exception or history-rewrite authorization**. New commit will not falsely claim to repair historical violation.
+
+## INPUTS-FIRST value evidence — 2026-10-21
+Existing C35 source view now returns unique literal field spans with SHA/version/locator; 46 contract tests and 12 independent source tests pass locally. See DG001_INPUTS_CONTRACT_EVIDENCE.md. CI pending. No model qualification or G5 full acceptance.

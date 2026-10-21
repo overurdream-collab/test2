@@ -74,3 +74,30 @@ def lookup_source_field(view, field_id):
     if len(matches) != 1:
         raise ContractExtractionError("unknown or ambiguous field reference")
     return matches[0]
+
+
+def locate_source_value(view, field_id, value):
+    """Return a unique literal span within one already identified source field.
+
+    This is evidence for a review candidate, not approval or model confidence.
+    A repeated price/date cannot be assigned to a clause by guessing a position.
+    Offsets address the unchanged field text, never a normalized model response.
+    """
+    import re
+
+    field = lookup_source_field(view, field_id)
+    if not isinstance(value, str) or not value or not value.strip():
+        raise ContractExtractionError("literal source value required")
+    # Prevent 500 from anchoring to 1500, and provider H1 to provider H10.
+    matches = list(re.finditer(r"(?<!\w)" + re.escape(value) + r"(?!\w)", field["value"]))
+    if len(matches) != 1:
+        raise ContractExtractionError("unknown or ambiguous source value")
+    match = matches[0]
+    return {"schema_version": "mcias.source_value_evidence.v1",
+            "source_sha256": field["source_sha256"], "field_id": field["id"],
+            "record_id": field["record_id"], "locator": dict(field["locator"]),
+            "source_start": match.start(), "source_end": match.end(),
+            "value": field["value"][match.start():match.end()],
+            "confidence_basis": "UNIQUE_LITERAL_SOURCE_SPAN",
+            "model_confidence": None, "human_review_required": True,
+            "financial_decision": "NOT_AUTHORIZED"}
