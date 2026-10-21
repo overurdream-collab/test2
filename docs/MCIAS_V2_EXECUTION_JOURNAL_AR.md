@@ -9,3 +9,13 @@
 - Risks: Advisory databases are time-dependent; no source SAST or institutional acceptance claimed. OCR remains low-confidence review evidence.
 - Next: Coordinator publishes independent Draft security PR and adopts maintenance commit in isolated composition; verify exact-SHA CI.
 - Handoff: See DG001_INPUTS_SECURITY.md and raw JSON; use python scripts/audit_dependencies.py after editable install and current pip. No ignore flags, merge/deployment or real data.
+
+### HANDOFF-20261021-215 — install real OCR dependency in combined CI
+- Scope: Add Tesseract to existing Enterprise full-suite runner.
+- Why: Exact46e4ad8 dependency/unit/PG CI passed but enterprise39527496191 proved missing executable for new genuine compatibility tests.
+- Files: .github/workflows/workspace.yml; owner report; state/journal.
+- Tests: Existing changed-tree34 compatibility/audit tests pass locally;46e4ad8 G1-G7 run39527496132 all jobs PASS; enterprise log showed2 missing-Tesseract failures364pass1skip. Workflow-only followup CI pending.
+- Result: Missing runner dependency corrected without skipping tests or changing product.
+- Risks: Exact new-head browser and full-suite CI not yet verified.
+- Next: Coordinator verify new security PR33 HEAD CI and adopt same runner prerequisite in isolated composition.
+- Handoff: Preserve initial failure evidence in owner report; no vulnerability ignore, merge or deployment.
