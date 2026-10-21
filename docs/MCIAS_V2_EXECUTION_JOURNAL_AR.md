@@ -21,3 +21,13 @@
 - Risks: نتيجة65 تخص تشغيل الأمن السابق لا فحص Reader جديد؛ جودة العربية وتكامل G2/G5 كما في HANDOFF303 لم تتغير.
 - Next: المشرف ينشر على فرع Reader الرسمي القائم ويجهز Draft PR ثم يتحقق من CI على SHA المطابق؛ لا merge.
 - Handoff: docs/E2_READER_COMPARISON_AR.md وسجل security_compatibility_pytest.txt وبيان security_adoption.json؛ لا imports E1 أو تغيير Gold أو فرع جديد أو merge/deployment/force push.
+
+### HANDOFF-20261021-306 — إصلاح تثبيت تبعيات مشغّل Reader
+- Scope: متابعة PR35 على فرع Reader القائم؛ HEAD المنشور869f79f وشجرة HEAD المحلي e89b6bd متطابقان وفق تحقق المشرف، والشجرة المحلية نظيفة قبل الإصلاح.
+- Why: التشغيل الفعلي39590938187 فشل قبل جمع الاختبارات لأن conftest يستورد sqlalchemy غير المثبتة في قائمة OCR الجزئية؛ فشل إعداد بيئة لا دقة OCR.
+- Files: .github/workflows/document-reader-dg002b-benchmark.yml، docs/E2_READER_COMPARISON_AR.md، وهذا السجل وملحق الحالة فقط؛ صحح التقرير أيضًا مرجع إدخال الأمن إلى305 المتفق عليه.
+- Tests: لم تُعد الاختبارات أو Dependency Audit أو OCR Benchmark الناجحة. تحقق المشرف من نجاح G1–G7 متضمنًا التدقيق على HEAD المنشور نفسه؛ فُحص diff وgit diff --check محليًا.
+- Result: IMPLEMENTED / REVIEW PENDING؛ تثبيت الحزمة المحلية -e '.[test]' يستبدل القائمة الجزئية في workflow Reader مع بقاء Pillow13 وTesseract. لم يتغير اختبار أو conftest أو Gold.
+- Risks: نجاح Reader على SHA الإصلاح الجديد غير مثبت بعد؛ القياسات السابقة وحدود جودة العربية كما في303 دون تغيير.
+- Next: المشرف يراجع Commit وينشره على فرع Reader الرسمي القائم، ثم يتحقق من التشغيل المطابق ويحتفظ بأي فشل؛ لا merge أو deployment.
+- Handoff: https://github.com/overurdream-collab/test2/actions/runs/39590938187 وdocs/E2_READER_COMPARISON_AR.md؛ فشل المشغّل الأول محفوظ، واختبارات التوافق34 والقياس23 السابقان لا يعادان محليًا.
