@@ -66,8 +66,17 @@ def new_request_attempt_id():
 
 # The claim-audit event carries bounded references, never claim values or text.
 CLAIM_AUDIT_ACTION = "claim_inputs_audited"
-CLAIM_AUDIT_STATES = frozenset({"VERIFIED_MATCH", "PROVEN_VIOLATION",
+LEGACY_CLAIM_AUDIT_STATES = frozenset({"VERIFIED_MATCH", "PROVEN_VIOLATION",
     "UNRESOLVED_OR_MISSING_REFERENCE", "AUDIT_NOT_POSSIBLE"})
+CLAIM_AUDIT_STATES_V2 = frozenset({"MATCH_VERIFIED", "VIOLATION_PROVEN",
+    "UNRESOLVED", "AUDIT_UNAVAILABLE"})
+CLAIM_AUDIT_STATES = LEGACY_CLAIM_AUDIT_STATES | CLAIM_AUDIT_STATES_V2
+CLAIM_AUDIT_REASONS_V2 = {
+    "MATCH_VERIFIED": frozenset({"CHECKS_COMPLETED"}),
+    "VIOLATION_PROVEN": frozenset({"PROVEN_RULE_BREACH"}),
+    "UNRESOLVED": frozenset({"REFERENCE_INCOMPLETE", "EVIDENCE_INCOMPLETE"}),
+    "AUDIT_UNAVAILABLE": frozenset({"SOURCE_UNAVAILABLE"}),
+}
 REFERENCE_FAMILIES = frozenset({"beneficiary", "contract", "tariff", "policy", "caps", "history"})
 REFERENCE_STATUSES = frozenset({"reference_applicable", "reference_missing", "reference_unapproved",
     "reference_not_effective", "reference_conflict", "reference_incomplete"})
@@ -92,6 +101,27 @@ def _uuid(value):
     return value
 
 
+def claim_reference_projection(certificates):
+    """One bounded projection shared by G5 and the immutable event validator.
+
+    The snapshot keeps protected typed source facts; the activity event only
+    carries opaque evidence identities. No source values or free text pass here.
+    """
+    if not isinstance(certificates, list) or len(certificates) != len(REFERENCE_FAMILIES):
+        raise ValueError("six snapshot reference certificates required")
+    evidence_keys = ("source_id", "authorization_id", "document_id", "source_record_id",
+                     "dataset_id", "approval_event_id", "job_id")
+    try:
+        return sorted([{"family": certificate["family"], "id": certificate["reference_id"],
+            "version": certificate["version"], "status": certificate["lookup_status"],
+            "evidence_ids": sorted({evidence[key] for evidence in certificate["source_evidence"]
+                for key in evidence_keys if evidence.get(key)}),
+            "gaps": certificate["gaps"]} for certificate in certificates],
+            key=lambda reference: reference["family"])
+    except (KeyError, TypeError) as exc:
+        raise ValueError("invalid snapshot reference projection") from exc
+
+
 def clean_claim_audit_details(details):
     """Validate the coordinated G3/G5 contract; exclude all untyped metadata.
 
@@ -107,9 +137,19 @@ def clean_claim_audit_details(details):
         if not isinstance(value, str) or not _SHA256.fullmatch(value):
             raise ValueError("claim audit SHA-256 required")
         result[key] = value
-    if details.get("audit_state") not in CLAIM_AUDIT_STATES:
+    schema_version = details.get("audit_state_schema_version", 1)
+    if type(schema_version) is not int or schema_version not in (1, 2):
+        raise ValueError("invalid claim audit state schema version")
+    states = CLAIM_AUDIT_STATES_V2 if schema_version == 2 else LEGACY_CLAIM_AUDIT_STATES
+    if details.get("audit_state") not in states:
         raise ValueError("invalid claim audit state")
     result["audit_state"] = details["audit_state"]
+    if schema_version == 2:
+        result["audit_state_schema_version"] = 2
+        reason = details.get("reason_code")
+        if not isinstance(reason, str) or reason not in CLAIM_AUDIT_REASONS_V2[result["audit_state"]]:
+            raise ValueError("invalid claim audit reason code")
+        result["reason_code"] = reason
     if "policy_version" in details:
         value = details["policy_version"]
         if type(value) is not int or not 1 <= value <= 999999999:

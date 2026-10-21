@@ -243,3 +243,67 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: No full-claim proven match/violation when required references incomplete. No model/institutional/financial authority inferred.
 - Next: Publish Draft composition, verify exact remote tree and CI; G3 owns authoritative completeness/temporal evidence closure.
 - Handoff: Read INPUTS_FIRST_COORDINATED_DELIVERY.md for baselines/owned files/interfaces/commands/commits/blockers. Preserve prior failures and all owner branches; no force push.
+
+### HANDOFF-20261021-300 — استئناف مثبت دون تكرار التغييرات
+- Scope: فحص آخر Commit/الشجرات/الملفات وGitHub CI وحفظ سجل المهام قبل استئناف E1/E2.
+- Why: طلب المالك استئناف نقطة التوقف بعد انقطاع الوكلاء دون تعارض أو إعادة تطبيق المنجز.
+- Files: docs/RESUME_VERIFIED_20261021_AR.md; docs/ENGINEERING_TASK_REGISTER_AR.json; journal/current-state.
+- Tests: تحقق مباشر من GitHub على HEADs PR34/32/33 وفحوصها الناجحة؛ Git tree المحلي مطابق للمنشور؛ لم يُعد تشغيل60 اختباراً أو إصلاح مصدر/تبعيات سبق نجاحها.
+- Result: INTEGRATION VERIFIED للنطاق السابق؛ دورة اكتمال المرجعيات والمراجعة لم تكن منفذة، وأُسندت الآن بملكيات صريحة.
+- Risks: اكتمال المرجعيات والمراجعة وجودة OCR والإنتاج ما زالت مفتوحة؛ نسخ المنتجين غير المحفوظة فيg5 بقيت دون مساس.
+- Next: مالكاG3/G5 ينفذان العقد المتفق؛ المشرف يحدث Shared Audit v2؛ Reader يقيس مقارنةمحدودة.
+- Handoff: استأنف وفق سجل المهام وSHA/tree المثبتين؛ لاReset/Force/Merge/Deploy، ولا نسبة جاهزية من مجرد CI.
+
+### HANDOFF-20261021-301 — G3 source-backed bounded completeness
+- Scope: استئناف G3 على أساس PR34 `a0f5ed864dad35a415e7173aea82c1b0441b07d8`؛ جدول نسخة مرجع واحد فوق صفوف G2 القائمة، وشهادات العائلات الست في الخدمة الحالية.
+- Why: النتيجة السابقة أثبتت التتبع الجزئي لكنها لم تملك مصدرًا معتمدًا لاكتمال العضوية والسياسات والسقوف والتاريخ؛ لا يجوز ملء هذه الفجوة بعلامة من fixture أو من مستهلك G5.
+- Files: mcias/models_reference.py؛ mcias/reference_service.py؛ alembic/versions/0019_reference_dataset_v1.py؛ tests/test_g3_reference_datasets.py؛ docs/G3_E1_COMPLETENESS_AR.md؛ سجل الحالة وهذا السجل.
+- Tests: آخر SQLite:28 passed12 skipped65.95s. أعاد المشرف التشغيل على PostgreSQL16:39 passed1 skipped106.86s، وجميع حالاتPGالإحدى عشرة نفذت؛ التخطي لاختبار triggerPG علىSQLite. الأمر الدقيق في G3_E1_COMPLETENESS_AR.md. compileall وgit diff --check ناجحان؛ alembic heads يعرض0019_reference_dataset_v1 رأسًا واحدًا. CIالجديد ينتظر النشر.
+- Result: INTEGRATION VERIFIED ضمن G2→G3 والشهادة المحددة؛ إعادة قراءة بعد Commit في Sessionمستقلة، واعتماد Super Admin حقيقي، ونسخة تاريخية رغمالأحدث، وعزل المؤسسة والنطاق والعدد والعبث ومنع SQL غيرالمخول مثبتة. القبول المستقل للمسار الكامل معلق.
+- Risks: الاكتمال تصديق بشري محدد المؤسسة والنطاق والفترة، وليس حقيقة عالمية أو اعتمادًا ماليًا. توزيع صلاحيةworkspace.super_admin على دورآخر مع وجودsuper_admin قد يرفضهDBلشرطهالأشد؛ حد موثق دون تخفيف الحماية. لا بيانات مرضى أو دمج أو نشر.
+- Next: CommitمالكG3 ثم تركيب المشرف مع G5 وShared Audit، وتحديث رأسAlembic المتوقع بتنسيق L1، وتشغيل CAI-01علىSHAالنهائي ونشرCIحقيقي.
+- Handoff: العقد النهائي في G3_E1_COMPLETENESS_AR.md؛ records.values تبقى JSON-native، وprice_comparison صريحexact/ceiling، وملخص الاستهلاك مؤرخ ولا يضاعف التاريخ. G5 وShared Audit لم يعدلهما مالكG3.
+
+
+### HANDOFF-20261021-304 — Shared Audit official v2
+- Scope: عقد وكتابة claim_inputs_audited القائمان، وإسقاط موحد لمعرفات المرجع والدليل.
+- Why: استهلاك G5 للقيم الرسمية دون تغيير السجل التاريخي أو إنشاء حالات/سجل موازٍ.
+- Files: mcias/audit_contract.py; mcias/audit_writer.py; tests/test_shared_audit_contract_v2.py; docs/SHARED_AUDIT_V2_HANDOFF_AR.md; journal/current state.
+- Tests: 35 passed0skipped36.77s، SQLite+PostgreSQL16.15، الأمر محفوظ في تقرير المالك. انحدار Writer وHTTP429 اجتاز دون تغيير حد الخدمة.
+- Result: أحداث v2 مرتبطة بالنسخة والسبب والشهادات؛ إعادة القراءة بعدCommit وdedup/rollback/tenant/privacy تعمل؛ القديم محفوظ.
+- Risks: شهادات fixtures لا تثبت اعتماد G3 الأصلي؛ اختبار native والـCI المطابق للتعديل لم يكتمل بعد.
+- Next: تركيب المالكين واختبار PG16 native ثم نشر تحديث PR34 القائم ومراجعةCI.
+- Handoff: المشرف إلى G5؛ claim_reference_projection واجهة واحدة معتمدة؛ لاMerge/Deployment/بيانات حقيقية أو قرار مالي.
+
+
+### HANDOFF-20261021-302 — استئناف G5 INPUTS-FIRST ونتائج التدقيق الاستشارية
+- Scope: توسيع run_audit القائم بنمط review_only وشهادات G3 الموثقة، والتمثيل الرسمي schema2 في AuditSnapshot نفسه، واختبارات G2→G4→G3→G5→Shared Audit→G6 الاصطناعية فقط.
+- Why: استئناف a0f5ed864dad دون تكرار إصلاح G2/G4، وإغلاق نقص استهلاك المرجعيات مع منع القرار المالي ونقص الدليل من التحول إلى إثبات مخالفة.
+- Files: mcias/audit_agents.py؛ mcias/audit_service.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ docs/evidence/G5_E1_PG16_KNOWN_TRUTH.json؛ سجل التنفيذ والحالة الحالية. ملفات G3 والكاتب مستثناة من Commit G5.
+- Tests: قبل guard الأخير: PG16 بواسطة المنسق22PASS0SKIP/224.92s و20حالة حقيقة محفوظة؛ SQLite22PASS/170.64s؛ انحدار40PASS/1.38s. بعد guard: SQLite focused3PASS20DESELECTED/16.49s. PostgreSQL الموجه وCI للـSHA المركب معلقتان، ولا تنسب النتائج السابقة إلى التعديل الأخير.
+- Result: INTEGRATION VERIFIED للمسار المحدد قبل guard؛ ISOLATED VERIFIED للتصحيح المحدود؛ REVIEW PENDING للتسليم النهائي. لا اعتماد إنتاجي أو مالي أو مؤسسي.
+- Risks: complete في G3 هو تصديق Super Admin على مصدر ونطاق وفترة محددة، ولا يعني اكتمالًا عالميًا. لا تقاس جودة OCR أو جودة سريرية بهذه الاختبارات. artifact السابق يسبق guard وتصحيح fixture الاستهلاك.
+- Next: المنسق يشغل PG16 للحالات missing_due/legitimate_periodic/reference_collision، يركب Commits المنتجين، ثم يتحقق من CI على HEAD نفسه. توصيل codec قراءة API بملكية المنسق، دون تعديل السجلات التاريخية.
+- Handoff: docs/G5_E1_FULL_REVIEW_AR.md؛ المصدر G3 37cc61ab8d55a31424922bc5fd28f7f8051176ef والكاتب328e6293244d992d95fb122296cd25e5deaffcae؛ لا merge/deploy/force/reset أو بيانات مرضى أو حكم مالي تلقائي.
+
+
+### HANDOFF-20261021-302C — تصحيح إسقاط قراءة الحالة التاريخية دون استنتاج سبب
+- Scope: تعديل codec قراءة G5 فقط، مع حفظ source_audit_state_schema_version وتتبع نسخة المفردات التاريخية.
+- Why: المفردة التاريخية UNRESOLVED_OR_MISSING_REFERENCE تجمع احتمال نقص الدليل والمرجع؛ لا يجوز اختراع سبب REFERENCE_INCOMPLETE من الاسم وحده.
+- Files: mcias/audit_agents.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ سجل التنفيذ والحالة الحالية. لا تعديل في snapshot محفوظ أو خدمة التشغيل أو المنتجين.
+- Tests: اختبار codec الموجه 8 PASS و22 DESELECTED في0.48 ثانية، بما فيه المصدر null/الغائب، وعدم اكتمال صريح، وفجوة محفوظة، وثبات البيانات الأصلية ونسخة المصدر عند تكرار الإسقاط. لم تعد Native/PG.
+- Result: ISOLATED VERIFIED لتصحيح القراءة؛ التكامل مع API وCI المركب بملكية المنسق، ولا ادعاء اعتماد إنتاجي.
+- Risks: snapshot تاريخية لا تحمل audit_state تظل كما هي في API دون تخمين؛ المنسق مسؤول عن هذا الفرع عند توصيل القراءة.
+- Next: المنسق يركب هذا Commit بعد d0edc60c0f0486962a6db3f2ee254fb13c155e7a، ويوصل codec في قراءة API فقط، ثم يتحقق من CI على HEAD المركب نفسه.
+- Handoff: اقرأ تقرير G5؛ لا إعادة Native/PG لتعديل قراءة فقط، ولا mutation للسجلات التاريخية أو تغيير سياسة مالية أو merge/deployment.
+
+
+### HANDOFF-20261021-307 — final native advisory composition / exact migration head
+- Scope: تركيبملفاتالمالكينالمتحققمنهامعقراءةAPIوتوقعترحيل0019الدقيقوPG16CIوالدليلالموجه.
+- Why: إغلاقنقطةالتوقف دونتكرارمصدرG2/G4؛ إظهارالنتائجالرسميةللمستهلكوضمانتوافقschemaالمضافة.
+- Files: mcias/audit_api.py; mcias/preflight_g9.py; mcias/release_g9.py; tests/test_g5_snapshot_read_contract.py; expected-head assertionsG5–G8/restore/integration; inputs-first-pg16.yml; operationaldocs; receipt/taskregister/evidence; journal/state.
+- Tests: owner/sourcemanifestPASS؛ API+codec10PASS؛ PGfocused3PASS؛ migration/guards/G9:27PASSثمrestore1PASSباستخدامعميلPG16الحقيقيبعدنقصpg_dumpالمضيف؛ compile/diffchecksموثقة. التقريريفصل22PGقبلguardعن3بعده، ولايجمعالاختباراتالمتداخلة.
+- Result: الحالاتالرسميةفيAPIبلاكتابةالتاريخ، الأصلوالنسخوالصفوالمراجعوالحدثوG6holdموثقة؛ exacthead0019مطلوب؛ لاقرارمالي.
+- Risks: CIالجديدوقبولمستقلمعلقانوقتكتابةCommit؛ العربيةوالعقودوالأداءوL1/L2المتقاطعةمازالتمفتوحةبحدودتقاريرها.
+- Next: نشرالشجرةالمطابقةعلىPR34والتحققمنCI؛ متابعةPR35إعداد306وجودةReaderوالقبولالمستقل.
+- Handoff: المشرف؛ مصدرالمالك37cc61a/328e629/d0edc60/b18a83f؛ تقريرRESUME_EXECUTION_VERIFIED_20261021_AR.mdوسجلENGINEERING_TASK_REGISTER_AR.json؛ لاMerge/Deployment/ForcePush.

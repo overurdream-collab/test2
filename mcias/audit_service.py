@@ -18,7 +18,11 @@ def fingerprint_policy(policy):
        for key,value in asdict(policy).items()}
     return sha256(json.dumps(d,sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
-def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None):
+def run_audit(db,actor,claim_id,policy:AuditPolicy=None,*,verified_authorization=None,review_only=False):
+    if type(review_only) is not bool:
+        raise PolicyBlocked("review_only must be an explicit boolean")
+    if review_only:
+        return _run_inputs_first_review(db, actor, claim_id)
     # The caller must supply a verified, tenant-bound authorization from a
     # trusted G1 signer; a client-side 'approved=True' flag is insufficient.
     # A caller-supplied dictionary is not proof of a cryptographic signature.
@@ -102,5 +106,67 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
             "source_record_id":claim.extracted_record_id,"document_id":document.id,
             "source_sha256":batch.source_sha256,"policy_fingerprint":fp,
             "audit_state":checks["audit_state"],"references":references})
+    db.commit()
+    return snapshot
+
+
+def _run_inputs_first_review(db, actor, claim_id):
+    """Persist existing INPUTS-FIRST findings without authorizing any payment.
+
+    The existing Super Admin and claims.read grants are checked on the durable
+    user. This service extension does not expose a new API or financial policy.
+    """
+    from mcias.models import User, Role, UserRole
+    from mcias.policy import has_permission
+    from mcias.audit_contract import claim_reference_projection
+    from mcias.audit_writer import write_event
+    user = db.get(User, getattr(actor, "id", None))
+    role = db.scalar(select(Role.id).join(UserRole, UserRole.role_id == Role.id).where(
+        UserRole.user_id == getattr(user, "id", None), Role.code == "super_admin"))
+    if (user is None or not user.active or not user.organization_id or not role
+        or not has_permission(db, user, "claims.read")):
+        raise PolicyBlocked("active Super Admin with claims.read required for advisory execution")
+    claim = db.scalar(select(ClaimEntry).where(ClaimEntry.id == claim_id,
+        ClaimEntry.organization_id == user.organization_id).with_for_update())
+    if claim is None:
+        raise PolicyBlocked("claim not accessible")
+    checks = inspect_claim(db, claim, actor=user, review_only=True)
+    findings = {"agents": checks["findings"], "audit_state": checks["audit_state"],
+        "audit_state_schema_version": 2, "reason_code": checks["reason_code"],
+        "reference_certificates": checks["reference_certificates"],
+        "source_evidence": checks["source_evidence"], "coverage": checks["coverage"],
+        "human_review_required": True, "financial_decision": "not_authorized"}
+    # Fingerprint the actual validated source, versions and findings. Replaying
+    # the same evidence returns one immutable snapshot/event; a later trusted
+    # reference version creates a separate traceable snapshot.
+    context = {"mode": "inputs_first_review", "schema_version": 2,
+        "claim_id": claim.id, "findings": findings}
+    fp = sha256(json.dumps(context, sort_keys=True, separators=(",", ":"),
+        ensure_ascii=False, allow_nan=False).encode()).hexdigest()
+    existing = db.scalar(select(AuditSnapshot).where(AuditSnapshot.claim_id == claim.id,
+        AuditSnapshot.policy_fingerprint == fp))
+    if existing is not None:
+        if existing.findings != findings:
+            raise PolicyBlocked("immutable review snapshot differs from its evidence")
+        return existing
+    calculation = {"status": "held", "reason": "advisory_review_only",
+        "mode": "inputs_first_review", "claimed": str(claim.claimed_amount),
+        "currency": claim.currency, "payable": None, "deductions": [],
+        "financial_decision": "not_authorized", "source_id": claim.extracted_record_id}
+    verification = verify(claim, checks["findings"], calculation)
+    snapshot = AuditSnapshot(organization_id=claim.organization_id, claim_id=claim.id,
+        policy_id="inputs-first-review-v2", policy_fingerprint=fp,
+        calculation=calculation, findings=findings, verification=verification, created_by=user.id)
+    db.add(snapshot)
+    db.flush()
+    batch = db.get(ClaimBatch, claim.batch_id)
+    write_event(db, actor=user, organization_id=claim.organization_id,
+        action="claim_inputs_audited", resource_type="claim_entry", resource_id=claim.id,
+        outcome="success", details={"audit_snapshot_id": snapshot.id,
+            "source_record_id": claim.extracted_record_id, "document_id": batch.ingestion_document_id,
+            "source_sha256": batch.source_sha256, "policy_fingerprint": fp,
+            "audit_state_schema_version": 2, "audit_state": checks["audit_state"],
+            "reason_code": checks["reason_code"],
+            "references": claim_reference_projection(checks["reference_certificates"])})
     db.commit()
     return snapshot

@@ -8,7 +8,7 @@ from uuid import NAMESPACE_URL, uuid5
 from sqlalchemy.orm import Session
 from mcias.models import AuditLog, User
 from mcias.audit_contract import (validate_event, clean_details, clean_claim_audit_details,
-                                  CLAIM_AUDIT_ACTION, _uuid)
+                                  claim_reference_projection, CLAIM_AUDIT_ACTION, _uuid)
 
 _ALLOWED = {"version", "previous_version", "previous_id", "new_id",
             "effective_from", "effective_until", "reason_code",
@@ -53,20 +53,37 @@ def _validate_claim_correlation(db, organization_id, claim_id, details):
         or snapshot.findings.get("audit_state") != details["audit_state"]
         or claim.extracted_record_id != details["source_record_id"]):
         raise ValueError("claim audit snapshot correlation mismatch")
+    schema_version = details.get("audit_state_schema_version", 1)
+    if snapshot.findings.get("audit_state_schema_version", 1) != schema_version:
+        raise ValueError("claim audit state schema correlation mismatch")
+    if schema_version == 2 and details["reason_code"] != snapshot.findings.get("reason_code"):
+        raise ValueError("claim audit reason correlation mismatch")
     certificates = snapshot.findings.get("reference_certificates")
     if not isinstance(certificates, list):
         raise ValueError("claim audit reference correlation missing")
     try:
-        projected = [{"family": certificate["family"], "id": certificate["reference_id"],
-            "version": certificate["version"], "status": certificate["lookup_status"],
-            "evidence_ids": sorted({evidence[key] for evidence in certificate["source_evidence"]
-                for key in ("source_id", "authorization_id") if evidence.get(key)}),
-            "gaps": certificate["gaps"]} for certificate in certificates]
+        projected = claim_reference_projection(certificates)
         expected = clean_claim_audit_details({**details, "references": projected})["references"]
     except (KeyError, TypeError, ValueError) as exc:
         raise ValueError("invalid snapshot reference correlation") from exc
     if expected != details["references"]:
         raise ValueError("claim audit reference correlation mismatch")
+    if schema_version == 2 and details["audit_state"] in {"MATCH_VERIFIED", "VIOLATION_PROVEN"}:
+        coverage = snapshot.findings.get("coverage", {})
+        required = coverage.get("required")
+        if (type(required) is not int or required < 1
+            or type(coverage.get("executed")) is not int
+            or type(coverage.get("blocked")) is not int
+            or coverage.get("executed") != required or coverage.get("blocked") != 0
+            or any(certificate.get("approved") is not True
+                   or certificate.get("complete") is not True
+                   or certificate.get("lookup_status") != "reference_applicable"
+                   or certificate.get("gaps") for certificate in certificates)):
+            raise ValueError("completed claim audit requires complete reference coverage")
+        if details["audit_state"] == "VIOLATION_PROVEN" and not any(
+            finding.get("audit_state") == "VIOLATION_PROVEN"
+            for finding in snapshot.findings.get("agents", [])):
+            raise ValueError("proven violation requires an immutable rule finding")
     if ("policy_version" in details
         and details["policy_version"] != snapshot.findings.get("policy_version")):
         raise ValueError("claim audit policy version correlation mismatch")

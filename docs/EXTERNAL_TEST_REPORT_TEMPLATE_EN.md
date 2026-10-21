@@ -13,7 +13,7 @@ This is an **unfilled template**. All external outcomes are NOT_EXECUTED; no acc
 | Report/institution/approved host | NOT_RECORDED |
 | Full SHA/package hash/trust source | NOT_RECORDED |
 | OS/Python/PostgreSQL/Node/Chromium/dependencies/images | NOT_RECORDED |
-| Actual/expected Alembic head | NOT_RECORDED / 0018_claim_query_indexes |
+| Actual/expected Alembic head | NOT_RECORDED / 0019_reference_dataset_v1 |
 | UTC window/operator/reviewer | NOT_RECORDED |
 | Data class/authority reference/test databases | SYNTHETIC_PLANNED / NOT_RECORDED |
 | Approved RPO/RTO/workload/concurrency/P95 | NOT_APPROVED |

@@ -37,7 +37,7 @@ It drops/recreates the entire dedicated DB. It never disables immutability trigg
 
 ## Migration and performance coverage
 
-0017_operational_limits creates atomic quota buckets. 0018_claim_query_indexes adds organization/service_date, organization/provider_code, organization/beneficiary_token indexes. Runtime migration preflight and tests now expect 0018.
+0017_operational_limits creates atomic quota buckets. 0018_claim_query_indexes adds organization/service_date, organization/provider_code, organization/beneficiary_token indexes. 0019_reference_dataset_v1 adds source-backed, scoped reference versions and approval/immutability guards as the sole child of 0018 in this isolated chain. Runtime migration preflight and tests require exactly 0019; older or parallel heads remain blocked.
 
 Recorded EXPLAIN (ANALYZE, BUFFERS) on 10,000 synthetic claims:
 

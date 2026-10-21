@@ -124,3 +124,45 @@ Runner followup215: real security audit/unit/Postgres CI PASS on46e4ad8. Enterpr
 
 ## Coordinated INPUTS-FIRST minimum —2026-10-21
 Final local composed PG16:60PASS0SKIP; full unit389PASS37integration-envSKIP; dependencies65external0known vulnerabilities. Owner commits, adopted interfaces and first remaining G3 completeness blocker are in INPUTS_FIRST_COORDINATED_DELIVERY.md. Exact-head CI pending publication; no full six-family or financial/production acceptance.
+
+## الاستئناف المثبت — 2026-10-21 10:51 UTC
+راجع RESUME_VERIFIED_20261021_AR.md وENGINEERING_TASK_REGISTER_AR.json. PR34a0f5ed8 وجميع فحوصه المشغلة ناجحة؛ محليeec7b7a بنفسtree. دورة G3-completeness/G5-review-only/Audit-v2 لم تُنفذ قبل الانقطاع وبدأت الآن بملكية واضحة؛ لا إعادة للعمل الناجح.
+
+## 2026-10-21 — استئناف G3 من أحدث PR34 (HANDOFF-20261021-301)
+- أساس الاستئناف `a0f5ed864dad35a415e7173aea82c1b0441b07d8`؛ دون إعادة نجاحات E1 السابقة أو تعديل ملفات G5/Shared Audit.
+- نفذ جدول مرجع واحد فوق صفوف G2 الموجودة، مع اعتماد Super Admin محدد النطاق والفترة، وتحقق manifest/العدد/SHA/بصمة الصفوف، واختيار تاريخي، وعزل المؤسسات ونسخة معتمدة محمية من التعديل.
+- INTEGRATION VERIFIED في نطاق G2→G3: المشرف أثبت39 passed1 skipped106.86s على SQLite+PostgreSQL16؛ جميع11حالةPG نفذت. التخطي الوحيد خاص بمشغلPGعلىSQLite. التقرير والعقد والأمر في G3_E1_COMPLETENESS_AR.md؛ CIللإضافة ينتظرالنشر.
+- المتبقي: استهلاك الشهادة في G5 وShared Audit وHuman Review على SHAمركب نهائي، وتحديث expected Alembichead إلى0019 بتنسيقالمشرف والحفاظعلىL1، ثم قبولمستقل. ليس اعتمادًا مؤسسيًا أو قرارًا ماليًا؛ لاMerge/Deployment.
+
+
+## HANDOFF-20261021-304 — Shared Audit v2
+عقد النتائج الرسمية وتوافق السجل التاريخي محفوظان.35PASS0SKIP علىSQLite وPG16.15؛ source-native G3/G5 والـCI المطابق ما زالا قيد التنفيذ. التفاصيل والأمر في SHARED_AUDIT_V2_HANDOFF_AR.md.
+
+
+### HANDOFF-20261021-302 — استئناف G5 INPUTS-FIRST ونتائج التدقيق الاستشارية
+- Scope: توسيع run_audit القائم بنمط review_only وشهادات G3 الموثقة، والتمثيل الرسمي schema2 في AuditSnapshot نفسه، واختبارات G2→G4→G3→G5→Shared Audit→G6 الاصطناعية فقط.
+- Why: استئناف a0f5ed864dad دون تكرار إصلاح G2/G4، وإغلاق نقص استهلاك المرجعيات مع منع القرار المالي ونقص الدليل من التحول إلى إثبات مخالفة.
+- Files: mcias/audit_agents.py؛ mcias/audit_service.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ docs/evidence/G5_E1_PG16_KNOWN_TRUTH.json؛ سجل التنفيذ والحالة الحالية. ملفات G3 والكاتب مستثناة من Commit G5.
+- Tests: قبل guard الأخير: PG16 بواسطة المنسق22PASS0SKIP/224.92s و20حالة حقيقة محفوظة؛ SQLite22PASS/170.64s؛ انحدار40PASS/1.38s. بعد guard: SQLite focused3PASS20DESELECTED/16.49s. PostgreSQL الموجه وCI للـSHA المركب معلقتان، ولا تنسب النتائج السابقة إلى التعديل الأخير.
+- Result: INTEGRATION VERIFIED للمسار المحدد قبل guard؛ ISOLATED VERIFIED للتصحيح المحدود؛ REVIEW PENDING للتسليم النهائي. لا اعتماد إنتاجي أو مالي أو مؤسسي.
+- Risks: complete في G3 هو تصديق Super Admin على مصدر ونطاق وفترة محددة، ولا يعني اكتمالًا عالميًا. لا تقاس جودة OCR أو جودة سريرية بهذه الاختبارات. artifact السابق يسبق guard وتصحيح fixture الاستهلاك.
+- Next: المنسق يشغل PG16 للحالات missing_due/legitimate_periodic/reference_collision، يركب Commits المنتجين، ثم يتحقق من CI على HEAD نفسه. توصيل codec قراءة API بملكية المنسق، دون تعديل السجلات التاريخية.
+- Handoff: docs/G5_E1_FULL_REVIEW_AR.md؛ المصدر G3 37cc61ab8d55a31424922bc5fd28f7f8051176ef والكاتب328e6293244d992d95fb122296cd25e5deaffcae؛ لا merge/deploy/force/reset أو بيانات مرضى أو حكم مالي تلقائي.
+
+
+### HANDOFF-20261021-302C — تصحيح إسقاط قراءة الحالة التاريخية دون استنتاج سبب
+- Scope: تعديل codec قراءة G5 فقط، مع حفظ source_audit_state_schema_version وتتبع نسخة المفردات التاريخية.
+- Why: المفردة التاريخية UNRESOLVED_OR_MISSING_REFERENCE تجمع احتمال نقص الدليل والمرجع؛ لا يجوز اختراع سبب REFERENCE_INCOMPLETE من الاسم وحده.
+- Files: mcias/audit_agents.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ سجل التنفيذ والحالة الحالية. لا تعديل في snapshot محفوظ أو خدمة التشغيل أو المنتجين.
+- Tests: اختبار codec الموجه 8 PASS و22 DESELECTED في0.48 ثانية، بما فيه المصدر null/الغائب، وعدم اكتمال صريح، وفجوة محفوظة، وثبات البيانات الأصلية ونسخة المصدر عند تكرار الإسقاط. لم تعد Native/PG.
+- Result: ISOLATED VERIFIED لتصحيح القراءة؛ التكامل مع API وCI المركب بملكية المنسق، ولا ادعاء اعتماد إنتاجي.
+- Risks: snapshot تاريخية لا تحمل audit_state تظل كما هي في API دون تخمين؛ المنسق مسؤول عن هذا الفرع عند توصيل القراءة.
+- Next: المنسق يركب هذا Commit بعد d0edc60c0f0486962a6db3f2ee254fb13c155e7a، ويوصل codec في قراءة API فقط، ثم يتحقق من CI على HEAD المركب نفسه.
+- Handoff: اقرأ تقرير G5؛ لا إعادة Native/PG لتعديل قراءة فقط، ولا mutation للسجلات التاريخية أو تغيير سياسة مالية أو merge/deployment.
+
+
+## HANDOFF-20261021-307 — استئناف مثبت
+تركيبمصدرG2/G4معشهاداتG3المعتمدةوG5الاستشاريوSharedAuditوG6holdمتحققبنطاقالحالاتالاصطناعيةالموثق.39PASS1SKIPG3؛35PASSaudit؛22PGقبلguardثم3PGبعده؛APIcodec10PASS؛migrationguards27PASSواستعادة1PASSبعدتوفيرعميلDocker. لاجمعمتداخلللأعدادأوقبولإنتاج. CIالمطابقيراقبفيPR34، وReaderDraftPR35بجودةعربية8/15محجوبة. آخرreceiptوسجلالملكيةيحددانالمتبقي.
+
+
+تحديث الدليل307: نجحت جميع تشغيلات Reader الأربعة على ea625ae، بما فيها المقارنة الفعلية والتبعيات. روابطها في RESUME_EXECUTION_VERIFIED_20261021_AR.md. تبقى جودة العربية8/15 محجوبة رغم نجاح CI.

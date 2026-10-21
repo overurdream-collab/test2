@@ -16,7 +16,7 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives.serialization import Encoding
 from mcias.release_g9 import ReleaseBlocked
 
-EXPECTED_MIGRATION="0018_claim_query_indexes"
+EXPECTED_MIGRATION="0019_reference_dataset_v1"
 MAX_CERT_DAYS=30
 HEX64=re.compile(r"^[0-9a-fA-F]{64}$")
 
@@ -123,7 +123,7 @@ def check_postgres_role(database_url: str | None) -> list[dict]:
             migration=connection.execute(text(
                 "SELECT version_num FROM alembic_version")).scalar_one()
             result.append(control("database.migration_head",
-                migration==EXPECTED_MIGRATION,"required schema head must match reviewed G8 schema"))
+                migration==EXPECTED_MIGRATION,"required schema head must match the reviewed reference-dataset schema"))
             return result
     except Exception:
         return [control("database.connection",False,

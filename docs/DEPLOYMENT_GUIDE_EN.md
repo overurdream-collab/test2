@@ -74,7 +74,7 @@ alembic current
 python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Current head is `0018_claim_query_indexes`. Switch to restricted runtime after migration, never run HTTP as DBA. `/admin/dashboard` and `/institution/dashboard` expose sign-in states without records before authentication. External exposure needs an approved institutional HTTPS proxy and explicit trusted proxy addresses, never `*`; the API does not parse caller Forwarded headers itself.
+Current head is `0019_reference_dataset_v1`. Switch to restricted runtime after migration, never run HTTP as DBA. `/admin/dashboard` and `/institution/dashboard` expose sign-in states without records before authentication. External exposure needs an approved institutional HTTPS proxy and explicit trusted proxy addresses, never `*`; the API does not parse caller Forwarded headers itself.
 
 Optional engineering Compose harness: internal PostgreSQL, non-root API and localhost-only TLS `127.0.0.1:8443`. Provision `deploy/private/{runtime.env,postgres-owner.env,authorization-registry.json,tls.crt,tls.key,encrypted-sources/}` outside Git, then `docker compose -f deploy/compose.g9.yml up -d --build` after network/permissions review. Images use mutable tags and builds download dependencies; pin reviewed digests/offline wheels before production release.
 

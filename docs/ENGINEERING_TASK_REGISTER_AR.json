@@ -1,0 +1,170 @@
+{
+  "verified_at_utc": "2026-10-21T10:51:00Z",
+  "repository": "overurdream-collab/test2",
+  "local_source_head": "eec7b7a7a2d3b40528cb7d3db07ee75f250eebb8",
+  "verified_tree": "eae2a4d3b25e01a0a2142d765e2df355cfcfe16f",
+  "policy": "آخر تكليف المالك: Super Admin للاعتماد الحساس؛ لا Ed25519 أو موافقات متعددة جديدة، ولا تغيير الحراس المالية السابقة",
+  "tasks": [
+    {
+      "id": "E1-G3",
+      "owner": "resume_g3",
+      "branch": "codex/inputs-first-coordinated",
+      "worktree": "/workspace/e1-g3",
+      "sha": "37cc61ab8d55a31424922bc5fd28f7f8051176ef",
+      "files": [
+        "mcias/models_reference.py",
+        "mcias/reference_service.py",
+        "mcias/reference_api.py",
+        "alembic/versions/0019_reference_dataset_v1.py",
+        "tests/test_g3_reference_datasets.py"
+      ],
+      "complete": "شهادات أصلية للمرجعيات الست، اعتمادSuperAdmin وتاريخ ونطاق ومصدر وبصمة؛ 39PASS1SKIP مقصود",
+      "missing": "قبول مستقل وتوسيع نطاقات واقعية؛ CI المركب عند الإغلاق",
+      "depends": [
+        "G2 المصدر الموجود",
+        "Super Admin role الحالي"
+      ],
+      "acceptance": "مصدر G2 حقيقي، ضبط صفوف وبصمة، اعتماد خادمي، نسخة تاريخية، رفض نقص/تلاعب/جهة أخرى",
+      "tests": [
+        "native G2→G3 commit/reopen",
+        "تاريخي/انتهاء/تلاعب/اعتماد مرفوض",
+        "PG16 migration immutability"
+      ],
+      "evidence": "docs/G3_E1_COMPLETENESS_AR.md",
+      "status": "REVIEW PENDING",
+      "execution": "نُفذ وحُفظ؛ لا إعادة استيرادG2"
+    },
+    {
+      "id": "E1-G5",
+      "owner": "resume_g5",
+      "branch": "codex/inputs-first-coordinated",
+      "worktree": "/workspace/e1-g5",
+      "sha": "d0edc60c0f0486962a6db3f2ee254fb13c155e7a + b18a83fa932e6894a52deb9435b93ca5f95575ad",
+      "files": [
+        "mcias/audit_agents.py",
+        "mcias/audit_service.py",
+        "tests/test_g5_inputs_first_review.py"
+      ],
+      "complete": "21 حالة حقيقة عبر native services؛ PG22PASS قبلguard و3PASS بعده؛ codec وقراءةAPI متحققان",
+      "missing": "قبول مستقل؛ لا إثبات جاهزية إنتاج أو جودةOCR من هذه الحالات",
+      "depends": [
+        "E1-G3",
+        "E1-AUDIT"
+      ],
+      "acceptance": "الحالات15 مع expected/actual/source/event؛ لا حكم مالي أو استنتاج غياب من قائمة ناقصة",
+      "tests": [
+        "PG16 native full reference cases",
+        "G6 open/hold",
+        "حماية المسار المالي السابق"
+      ],
+      "evidence": "docs/G5_E1_FULL_REVIEW_AR.md + docs/evidence/E1_OWNER_SOURCE_MANIFEST.json",
+      "status": "REVIEW PENDING",
+      "execution": "مركب دون تعديل ملفات المنتجين"
+    },
+    {
+      "id": "E1-AUDIT",
+      "owner": "المشرف/Shared Audit",
+      "branch": "codex/inputs-first-coordinated",
+      "worktree": "/workspace/e1-audit",
+      "sha": "328e6293244d992d95fb122296cd25e5deaffcae",
+      "files": [
+        "mcias/audit_contract.py",
+        "mcias/audit_writer.py",
+        "tests/test_shared_audit_contract_v2.py"
+      ],
+      "complete": "schema2 والقيم الرسمية وتوافقlegacy وربط النسخ والدليل؛ 35PASSSQLite/PG16",
+      "missing": "قبول مستقل علىالشجرةالمركبة",
+      "depends": [
+        "عقد G3/G5 المتفق"
+      ],
+      "acceptance": "حفظ حالة رسمية مع schema2؛ legacy محفوظ؛ projection وحيدة؛ لا PHI أو إعادة كتابة التاريخ",
+      "tests": [
+        "typed v1/v2 validation",
+        "immutable snapshot correlation",
+        "PG16 dedup/reopen"
+      ],
+      "evidence": "docs/SHARED_AUDIT_V2_HANDOFF_AR.md",
+      "status": "REVIEW PENDING",
+      "execution": "مركب؛ لم يتغير حدHTTP429"
+    },
+    {
+      "id": "E2-READER",
+      "owner": "resume_reader",
+      "branch": "feat/mcias-document-reader-isolated-pilot",
+      "worktree": "/workspace/document-evidence",
+      "sha": "ea625ae48c43d469dfbcb34d9e8050d78c8a5707",
+      "files": [
+        "scripts/document_reader_dg002b_benchmark.py",
+        "scripts/document_reader_dg002_score.py",
+        "tests/test_document_reader_dg002b.py"
+      ],
+      "complete": "23 اختبار قارئ و34 اختبار توافق؛ الموضع تحسن من26 إلى30 من30؛ النص23/30 ثابت والعربية8/15",
+      "missing": "العربية والجداول الأصعب وإثبات مصدر G2 وتكامل G5 والقبول المستقل",
+      "depends": [
+        "ara runtime مثبت ومعلن",
+        "نفس gold المستقل"
+      ],
+      "acceptance": "baseline والمُحسن على نفس الصور؛ CER/WER/field+IoU/time/RSS/review؛ لا gold يختار الموضع",
+      "tests": [
+        "actual Tesseract benchmark",
+        "wrong-row/page-box negative"
+      ],
+      "evidence": "https://github.com/overurdream-collab/test2/actions/runs/39591712939",
+      "status": "QUALITY BLOCKED",
+      "execution": "Draft PR35؛ إصلاح التبعيات اجتاز benchmark وCI العامة على ea625ae"
+    },
+    {
+      "id": "E3-CONTRACT-A1",
+      "owner": "Contract Intelligence/A1",
+      "branch": "codex/contract-evidence + feat/mcias-a1-invoice-integrity",
+      "sha": "cc0188e9bfa9d94adb9c43b8a38e4482e062a051 / 6af41a04cf887d389656c9ce7ffc4e03b396b5a4",
+      "files": [
+        "mcias/contract_source_view.py",
+        "mcias/contract_intelligence.py",
+        "mcias/agents/invoice_integrity.py"
+      ],
+      "complete": "مصدر القيم والدقة المعزولة السابقة",
+      "missing": "Recall العقود وربط سعر الوحدة بدليل سلطته، وتكامل A1",
+      "depends": [
+        "E1 source trust",
+        "E2 evidence"
+      ],
+      "acceptance": "تحسن مستقل مع ثباتPrecision والتتبع؛ لا استنتاج سعر وحدة من إجمالي",
+      "tests": [
+        "frozen C33/holdout",
+        "unit-price authority negatives"
+      ],
+      "evidence": "تقارير C33/C34/C35 السابقة؛ لا اختبار جديد في الاستئناف",
+      "status": "QUALITY BLOCKED",
+      "execution": "مفتوح، لم يبدأ تنفيذ جديد"
+    },
+    {
+      "id": "E4-SAFETY",
+      "owner": "L1/L2/المشرف",
+      "branch": "fix/mcias-l1-alembic-target-safety + integration/mcias-l2-shared-audit",
+      "sha": "9c5a578c23e79f7176ea5c924a2a431ac7a01aeb / 65bbddc1ae95aed22e157774f600a296a6e43926",
+      "files": [
+        "alembic/env.py",
+        "mcias/denial_events.py",
+        "mcias/app.py"
+      ],
+      "complete": "مسار0019وحيد فوق0018؛ 27PASS حواجز+1PASSاستعادةحقيقيةPG16 بعدتوفيرعميلDocker",
+      "missing": "توحيد L1/L2 المعزولين وتكامل403/409 وفق تنسيقمالكيهما؛ لايدعيهذاقبولهما",
+      "depends": [
+        "E1 migration contract",
+        "Shared Audit"
+      ],
+      "acceptance": "لا إضعاف حارس، لا جمع Alembic heads عشوائياً؛ rollback وحدث واحد لكل قرار رفض",
+      "tests": [
+        "migration target negatives",
+        "PG16 composed denial"
+      ],
+      "evidence": "docs/RESUME_EXECUTION_VERIFIED_20261021_AR.md",
+      "status": "BLOCKED",
+      "execution": "تحديثexpected-headالدقيق فقط دونضعفحراس أوضمسلاسل أخرى"
+    }
+  ],
+  "baseline_remote_head": "a0f5ed864dad35a415e7173aea82c1b0441b07d8",
+  "remote_tracking": "PR34؛ روابط التشغيل النهائية في وصف PR وملف .e2e-output/verified_ci_20261021.json بعد التنفيذ",
+  "checkpoint_updated_at_utc": "2026-10-21T11:26:40Z"
+}

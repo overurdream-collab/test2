@@ -13,7 +13,7 @@
 | رقم التقرير/المؤسسة/المضيف المعتمد | NOT_RECORDED |
 | SHA كامل/بصمة الحزمة/مصدر الثقة | NOT_RECORDED |
 | إصدار OS/Python/PostgreSQL/Node/Chromium والمكتبات والصور | NOT_RECORDED |
-| الرأس Alembic الفعلي والمطلوب | NOT_RECORDED / 0018_claim_query_indexes |
+| الرأس Alembic الفعلي والمطلوب | NOT_RECORDED / 0019_reference_dataset_v1 |
 | فترة الاختبار UTC/المشغّل/المراجع | NOT_RECORDED |
 | نوع البيانات/مرجع الإذن/قواعد الاختبار | SYNTHETIC_PLANNED / NOT_RECORDED |
 | RPO/RTO/Hجم العمل/التزامن/P95 المعتمد | NOT_APPROVED |
