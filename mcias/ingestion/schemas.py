@@ -7,6 +7,7 @@ class Locator:
     index: int
     row: int | None = None
     column: int | None = None
+    sheet_name: str | None = None
 
 @dataclass(frozen=True)
 class ExtractedRecord:
@@ -21,6 +22,7 @@ class Extraction:
     units_total: int = 0
     units_processed: int = 0
     quarantined: list[dict] = field(default_factory=list)
+    worksheet_inventory: list[dict] = field(default_factory=list)
 
     @property
     def complete(self):

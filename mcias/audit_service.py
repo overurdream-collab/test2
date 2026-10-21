@@ -9,9 +9,8 @@ from mcias.audit_authorization import VerifiedPolicyAuthorization, verify_regist
 from mcias.audit_policy_registry import resolve_grant
 from mcias.audit_agents import inspect_claim
 from mcias.palermo2 import verify
-from mcias.models_claims import ClaimEntry
+from mcias.models_claims import ClaimBatch, ClaimEntry
 from mcias.models_audit import AuditSnapshot
-from mcias.models import AuditLog
 
 def fingerprint_policy(policy):
     policy.validate()
@@ -48,16 +47,22 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
     if registered_grant != verified_authorization:
         raise PolicyBlocked('institutional policy grant mismatch')
     claim=db.scalar(select(ClaimEntry).where(ClaimEntry.id==claim_id,
-        ClaimEntry.organization_id==actor.organization_id))
+        ClaimEntry.organization_id==actor.organization_id).with_for_update())
     if claim is None:
         raise PolicyBlocked("claim not accessible")
     fp=fingerprint_policy(policy)
     existing=db.scalar(select(AuditSnapshot).where(AuditSnapshot.claim_id==claim.id,
         AuditSnapshot.policy_fingerprint==fp))
+    checks=inspect_claim(db,claim,policy,actor=actor)
     if existing:
+        if "audit_state" not in existing.findings:
+            raise PolicyBlocked("legacy snapshot lacks INPUTS-FIRST evidence; a new policy version is required")
+        if any(existing.findings.get(key)!=checks[key] for key in
+               ("audit_state","source_evidence","reference_certificates")):
+            raise PolicyBlocked("snapshot evidence changed; a new policy version is required")
         return existing
-    checks=inspect_claim(db,claim,policy)
-    blocked=checks["review_required"] or checks["tariff"] is None or checks["contract"] is None
+    blocked=(checks["audit_state"]!="VERIFIED_MATCH" or checks["review_required"]
+        or checks["tariff"] is None or checks["contract"] is None)
     if blocked:
         calculation={"status":"held","reason":"unresolved_reference_or_evidence",
             "claimed":str(claim.claimed_amount),"payable":None,"deductions":[],
@@ -74,11 +79,28 @@ def run_audit(db,actor,claim_id,policy:AuditPolicy,*,verified_authorization=None
     verification=verify(claim,checks["findings"],calculation)
     snapshot=AuditSnapshot(organization_id=claim.organization_id,claim_id=claim.id,
         policy_id=policy.policy_id,policy_fingerprint=fp,calculation=calculation,
-        findings={"agents":checks["findings"]},verification=verification,created_by=actor.id)
+        findings={"agents":checks["findings"],"audit_state":checks["audit_state"],
+            "reference_certificates":checks["reference_certificates"],
+            "source_evidence":checks["source_evidence"],"coverage":checks["coverage"],
+            "human_review_required":checks["review_required"],"financial_decision":"not_authorized"},
+        verification=verification,created_by=actor.id)
     db.add(snapshot);db.flush()
-    db.add(AuditLog(actor_id=actor.id,action="audit_snapshot_created",
-        resource_type="audit_snapshot",resource_id=snapshot.id,
-        details={"claim_id":claim.id,"policy_fingerprint":fp,
-                 "verification_status":verification["status"]}))
+    from mcias.audit_writer import write_event
+    from mcias.models_ingestion import IngestionDocument
+    batch=db.get(ClaimBatch,claim.batch_id)
+    document=db.get(IngestionDocument,batch.ingestion_document_id)
+    references=[]
+    for certificate in checks["reference_certificates"]:
+        evidence_ids=sorted({evidence[key] for evidence in certificate["source_evidence"]
+            for key in ("source_id","authorization_id") if evidence.get(key)})
+        references.append({"family":certificate["family"],"id":certificate["reference_id"],
+            "version":certificate["version"],"status":certificate["lookup_status"],
+            "evidence_ids":evidence_ids,"gaps":certificate["gaps"]})
+    write_event(db,actor=actor,organization_id=claim.organization_id,
+        action="claim_inputs_audited",resource_type="claim_entry",resource_id=claim.id,
+        outcome="success",details={"audit_snapshot_id":snapshot.id,
+            "source_record_id":claim.extracted_record_id,"document_id":document.id,
+            "source_sha256":batch.source_sha256,"policy_fingerprint":fp,
+            "audit_state":checks["audit_state"],"references":references})
     db.commit()
     return snapshot

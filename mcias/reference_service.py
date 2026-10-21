@@ -166,3 +166,200 @@ def apply_tariff_batch(db, actor, contract_id, rows):
            {"count": len(rows)})
     db.commit()
     return {"contract_id": contract_id, "imported": len(rows)}
+
+# These six families are the owner's binding INPUTS-FIRST directive, not an
+# inferred list of the database tables that happen to exist today. See
+# docs/CAI01_EXCEL_TO_G4_SOURCE_CONTRACT_AR.md, section 9.
+REFERENCE_FAMILIES = (
+    ("beneficiary", "beneficiary identity, employee/family membership, per-person class/coverage and dates"),
+    ("contract", "approved contracts and provider terms/exclusions"),
+    ("tariff", "provider/contract/class/date-specific tariffs"),
+    ("policy", "medical, administrative and financial policies/authorization"),
+    ("caps", "benefit caps and cumulative consumption"),
+    ("history", "historical claims/dispensing and recurrence/chronic medication context"),
+)
+
+
+def _reference_certificate(family, organization_id, at, reference_type, **values):
+    certificate = {
+        "family": family,
+        "label": dict(REFERENCE_FAMILIES)[family],
+        "reference_type": reference_type,
+        "reference_id": None,
+        "version": None,
+        "organization_id": organization_id,
+        "service_date": at.isoformat(),
+        "effective_from": None,
+        "effective_until": None,
+        "approved": False,
+        "complete": False,
+        # Completeness of a bounded native lookup is distinct from completeness
+        # of the whole required family. G5 must retain that scope distinction.
+        "lookup_complete": False,
+        "lookup_status": "reference_missing",
+        "source_evidence": [],
+        "gaps": [],
+    }
+    certificate.update(values)
+    return certificate
+
+
+def _written_reference_evidence(db, organization_id, authorization_id, contract):
+    """Resolve bounded evidence without copying source text or patient values."""
+    import re
+    from mcias.models import SourceFile
+    if not authorization_id:
+        return False, [], ["authorization_missing"]
+    authorization = db.get(WrittenAuthorization, authorization_id)
+    approver = db.get(User, authorization.approved_by) if authorization else None
+    if (authorization is None or authorization.organization_id != organization_id
+            or approver is None or approver.organization_id != organization_id):
+        return False, [], ["authorization_invalid"]
+    source = db.get(SourceFile, authorization.source_id)
+    if source is None:
+        return False, [], ["source_missing"]
+    if not re.fullmatch(r"[0-9a-f]{64}", source.sha256 or ""):
+        return False, [], ["source_hash_invalid"]
+    from mcias.production_authorization import verify_production_approval
+    if not verify_production_approval(db, contract, authorization):
+        return False, [], ["authorization_invalid"]
+    return True, [{"source_id": source.id, "source_sha256": source.sha256,
+                   "authorization_id": authorization.id}], []
+
+
+def applicable_reference_snapshots(db, claim, policy=None):
+    """Read six dated, tenant-scoped certificates from the existing references.
+
+    This is an evidence projection, never an approval or absence certificate.
+    In particular an empty/incomplete enrollment or usage source cannot prove
+    ineligibility, no prior consumption, or fraud. Missing schema dimensions
+    remain explicit gaps rather than synthetic authoritative reference rows.
+    No data is written and the caller's transaction is not committed.
+    """
+    from mcias.models_claims import ClaimEntry
+    from mcias.models_audit_policy import AuditPolicyGrant
+
+    org, at = claim.organization_id, claim.service_date
+    if not org or not isinstance(at, date):
+        raise ReferenceConflict("organization and service date required")
+    certificates = {}
+
+    enrollments = db.scalars(select(BeneficiaryEnrollment).where(
+        BeneficiaryEnrollment.organization_id == org,
+        BeneficiaryEnrollment.beneficiary_token == claim.beneficiary_token,
+        BeneficiaryEnrollment.effective_from <= at,
+        BeneficiaryEnrollment.effective_until > at)).all()
+    beneficiary = _reference_certificate("beneficiary", org, at, "beneficiary_enrollment",
+        gaps=["beneficiary_approval_missing", "beneficiary_version_missing",
+              "family_membership_unavailable", "coverage_history_unavailable"])
+    if len(enrollments) == 1:
+        enrollment = enrollments[0]
+        category = db.get(BeneficiaryCategory, enrollment.category_id)
+        if category is not None and category.organization_id == org:
+            beneficiary.update(reference_id=enrollment.id,
+                effective_from=enrollment.effective_from.isoformat(),
+                effective_until=enrollment.effective_until.isoformat(),
+                lookup_status="reference_incomplete")
+        else:
+            beneficiary["gaps"].append("reference_conflict")
+            beneficiary["lookup_status"] = "reference_conflict"
+    elif len(enrollments) > 1:
+        beneficiary["lookup_status"] = "reference_conflict"
+        beneficiary["gaps"].append("reference_conflict")
+    else:
+        beneficiary["gaps"].append("reference_missing")
+    certificates["beneficiary"] = beneficiary
+
+    # Date filtering precedes any version selection. A newer version that is
+    # effective later can never replace the historical service-date version.
+    contracts = db.scalars(select(ContractVersion).where(
+        ContractVersion.organization_id == org,
+        ContractVersion.provider_code == claim.provider_code)).all()
+    dated = [item for item in contracts if item.effective_from <= at < item.effective_until]
+    approved = [item for item in dated if item.status == "approved"]
+    contract = approved[0] if len(approved) == 1 else None
+    contract_certificate = _reference_certificate("contract", org, at, "contract_version",
+        scope="native_contract_version", gaps=["contract_terms_unavailable"])
+    if len(approved) > 1:
+        contract_certificate["lookup_status"] = "reference_conflict"
+        contract_certificate["gaps"].append("reference_conflict")
+    elif contract is not None:
+        authorized, evidence, gaps = _written_reference_evidence(db, org, contract.authorization_id, contract)
+        contract_certificate.update(reference_id=contract.id, version=contract.version,
+            effective_from=contract.effective_from.isoformat(),
+            effective_until=contract.effective_until.isoformat(), approved=authorized,
+            lookup_complete=authorized, source_evidence=evidence,
+            lookup_status="reference_applicable" if authorized else "reference_unapproved")
+        contract_certificate["gaps"].extend(gaps)
+    else:
+        status = "reference_unapproved" if dated else "reference_not_effective" if contracts else "reference_missing"
+        contract_certificate["lookup_status"] = status
+        contract_certificate["gaps"].append(status)
+    certificates["contract"] = contract_certificate
+
+    tariff_certificate = _reference_certificate("tariff", org, at, "provider_tariff",
+        scope="native_contract_service", gaps=["tariff_class_scope_unavailable"])
+    tariff = db.scalar(select(ProviderTariff).where(
+        ProviderTariff.contract_id == contract.id,
+        ProviderTariff.service_code == claim.service_code)) if contract else None
+    if tariff is not None:
+        tariff_certificate.update(reference_id=tariff.id, version=contract.version,
+            contract_id=contract.id, effective_from=contract.effective_from.isoformat(),
+            effective_until=contract.effective_until.isoformat(),
+            approved=contract_certificate["approved"],
+            source_evidence=list(contract_certificate["source_evidence"]))
+        if tariff.currency == claim.currency and contract_certificate["lookup_complete"]:
+            tariff_certificate.update(lookup_status="reference_applicable", lookup_complete=True)
+        else:
+            tariff_certificate["lookup_status"] = ("reference_conflict" if tariff.currency != claim.currency
+                                                      else "reference_unapproved")
+            tariff_certificate["gaps"].append(tariff_certificate["lookup_status"])
+    else:
+        tariff_certificate["gaps"].append("reference_missing")
+    certificates["tariff"] = tariff_certificate
+
+    policy_certificate = _reference_certificate("policy", org, at, "audit_policy_grant",
+        scope="native_policy_grant", gaps=["policy_effective_dates_unavailable", "policy_source_unavailable"])
+    # A grant is evidence of policy authorization, not of a service-date range
+    # or of medical/administrative policy completeness. Verify its signature
+    # using the existing registry before describing even that bounded approval.
+    grant = None
+    if policy is not None:
+        from mcias.audit_service import fingerprint_policy
+        from mcias.audit_policy_registry import resolve_grant
+        from mcias.audit_engine import PolicyBlocked
+        try:
+            fingerprint = fingerprint_policy(policy)
+            grant = db.scalar(select(AuditPolicyGrant).where(
+                AuditPolicyGrant.organization_id == org,
+                AuditPolicyGrant.policy_id == policy.policy_id,
+                AuditPolicyGrant.policy_fingerprint == fingerprint,
+                AuditPolicyGrant.revoked_at.is_(None)))
+            if grant is not None:
+                resolve_grant(db, organization_id=org, policy_fingerprint=fingerprint,
+                              policy_id=policy.policy_id)
+                policy_certificate.update(reference_id=grant.id, approved=True, lookup_complete=True,
+                    lookup_status="reference_incomplete", content_sha256=fingerprint)
+        except (PolicyBlocked, ValueError, TypeError, AttributeError):
+            policy_certificate["lookup_status"] = "reference_unapproved"
+            policy_certificate["gaps"].append("reference_unapproved")
+    if grant is None:
+        policy_certificate["gaps"].append("reference_missing")
+    certificates["policy"] = policy_certificate
+
+    certificates["caps"] = _reference_certificate("caps", org, at, "audit_policy_grant",
+        reference_id=policy_certificate["reference_id"], approved=policy_certificate["approved"],
+        lookup_status="reference_incomplete" if policy_certificate["reference_id"] else "reference_missing",
+        gaps=["cap_consumption_unavailable", "policy_effective_dates_unavailable"])
+
+    history = db.scalars(select(ClaimEntry).where(
+        ClaimEntry.organization_id == org,
+        ClaimEntry.beneficiary_token == claim.beneficiary_token,
+        ClaimEntry.service_date < at).order_by(ClaimEntry.service_date, ClaimEntry.id).limit(100)).all()
+    certificates["history"] = _reference_certificate("history", org, at, "claim_entry",
+        lookup_status="reference_incomplete",
+        # Existing rows are a bounded observation, never a complete dispensing
+        # or clinical history. Original values and identifiers stay protected.
+        observed_record_ids=[item.id for item in history],
+        gaps=["historical_source_incomplete", "dispensing_context_unavailable"])
+    return [certificates[family] for family, _ in REFERENCE_FAMILIES]

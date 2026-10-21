@@ -106,19 +106,17 @@ def test_inspect_claim_returns_eight_ordered_findings(
     result = inspect_claim(db, claim, SimpleNamespace(approved=approved, policy_id="synthetic-policy"))
     assert tuple(f["agent"] for f in result["findings"]) == EXPECTED_ORDER
     assert AGENTS == EXPECTED_ORDER
-    expected = {name: "pass" for name in EXPECTED_ORDER}
-    if not references:
-        expected.update({name: "hold" for name in ("eligibility", "contract", "tariff", "evidence")})
-    elif tariff_currency != claim.currency:
-        expected["tariff"] = "hold"
+    # Presence of unsigned/unversioned rows is not an INPUTS-FIRST certificate.
+    # These legacy fixtures deliberately have no approved source ledger or
+    # complete six-family references, so no finding can become a proven pass.
+    expected = {name: "hold" for name in EXPECTED_ORDER}
     if duplicate:
         expected["duplicates"] = "review"
-    if not approved:
-        expected.update({name: "hold" for name in ("exclusion", "caps", "cost_sharing")})
     assert {f["agent"]: f["status"] for f in result["findings"]} == expected
-    assert result["review_required"] == any(status != "pass" for status in expected.values())
-    assert result["eligible"] == references
-    assert result["evidence_complete"] == references
+    assert result["review_required"]
+    assert result["audit_state"] == "AUDIT_NOT_POSSIBLE"
+    assert result["eligible"] is False
+    assert result["evidence_complete"] is False
     assert result["contract"] is contract
     assert result["enrollment"] is enrollment
     assert result["tariff"] is (tariff if references and tariff_currency == claim.currency else None)

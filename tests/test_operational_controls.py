@@ -10,6 +10,7 @@ from sqlalchemy.pool import StaticPool
 from mcias.app import app, get_db
 from mcias.models import Base, Organization, User, AuditLog, SessionToken, Permission, Role, UserRole, RolePermission
 from mcias.rate_limits import check_limits, cleanup
+from mcias.models_operations import RateLimitBucket
 from mcias.retention import request_archive, run_archive, scoped_logs
 from mcias.backup import decrypt_bundle
 from mcias.seed.config import SeedConfig
@@ -94,7 +95,16 @@ def test_seed_reset_wrong_confirmation_never_connects(monkeypatch):
     config=SeedConfig("postgresql://localhost/synthetic_e2e","development")
     with pytest.raises(ValueError): reset(config,"client")
 
-def test_middleware_returns_429_retry_after_and_ignores_forwarded_headers(database):
+def test_middleware_returns_429_retry_after_and_ignores_forwarded_headers(database, monkeypatch):
+    # Freeze only the wall clock: 101 HTTP calls may otherwise cross a fixed
+    # minute boundary and correctly consume two different real quota buckets.
+    import mcias.rate_limits as limiter
+    instant = datetime(2026, 10, 21, 12, 0, 15, tzinfo=timezone.utc)
+    class FixedClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return instant if tz else instant.replace(tzinfo=None)
+    monkeypatch.setattr(limiter, "datetime", FixedClock)
     def dependency():
         with Session(database) as db: yield db
     app.dependency_overrides[get_db]=dependency
@@ -108,7 +118,32 @@ def test_middleware_returns_429_retry_after_and_ignores_forwarded_headers(databa
             assert 1 <= int(response.headers['retry-after']) <= 60
             assert response.headers['cache-control']=='no-store'
             assert c.get('/health/live').status_code==200
+            with Session(database) as db:
+                buckets = db.scalars(select(RateLimitBucket)).all()
+                assert len(buckets) == 2  # one real IP bucket and one user bucket
+                assert {bucket.requests for bucket in buckets} == {101}
+                assert {bucket.window_start for bucket in buckets} == {instant.replace(
+                    second=0, microsecond=0, tzinfo=None)}
+                assert db.scalar(select(func.count()).select_from(AuditLog).where(
+                    AuditLog.action == "api_rate_limit_exceeded")) == 1
     finally: app.dependency_overrides.pop(get_db,None)
+
+
+def test_real_rate_limit_buckets_explain_minute_boundary_reset(database):
+    """Reproduce the old 429 expectation's timing failure from stored rows."""
+    instant = datetime(2026, 10, 21, 12, 0, 59, tzinfo=timezone.utc)
+    with Session(database) as db:
+        for _ in range(100):
+            assert check_limits(db, "Bearer session", "testclient", now=instant) is None
+        # Request 101 in the next minute is allowed by the actual fixed window.
+        assert check_limits(db, "Bearer session", "testclient", now=instant + timedelta(seconds=1)) is None
+    with Session(database) as db:
+        scope_hash = hashlib.sha256(b"user:actor").hexdigest()
+        buckets = db.scalars(select(RateLimitBucket).where(
+            RateLimitBucket.scope_hash == scope_hash).order_by(RateLimitBucket.window_start)).all()
+        assert [(bucket.window_start, bucket.requests) for bucket in buckets] == [
+            (instant.replace(second=0, tzinfo=None), 100),
+            ((instant + timedelta(seconds=1)).replace(second=0, tzinfo=None), 1)]
 
 
 def test_middleware_database_failure_is_closed():

@@ -154,3 +154,92 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Result: STATE_VERIFIED; CONTRACT_APPROVAL_PENDING; E2E_NOT_EXECUTED. No owner files edited.
 - Next: obtain explicit owner decisions on G2 sheet classification/source SHA and row; G4 claim-only persisted mapping; G3 six service-date effective approved complete references; G5 four semantic outcomes; PR #29 writer PHI-safe bounded correlation/idempotency. Only after approval add isolated native-service PG16 workflow/test on PR #31 and record real post-commit IDs. Dependency-audit failures remain independent CI blockers.
 - Handoff: no reset, force push, merge, deployment, production migrations or automated financial decisions.
+
+
+### HANDOFF-20261021-201 — G2/G4 approved source scope and explicit PAYMENT exclusion
+- Scope: Existing G2 XLSX provenance and G4 importer source contract, synthetic only.
+- Why: Prior E1 accidentally excluded PAYMENT through failed normalization, without a trusted scope approval.
+- Files: mcias/ingestion/schemas.py, mcias/ingestion/parsers/excel_parser.py, mcias/ingestion/provenance.py, mcias/ingestion/manifest.py, mcias/claim_batches.py, mcias/claims_api.py, tests/test_g4_approved_source_scope.py, tests/test_e1_real_g2_g4_pg16.py, docs/DG001_INPUTS_G2G4.md, this journal and current-state overlay.
+- Tests: Focused existing regression 43 PASS; parent actual current-tree PG16.15 E1/source-scope/batches/ingestion suite 21 PASS in4.66s; git diff --check PASS. Agent PG tool attempt hung/aborted and is not evidence.
+- Result: Approved source-bound whole-sheet scope, explicit valid PAYMENT exclusion, Commit/independent PG16 claim reread, source SHA/row/raw lineage, organization isolation and retry idempotency verified locally. CI on committed SHA pending publication.
+- Risks: Canonical g4-canonical-v1 mapping only; no arbitrary map or large-scale throughput claim; quarantine remains blocking; full G3/G5/Shared Audit acceptance belongs to combined run.
+- Next: Coordinator integrates owner commits and executes native-service PG16 flow and exact-SHA CI.
+- Handoff: docs/DG001_INPUTS_G2G4.md; branch codex/inputs-first-g2-g4. No merge/deployment/force push/real patient data or automatic financial action.
+
+# MCIAS v2.0 execution journal — Shared Audit owner overlay
+
+### HANDOFF-20261021-204
+
+- Scope: PR #29 owner-only minimum INPUTS-FIRST event contract, privacy, atomic snapshot dedup and real RateLimitBucket diagnosis; baseline c7769edfdf6e287824ff7afbd8a74389547d7b53.
+- Why: G5 needs one trustworthy event linking its immutable result to claim, source, reference/version and evidence, without raw patient data. The HTTP 429 fixture must observe the actual fixed-minute bucket.
+- Files: mcias/audit_writer.py; mcias/audit_contract.py; tests/test_shared_audit_inputs_pg16.py; tests/test_operational_controls.py; docs/DG001_INPUTS_SHARED_AUDIT.md; this journal; docs/MCIAS_V2_CURRENT_STATE_AR.md.
+- Tests: compileall and git diff --check passed. Root ran final PG16+operational+contract suite after projection validation: 39 passed in 3.91 seconds, with one Starlette deprecation warning. Command: PYTHONPATH=. MCIAS_INPUTS_AUDIT_ALLOW=YES MCIAS_INPUTS_AUDIT_DATABASE_URL=postgresql+psycopg://postgres:synthetic-only@127.0.0.1:55432/mcias_inputs_audit /workspace/.venv/bin/python -m pytest -q tests/test_shared_audit_inputs_pg16.py tests/test_operational_controls.py tests/test_shared_audit_phase2a_contract.py.
+- Result: Existing public API preserved; typed action validates persisted snapshot/source and immutable G3 certificate projection, dedups via existing AuditLog PK, joins caller transaction and drops untyped metadata. Test-only clock stabilized without changing service limits.
+- Risks: This is synthetic writer verification, not institutional acceptance or universal exactly-once. No production access, migrations, financial decision or fraud accusation. Composed reference/source completeness and same-SHA CI remain coordinator-owned.
+- Next: Root reruns the final 39-test command, composes owner commits, verifies native-service PG16 acceptance, and publishes actual same-SHA CI evidence without merging or deployment.
+- Handoff: /root Shared Audit owner to coordinating /root; exact interface and limits in docs/DG001_INPUTS_SHARED_AUDIT.md. Latest user authorization permits this narrow source change; prior docs-only gates are historical.
+
+
+### HANDOFF-20261021-202 — G3 six-family dated evidence projection
+- Scope: Existing G3 read-only service now projects the exact six INPUTS-FIRST reference families with dated native IDs, versions, signed approval/source evidence and explicit completeness gaps.
+- Why: G5 needs reproducible reference lineage without treating a missing beneficiary, incomplete history or unsigned approval flag as a proven violation.
+- Files: mcias/reference_service.py; tests/test_g3_inputs_first_certificates.py; docs/DG001_INPUTS_G3.md; this journal; docs/MCIAS_V2_CURRENT_STATE_AR.md.
+- Tests: PYTHONPATH=. /workspace/.venv/bin/python -m pytest -q tests/test_g3_inputs_first_certificates.py tests/test_g3_reference.py tests/test_g3_lifecycle.py tests/test_g3_signed_authorization.py. Initial no-PG run14 passed4 skipped. Coordinator rerun with isolated MCIAS_G3_REFERENCE_DATABASE_URL on PostgreSQL16.15:18 passed0 skipped0 failed in1.60s; git diff --check PASS. No new CI URL until publication/execution.
+- Result: Historical signed native contract/tariff selected after Commit in a new Session despite a newer version; boundary/date/source-tampering/missing/tenant/no-implicit-commit assertions pass. Existing signed verifier and policy registry reused, no schema or G5 edits.
+- Risks: All six whole-family complete flags remain false where native schema cannot attest family membership/coverage/terms/class-scoped tariff/medical policy/cumulative consumption/dispensing completeness. Native lookup completeness is narrower and explicitly scoped; full acceptance remains BLOCKED.
+- Next: G5 consumes the same six JSON certificates in existing AuditSnapshot.findings; G3/source owners close documented source/version/approval/completeness schema gaps before full acceptance. Coordinator publishes source SHA and exact-head CI separately.
+- Handoff: Owner branch codex/inputs-first-g3 based on PR31 bd2d1b0; approved minimal read-only exchange; no merge/deployment/force push/real patient data or automatic financial decision. Owner report docs/DG001_INPUTS_G3.md.
+
+
+### HANDOFF-20261021-203 — G5 INPUTS-FIRST minimal owner implementation
+- Scope: existing G5 inspection/snapshot orchestration and owned tests; synthetic verification only.
+- Why: require actual source and six reference certificates before any proven result; prevent missing inputs becoming pass or financial action.
+- Files: mcias/audit_agents.py, mcias/audit_service.py, tests/test_g5_agent_order.py, tests/test_g5_inputs_first.py, docs/DG001_INPUTS_G5.md and append-only current-state/journal.
+- Tests: owned pure regressions 35 PASS, no failures/skips, 0.29s; compileall PASS. Coordinator preliminary composed PG16 suite 7 PASS/11.74s; rerun required after final signed-reference fixture and producer hardening.
+- Result: four outcomes use existing snapshot JSON; safe source/approved historical tariff linkage, held incomplete caps/cost sharing/history, signal-only duplicates, Shared Audit event API, cached evidence revalidation. Full six-family claim acceptance remains BLOCKED.
+- Risks: G3 complete dated family/policy/cap/history attestation absent. Preliminary composed working-tree tests are not exact-final-SHA CI or institutional acceptance. Imported producer files excluded from this owner commit.
+- Next: coordinator composes final owner commits and executes PG16/CI; G3/input owners supply separately authorized complete dated evidence to unblock full-claim match.
+- Handoff: docs/DG001_INPUTS_G5.md contains API, fingerprints, actual results and first proven blocker; no merge/deploy/real patient data/automatic financial disposition.
+
+### HANDOFF-20261021-213 — G5 conflicting approved tariff/policy guard
+- Scope: narrow G5 tariff comparison and one native PG16 conflict regression.
+- Why: a signed policy grant does not resolve a mismatch with the selected historical provider tariff or currency.
+- Files: mcias/audit_agents.py, tests/test_g5_inputs_first.py, docs/DG001_INPUTS_G5.md and append-only journal/current-state.
+- Tests: coordinator final signed-producer suite 12 PASS/8.39s before this guard; changed Python compilation PASS; newly added case awaits coordinator final run.
+- Result: mismatching approved policy/provider tariff stays UNRESOLVED_OR_MISSING_REFERENCE; no check-local match or violation from conflicting inputs.
+- Risks: full six-family completeness remains the existing G3/input-owner blocker; this does not expand scope.
+- Next: coordinator runs the added native PostgreSQL 16 case with final owner commits and records exact-SHA CI.
+- Handoff: G5 approved followup guard only; no merge/deploy/real data or automatic financial decision.
+
+# MCIAS owner execution journal
+
+### HANDOFF-20261021-205 — Pillow advisories and complete external audit
+- Scope: Independent Pillow13 bound, complete installed external graph audit and real OCR/image/PDF compatibility.
+- Why: User-approved security fix; fresh pip-audit proved eight Pillow12.3 vulnerabilities fixed in13.0.0.
+- Files: pyproject.toml; .github/workflows/ci.yml; scripts/audit_dependencies.py; tests/test_dependency_audit.py; tests/test_pillow13_compatibility.py; owner report/raw audit; state/journal.
+- Tests: Real pip-audit65 external packages0 known vulnerabilities exit0; compatibility and audit-retention34 tests passed2.12s.
+- Result: TESTED_SYNTHETIC; CI PENDING on published SHA. Initial cache/local metadata/pip25 failures preserved in owner report, all corrected and rerun.
+- Risks: Advisory databases are time-dependent; no source SAST or institutional acceptance claimed. OCR remains low-confidence review evidence.
+- Next: Coordinator publishes independent Draft security PR and adopts maintenance commit in isolated composition; verify exact-SHA CI.
+- Handoff: See DG001_INPUTS_SECURITY.md and raw JSON; use python scripts/audit_dependencies.py after editable install and current pip. No ignore flags, merge/deployment or real data.
+
+
+### HANDOFF-20261021-215 — install real OCR dependency in combined CI
+- Scope: Add Tesseract to existing Enterprise full-suite runner.
+- Why: Exact46e4ad8 dependency/unit/PG CI passed but enterprise39527496191 proved missing executable for new genuine compatibility tests.
+- Files: .github/workflows/workspace.yml; owner report; state/journal.
+- Tests: Existing changed-tree34 compatibility/audit tests pass locally;46e4ad8 G1-G7 run39527496132 all jobs PASS; enterprise log showed2 missing-Tesseract failures364pass1skip. Workflow-only followup CI pending.
+- Result: Missing runner dependency corrected without skipping tests or changing product.
+- Risks: Exact new-head browser and full-suite CI not yet verified.
+- Next: Coordinator verify new security PR33 HEAD CI and adopt same runner prerequisite in isolated composition.
+- Handoff: Preserve initial failure evidence in owner report; no vulnerability ignore, merge or deployment.
+
+### HANDOFF-20261021-216 — composed PG16 source/reference/audit verification
+- Scope: Isolated owner composition and mandatory synthetic PG16 workflow, no merge/deploy.
+- Why: Latest user approves coordinated minimum implementation with actual committed evidence and owner-specific delivery.
+- Files: .github/workflows/inputs-first-pg16.yml; docs/INPUTS_FIRST_COORDINATED_DELIVERY.md; state/journal. All runtime changes are traceable owner commits listed in report.
+- Tests: Final full local389 PASS37 explicit integration-env SKIP; separate composed PG16 command60 PASS0SKIP; independent dependency audit65 external0 vulnerabilities; security compatibility34PASS; A1 pinned50PASS/Reader15PASS/Contract46+12PASS.
+- Result: TESTED_SYNTHETIC minimum integration; full six-family acceptance BLOCKED by real G3 schema/source gaps. New exact-head CI PENDING publication.
+- Risks: No full-claim proven match/violation when required references incomplete. No model/institutional/financial authority inferred.
+- Next: Publish Draft composition, verify exact remote tree and CI; G3 owns authoritative completeness/temporal evidence closure.
+- Handoff: Read INPUTS_FIRST_COORDINATED_DELIVERY.md for baselines/owned files/interfaces/commands/commits/blockers. Preserve prior failures and all owner branches; no force push.

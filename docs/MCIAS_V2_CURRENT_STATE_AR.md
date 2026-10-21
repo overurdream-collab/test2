@@ -84,3 +84,43 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Reviewed existing coordination comments and pull-request reviews: no explicit owner approvals on PR #25/#29/#31. No duplicate requests sent.
 - Existing preflight code/tests and integration design retained; no native-service Excel→G2→G4→G3→G5→Shared Audit PG16 acceptance run or persisted event ID established.
 - CONTRACT_APPROVAL_PENDING; E2E_NOT_EXECUTED. Next action: written owner sign-off, then isolated PG16 implementation and verified post-commit evidence.
+
+
+## 2026-10-21 — G2/G4 authorized minimal implementation overlay (HANDOFF-201)
+- Supersedes prior G2/G4 unimplemented statements only within this isolated branch: actual worksheet name/index/physical row inventory and source-bound append-only scope approval now gate existing XLSX stage/preview/resume. Only approved CLAIMS enter; valid claim-shaped PAYMENT is explicitly excluded and retained as source evidence.
+- Source SHA, document/job/approval/mapping and raw row lineage persist without new schema or importer. Unknown/changed/unapproved scopes block; organization isolation and no duplicate claim on retry verified after Commit and independent PG16 reread.
+- Actual evidence: focused regressions43 PASS; parent current-tree PostgreSQL16.15 E1/source-scope/batches/ingestion21 PASS. CI for new committed SHA pending; no all-gate or financial acceptance claimed.
+- Owner files/interface, test commands and remaining root/G5 combined-verification dependency: docs/DG001_INPUTS_G2G4.md. No merge/deployment/force push/real data.
+
+# MCIAS v2.0 current state — Shared Audit owner overlay
+
+2026-10-21, HANDOFF-20261021-204: minimum `claim_inputs_audited` support in the existing shared writer/contract. The unchanged `write_event` API accepts bounded UUID/SHA/closed-code correlation for the four approved semantic outcomes. It verifies the immutable snapshot, claim/source tenant and exact reference/evidence projection, atomically reuses the existing primary key for one result event, and preserves caller-owned commit/rollback.
+
+HTTP429 fixture timing was diagnosed from real `RateLimitBucket` rows; only the test clock changed. Final real PG16/unit regression after snapshot-reference projection validation: **39 passed in 3.91 seconds**, independently executed by the root coordinator. No merge/deployment/migration, no PHI, no financial approval. Full native-service composition, current CI links and institutional acceptance remain separate. See docs/DG001_INPUTS_SHARED_AUDIT.md and HANDOFF-20261021-204.
+
+
+## 2026-10-21 — G3 owner implementation (HANDOFF-20261021-202)
+- Existing reference_service.applicable_reference_snapshots emits all six families from the actual binding CAI01 section9 directive, not an assumed table list; native dated IDs/version/approval/source evidence and missing dimensions remain explicit.
+- PostgreSQL16.15 + SQLite actual targeted result:18 passed0 skipped0 failed (coordinator executed isolated mcias_inputs_g3). Includes post-Commit historical selection, signed source integrity, missing-reference safety, tenant isolation and no implicit commit.
+- Full six-family completeness remains BLOCKED by absent authoritative family/coverage/terms/class-scope/policy-date/usage/dispensing attestations; G3 and source owners own closure. complete=False is retained; native lookup_complete never implies whole-claim acceptance.
+- No G5/schema changes, merge, deployment, force push, real patient data or financial finalization. Exact-head CI pending publication.
+
+
+## 2026-10-21 — G5 INPUTS-FIRST owner implementation (HANDOFF-20261021-203)
+- Existing G5 snapshot JSON now retains four semantic outcomes, G3 six-reference certificates, verified G2/G4 source and check coverage. Shared Audit owns the event schema/writer. No parallel engine or state table.
+- Owned pure regressions: 35 PASS; preliminary coordinator-composed PG16 cases: 7 PASS, rerun pending final signed-reference fixture/producer commits. These are partial engineering results, not full six-family acceptance.
+- Overall claim remains unresolved when mandatory reference families are incomplete; native historical tariff comparison can produce a bounded proven result. No automatic financial decision. Full-family completeness blocker belongs to G3/input owners.
+- Owner handoff: docs/DG001_INPUTS_G5.md. Imported G2/G3/Shared Audit producer files are excluded from the G5 commit.
+
+## 2026-10-21 — G5 final conflict guard (HANDOFF-20261021-213)
+- Final signed-producer G5 composition: coordinator reports 12 PASS/8.39s before the followup guard.
+- Local tariff proof now also requires policy/provider tariff and currency agreement; a new actual PG16 conflict case awaits coordinator verification. Existing full six-family acceptance blocker remains unchanged.
+
+# Independent security owner state — 2026-10-21
+Pillow13.0.0; real audit65 external packages0 known vulnerabilities;34 actual compatibility tests pass. Local mcias is explicitly source-bound, all external dependencies retained. See DG001_INPUTS_SECURITY.md. Exact-SHA CI pending publication. No institutional acceptance/merge/deployment.
+
+
+Runner followup215: real security audit/unit/Postgres CI PASS on46e4ad8. Enterprise full suite lacked Tesseract; prerequisite now added, new-head verification pending.
+
+## Coordinated INPUTS-FIRST minimum —2026-10-21
+Final local composed PG16:60PASS0SKIP; full unit389PASS37integration-envSKIP; dependencies65external0known vulnerabilities. Owner commits, adopted interfaces and first remaining G3 completeness blocker are in INPUTS_FIRST_COORDINATED_DELIVERY.md. Exact-head CI pending publication; no full six-family or financial/production acceptance.
