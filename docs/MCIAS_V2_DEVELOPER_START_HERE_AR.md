@@ -205,3 +205,5 @@ Never accept a tariff candidate if its provider/service/currency appears on the 
 
 ### C28 verified tariff identity rule
 - For an AI proposed tariff only, independent G2 quote/number/provider/service/currency/date checks run before a redundant model `logical_key` mismatch can be canonicalized from the verified `provider_code:service_code`. Any additional evidence or identity failure remains on hold. DRAFT_ONLY/human review and signed G3/G5 authority unchanged. Exact-SHA CI PENDING.
+
+INPUTS-FIRST source-value evidence: `contract_source_view.locate_source_value` returns a unique literal field span for review only; tests and limits: [owner report](DG001_INPUTS_CONTRACT_EVIDENCE.md). No financial activation or E1 extension.

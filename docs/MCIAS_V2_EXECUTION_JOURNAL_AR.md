@@ -675,3 +675,56 @@
 - Risks: Historical `be85b39016cdd0868c7812f57f2087487773afbc` fails DG-001 permanently under existing immutable per-commit check unless independently authorized exception or rewrite; do not weaken enforcement silently. Additional test failures may be exposed after dependencies load.
 - Next: Check exact-SHA C35 run and test count; inspect any genuine failures. Escalate precise historical DG-001 exception proposal without implementing it; no history rewrite.
 - Handoff: PR #23 `feat/mcias-contract-intelligence` continue from latest HEAD without reset; no amend/rebase/force push/merge/deploy/model execution. Preserve existing tests and source-view implementation.
+
+### HANDOFF-20261021-206 — literal value locations for review evidence
+- Scope: Extend existing C35 source view with unique source value spans; no inference or E1 changes.
+- Why: Latest owner-specific INPUTS-FIRST assignment requires auditable provider tariff and effective-date evidence.
+- Files: mcias/contract_source_view.py; tests/test_contract_source_view.py; docs/DG001_INPUTS_CONTRACT_EVIDENCE.md; owner state/journal/developer/acceptance docs; targeted workflow.
+- Tests: 46 contract/source/API tests passed; 12 independent source/segment tests passed. Separate pinned A1 50 and Reader 15 tests passed. Initial socket-restricted API run stalled and was terminated; network-enabled retry passed.
+- Result: TESTED_SYNTHETIC; exact source offsets and ambiguity holds proven. CI PENDING publication.
+- Risks: Source-field locations are not PDF pixel boxes or approval. Model confidence unknown; no inference quality or institutional acceptance claimed.
+- Next: G3/G5 owners review evidence consumer and missing source/reference authority before acceptance.
+- Handoff: Resume from this commit, run commands in owner evidence report, preserve independent quality tests; no merge/deploy/financial automation.
+
+# MCIAS owner execution journal
+
+### HANDOFF-20261021-205 — Pillow advisories and complete external audit
+- Scope: Independent Pillow13 bound, complete installed external graph audit and real OCR/image/PDF compatibility.
+- Why: User-approved security fix; fresh pip-audit proved eight Pillow12.3 vulnerabilities fixed in13.0.0.
+- Files: pyproject.toml; .github/workflows/ci.yml; scripts/audit_dependencies.py; tests/test_dependency_audit.py; tests/test_pillow13_compatibility.py; owner report/raw audit; state/journal.
+- Tests: Real pip-audit65 external packages0 known vulnerabilities exit0; compatibility and audit-retention34 tests passed2.12s.
+- Result: TESTED_SYNTHETIC; CI PENDING on published SHA. Initial cache/local metadata/pip25 failures preserved in owner report, all corrected and rerun.
+- Risks: Advisory databases are time-dependent; no source SAST or institutional acceptance claimed. OCR remains low-confidence review evidence.
+- Next: Coordinator publishes independent Draft security PR and adopts maintenance commit in isolated composition; verify exact-SHA CI.
+- Handoff: See DG001_INPUTS_SECURITY.md and raw JSON; use python scripts/audit_dependencies.py after editable install and current pip. No ignore flags, merge/deployment or real data.
+
+
+### HANDOFF-20261021-215 — install real OCR dependency in combined CI
+- Scope: Add Tesseract to existing Enterprise full-suite runner.
+- Why: Exact46e4ad8 dependency/unit/PG CI passed but enterprise39527496191 proved missing executable for new genuine compatibility tests.
+- Files: .github/workflows/workspace.yml; owner report; state/journal.
+- Tests: Existing changed-tree34 compatibility/audit tests pass locally;46e4ad8 G1-G7 run39527496132 all jobs PASS; enterprise log showed2 missing-Tesseract failures364pass1skip. Workflow-only followup CI pending.
+- Result: Missing runner dependency corrected without skipping tests or changing product.
+- Risks: Exact new-head browser and full-suite CI not yet verified.
+- Next: Coordinator verify new security PR33 HEAD CI and adopt same runner prerequisite in isolated composition.
+- Handoff: Preserve initial failure evidence in owner report; no vulnerability ignore, merge or deployment.
+
+### HANDOFF-20261021-217 — adopt independent security maintenance
+- Scope: Adopt independently tested Pillow13/external audit/OCR runner prerequisite into new Contract Evidence draft only.
+- Why: Latest INPUTS-FIRST assignment requires real dependency closure, previous PR32 dependency failure preserved.
+- Files: Security-owned files from8eef408/4892639 with CI patches applied without replacing Contract-specific steps; owner report/state/journal.
+- Tests: Security exact6454b6d all triggered CI SUCCESS; real audit65 external0 vulnerabilities;34compatibility tests. Contract tests46+12 previously PASS; unchanged source view. New-head CI pending.
+- Result: Dependency remediation adopted; no inference/validator/financial changes.
+- Risks: Actual-model quality limitations unchanged; complete G3/G5 source authority still blocked.
+- Next: Coordinator verify latest PR32 CI, no merge/deploy.
+- Handoff: See owner reports and independent PR33; preserve original PR23 and earlier failed dependency CI.
+
+### HANDOFF-20261021-403 — ربط حرفي كامل لهوية المرجع وتاريخ السريان
+- Scope: إصلاح محدود داخل Contract Intelligence validator القائم، على codex/contract-evidence؛ تحقق اصطناعي معزول دون نموذج أو تغيير واجهة المستهلك.
+- Why: baseline 228262d المرتبط بالشجرة 0dd3b77 أعاد verified_source_anchor لقيم جزئية داخل هوية وتاريخ مختلفين؛ وافق المشرف على إصلاح الربط الحرفي دون تخفيف الدليل.
+- Files: mcias/contract_intelligence.py; tests/test_contract_source_binding_holdout.py; docs/E4_CONTRACT_QUALITY_AR.md; docs/evidence/contract403_source_binding_verification.json; CURRENT_STATE; EXECUTION_JOURNAL.
+- Tests: إعادة baseline من Git object في الذاكرة أعطت RED 10 FAILED و6 PASSED على holdout مستقل؛ الشجرة المعدلة أعطت 93 PASSED، منها holdout 16/16 وC32/C33/C34 frozen/source regressions؛ صفر inference، CI الجديد PENDING.
+- Result: ISOLATED VERIFIED لحدود الهوية/التاريخ؛ أُبقيت DRAFT_ONLY وعدم سلطة القرار المالي، وقياس C33 التاريخي 2/6 بلا ادعاء تحسن نموذجي.
+- Risks: whole-token source binding ليس اعتماد مرجع أو سلطة unit_price أو جودة OCR/LLM أو تكامل PG16؛ Recall التاريخي منخفض، وأرقام النجاح تخص الاختبارات المسماة فقط.
+- Next: المشرف يتحقق من exact-SHA CI وtriggers قبل النشر؛ مالك CI ينسق عقد اختيار أدلة الصف قبل أي خطوة Recall أخرى، وG3/G5 يبقيان بوابة المرجع المالي المعتمد.
+- Handoff: استأنف من commit هذا التسليم دون reset أو فرع جديد؛ اقرأ E4_CONTRACT_QUALITY_AR.md وبيان الاختبارات والبصمات؛ لا تكرر نموذج C33/C34 ولا تعتمد اقتراح CI ماليًا ولا تنشر أو تدمج.
