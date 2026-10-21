@@ -91,6 +91,13 @@ def _normalize(value):
     return " ".join(value.split())
 
 
+def _literal_in_source(value, sources):
+    # Use the same whole-token boundary as C35 literal source evidence. A
+    # substring such as H1 in H10 or an ISO date in a suffixed token is no anchor.
+    pattern = r"(?<!\w)" + re.escape(value) + r"(?!\w)"
+    return any(re.search(pattern, source) is not None for source in sources)
+
+
 def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_revision):
     """Independent conservative validation; output always DRAFT_ONLY, never approved.
 
@@ -162,7 +169,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
             else:
                 identity_sources = tuple(block["fields"].values())
             for name, value in (("provider", provider), ("service", service), ("currency", currency)):
-                if isinstance(value, str) and not any(value in part for part in identity_sources):
+                if isinstance(value, str) and not _literal_in_source(value, identity_sources):
                     errors.append(name + "_not_in_source")
         try:
             start, end = _check_date(raw.get("effective_from")), _check_date(raw.get("effective_until"))
@@ -181,7 +188,7 @@ def validate_candidates(candidates, blocks, *, source_sha256, model_id, model_re
                 # Excel: a different cell is valid only within the SAME row.
                 date_evidence = tuple(block["fields"].values())
             for label, value in (("start", start), ("end", end)):
-                if value and not any(value in part for part in date_evidence):
+                if value and not _literal_in_source(value, date_evidence):
                     errors.append("effective_" + label + "_not_in_source")
         if not start:
             errors.append("missing_effective_from")

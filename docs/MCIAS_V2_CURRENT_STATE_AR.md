@@ -323,3 +323,10 @@ Pillow13.0.0; real audit65 external packages0 known vulnerabilities;34 actual co
 Runner followup215: real security audit/unit/Postgres CI PASS on46e4ad8. Enterprise full suite lacked Tesseract; prerequisite now added, new-head verification pending.
 
 Security maintenance adopted from verified independent PR33 without replacing Contract-specific CI tests. Exact new-head CI pending; source-value locations unchanged.
+
+## Contract Intelligence — HANDOFF-20261021-403
+
+- نقطة الاستئناف `228262d19c914f04aa4a7af1d9c7898e98734cbf` على `codex/contract-evidence`، شجرة `0dd3b77db5d52d2317554be5210cddea88d20803` مطابقة لشجرة GitHub `cc0188e` وفق تحقق المشرف؛ لا تغييرات واردة ناقصة ولا فرع جديد.
+- أُغلق الربط الجزئي لهوية المقدم والخدمة والعملة وتاريخ السريان داخل validator القائم. baseline مستقل RED: 10 FAILED و6 PASSED؛ الشجرة المعدلة: 93 PASSED، منها holdout الجديد 16/16. محفوظة النتائج الفردية وبصمات المصدر في `docs/evidence/contract403_source_binding_verification.json`، والتفسير وحدود القبول في `docs/E4_CONTRACT_QUALITY_AR.md`.
+- الحالة ISOLATED VERIFIED للربط الحرفي، QUALITY BLOCKED لاستخراج النموذج. C33 التاريخي TP2/FP0/FN4، Recall 2/6؛ لم يُشغل نموذج جديد ولم تُعدل gold أو frozen outputs أو الأسعار. DRAFT_ONLY باقٍ؛ لا سلطة unit_price أو اعتماد مالي من CI candidate.
+- الخطوة المحددة: المشرف ينشر ويتحقق من CI المطابق بعد مراجعة triggers؛ لا تشغيل Qwen غير مطلوب. تبقى جودة اختيار دليل الصف لدى مالك CI بعقد منسق لاحق، وسلطة المرجع المعتمد والمكتمل والساري لدى G3/G5 والمراجع المخول. لا merge/deployment أو بيانات حقيقية أو ترحيل PG16 في هذا التسليم.

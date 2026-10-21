@@ -1,0 +1,473 @@
+{
+  "schema_version": "mcias.contract_source_binding_verification.v1",
+  "synthetic_only": true,
+  "baseline_commit": "228262d19c914f04aa4a7af1d9c7898e98734cbf",
+  "baseline_tree": "0dd3b77db5d52d2317554be5210cddea88d20803",
+  "baseline_replay": {
+    "method": "git show baseline module loaded in memory; same holdout; no worktree mutation",
+    "tests": 16,
+    "failures": 10,
+    "errors": 0,
+    "skipped": 0,
+    "pytest_seconds": 0.127,
+    "timestamp_utc": "2026-10-21T15:31:59.039211+00:00",
+    "cases": [
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[provider-N70-provider_not_in_source-page]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[provider-N70-provider_not_in_source-sheet]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[service-LABORATORY-service_not_in_source-page]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[service-LABORATORY-service_not_in_source-sheet]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[currency-USDX-currency_not_in_source-page]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[currency-USDX-currency_not_in_source-sheet]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_from-2026-01-01x-effective_start_not_in_source-page]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_from-2026-01-01x-effective_start_not_in_source-sheet]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_until-2027-01-01x-effective_end_not_in_source-page]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_until-2027-01-01x-effective_end_not_in_source-sheet]",
+        "outcome": "FAILED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-1500-numeric_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-1500-numeric_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-500.50-numeric_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-500.50-numeric_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_complete_source_literals_preserve_draft_only_evidence[page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_complete_source_literals_preserve_draft_only_evidence[sheet]",
+        "outcome": "PASSED"
+      }
+    ]
+  },
+  "changed_tree_validation": {
+    "tests": 93,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "pytest_seconds": 0.764,
+    "timestamp_utc": "2026-10-21T15:31:37.293486+00:00",
+    "cases": [
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[provider-N70-provider_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[provider-N70-provider_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[service-LABORATORY-service_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[service-LABORATORY-service_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[currency-USDX-currency_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[currency-USDX-currency_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_from-2026-01-01x-effective_start_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_from-2026-01-01x-effective_start_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_until-2027-01-01x-effective_end_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[effective_until-2027-01-01x-effective_end_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-1500-numeric_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-1500-numeric_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-500.50-numeric_not_in_source-page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_partial_source_literals_cannot_verify_a_different_value[unit_price-500.50-numeric_not_in_source-sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_complete_source_literals_preserve_draft_only_evidence[page]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_binding_holdout.test_complete_source_literals_preserve_draft_only_evidence[sheet]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_r1_to_r6_literal_roundtrip_stability_and_no_mutation",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_provider_segment_and_sheet_row_boundaries",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_blank_repeated_numeric_ambiguous_and_cell_identity",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_reject_duplicate_record_locator_missing_row_and_invalid_reference",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_original_validator_unchanged_and_no_candidate_created",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_tariff_provider_and_effective_date_have_exact_field_spans",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_source_view.test_repeated_price_wrong_cell_and_partial_identity_fail_closed",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_exact_quote_numeric_and_page_anchor_stay_reviewable_only",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_xlsx_rows_are_isolated_per_provider",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_uncertain_ocr_price_and_mismatched_quote_quarantined",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_missing_date_and_ambiguous_legal_clause_never_activated",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_duplicate_and_conflicting_amendment_detected",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_model_cannot_override_status_or_execute_instructions",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_wrong_source_ref_and_oversized_inputs_fail_closed",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_no_external_model_endpoint[http://example.com/v1/chat/completions]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_no_external_model_endpoint[https://127.0.0.1:1234/v1/chat/completions]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_no_external_model_endpoint[http://127.0.0.1:1234/internal]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_no_external_model_endpoint[http://user:pass@127.0.0.1:1234/v1/chat/completions]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_real_transport_not_faked_if_runtime_unavailable",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_malformed_model_json_types_are_reviewed_not_executed",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_model_localhost_hostname_rejected_for_strict_loopback_pin",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_page_with_two_prices_cannot_anchor_wrong_price_to_other_clause",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_pdf_date_from_another_clause_cannot_anchor_tariff",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_excel_dates_may_be_in_separate_cells_on_exact_same_source_row",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_invented_future_period_without_any_source_cell_stays_on_hold",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_llm_contract_prompt_contains_no_hardcoded_provider_tariff_example",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_pdf_provider_from_another_clause_must_not_validate_this_tariff",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_pdf_service_and_currency_must_match_specific_quote_not_page",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_explicit_cpu_benchmark_timeout_is_bounded_and_default_unchanged",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_source_verified_tariff_rebuilds_only_redundant_model_key",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_unproven_provider_or_service_never_gets_key_repair",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_wrong_tariff_quote_or_amount_cannot_be_automatically_repaired",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_other_wrong_tariff_key_remains_quarantined",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_intelligence.test_c32_r2_verified_hyphen_key_repaired_preserving_raw_model_key",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-T1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-T2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-T3]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-MIX-T4]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-MIX-T5]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-T6]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-C1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-C2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-MIX-C3]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-B1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-B2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-D1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-D2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-E1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-E2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-A1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-A2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-P1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-AR-CAT1]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_gold_clause_types_are_accepted_only_with_verbatim_source[SYN-EN-CAT2]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[wrong_source]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[unknown_section]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[code_as_rule]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[invented_amount]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[wrong_provider]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[wrong_service]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[wrong_currency]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[wrong_key]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[missing_start]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_gold_battery.test_ten_adversarial_mutations_never_verify_as_trusted[reversed_period]",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_c32_frozen_replay.test_frozen_c31_replay_after_c32_corrects_only_r2",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_c34_rejection_replay.test_c33_real_raw_false_negatives_still_quarantined_by_unmodified_validator",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_c34_rejection_replay.test_c33_real_raw_excel_quotes_not_in_single_source_cell",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_c34_rejection_replay.test_c34_holdout_distinct_and_source_validated",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_tariff_segments.test_two_provider_clauses_have_exact_anchored_nonoverlapping_spans",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_tariff_segments.test_no_partition_if_price_missing_or_ambiguous_identity",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_tariff_segments.test_swapped_or_fabricated_amount_and_other_provider_remain_quarantined",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_independent_synthetic.test_corpus_independent_and_bilingual",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_independent_synthetic.test_unverified_sheet_identity_and_amount_are_quarantined",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_benchmark_scoring.test_equivalent_decimal_spellings_are_the_same_tariff",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_benchmark_scoring.test_different_amount_is_never_matched",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_benchmark_scoring.test_different_provider_or_service_is_never_matched",
+        "outcome": "PASSED"
+      },
+      {
+        "test": "tests.test_contract_benchmark_scoring.test_original_c28_4_case_scoring_recomputed",
+        "outcome": "PASSED"
+      }
+    ]
+  },
+  "file_sha256": {
+    "mcias/contract_intelligence.py": "26891497d8ab555b66b1c0c85ed535a84665e4b7ba50c9b321305b87f9b9a3f3",
+    "mcias/contract_source_view.py": "722486d037d020e23160a8edec45a83483408741712f50c122cb01077a8aaa49",
+    "tests/test_contract_source_binding_holdout.py": "5eb1fbebc529695078e28bc93f8823409333ad899573c7482abc1e0758b8e924",
+    "tests/fixtures/contract_independent_synthetic.json": "56103f2ebe96e7b00f934bc29506d51b53622cefab53fdc45550b0123a6999f0",
+    "tests/fixtures/contract_c34_holdout_synthetic.json": "da4420bd14280109e04ed2ac583c344d10cd8d3a8d1d1d4d28df66046d4ef82b"
+  },
+  "new_model_inference_calls": 0,
+  "quality_scope": "Whole-token literal source binding only; not model extraction quality or approved unit-price authority.",
+  "financial_decision": "NOT_AUTHORIZED"
+}

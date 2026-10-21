@@ -718,3 +718,13 @@
 - Risks: Actual-model quality limitations unchanged; complete G3/G5 source authority still blocked.
 - Next: Coordinator verify latest PR32 CI, no merge/deploy.
 - Handoff: See owner reports and independent PR33; preserve original PR23 and earlier failed dependency CI.
+
+### HANDOFF-20261021-403 — ربط حرفي كامل لهوية المرجع وتاريخ السريان
+- Scope: إصلاح محدود داخل Contract Intelligence validator القائم، على codex/contract-evidence؛ تحقق اصطناعي معزول دون نموذج أو تغيير واجهة المستهلك.
+- Why: baseline 228262d المرتبط بالشجرة 0dd3b77 أعاد verified_source_anchor لقيم جزئية داخل هوية وتاريخ مختلفين؛ وافق المشرف على إصلاح الربط الحرفي دون تخفيف الدليل.
+- Files: mcias/contract_intelligence.py; tests/test_contract_source_binding_holdout.py; docs/E4_CONTRACT_QUALITY_AR.md; docs/evidence/contract403_source_binding_verification.json; CURRENT_STATE; EXECUTION_JOURNAL.
+- Tests: إعادة baseline من Git object في الذاكرة أعطت RED 10 FAILED و6 PASSED على holdout مستقل؛ الشجرة المعدلة أعطت 93 PASSED، منها holdout 16/16 وC32/C33/C34 frozen/source regressions؛ صفر inference، CI الجديد PENDING.
+- Result: ISOLATED VERIFIED لحدود الهوية/التاريخ؛ أُبقيت DRAFT_ONLY وعدم سلطة القرار المالي، وقياس C33 التاريخي 2/6 بلا ادعاء تحسن نموذجي.
+- Risks: whole-token source binding ليس اعتماد مرجع أو سلطة unit_price أو جودة OCR/LLM أو تكامل PG16؛ Recall التاريخي منخفض، وأرقام النجاح تخص الاختبارات المسماة فقط.
+- Next: المشرف يتحقق من exact-SHA CI وtriggers قبل النشر؛ مالك CI ينسق عقد اختيار أدلة الصف قبل أي خطوة Recall أخرى، وG3/G5 يبقيان بوابة المرجع المالي المعتمد.
+- Handoff: استأنف من commit هذا التسليم دون reset أو فرع جديد؛ اقرأ E4_CONTRACT_QUALITY_AR.md وبيان الاختبارات والبصمات؛ لا تكرر نموذج C33/C34 ولا تعتمد اقتراح CI ماليًا ولا تنشر أو تدمج.
