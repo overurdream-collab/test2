@@ -62,3 +62,13 @@ source_evidence:
 - Traceability على `6aca20d`: checked35/tracked33/violations0. لا تغييرات runtime أو tests بعد هذا المصدر؛ التسليم اللاحق توثيقي فقط. CI على Commit الجديد يظل NOT_RUN محلياً إلى أن ينشره المشرف. نتائج النموذج السابقة والـworkflow guard اليدوي لم تتغير.
 
 أول عائق باقٍ: سلطة rule وسياق الحساب المعتمد والمرجع الصريح؛ مالكه G5/G3 بالتنسيق مع مالك العقد. الإغلاق بإثبات المصدر والسياق والقاعدة المعتمدة واختبارها، دون تحويل نقصها إلى مخالفة.
+
+## Dependency follow-up — نقل إصلاح PR33 المعتمد
+
+كشف CI على PR20 المنشور `c9a98ae32a798a42f79241d86df0da2e64231096` فشل Dependency Audit: Pillow12.3.0/17 CVE واستعلام mcias المحلي، وفق تحقق المشرف في [التشغيل](https://github.com/overurdream-collab/test2/actions/runs/39675248672/job/119483283700). هذا إخفاق تبعيات مستقل عن اختباراتA1 الناجحة، ولم نكرر تحقيقCVE السابق.
+
+بتفويض محدد من المشرف، نُقل إصلاح مالكsecurity القائم من `6454b6d054591e398c7251af5454c067fa00fc59`: قيد `Pillow>=13.0.0,<14`، وscript `scripts/audit_dependencies.py` واختبار `tests/test_pillow13_compatibility.py` دون تعديل الدوال. بصمتاهما SHA-256 بالترتيب: `ee435b1e0fc09b58054a688d63110c95638087a5676204ef95e11f61bbee5a28` و`396ecaa82e2c614ddb4df5509584d5b0613c7d5edfbe4aa0d0ac9425f92432bf`. التعديل المحدود فيci.yml يربط audit المعتمد والتوافق ويثبتTesseract؛ لم ننسخmain أوCI كاملاً. حارسQwen اليدوي لم يتغير.
+
+يفحصscript كلdistribution خارجية مثبتة، بما فيها التبعيات المتعدية وأدوات الفحص، بإصداراتها الفعلية و`--strict`؛ يعالج mcias المحلي بعد التحقق من مصدره ولا يتجاهلCVE أو يستبعد تبعية خارجية. `--no-deps` يمنع إعادة حل الإصدارات لأن القائمة تضم كلالتبعيات أصلاً.
+
+على Pillow13.0.0، نجح الأمر الموجّه `PYTHONPATH=. /workspace/security-venv/bin/python -m pytest -q tests/test_pillow13_compatibility.py tests/test_g2_reader.py tests/test_g2_ocr_isolation.py tests/test_g7_reporting.py tests/test_audit_export.py`: **32 PASS في5.09s**. فحصpip-audit الحقيقي على الشجرة الجديدة **NOT_RUN محلياً**؛ إثباته مسؤولية CI بعد نشر المشرف، فلا نعتبر عائق Dependency Audit مغلقاً قبل نتيجته. الاختباراتاصطناعية وليست دليلاً على دقةOCR أو اعتماد إنتاجي.

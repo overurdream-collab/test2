@@ -99,3 +99,83 @@
 - rollback: revert توثيقي لهذاCommit فقط؛ لاreset أوforcepush.
 - next: Commit ذري للوثائق وworklog، تحققtraceability، ثم تسليمSHA وtree للمشرف للنشر فيPR20 القائم؛ يستمرG5 فيوحدتهالمستقلة.
 - decision_status: READY_FOR_INDEPENDENT_REVIEW
+
+### EVENT-20261021-405-06 — تفويض إصلاح التبعيات المعتمد دون إعادة التحقيق
+- event_id: EVENT-20261021-405-06
+- when_utc: 2026-10-21T21:06:30Z
+- actor: Codex / A1 owner agent؛ تفويض المشرف root بتوسعة محددة لنسخ إصلاح مالكsecurity
+- action: DECISION / READ
+- reason: المشرف تحقق من CI علىPR20 المنشورc9a98ae؛ DependencyAudit39675248672/job119483283700 فشل بسببPillow12.3.0 و17CVE والإصلاح13.0.0، واستعلامdistribution mcias المحلي. الإصلاح سبق اعتماده فيPR33 فلا نعيد بحثCVE.
+- scope: /workspace/a1-validation parent المحلي19c9fb0 النظيف؛ مصدر الإصلاح القائم6454b6d منمستودع/test2؛ dependency pin/audit script/compat tests/CI wiring ووثائقA1 فقط؛ synthetic.
+- before_sha: 19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5
+- after_ref: SELF
+- files_or_sources: git HEAD/status المحليان؛ تكليفroot؛ المصدر6454b6d المعتمد الذي سيقرأ قبلالنسخ؛ هدفpyproject.toml وscripts/audit_dependencies.py وtests/test_pillow13_compatibility.py وموضعDependencyAuditالحاليالذي سيحددبالبحث.
+- command_or_method: git rev-parse HEAD؛ git status --short؛ الساعةالفعلية؛ لاnetworkأوفحصCVEجديد؛ سجل التفويض قبل القراءةوالنسخ.
+- expected: نقلأصغرإصلاحمملوكلـsecurity بالبصماتوالمنشأمعقيدPillow>=13.0.0,<14 وعدم تجاهلCVE أوexternal dependency.
+- outcome: PARTIAL
+- validation: HEAD19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5؛worktreeنظيفقبلالسجل. compatibility NOT_RUN؛ auditالحقيقيعلىSHAالجديديلزمCIأوrootnetworkبعدالنشر.
+- evidence: https://github.com/overurdream-collab/test2/actions/runs/39675248672/job/119483283700 (فشله verified بواسطةالمشرف، لمأعدجلبه).
+- risk_and_security: لاignore flags ولااستبعادتبعياتخارجية؛لاsyncكاملCI/main؛لاQwen/model/manualdispatch؛لاPHIأوmerge/deployment؛الحفاظعلىدوالالمالكالأصليوذكرمصدرها.
+- rollback: revertذريلهذاالإصلاحوالسجلالمرافق؛لاresetأوforcepush.
+- next: اقرأالنسخةالمعتمدةوبصماتهاوحددwiringالهدف،ثمcopyالمحدودواختبارcompatفقطوCommitللمشرف.
+- decision_status: IN_PROGRESS
+
+### EVENT-20261021-405-07 — نقل إصلاح مالكsecurity وتشغيل توافق المكونات المتأثرة
+- event_id: EVENT-20261021-405-07
+- when_utc: not independently verifiable
+- actor: Codex / A1 owner agent؛ الكود المنسوخ أصلاً لمالكsecurity فيPR33
+- action: READ / WRITE / TEST
+- reason: إغلاق regression dependency المثبت بCI20 عن طريق الإصلاح الموجود فقط، دون إعادةتنفيذالمعالجةأوتجاهلثغرات.
+- scope: pyproject.toml؛ scripts/audit_dependencies.py؛ tests/test_pillow13_compatibility.py؛ .github/workflows/ci.yml (dependency job وTesseract اللازملاختبارunitالجديد)؛ وثائقالمالك.
+- before_sha: 19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5
+- after_ref: SELF
+- files_or_sources: git show6454b6d054591e398c7251af5454c067fa00fc59 للscript والtest والworkflow؛ pyproject/workflow الهدف؛ rgالمصدرالحالي؛ مصدرPR33المعتمد.
+- command_or_method: قراءةgit show ونسخbytes للscriptوالtestبـsubprocess.check_output دونتعديلالدوال؛ replaceمحددلقيدPillow13؛ wiringمحددمنالمصدرالمعتمد،نفسcompatset؛ sha256sum؛ importPIL للتحققمنالإصدار. التالي PYTHONPATH=. /workspace/security-venv/bin/python -m pytest -q tests/test_pillow13_compatibility.py tests/test_g2_reader.py tests/test_g2_ocr_isolation.py tests/test_g7_reporting.py tests/test_audit_export.py.
+- expected: OCR/image/scannedPDF/report compatibility علىPillow13 وحفاظالحصرالكاملللتبعياتالخارجية.
+- outcome: PARTIAL
+- validation: PILالمثبت13.0.0؛scriptوtestمنسوخانبايتياً؛compatقيدالبدءعندتسجيلالحدث،NOT_RUNحتىظهورالنتيجة. realauditعلىSHAالجديدلميشغلمحلياًبلاnetwork؛CIبعدالنشرشرطالقبول.
+- evidence: scripts/audit_dependencies.py SHA256ee435b1e0fc09b58054a688d63110c95638087a5676204ef95e11f61bbee5a28؛ tests/test_pillow13_compatibility.py SHA256396ecaa82e2c614ddb4df5509584d5b0613c7d5edfbe4aa0d0ac9425f92432bf؛ source6454b6d054591e398c7251af5454c067fa00fc59. يمتنعscriptفقطعناستعلامdistributionmciasالمحليبعدالتحققمنالمصدر،ويعددكافةexternalinstalledversionsبمافيهtransitive/tooldepsمعstrictوبلاتجاهلCVE.
+- risk_and_security: --no-depsفيauditلايستبعدالتبعيات؛كلالتبعياتمثبتةتُعددمسبقاًلمنعتغييرنسخهابالresolver. لاsyncكاملللworkflow؛لاignoreأوexcludeخارجي؛لاQwenmanualdispatch؛لاPHIأوmigrationأوmerge/deployment.
+- rollback: revertذريلوحدةdependencyهذهفقط؛لاتراجعلقيودثقةA1.
+- next: سجلنتيجةcompatالفعليةوبصماتالمصدرثمDG/HANDOFFوCommit؛rootينشرDraftالقائمويتتبّعDependencyAuditالحقيقيوCIالمطابق.
+- decision_status: IN_PROGRESS
+
+### EVENT-20261021-405-08 — توافق Pillow13 ناجح وتسليم الإصلاح المحدود
+- event_id: EVENT-20261021-405-08
+- when_utc: 2026-10-21T21:08:21Z
+- actor: Codex / A1 owner agent
+- action: TEST / WRITE / HANDOFF
+- reason: تسجيلنتيجةcompatالفعليةومصدرالكودالمعاداستخدامهقبلالنشر،معالحفاظعلىفشلDependencyAuditالأصلي.
+- scope: sourceparent19c9fb0 + workingtreePillowfix؛synthetic؛وثائقA1والتعديلاتالمحددةفقط.
+- before_sha: 19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5
+- after_ref: SELF
+- files_or_sources: pyproject.toml؛ .github/workflows/ci.yml؛ scripts/audit_dependencies.py؛ tests/test_pillow13_compatibility.py؛ tests/test_g2_reader.py؛ tests/test_g2_ocr_isolation.py؛ tests/test_g7_reporting.py؛ tests/test_audit_export.py؛ docs/E4_A1_BRIDGE_AR.md؛ docs/engineering/HANDOFF_A1_AR.md؛ worklog.
+- command_or_method: PYTHONPATH=. /workspace/security-venv/bin/python -m pytest -q tests/test_pillow13_compatibility.py tests/test_g2_reader.py tests/test_g2_ocr_isolation.py tests/test_g7_reporting.py tests/test_audit_export.py؛ readsession32515؛ تحديثreport/HANDOFF؛ gitdiffcheckوالـtraceabilityسيتمقبلالتسليم.
+- expected: نجاحcompatدونتخفيفثقةOCRأوحجبثغرة.
+- outcome: PASS
+- validation: 32 PASS في5.09s علىPillow13.0.0؛ لاتشغيلpip-auditمحليفيهذهالدورة،CIعلىSHAالجديد NOT_RUN حتىنشرroot. نجاحcompatليسنجاحauditمفترضاً.
+- evidence: script/testمطابقانللمصدر6454b6d054591e398c7251af5454c067fa00fc59 بالبصمتينالمسجلتينفيEVENT405-07والreport؛CIالفاشلالسابق محفوظالرابط،لاطمسله.
+- risk_and_security: لاignoreCVE ولااستبعادتبعياتخارجية؛قائمةكلinstalledexternalversionsمعstrict؛المعالجةخاصةفقطبالdistributionالمحليالمثبتالمصدر؛لامواردmodel أوPHI أوmerge/deploy؛runtimeA1 وhashsemantics لمتتغير.
+- rollback: revertوحدةdependencyفقطوالسجلالمرافق؛لاreset/rebase/forcepush.
+- next: CommitمحليذريوتسليمSHA/tree؛المشرفينشرإلىPR20القائمويقبلالفحصفقطعندنهايةCIالحقيقيعلىSHAالمطابق.
+- decision_status: READY_FOR_INDEPENDENT_REVIEW
+
+### EVENT-20261021-405-09 — Publication intent مستقل لمسار GitHub
+- event_id: EVENT-20261021-405-09
+- when_utc: 2026-10-21T21:08:21Z
+- actor: Codex / A1 owner agent؛ root مالكعمليةالنشرالمستقبلية
+- action: HANDOFF / DECISION
+- reason: GitHubHEADالمعلنمنالمشرفc9a98aeلهنفسشجرةlocal19c9fb0 لكنتاريخالنشرمختلف؛توثيقالوالدالحقيقيالمقصوددونتغييرالتاريخالمحليأواختراعCommitنشر.
+- scope: نشرنفسشجرةإصلاحdependency عبرالمشرفإلىDraftPR20القائمفقط؛لادمجأونشرخدمة؛المسارالمحلييحتفظبوالد19c9fb0الموثقأعلاه.
+- before_sha: c9a98ae32a798a42f79241d86df0da2e64231096
+- after_ref: SELF
+- files_or_sources: تكليفrootالذييثبتHEADالنشروتطابقالشجرة؛patchالمحليفيpyproject.toml وci.yml وaudit_dependencies.py وtest_pillow13_compatibility.py؛وثائقA1/worklogالمرافقة.
+- command_or_method: NOT_RUN؛rootسينشئنفسالشجرةبـGitDataAPIبوالدc9a98aeالمعلن،ثميسجلreceiptSHAالنهائيوCIفيPR/checkpoint. لاreset/rebase/pullلتوفيقالتاريخين.
+- expected: نشرشجرةالإصلاحالمحدودنفسهاوحفظtraceabilityلكلالمسارين،ثمDependencyAuditحقيقيعلىSHAالمنشور.
+- outcome: NOT_RUN
+- validation: SHAالنشرالنهائيوCIلميوجداوقتكتابةintent؛لاادعاءبإتمامهما. اختباراتcompat32PASSتخصمصدرالملفاتالمطابقللشجرةالمحليةفقط.
+- evidence: before_shaالنشرمنتحققالمشرف؛sourcefix6454b6d054591e398c7251af5454c067fa00fc59 والبصماتالمسجلة؛parentالمحلي19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5.
+- risk_and_security: لاforcepush أوmerge أوdeployment؛لاإضعافtraceabilityguard؛لاSHAنهائيمخترعأونتيجةauditمفترضة؛workflowQwenيبقىmanualdispatchفقط.
+- rollback: إلغاءintentقبلالنشرأوrevertمحددبعدهعنطريقالمالك؛لاتغييرالتاريخالموجود.
+- next: تسليمCommit/treeلـroot؛rootيثبترابطالـreceiptوCIبعدالنشرويبلغأولفشلحقيقيإنبقي.
+- decision_status: READY_FOR_INDEPENDENT_REVIEW
