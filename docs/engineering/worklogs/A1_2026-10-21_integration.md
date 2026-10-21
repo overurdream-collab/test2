@@ -179,3 +179,63 @@
 - rollback: إلغاءintentقبلالنشرأوrevertمحددبعدهعنطريقالمالك؛لاتغييرالتاريخالموجود.
 - next: تسليمCommit/treeلـroot؛rootيثبترابطالـreceiptوCIبعدالنشرويبلغأولفشلحقيقيإنبقي.
 - decision_status: READY_FOR_INDEPENDENT_REVIEW
+
+### EVENT-20261021-405-10 — تفويض إصلاح بيئة Enterprise المحدد
+- event_id: EVENT-20261021-405-10
+- when_utc: 2026-10-21T21:14:13Z
+- actor: Codex / A1 owner agent؛ تفويضrootالمحدد
+- action: DECISION / READ
+- reason: CIعلىPR20HEADfca4707b88366f175e8928d7136bd1badd7ca4e2 أثبتنجاحDependencyAudit60external/0vulns وcompat32PASS وunit/PG/G8/G9/governance/deterministic؛Enterprise39676632722/job119488076413 فشلحالتينفقطFileNotFoundError:tesseract مع472PASS/1SKIP. الإصلاحبيئيلااختباري.
+- scope: .github/workflows/workspace.yml فقطلتثبيتTesseractقبلfullcombinedtest،معHANDOFF/worklog؛parentالمحليba98c27النظيف؛لاruntimeأوتوقعاتاختبار.
+- before_sha: ba98c27129c48b884e4bead187ee5b0eba783b42
+- after_ref: SELF
+- files_or_sources: gitHEAD/status؛تكليفrootوCIreceipt؛workspace.ymlالهدفومثيلهالقائمفيPR33/test2ستتمقراءتهما؛HANDOFF/worklogفقط.
+- command_or_method: gitrevparseHEAD؛gitstatusshort؛clock؛تسجيلالتفويضقبلقراءةوتعديلworkflow. لاauditأوcompatrerun.
+- expected: نفسخطوةapt-getupdate/installtesseract-ocrالمثبتةتسبقfullcombinedregressionدونتغييرالتوقعاتأوبقيةCI.
+- outcome: PARTIAL
+- validation: HEADba98c27129c48b884e4bead187ee5b0eba783b42؛worktreeنظيفقبلالسجل؛اختباراتالتغييرNOT_RUN؛نجاحاتCIالسابقةverifiedبواسطةrootولاتنسبللتغييرالجديد.
+- evidence: https://github.com/overurdream-collab/test2/actions/runs/39676632722/job/119488076413 ؛HEADالمنشورfca4707b88366f175e8928d7136bd1badd7ca4e2 وفقroot.
+- risk_and_security: لاPHIأوmodeldispatchأوتغييرdependency/rule؛لاتغييراختباراتأوإخفاءالفشل؛المتابعةتقتصرعلىjobالفاشلبعدالنشر.
+- rollback: revertخطوةworkflowالمحددةوالسجلالمرافقفقط؛noreset/rebase/forcepush/merge/deploy.
+- next: اقرأموضعfullcombinedومثالالخطوةالقائمة،أضفالخطوةثمHANDOFFوpublicationintentوالـCommitالذري؛rootينشرويتابعCI.
+- decision_status: IN_PROGRESS
+
+### EVENT-20261021-405-11 — إضافة متطلب Tesseract إلى Enterprise runner
+- event_id: EVENT-20261021-405-11
+- when_utc: 2026-10-21T21:14:13Z (وقتبدءالتحقق؛توقيتالكتابةالدقيقلمنيسجلمستقلاً)
+- actor: Codex / A1 owner agent
+- action: READ / WRITE / HANDOFF
+- reason: إغلاقنقصbinaryالمثبتفيبيئةCI دونتغييرشيفرةأواختباراتناجحة.
+- scope: .github/workflows/workspace.yml سطرinstallواحد؛ docs/engineering/HANDOFF_A1_AR.md؛worklog؛syntheticrunnerفقط.
+- before_sha: ba98c27129c48b884e4bead187ee5b0eba783b42
+- after_ref: SELF
+- files_or_sources: .github/workflows/workspace.yml المحليوكذلك/workspace/test2/.github/workflows/workspace.yml (الخطوةالقائمةالمثبتة)؛HANDOFF/worklog؛receiptCIمنroot.
+- command_or_method: catworkflowالهدف؛rg-C3علىsourceworkflow؛apply_patchلإضافةسطرsudoapt-getupdate&&sudoapt-getinstall-ytesseract-ocrبعدpipinstallوقبلplaywrightوالـfullcombinedtest؛gitdiffcheckوالتأكدمنpatchالمحددقبلCommit.
+- expected: إتاحةtesseractللـfullcombinedregressionبنفسالمتطلبالمثبتفيciunitوPR33؛لاتغييرللنتائجالمتوقعة.
+- outcome: PASS
+- validation: تعديلworkflowمحددلإضافةسطرواحدفقط؛runtime/testsلمتتغير؛compat/audit NOT_RUN عمداًلأنهماPASSمسبقاًعلىfca4707؛Enterpriseعلىالشجرةالجديدة NOT_RUN حتىنشرroot. لاادعاءنجاحCIللشجرةقبلتشغيله.
+- evidence: فشلEnterprise https://github.com/overurdream-collab/test2/actions/runs/39676632722/job/119488076413 ؛نجاح60external/0vulns وcompat32PASSوفقrootعلىfca4707b88366f175e8928d7136bd1badd7ca4e2. المصدرالقائمtest2يحملخطوةTesseractنفسهابينpipinstallوplaywright.
+- risk_and_security: حصرالتغييرفيbinaryprerequisite؛لاخفضللحدودأوحذفحالاتأواستثناءCVEs؛لاQwenmanualdispatchأوPHIأوmerge/deployment.
+- rollback: revertالسطرالمضافوالـHANDOFF/worklogالمرافقينفقط؛لاreset/rebase/forcepush.
+- next: CommitمحليذريوتسليمSHA/treeو3files؛rootينشرالشجرةويسجلالنتيجةالفعليةلـEnterprise.
+- decision_status: READY_FOR_INDEPENDENT_REVIEW
+
+### EVENT-20261021-405-12 — Publication intent لإصلاح Enterprise المحدود
+- event_id: EVENT-20261021-405-12
+- when_utc: 2026-10-21T21:14:13Z (وقتبدءالتوثيق؛النشرغيرمنفذ)
+- actor: Codex / A1 owner agent؛rootالمشرفمالكالنشرالمستقبلي
+- action: DECISION / HANDOFF
+- reason: حفظوالدGitHubالحقيقيمنفصلاًعنالوالدالمحليدونreset/rebase/pullأوتخفيفtraceability.
+- scope: نشرنفسشجرةworkflowprerequisiteوالوثائقالمرافقةإلىDraftPR20القائم؛لاmergeأوdeployment.
+- before_sha: fca4707b88366f175e8928d7136bd1badd7ca4e2
+- after_ref: SELF
+- files_or_sources: تكليفrootالمثبتلـHEADالمنشور؛ .github/workflows/workspace.yml؛ docs/engineering/HANDOFF_A1_AR.md؛ docs/engineering/worklogs/A1_2026-10-21_integration.md.
+- command_or_method: NOT_RUN؛rootسينشرالشجرةبنفسهامعparentfca4707المعلنويحفظreceiptSHAوCIفيPR/checkpoint؛المحلييحتفظبالparentba98c27129c48b884e4bead187ee5b0eba783b42.
+- expected: متطلبTesseractقبلfullcombinedtestمعالحفاظعلىجميعالاختباراتوالحارساليدويللنموذج،ثممتابعةEnterpriseالفاشلعلىSHAالمنشور.
+- outcome: NOT_RUN
+- validation: SHAالنشرالنهائيونتيجةCIالجديدغيرمعروفينوقتكتابةintent؛لااختراعلهما؛compatauditالناجحتانلمتعادا.
+- evidence: parentالنشرfca4707b88366f175e8928d7136bd1badd7ca4e2 وفقroot؛الفشلالمحددرابطهفيEVENT405-11؛والدالمحليموثقفيEVENT405-10/11.
+- risk_and_security: لاforcepushأوmergeأوتنزيلنموذجأوتغييرruntime/tests؛لاخفضللحوكمة؛CIلايعدناجحاًقبلقراءتهعلىSHAالمطابق.
+- rollback: إلغاءintentقبلالنشرأوrevertمحددبواسطةالمالكبعده؛لاتغييرلتاريخالمستودع.
+- next: rootينشرDraft20ويتتبّعEnterpriseويحفظreceipt؛أيخللآخريرفعكدليلمستقلدونإعادةالأعمالالناجحة.
+- decision_status: READY_FOR_INDEPENDENT_REVIEW

@@ -181,3 +181,7 @@ Parent PR20 `6af41a04cf887d389656c9ce7ffc4e03b396b5a4`؛ استأنفنا عائ
 ### DG-001 — dependency follow-up405
 
 نُقل إصلاح مالكsecurity منPR33/source `6454b6d054591e398c7251af5454c067fa00fc59` بعد فشلDependencyAudit الفعلي علىPR20 المنشورc9a98ae. قيدPillow13.0.0<14؛ script/test المنسوخان وبصماتهما وwiring المحدود في `docs/E4_A1_BRIDGE_AR.md`، وكلالعملياتفيworklog405-06/07 ومايليهما. توافقPillow13/OCR/images/scannedPDF/reports:32 PASS في5.09s؛ realdependency audit علىالشجرةالجديدة مازالينتظرCI بعدالنشر. لاignoreCVE أوexternaldependency exclusion؛ لادلالاتA1 أوworkflowQwen تغيرت. parent المحلي19c9fb0،parent النشرc9a98ae وفقمسارالمشرف؛لاreset/rebase/pull. التالي: تسليمCommit/tree للمشرف لنشرDraft20 ومراقبةDependencyAuditالحقيقي علىSHAالمنشور.
+
+### DG-001 — Enterprise runner Tesseract prerequisite
+
+علىHEADالمنشور `fca4707b88366f175e8928d7136bd1badd7ca4e2` نجحDependencyAuditالحقيقي60external/0vulns وcompat32PASS وبقيةالفحوصالمبلغعنها؛فشلEnterprise39676632722/job119488076413 بحالتينFileNotFoundError:tesseract،مع472PASS/1SKIP. أضيفتخطوةapt-get update/installtesseract-ocrالقائمةنفسهافيPR33/test2 بعدتثبيتPythondependencies وقبلfullcombinedtest فيworkspace.yml،دونتغييراختباراتأوتوقعات. لمتُعدcompatأوauditالناجحة؛CIعلىالشجرةالجديدةينتظرنشرroot ومتابعةEnterpriseالفاشل. parentالمحليba98c27 وparentالنشرفca4707 موثقانفيworklog405-10/11/12؛لاreset/rebase/merge/deployment.
