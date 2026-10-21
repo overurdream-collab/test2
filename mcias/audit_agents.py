@@ -226,6 +226,21 @@ def _certificate_ready(certificate, claim):
         return False
 
 
+def _history_window_covered(certificate, service_date, interval_days):
+    """Require the policy window, without extending a G3 source attestation."""
+    from datetime import date, timedelta
+    required_from = None
+    try:
+        if interval_days is not None and (type(interval_days) is not int or interval_days < 0):
+            return False, None
+        required_from = service_date if interval_days is None else service_date - timedelta(days=interval_days)
+        covered = (date.fromisoformat(certificate["coverage_from"]) <= required_from
+            and date.fromisoformat(certificate["coverage_until"]) > service_date)
+        return covered, required_from.isoformat()
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False, required_from.isoformat() if required_from is not None else None
+
+
 def _matching_records(certificate, **identity):
     return [record for record in certificate.get("records", [])
         if all(_record_values(record).get(key) == value for key, value in identity.items())]
@@ -420,7 +435,13 @@ def _inspect_inputs_first_review(db, claim, actor):
                 early = True
         except (TypeError, ValueError):
             early = True
-    if ready("history", "policy") and same_claim and policy.get("duplicate_paid_claims_prohibited") is True:
+    interval_days = policy.get("minimum_dispense_interval_days")
+    history_window_covered, required_history_from = _history_window_covered(
+        refs.get("history", {}), claim.service_date, interval_days)
+    history_window_complete = ready("history", "policy") and bool(policy) and history_window_covered
+    if not history_window_complete:
+        add("duplicates", "UNRESOLVED", "history_lookback_incomplete", ("history", "policy"), history)
+    elif ready("history", "policy") and same_claim and policy.get("duplicate_paid_claims_prohibited") is True:
         add("duplicates", "VIOLATION_PROVEN", "exact_paid_claim_in_attested_history", ("history", "policy"), same_claim)
     elif ready("history", "policy") and not native_duplicates and not same_reference and not early and not missing_schedule:
         add("duplicates", "MATCH_VERIFIED", "no_duplicate_in_attested_scope_periodic_use_allowed", ("history", "policy"), history)
@@ -429,6 +450,12 @@ def _inspect_inputs_first_review(db, claim, actor):
         add("duplicates", "UNRESOLVED", "dispensing_schedule_incomplete" if missing_schedule else
             "duplicate_or_early_dispense_requires_review", ("history", "policy"),
             [review_rows[key] for key in sorted(review_rows)])
+    # The claim-specific requirement belongs to the finding. Preserve the G3
+    # certificate's approved scope and original declared coverage unchanged.
+    findings[-1].update(rule_version=3, required_history_lookback_days=interval_days,
+        required_history_coverage_from=required_history_from,
+        history_coverage_from=refs.get("history", {}).get("coverage_from"),
+        history_coverage_until=refs.get("history", {}).get("coverage_until"))
 
     execution_ids, evidence_issues = _execution_evidence(db, claim, quantity, unit)
     if source is None:
@@ -447,7 +474,7 @@ def _inspect_inputs_first_review(db, claim, actor):
             if finding["audit_state"] in {"MATCH_VERIFIED", "VIOLATION_PROVEN"}:
                 finding.update(audit_state="UNRESOLVED", status="hold", reason="claim_source_unavailable")
     states = {finding["audit_state"] for finding in findings}
-    all_references = len(refs) == 6 and all(_certificate_ready(value, claim) for value in refs.values())
+    all_references = len(refs) == 6 and history_window_complete and all(_certificate_ready(value, claim) for value in refs.values())
     if "AUDIT_UNAVAILABLE" in states:
         state, reason = "AUDIT_UNAVAILABLE", "SOURCE_UNAVAILABLE"
     elif not all_references:

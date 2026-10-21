@@ -307,3 +307,25 @@ This file contains **only this isolated CAI-01 branch's new events**. PR #23 ind
 - Risks: CIالجديدوقبولمستقلمعلقانوقتكتابةCommit؛ العربيةوالعقودوالأداءوL1/L2المتقاطعةمازالتمفتوحةبحدودتقاريرها.
 - Next: نشرالشجرةالمطابقةعلىPR34والتحققمنCI؛ متابعةPR35إعداد306وجودةReaderوالقبولالمستقل.
 - Handoff: المشرف؛ مصدرالمالك37cc61a/328e629/d0edc60/b18a83f؛ تقريرRESUME_EXECUTION_VERIFIED_20261021_AR.mdوسجلENGINEERING_TASK_REGISTER_AR.json؛ لاMerge/Deployment/ForcePush.
+
+
+### HANDOFF-20261021-308 — حجب اكتمال التكرار عند نقص نافذة السجل التاريخي
+- Scope: إصلاح فحص duplicates القائم في G5 واختباره ودليله فقط؛ لا تغيير في G3 أو الكاتب أو المخطط أو الحساب المالي.
+- Why: مراجعة مستقلة أثبتت MATCH_VERIFIED خاطئة مع سجل يغطي يوم الخدمة فقط وسياسة تطلب مراجعة30 يومًا سابقة؛ نقص الفترة لا يثبت غياب الصرف.
+- Files: mcias/audit_agents.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ docs/evidence/G5_HISTORY_LOOKBACK_SQLITE.json؛ سجل التنفيذ والحالة الحالية.
+- Tests: RED قبل المنتج:1 FAILED،32 DESELECTED،2.74s على SQLite دون URL؛ بعد الحاجز3 PASS،31 DESELECTED،34.15s للحالات الثلاث فقط. pure null/overflow/exclusive-until:1 PASS،33 DESELECTED،0.24s. أثبت artifact تطابق SHA للمصدر التاريخي بين الحالات الثلاث. PG16 وCI الجديدان معلقان لدى المنسق.
+- Result: ISOLATED VERIFIED؛ النافذة الناقصة UNRESOLVED/REFERENCE_INCOMPLETE مع7 executed و1 blocked، وحد البداية الكامل MATCH ضمن الاختبارات الاصطناعية. شهادة G3 الأصلية محفوظة دون إعادة تفسير اعتمادها.
+- Risks: هذا تحقق محلي محدد النطاق لا قبول إنتاجي؛ لا تقدير30 يومًا عند سياسة null، والتاريخ خارج نطاق التقويم يظل غير محسوم. لا إعادة للاختبارات21 السابقة أو ادعاء نجاحها على هذا التعديل.
+- Next: المنسق يشغل PG16 لمرشح lookback على Commit نفسه، ثم CI المركب ويوثق الروابط؛ لا توسعة لهذا الإصلاح.
+- Handoff: الأساس b18a83fa932e6894a52deb9435b93ca5f95575ad، والقراءة المستقلة على PR34 هي سبب الإصلاح؛ استخدم report/artifact للحقيقة المعروفة، ولا merge/deploy/force أو بيانات مرضى أو قرار مالي تلقائي.
+
+
+### HANDOFF-20261021-309 — تحقق المشرف وإغلاق ملاحظة المراجع المستقل
+- Scope: تركيب إصلاح G5 لمدى تاريخ الصرف، وإثبات PG16، وتحديث سجل الملكية والدليل.
+- Why: كشفت المراجعة المستقلة أن تاريخ الخدمة وحده لا يثبت اكتمال سجل فترة السياسة؛ اختبار RED أثبت MATCH غير مؤهل.
+- Files: docs/G5_LOOKBACK_REVIEW_CLOSURE_AR.md; docs/evidence/G5_HISTORY_LOOKBACK_PG16.jsonl; E1_OWNER_SOURCE_MANIFEST.json; ENGINEERING_TASK_REGISTER_AR.json; receipt/journal/state. مصدر G5 المملوكb4212d1 مركب في9059f4c.
+- Tests:4PASS30DESELECTED27.94s علىPG16.15 بعدCommit المالك؛ native3 متوقع=فعلي مع مصدر history واحد؛ فحص null/overflow ناجح؛ المراجع المستقل أغلق العيب المحدد قراءةً فقط.
+- Result: نقص النافذة يظل UNRESOLVED/REFERENCE_INCOMPLETE، والحد الكامل يطابق؛ G3 وشروط القرار المالي لم تتغير.
+- Risks: CI السابق949 يثبت الشيفرة السابقة فقط؛ HEAD المصحح ينتظر CI، ويبقى القبول المستقل الأشمل والجودة والإنتاج خارج هذه الحالات.
+- Next: نشر الشجرة المطابقة علىPR34 القائم ومراجعة CI والـartifact الكامل دون إعادة اختبارات نجحت على الشيفرة ذاتها.
+- Handoff: المشرف؛ تفاصيل RED/SQLite/PG والمراجعة في G5_LOOKBACK_REVIEW_CLOSURE_AR.md؛ لاMerge أوDeployment أوForcePush أوبيانات حقيقية.

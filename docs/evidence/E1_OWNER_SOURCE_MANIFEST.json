@@ -22,8 +22,8 @@
     },
     {
       "path": "mcias/audit_agents.py",
-      "owner_commit": "b18a83fa932e6894a52deb9435b93ca5f95575ad",
-      "sha256": "3b7722a8fa331dc05da9238c94da54c9a2c715338c635561e7f9efb98343f80b"
+      "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+      "sha256": "9edb601b9f4fdda3c8502ab7c8375169b8a568aecad64146c88d28e47dbe29fe"
     },
     {
       "path": "mcias/audit_service.py",
@@ -32,8 +32,8 @@
     },
     {
       "path": "tests/test_g5_inputs_first_review.py",
-      "owner_commit": "b18a83fa932e6894a52deb9435b93ca5f95575ad",
-      "sha256": "4a75ba429927589b6e1ea0ca93ed2be03ac930d151027bc0112464db0c210a7e"
+      "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+      "sha256": "eb7a1e98b1f3cdaafc35b56dd3390523d1cf8fd5c3352b20080ac82cb77e8e84"
     }
   ],
   "focused_sha256": "0bd12b6cf4804f82b91083fba2b2de73a881c52a9cb11d760a653eec5cccbae3",
@@ -62,5 +62,14 @@
       "snapshot_id": "c3d2187f-ef33-4150-81b4-1a74a92f0e65",
       "event_id": "ebff599e-e151-560c-9b05-0588b6a9c381"
     }
-  ]
+  ],
+  "lookback_guard": {
+    "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+    "pg16_tests": 4,
+    "pg16_deselected": 30,
+    "seconds": 27.94,
+    "native_cases": 3,
+    "evidence_sha256": "a1356c4eae195d58f47f29944d2790463045a6fd7ee17cd8300312705b85bc6e",
+    "independent_review": "resume_reader: targeted causal gap closed by code inspection; no independent test rerun"
+  }
 }

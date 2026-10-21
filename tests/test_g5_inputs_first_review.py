@@ -134,6 +134,8 @@ def _facts(scenario):
     if scenario == "missing_due":
         values["policy"]["minimum_dispense_interval_days"] = 30
         values["history"].pop("next_dispense_due_date")
+    if scenario in {"lookback_incomplete", "lookback_before_period", "lookback_complete_boundary"}:
+        values["policy"]["minimum_dispense_interval_days"] = 30
     return {key: {**value, **dates} for key, value in values.items()}
 
 
@@ -142,9 +144,13 @@ def _references(db, actor, store, scenario):
     for family, value in _facts(scenario).items():
         rows = [{"record_key": "SYN-ROW", "payload": json.dumps(value)}]
         document = _ingest(db, actor, store, "SYN-" + family + ".csv", _csv(rows))
+        history_start = {"lookback_incomplete": date(2026, 6, 1),
+            "lookback_before_period": date(2026, 5, 3),
+            "lookback_complete_boundary": date(2026, 5, 2)}.get(scenario) if family == "history" else None
         item = register_reference_dataset(db, actor, document.id, family, dataset_key="SYN-" + family,
             version=1, effective_from=date(2026, 1, 1), effective_until=date(2026, 7, 1),
-            coverage_from=date(2026, 1, 1), coverage_until=date(2026, 7, 1),
+            coverage_from=history_start or date(2026, 1, 1),
+            coverage_until=date(2026, 6, 2) if history_start else date(2026, 7, 1),
             scope={"provider_code": "SYN-PROVIDER", "all_beneficiaries": True, "all_services": True}, expected_record_count=1)
         if scenario != "absent_incomplete" or family != "beneficiary":
             approve_reference_dataset(db, actor, item.id, reason_code="source_scope_complete")
@@ -193,7 +199,9 @@ CASES = [("match", "MATCH_VERIFIED"), ("tariff", "VIOLATION_PROVEN"), ("cap", "V
     ("missing_execution", "UNRESOLVED"), ("reimport", "MATCH_VERIFIED"), ("cross_org", "ACCESS_DENIED"),
     ("wrong_locator", "UNRESOLVED"), ("unreadable_source", "AUDIT_UNAVAILABLE"),
     ("copay", "VIOLATION_PROVEN"), ("discount_unapproved", "VIOLATION_PROVEN"), ("ceiling_discount", "MATCH_VERIFIED"),
-    ("future_history", "MATCH_VERIFIED"), ("reference_collision", "UNRESOLVED"), ("missing_due", "UNRESOLVED")]
+    ("future_history", "MATCH_VERIFIED"), ("reference_collision", "UNRESOLVED"), ("missing_due", "UNRESOLVED"),
+    ("lookback_incomplete", "UNRESOLVED"), ("lookback_before_period", "UNRESOLVED"),
+    ("lookback_complete_boundary", "MATCH_VERIFIED")]
 
 
 @pytest.mark.parametrize("scenario,expected", CASES)
@@ -242,6 +250,24 @@ def test_native_inputs_first_known_truth(native_review, tmp_path, scenario, expe
         case = open_case(db, actor, snapshot.id)
         hold = append_event(db, actor, case.id, "hold", {"reason_code": "advisory_human_review"})
         assert hold.kind == "hold"
+        if scenario.startswith("lookback_"):
+            history_certificate = next(item for item in snapshot.findings["reference_certificates"] if item["family"] == "history")
+            duplicate_finding = next(item for item in snapshot.findings["agents"] if item["agent"] == "duplicates")
+            assert history_certificate["approved"] is True and history_certificate["complete"] is True
+            assert history_certificate["lookup_status"] == "reference_applicable"
+            assert duplicate_finding["reference"] == [item["source_record_id"] for item in history_certificate["records"]]
+            assert duplicate_finding["required_history_coverage_from"] == "2026-05-02"
+            assert duplicate_finding["required_history_lookback_days"] == 30
+            assert duplicate_finding["history_coverage_from"] == history_certificate["coverage_from"]
+            assert duplicate_finding["history_coverage_until"] == history_certificate["coverage_until"]
+            assert duplicate_finding["rule_version"] == 3
+            assert snapshot.findings["coverage"] == {"required": 8,
+                "executed": 8 if scenario == "lookback_complete_boundary" else 7,
+                "blocked": 0 if scenario == "lookback_complete_boundary" else 1}
+            if scenario != "lookback_complete_boundary":
+                assert duplicate_finding["audit_state"] == "UNRESOLVED"
+                assert duplicate_finding["reason"] == "history_lookback_incomplete"
+                assert snapshot.findings["reason_code"] == "REFERENCE_INCOMPLETE"
         if scenario in {"missing_due", "reference_collision"}:
             duplicate_finding = next(item for item in snapshot.findings["agents"] if item["agent"] == "duplicates")
             assert duplicate_finding["audit_state"] == "UNRESOLVED" and duplicate_finding["reference"]
@@ -308,3 +334,11 @@ def test_legacy_codec_does_not_invent_a_missing_reference_reason(certificates, e
     assert result["source_audit_state_schema_version"] == 1
     assert result.get("reason_code") == expected_reason
     assert archived == original
+
+
+def test_history_window_policy_null_and_date_overflow():
+    from mcias.audit_agents import _history_window_covered
+    coverage = {"coverage_from": "2026-06-01", "coverage_until": "2026-06-02"}
+    assert _history_window_covered(coverage, date(2026, 6, 1), None) == (True, "2026-06-01")
+    assert _history_window_covered({**coverage, "coverage_until": "2026-06-01"}, date(2026, 6, 1), None) == (False, "2026-06-01")
+    assert _history_window_covered(coverage, date(2026, 6, 1), 1_000_000) == (False, None)

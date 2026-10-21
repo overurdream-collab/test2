@@ -39,14 +39,14 @@
       "owner": "resume_g5",
       "branch": "codex/inputs-first-coordinated",
       "worktree": "/workspace/e1-g5",
-      "sha": "d0edc60c0f0486962a6db3f2ee254fb13c155e7a + b18a83fa932e6894a52deb9435b93ca5f95575ad",
+      "sha": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
       "files": [
         "mcias/audit_agents.py",
         "mcias/audit_service.py",
         "tests/test_g5_inputs_first_review.py"
       ],
-      "complete": "21 حالة حقيقة عبر native services؛ PG22PASS قبلguard و3PASS بعده؛ codec وقراءةAPI متحققان",
-      "missing": "قبول مستقل؛ لا إثبات جاهزية إنتاج أو جودةOCR من هذه الحالات",
+      "complete": "المجموعة الحالية24 حالة حقيقة؛ رُصد نقص فترة السجل باختبار RED وأصلح؛ PG16 الموجه4PASS؛ review_only محفوظ دون قرار مالي",
+      "missing": "CI على HEAD المصحح والقبول المستقل للنطاق الأشمل",
       "depends": [
         "E1-G3",
         "E1-AUDIT"
@@ -59,7 +59,7 @@
       ],
       "evidence": "docs/G5_E1_FULL_REVIEW_AR.md + docs/evidence/E1_OWNER_SOURCE_MANIFEST.json",
       "status": "REVIEW PENDING",
-      "execution": "مركب دون تعديل ملفات المنتجين"
+      "execution": "المراجعة المستقلة أثبتت إغلاق عيب النافذة المحدد؛ لا إعادة كتابة شهادة G3 أو السجل التاريخي"
     },
     {
       "id": "E1-AUDIT",

@@ -1,0 +1,359 @@
+{
+  "scope": "synthetic_native_E1_history_policy_lookback_SQLite",
+  "base_head": "b18a83fa932e6894a52deb9435b93ca5f95575ad",
+  "red_before_product_change": {
+    "case": "lookback_incomplete",
+    "expected": "UNRESOLVED",
+    "actual": "MATCH_VERIFIED",
+    "result": "1 failed, 32 deselected in 2.74s",
+    "database": "sqlite"
+  },
+  "green_after_guard": {
+    "result": "3 passed, 31 deselected in 34.15s",
+    "database": "sqlite"
+  },
+  "pure_policy_edges": {
+    "result": "1 passed, 33 deselected in 0.24s",
+    "cases": [
+      "null does not infer 30 days",
+      "exclusive coverage_until",
+      "calendar underflow is incomplete"
+    ]
+  },
+  "shared_history_source_sha256": "a27a4894f4c506873e55ea96ac1e8f337597b4434b7034091f014c4777c154a2",
+  "cases": [
+    {
+      "case": "lookback_incomplete",
+      "expected": "UNRESOLVED",
+      "actual": "UNRESOLVED",
+      "claim_id": "11e175da-c9e2-4654-8f2d-9630dce6037f",
+      "snapshot_id": "37862036-063e-4231-9e85-61b928a089de",
+      "event_id": "07cebbba-cf10-5ede-9934-79cce7bc6e9d",
+      "source_document_id": "a651a71f-fa0e-4d86-976b-1cbd8e982427",
+      "source_sha256": "2c92ae3677ff4a81929e29aa9d5956079abfc3ea1db1ed898b5bc2f191a23e65",
+      "source_record_id": "379b74da-86ba-4874-a48e-3ec93606176f",
+      "source_locator": {
+        "column": null,
+        "document_id": "a651a71f-fa0e-4d86-976b-1cbd8e982427",
+        "index": 1,
+        "job_id": "9f73ee7c-a2e0-425f-9b38-32b5ef444295",
+        "kind": "sheet",
+        "mapping_version": "g4-canonical-v1",
+        "row": 2,
+        "sheet_name": "CLAIMS",
+        "sheet_type": "CLAIMS",
+        "source_scope_approval_id": "9c407b22-610d-42bb-aadb-a7b4eb2c6c41",
+        "source_sha256": "2c92ae3677ff4a81929e29aa9d5956079abfc3ea1db1ed898b5bc2f191a23e65"
+      },
+      "governance_case_id": "ecb77087-0be7-4a97-b527-4f3f21a06d6e",
+      "human_hold_event_id": "8ea93c30-c379-4199-9905-889bb9223126",
+      "database": "sqlite",
+      "history_certificate": {
+        "approval_event_id": "3ec140d1-7a19-46e7-a9cc-4b2c16a0ef42",
+        "approved": true,
+        "approved_by": "d0180781-6e3f-4303-b01e-0a2b384d3392",
+        "complete": true,
+        "completeness_basis": "SUPER_ADMIN_SOURCE_SCOPE_ATTESTATION",
+        "coverage_from": "2026-06-01",
+        "coverage_until": "2026-06-02",
+        "dataset_id": "872c3ca3-af0e-406c-a52a-8732318c027a",
+        "effective_from": "2026-01-01",
+        "effective_until": "2026-07-01",
+        "expected_record_count": 1,
+        "family": "history",
+        "gaps": [],
+        "label": "historical claims/dispensing and recurrence/chronic medication context",
+        "lookup_complete": true,
+        "lookup_status": "reference_applicable",
+        "observed_record_count": 1,
+        "organization_id": "e517fcc8-ef83-4100-ab9c-d9418d6909df",
+        "owner_organization_id": "e517fcc8-ef83-4100-ab9c-d9418d6909df",
+        "records": [
+          {
+            "locator": {
+              "column": null,
+              "index": 2,
+              "kind": "row",
+              "row": 2
+            },
+            "record_key": "SYN-ROW",
+            "source_record_id": "433a878c-23fe-4d26-a1b6-6285ffc3e372",
+            "values": {
+              "amount": "100",
+              "beneficiary_token": "SYN-BEN",
+              "claim_reference": "SYN-OLD",
+              "currency": "USD",
+              "effective_from": "2026-01-01",
+              "effective_until": "2026-07-01",
+              "paid": true,
+              "provider_code": "SYN-PROVIDER",
+              "quantity": "1",
+              "service_code": "SYN-OTHER",
+              "service_date": "2026-05-01",
+              "unit": "UNIT"
+            }
+          }
+        ],
+        "reference_id": "872c3ca3-af0e-406c-a52a-8732318c027a",
+        "reference_type": "reference_dataset_version",
+        "scope": {
+          "all_beneficiaries": true,
+          "all_services": true,
+          "provider_code": "SYN-PROVIDER"
+        },
+        "service_date": "2026-06-01",
+        "source_evidence": [
+          {
+            "approval_event_id": "3ec140d1-7a19-46e7-a9cc-4b2c16a0ef42",
+            "document_id": "82f94bdb-5fce-4bf0-acdc-7dcf6ae3bb8f",
+            "source_id": "e4db1734-6be7-48b5-9e66-13ba0ca06d4f",
+            "source_sha256": "a27a4894f4c506873e55ea96ac1e8f337597b4434b7034091f014c4777c154a2"
+          }
+        ],
+        "source_fingerprint": "2dfba74eceb77512566d5dd98a2202ff55fab8ef7312458e9b253503a4d77c25",
+        "version": 1
+      },
+      "duplicate_finding": {
+        "agent": "duplicates",
+        "audit_state": "UNRESOLVED",
+        "history_coverage_from": "2026-06-01",
+        "history_coverage_until": "2026-06-02",
+        "reason": "history_lookback_incomplete",
+        "reference": [
+          "433a878c-23fe-4d26-a1b6-6285ffc3e372"
+        ],
+        "reference_families": [
+          "history",
+          "policy"
+        ],
+        "required_history_coverage_from": "2026-05-02",
+        "required_history_lookback_days": 30,
+        "rule_id": "duplicates",
+        "rule_version": 3,
+        "status": "hold"
+      }
+    },
+    {
+      "case": "lookback_before_period",
+      "expected": "UNRESOLVED",
+      "actual": "UNRESOLVED",
+      "claim_id": "95b05422-1a24-4acf-90ee-269aedbf831f",
+      "snapshot_id": "36e0fd73-3011-4aa9-b6a1-9cd34e8f328e",
+      "event_id": "7e00d68f-f1ef-5510-bbe5-200be92af7a3",
+      "source_document_id": "f7695222-b8c4-4df7-822c-94127438e47b",
+      "source_sha256": "486631c9b1218462b8fd142f2c579cfcd115d06e0f2af54391c8d53bff681f19",
+      "source_record_id": "d57bfff3-6d00-4b94-bd0a-3e65bc26fb98",
+      "source_locator": {
+        "column": null,
+        "document_id": "f7695222-b8c4-4df7-822c-94127438e47b",
+        "index": 1,
+        "job_id": "07e01046-a4e4-4bdd-9201-bfd07b667cd3",
+        "kind": "sheet",
+        "mapping_version": "g4-canonical-v1",
+        "row": 2,
+        "sheet_name": "CLAIMS",
+        "sheet_type": "CLAIMS",
+        "source_scope_approval_id": "9821655e-5ac9-4920-bf64-752414cee1f9",
+        "source_sha256": "486631c9b1218462b8fd142f2c579cfcd115d06e0f2af54391c8d53bff681f19"
+      },
+      "governance_case_id": "4a4fde45-2748-4d67-96b1-c9b56efc1b84",
+      "human_hold_event_id": "0430e06a-7acb-4c54-a103-4a104e30fc98",
+      "database": "sqlite",
+      "history_certificate": {
+        "approval_event_id": "784e3a28-6060-4fdf-ac98-eab909a52de8",
+        "approved": true,
+        "approved_by": "4f52634e-8a30-48b6-b4cd-c77709af534e",
+        "complete": true,
+        "completeness_basis": "SUPER_ADMIN_SOURCE_SCOPE_ATTESTATION",
+        "coverage_from": "2026-05-03",
+        "coverage_until": "2026-06-02",
+        "dataset_id": "ec3b5b7a-3b9d-4d93-af51-3a7f710791b4",
+        "effective_from": "2026-01-01",
+        "effective_until": "2026-07-01",
+        "expected_record_count": 1,
+        "family": "history",
+        "gaps": [],
+        "label": "historical claims/dispensing and recurrence/chronic medication context",
+        "lookup_complete": true,
+        "lookup_status": "reference_applicable",
+        "observed_record_count": 1,
+        "organization_id": "fcfc610a-1f90-4114-b314-64f7d38fa2ff",
+        "owner_organization_id": "fcfc610a-1f90-4114-b314-64f7d38fa2ff",
+        "records": [
+          {
+            "locator": {
+              "column": null,
+              "index": 2,
+              "kind": "row",
+              "row": 2
+            },
+            "record_key": "SYN-ROW",
+            "source_record_id": "f1038654-1f33-4b94-b477-1c90d7b33c84",
+            "values": {
+              "amount": "100",
+              "beneficiary_token": "SYN-BEN",
+              "claim_reference": "SYN-OLD",
+              "currency": "USD",
+              "effective_from": "2026-01-01",
+              "effective_until": "2026-07-01",
+              "paid": true,
+              "provider_code": "SYN-PROVIDER",
+              "quantity": "1",
+              "service_code": "SYN-OTHER",
+              "service_date": "2026-05-01",
+              "unit": "UNIT"
+            }
+          }
+        ],
+        "reference_id": "ec3b5b7a-3b9d-4d93-af51-3a7f710791b4",
+        "reference_type": "reference_dataset_version",
+        "scope": {
+          "all_beneficiaries": true,
+          "all_services": true,
+          "provider_code": "SYN-PROVIDER"
+        },
+        "service_date": "2026-06-01",
+        "source_evidence": [
+          {
+            "approval_event_id": "784e3a28-6060-4fdf-ac98-eab909a52de8",
+            "document_id": "0a0cb265-b326-4d02-98ab-83d0a22a81b2",
+            "source_id": "54035c9e-fb1b-4d25-b80d-c00eab605f61",
+            "source_sha256": "a27a4894f4c506873e55ea96ac1e8f337597b4434b7034091f014c4777c154a2"
+          }
+        ],
+        "source_fingerprint": "33225333b94cc1426e2ecab6497df6f149ddf370adb5918c4863b26a1fe80ca7",
+        "version": 1
+      },
+      "duplicate_finding": {
+        "agent": "duplicates",
+        "audit_state": "UNRESOLVED",
+        "history_coverage_from": "2026-05-03",
+        "history_coverage_until": "2026-06-02",
+        "reason": "history_lookback_incomplete",
+        "reference": [
+          "f1038654-1f33-4b94-b477-1c90d7b33c84"
+        ],
+        "reference_families": [
+          "history",
+          "policy"
+        ],
+        "required_history_coverage_from": "2026-05-02",
+        "required_history_lookback_days": 30,
+        "rule_id": "duplicates",
+        "rule_version": 3,
+        "status": "hold"
+      }
+    },
+    {
+      "case": "lookback_complete_boundary",
+      "expected": "MATCH_VERIFIED",
+      "actual": "MATCH_VERIFIED",
+      "claim_id": "d60d4f3e-1e29-433d-a3c0-158c935e9251",
+      "snapshot_id": "9cfa463f-3981-48d6-b5f0-6c2589352298",
+      "event_id": "a785212d-f8ca-5d52-9634-379ed11b670b",
+      "source_document_id": "8b16776b-80ba-470b-b98f-14da62e3be27",
+      "source_sha256": "ab239692e466ac02f0c0d036948a4450189770cdfac55dc6f1320bd0a35eb0c5",
+      "source_record_id": "8e9e955e-988e-4ace-8de8-303b8aa5ccf9",
+      "source_locator": {
+        "column": null,
+        "document_id": "8b16776b-80ba-470b-b98f-14da62e3be27",
+        "index": 1,
+        "job_id": "b45b6b88-86fa-45ef-8f83-c8323fce416d",
+        "kind": "sheet",
+        "mapping_version": "g4-canonical-v1",
+        "row": 2,
+        "sheet_name": "CLAIMS",
+        "sheet_type": "CLAIMS",
+        "source_scope_approval_id": "44c3cd52-b326-48f5-bd47-84b1f6ab866d",
+        "source_sha256": "ab239692e466ac02f0c0d036948a4450189770cdfac55dc6f1320bd0a35eb0c5"
+      },
+      "governance_case_id": "5135dd78-8251-4926-a5ff-24033fa6463d",
+      "human_hold_event_id": "b469ba09-2a5c-44bf-9b2b-e644c6145408",
+      "database": "sqlite",
+      "history_certificate": {
+        "approval_event_id": "86ce0312-c895-4f27-a5e3-8bd911f4fab2",
+        "approved": true,
+        "approved_by": "4704f02c-9f07-4461-b733-cf3d8aeff012",
+        "complete": true,
+        "completeness_basis": "SUPER_ADMIN_SOURCE_SCOPE_ATTESTATION",
+        "coverage_from": "2026-05-02",
+        "coverage_until": "2026-06-02",
+        "dataset_id": "2e9f6365-b8d5-49ea-be8c-db45a1caea80",
+        "effective_from": "2026-01-01",
+        "effective_until": "2026-07-01",
+        "expected_record_count": 1,
+        "family": "history",
+        "gaps": [],
+        "label": "historical claims/dispensing and recurrence/chronic medication context",
+        "lookup_complete": true,
+        "lookup_status": "reference_applicable",
+        "observed_record_count": 1,
+        "organization_id": "00b39390-0b3e-4223-abc3-dd95ca42e56d",
+        "owner_organization_id": "00b39390-0b3e-4223-abc3-dd95ca42e56d",
+        "records": [
+          {
+            "locator": {
+              "column": null,
+              "index": 2,
+              "kind": "row",
+              "row": 2
+            },
+            "record_key": "SYN-ROW",
+            "source_record_id": "ccd8df9a-9ba1-42f8-8db4-6757d714a29c",
+            "values": {
+              "amount": "100",
+              "beneficiary_token": "SYN-BEN",
+              "claim_reference": "SYN-OLD",
+              "currency": "USD",
+              "effective_from": "2026-01-01",
+              "effective_until": "2026-07-01",
+              "paid": true,
+              "provider_code": "SYN-PROVIDER",
+              "quantity": "1",
+              "service_code": "SYN-OTHER",
+              "service_date": "2026-05-01",
+              "unit": "UNIT"
+            }
+          }
+        ],
+        "reference_id": "2e9f6365-b8d5-49ea-be8c-db45a1caea80",
+        "reference_type": "reference_dataset_version",
+        "scope": {
+          "all_beneficiaries": true,
+          "all_services": true,
+          "provider_code": "SYN-PROVIDER"
+        },
+        "service_date": "2026-06-01",
+        "source_evidence": [
+          {
+            "approval_event_id": "86ce0312-c895-4f27-a5e3-8bd911f4fab2",
+            "document_id": "e99c8687-570d-4a09-aa01-689025da0468",
+            "source_id": "e9cebc8f-6f20-490b-9f42-6c9bd574bdc4",
+            "source_sha256": "a27a4894f4c506873e55ea96ac1e8f337597b4434b7034091f014c4777c154a2"
+          }
+        ],
+        "source_fingerprint": "57609085e1cc2332fa59ca2a12f1aa714401a8922caa95babfda25e59e8e35af",
+        "version": 1
+      },
+      "duplicate_finding": {
+        "agent": "duplicates",
+        "audit_state": "MATCH_VERIFIED",
+        "history_coverage_from": "2026-05-02",
+        "history_coverage_until": "2026-06-02",
+        "reason": "no_duplicate_in_attested_scope_periodic_use_allowed",
+        "reference": [
+          "ccd8df9a-9ba1-42f8-8db4-6757d714a29c"
+        ],
+        "reference_families": [
+          "history",
+          "policy"
+        ],
+        "required_history_coverage_from": "2026-05-02",
+        "required_history_lookback_days": 30,
+        "rule_id": "duplicates",
+        "rule_version": 3,
+        "status": "pass"
+      }
+    }
+  ]
+}
