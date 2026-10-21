@@ -6,6 +6,7 @@ documents actual behaviour and cannot be counted as accepted E1.
 import hashlib
 import io
 import os
+import pytest
 from sqlalchemy import create_engine, select, func
 from sqlalchemy.orm import Session
 from openpyxl import Workbook
@@ -19,6 +20,7 @@ from mcias.storage import EncryptedStore
 from mcias.claim_batches import stage, resume
 
 
+@pytest.mark.skipif(not os.getenv("MCIAS_TEST_DATABASE_URL"), reason="PG16 required; executed by mandatory dedicated E1 workflow")
 def test_e1_real_g2_to_g4_postgres_synthetic(tmp_path):
     url = os.environ["MCIAS_TEST_DATABASE_URL"]
     command.upgrade(Config("alembic.ini"), "head")
@@ -68,6 +70,6 @@ def test_e1_real_g2_to_g4_postgres_synthetic(tmp_path):
             ClaimEntry.batch_id == batch_id)).all()
         assert len(claims) == 1
         assert claims[0].organization_id == org_id
-        assert claims[0].source_locator == {"kind": "sheet", "index": 1, "row": 2}
+        assert claims[0].source_locator == {"kind": "sheet", "index": 1, "row": 2, "column": None}
         assert independent.get(IngestionDocument, doc_id).sha256 == digest
     engine.dispose()
