@@ -1,0 +1,29 @@
+{
+  "source_pr": "https://github.com/overurdream-collab/test2/pull/33",
+  "source_commit": "6454b6d054591e398c7251af5454c067fa00fc59",
+  "reader_head_before_adoption": "cf886f4517b2502acbaf96b1703911ca14986440",
+  "security_files_sha256": {
+    "pyproject.toml": "d518475a332f20ae0b46e7e675e27bd368bc8a10306638e30ed664794a09b62a",
+    "scripts/audit_dependencies.py": "ee435b1e0fc09b58054a688d63110c95638087a5676204ef95e11f61bbee5a28",
+    "tests/test_dependency_audit.py": "6e3f79b0f04dd503c53001f5fa8ac753e97bed85cacbe6001ae1e37d40263c43",
+    "tests/test_pillow13_compatibility.py": "396ecaa82e2c614ddb4df5509584d5b0613c7d5edfbe4aa0d0ac9425f92432bf",
+    ".github/workflows/ci.yml": "7758a7f6ef2e2a94e7206bb67192fbea9ff153c6670f9c0fef15a41e8a435868",
+    ".github/workflows/workspace.yml": "92eb9b04177b6bbe43bb28f1a7a43f263e829b877ccc7c03c93555342831043f"
+  },
+  "all_six_files_byte_identical_to_security_source": true,
+  "prior_audit_evidence": {
+    "path": "docs/evidence/security-pillow13-audit.json",
+    "source_file_sha256": "aff05c935e77eafad8eb2343e39f31cc7ca378db3e10ee24fa1ce9ee6404a444",
+    "external_packages": 65,
+    "known_vulnerabilities": 0,
+    "new_audit_on_reader_performed": false,
+    "source_ci": "https://github.com/overurdream-collab/test2/actions/runs/39527496132"
+  },
+  "reader_verification": {
+    "command": "PYTHONPATH=. /workspace/security-venv/bin/python -m pytest -q tests/test_dependency_audit.py tests/test_pillow13_compatibility.py tests/test_g2_reader.py tests/test_g2_ocr_isolation.py tests/test_g7_reporting.py tests/test_audit_export.py",
+    "actual_output": "..................................                                       [100%]\n34 passed in 15.50s",
+    "ocr_benchmark_rerun": false,
+    "gold_modified": false,
+    "ci_new_reader_sha": "PENDING"
+  }
+}

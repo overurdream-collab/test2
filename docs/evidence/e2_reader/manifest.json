@@ -1,0 +1,102 @@
+{
+  "fixtures": [
+    {
+      "id": "invoice_en",
+      "category": "invoice",
+      "language": "en",
+      "image": "assets/invoice_en.png",
+      "image_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+      "pdf": "assets/invoice_en.pdf",
+      "pdf_sha256": "7e1076cd9ef170af44467817d97785106a6ea6b970d52b9f5d6bef25b72cdf41",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "invoice_ar",
+      "category": "invoice",
+      "language": "ar",
+      "image": "assets/invoice_ar.png",
+      "image_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "pdf": "assets/invoice_ar.pdf",
+      "pdf_sha256": "c5bc5a85cb2e63f432ecae651896370d6bb7d3b6e2698d695057d07cd4a51ae8",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "lab_en",
+      "category": "laboratory",
+      "language": "en",
+      "image": "assets/lab_en.png",
+      "image_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+      "pdf": "assets/lab_en.pdf",
+      "pdf_sha256": "dc834c5b332673b96ad16b2a7ec4e30344590bd12606ce48910bd3b508905079",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "lab_ar",
+      "category": "laboratory",
+      "language": "ar",
+      "image": "assets/lab_ar.png",
+      "image_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "pdf": "assets/lab_ar.pdf",
+      "pdf_sha256": "69678535ac6acbcf989f3087fa825456f603a25527abc721a387765c36295e65",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "radiology_en",
+      "category": "radiology",
+      "language": "en",
+      "image": "assets/radiology_en.png",
+      "image_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+      "pdf": "assets/radiology_en.pdf",
+      "pdf_sha256": "7a347516daf7439de4e5f2289456a61cf995e6bce9e8035d7ac964435be98292",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "radiology_ar",
+      "category": "radiology",
+      "language": "ar",
+      "image": "assets/radiology_ar.png",
+      "image_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "pdf": "assets/radiology_ar.pdf",
+      "pdf_sha256": "46d1d1ad3af953cff46fc5799a703db458256787e811f8f6a122b2d15c81ca60",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "prescription_en",
+      "category": "prescription",
+      "language": "en",
+      "image": "assets/prescription_en.png",
+      "image_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+      "pdf": "assets/prescription_en.pdf",
+      "pdf_sha256": "3a56a212f3d2637722ee15deaa140f41f52f15cc3ab307a576e3748ef533f6ba",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    },
+    {
+      "id": "prescription_ar",
+      "category": "prescription",
+      "language": "ar",
+      "image": "assets/prescription_ar.png",
+      "image_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "pdf": "assets/prescription_ar.pdf",
+      "pdf_sha256": "a0307675806721500ce1f04d48526aff7447899fce2d215f22c292e16e967292",
+      "page_count": 1,
+      "pixel_width": 1280,
+      "pixel_height": 1040
+    }
+  ],
+  "schema": "DG002_B_LOCKED_V1",
+  "generation": "deterministic authored source, independent of predictions"
+}

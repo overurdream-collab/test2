@@ -1,0 +1,70 @@
+{
+  "classification": "ENVIRONMENT_OUTPUT_FORMAT_FAILURE_NOT_OCR_ACCURACY",
+  "cause": "TESSDATA_PREFIX omitted configs/tsv; trailing tsv returned plain text with exit code 0. Explicit tessedit_create_tsv=1 and header validation repair output selection.",
+  "accuracy_comparison_includes_this_run": false,
+  "raw_failed_run": {
+    "pages": [
+      {
+        "id": "invoice_en",
+        "raw_text": "MEDICAL INVOICE\n\nSERVICE Complete blood count\nQUANTITY 2\n\nUNITPRICE 15.00\n\nAMOUNT 30.00",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 3.3612
+      },
+      {
+        "id": "invoice_ar",
+        "raw_text": "MEDICAL INVOICE\n\nSERVICE ‏تحليل دم شامل‎\nQUANTITY y\nUNITPRICE ‏0ر10‎\n‎AMOUNT ‏ارس‎",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 3.6432
+      },
+      {
+        "id": "lab_en",
+        "raw_text": "LABORATORY REPORT\n\nTEST Hemoglobin\nRESULT 13.5\n\nUNIT g/dL\nREFERENCE 12.0-16.0",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 1.8676
+      },
+      {
+        "id": "lab_ar",
+        "raw_text": "LABORATORY REPORT\n\nTEST ‏الهيموجلوبين‎\n‎RESULT 10\nUNIT ‏غ/دل‎\n‎REFERENCE 11-17",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 2.4783
+      },
+      {
+        "id": "radiology_en",
+        "raw_text": "RADIOLOGY REPORT\n\nSITE Chest\n\nFINDING No focal opacity\nMODALITY X-ray",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 1.265
+      },
+      {
+        "id": "radiology_ar",
+        "raw_text": "RADIOLOGY REPORT\n\nالصدر ‎SITE‏\n‏لا يوجد ارتشاح ‎FINDING‏\n‏أشعة سينية ‎MODALITY‏",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 2.1596
+      },
+      {
+        "id": "prescription_en",
+        "raw_text": "PRESCRIPTION\n\nDRUG Amoxicillin\nSTRENGTH 500 mg\nDOSE 1 capsule\nFREQUENCY twice daily",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 1.476
+      },
+      {
+        "id": "prescription_ar",
+        "raw_text": "PRESCRIPTION\n\nDRUG ‏أموكسيسيلين‎\n‎STRENGTH ilo 0°:\nDOSE ‏كبسولة واحدة‎\nFREQUENCY ‏يوميا‎ Uli po",
+        "raw_tsv_words": [],
+        "recognized_fields": 0,
+        "engine_seconds": 1.0621
+      }
+    ],
+    "engine": "tesseract 5.5.0",
+    "languages": {
+      "ara": "INSTALLED",
+      "eng": "INSTALLED"
+    }
+  }
+}

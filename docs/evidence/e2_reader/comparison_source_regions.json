@@ -1,0 +1,1474 @@
+{
+  "source_frozen_sha256": {
+    "gold.json": "fde04977baa6fcb7b285151af41d8264b521a473e2cbcaceb31357abea7c6c50",
+    "manifest.json": "bd4d3132d912982916d762f3e912226ade073cbf124392d83bb30d63c1decba1"
+  },
+  "fixture_count": 8,
+  "reports": {
+    "baseline": {
+      "status": "DG002_SCORING_ONLY_NOT_MODEL_QUALIFICATION",
+      "engine": "Tesseract tesseract 5.5.0",
+      "documents_expected": 8,
+      "fields_expected": 30,
+      "fields_exact": 23,
+      "evidence_source_aligned": 26,
+      "fields_exact_and_aligned": 22,
+      "unsafe_accepted_fields": 0,
+      "review_or_missing_fields": 30,
+      "invented_extra_field_ids": 0,
+      "field_exact_rate": 0.766667,
+      "field_exact_and_source_aligned_rate": 0.733333,
+      "review_or_missing_rate": 1.0,
+      "cer_whitespace_ignored": 0.15197,
+      "wer_whitespace_tokenized": 0.303371,
+      "by_language": {
+        "en": {
+          "expected": 15,
+          "exact": 15,
+          "source_aligned": 14,
+          "held": 15,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 0.933333
+        },
+        "ar": {
+          "expected": 15,
+          "exact": 8,
+          "source_aligned": 12,
+          "held": 15,
+          "field_exact_rate": 0.533333,
+          "source_aligned_rate": 0.8
+        }
+      },
+      "by_kind": {
+        "service": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "quantity": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 0,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 0.0
+        },
+        "amount": {
+          "expected": 4,
+          "exact": 2,
+          "source_aligned": 3,
+          "held": 4,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 0.75
+        },
+        "lab_test": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "lab_result": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 1,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 0.5
+        },
+        "lab_unit": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "reference_range": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "anatomical_site": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "radiology_finding": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "modality": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_name": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_strength": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "medication_dose": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "frequency": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        }
+      },
+      "details": [
+        {
+          "document_id": "invoice_en",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.702852
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": false,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.31127
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.562016
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.567368
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.67335
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": false,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.311355
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": false,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.486263
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.521281
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.666203
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.527516
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.612665
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.604306
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.669711
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": false,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.479753
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.609568
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.51511
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.584416
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.688567
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.62069
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.606151
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.678269
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.693374
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.627273
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.632592
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.658056
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.678337
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.71408
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.617284
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.688272
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.775116
+        }
+      ],
+      "performance": {
+        "runtime_seconds": 17.017,
+        "peak_rss_mb": 42.77,
+        "peak_vram_mb": null
+      },
+      "scope": "synthetic comparison; no real-world validation, model inference or G2/A1 source qualification"
+    },
+    "source_regions": {
+      "status": "DG002_SCORING_ONLY_NOT_MODEL_QUALIFICATION",
+      "engine": "Tesseract tesseract 5.5.0",
+      "documents_expected": 8,
+      "fields_expected": 30,
+      "fields_exact": 23,
+      "evidence_source_aligned": 30,
+      "fields_exact_and_aligned": 23,
+      "unsafe_accepted_fields": 0,
+      "review_or_missing_fields": 30,
+      "invented_extra_field_ids": 0,
+      "field_exact_rate": 0.766667,
+      "field_exact_and_source_aligned_rate": 0.766667,
+      "review_or_missing_rate": 1.0,
+      "cer_whitespace_ignored": 0.15197,
+      "wer_whitespace_tokenized": 0.303371,
+      "by_language": {
+        "en": {
+          "expected": 15,
+          "exact": 15,
+          "source_aligned": 15,
+          "held": 15,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "ar": {
+          "expected": 15,
+          "exact": 8,
+          "source_aligned": 15,
+          "held": 15,
+          "field_exact_rate": 0.533333,
+          "source_aligned_rate": 1.0
+        }
+      },
+      "by_kind": {
+        "service": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "quantity": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "amount": {
+          "expected": 4,
+          "exact": 2,
+          "source_aligned": 4,
+          "held": 4,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "lab_test": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "lab_result": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "lab_unit": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "reference_range": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "anatomical_site": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "radiology_finding": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "modality": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_name": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_strength": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "medication_dose": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "frequency": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        }
+      },
+      "details": [
+        {
+          "document_id": "invoice_en",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.960879
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.733453
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.885382
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.892949
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.974569
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.692308
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.786869
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.838636
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.940598
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.859084
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.944053
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.911006
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.943039
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.799753
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.935151
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.801282
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.909091
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.954505
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.982759
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.947521
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.945601
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.95776
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.929091
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.957317
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.944496
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.962963
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.957078
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.912525
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.952564
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.731317
+        }
+      ],
+      "performance": {
+        "runtime_seconds": 17.019,
+        "peak_rss_mb": 42.77,
+        "peak_vram_mb": null
+      },
+      "scope": "synthetic comparison; no real-world validation, model inference or G2/A1 source qualification"
+    },
+    "arabic_region_recheck": {
+      "status": "DG002_SCORING_ONLY_NOT_MODEL_QUALIFICATION",
+      "engine": "Tesseract tesseract 5.5.0",
+      "documents_expected": 8,
+      "fields_expected": 30,
+      "fields_exact": 23,
+      "evidence_source_aligned": 30,
+      "fields_exact_and_aligned": 23,
+      "unsafe_accepted_fields": 0,
+      "review_or_missing_fields": 30,
+      "invented_extra_field_ids": 0,
+      "field_exact_rate": 0.766667,
+      "field_exact_and_source_aligned_rate": 0.766667,
+      "review_or_missing_rate": 1.0,
+      "cer_whitespace_ignored": 0.15197,
+      "wer_whitespace_tokenized": 0.303371,
+      "by_language": {
+        "en": {
+          "expected": 15,
+          "exact": 15,
+          "source_aligned": 15,
+          "held": 15,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "ar": {
+          "expected": 15,
+          "exact": 8,
+          "source_aligned": 15,
+          "held": 15,
+          "field_exact_rate": 0.533333,
+          "source_aligned_rate": 1.0
+        }
+      },
+      "by_kind": {
+        "service": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "quantity": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "amount": {
+          "expected": 4,
+          "exact": 2,
+          "source_aligned": 4,
+          "held": 4,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "lab_test": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "lab_result": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "lab_unit": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "reference_range": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "anatomical_site": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "radiology_finding": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "modality": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_name": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "medication_strength": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        },
+        "medication_dose": {
+          "expected": 2,
+          "exact": 2,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 1.0,
+          "source_aligned_rate": 1.0
+        },
+        "frequency": {
+          "expected": 2,
+          "exact": 1,
+          "source_aligned": 2,
+          "held": 2,
+          "field_exact_rate": 0.5,
+          "source_aligned_rate": 1.0
+        }
+      },
+      "details": [
+        {
+          "document_id": "invoice_en",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.960879
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.733453
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.885382
+        },
+        {
+          "document_id": "invoice_en",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.892949
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "service_name",
+          "kind": "service",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.974569
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "quantity",
+          "kind": "quantity",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.692308
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "unit_price",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.786869
+        },
+        {
+          "document_id": "invoice_ar",
+          "field_id": "line_total",
+          "kind": "amount",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.838636
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.940598
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.859084
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.944053
+        },
+        {
+          "document_id": "lab_en",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.911006
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.943039
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.799753
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.935151
+        },
+        {
+          "document_id": "lab_ar",
+          "field_id": "reference",
+          "kind": "reference_range",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.801282
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.909091
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.954505
+        },
+        {
+          "document_id": "radiology_en",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.982759
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.947521
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.945601
+        },
+        {
+          "document_id": "radiology_ar",
+          "field_id": "modality",
+          "kind": "modality",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.95776
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.929091
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.957317
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.944496
+        },
+        {
+          "document_id": "prescription_en",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "en",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.962963
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "drug",
+          "kind": "medication_name",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.957078
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.912525
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "language": "ar",
+          "exact_value": true,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.952564
+        },
+        {
+          "document_id": "prescription_ar",
+          "field_id": "frequency",
+          "kind": "frequency",
+          "language": "ar",
+          "exact_value": false,
+          "correct_page_row_and_iou": true,
+          "referred_to_review": true,
+          "unsafe_accepted": false,
+          "bbox_iou": 0.731317
+        }
+      ],
+      "performance": {
+        "runtime_seconds": 25.039,
+        "peak_rss_mb": 42.77,
+        "peak_vram_mb": null
+      },
+      "scope": "synthetic comparison; no real-world validation, model inference or G2/A1 source qualification"
+    }
+  },
+  "page_text_metrics": "Baseline pages retained; crop OCR modifies fields only",
+  "comparison_scope": "Same image SHA corpus and same actual baseline words; no model or production qualification",
+  "all_fields_human_review": true,
+  "financial_decisions": false
+}

@@ -33,6 +33,22 @@ TITLE={"invoice":"MEDICAL INVOICE","laboratory":"LABORATORY REPORT",
 FONT_SIZE=39
 def sha(data):return hashlib.sha256(data).hexdigest()
 def jsonsave(path,obj):Path(path).write_text(json.dumps(obj,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+def record_runtime(root):
+    """Capture actual installed engine/data identity, without downloading models."""
+    version=subprocess.run(["tesseract","--version"],capture_output=True,text=True,check=True)
+    langs=subprocess.run(["tesseract","--list-langs"],capture_output=True,text=True,check=True)
+    listing=langs.stdout+langs.stderr
+    match=re.search(r'in "([^"]+)"',listing)
+    data_root=Path(match.group(1)) if match else None
+    data_hashes={lang:sha((data_root/(lang+".traineddata")).read_bytes())
+                 for lang in ("ara","eng") if data_root and (data_root/(lang+".traineddata")).is_file()}
+    result={"engine":version.stdout.splitlines()[0],"engine_version_output":version.stdout,
+        "language_listing":listing,"traineddata_sha256":data_hashes,
+        "OMP_THREAD_LIMIT":os.environ.get("OMP_THREAD_LIMIT"),"backend":"CPU",
+        "confidence":"UNCALIBRATED_HUMAN_REVIEW_ONLY","new_vlm_inference":False}
+    jsonsave(Path(root)/"runtime_tesseract_identity.json",result)
+    return result
+
 def make_fixtures(root):
     root=Path(root);(root/"assets").mkdir(parents=True,exist_ok=True)
     font=ImageFont.truetype(FONT,FONT_SIZE)
@@ -76,22 +92,32 @@ def make_fixtures(root):
                                    "generation":"deterministic authored source, independent of predictions"})
     return manifest
 
-def tesseract_run(png,language):
-    lang="eng" if language=="en" else "ara+eng"
+def tesseract_run(png,language,*,psm=6,engine_language=None):
+    lang=engine_language or ("eng" if language=="en" else "ara+eng")
+    if type(psm) is not int or psm not in range(1,14) or not re.fullmatch(r"[A-Za-z0-9+_]+",lang):
+        raise ValueError("INVALID_OCR_PROFILE")
     start=time.perf_counter()
-    run=subprocess.run(["tesseract","stdin","stdout","-l",lang,"--psm","6","tsv"],
+    # An isolated TESSDATA_PREFIX need not contain the distro's configs/tsv.
+    # Set the output mode explicitly and reject a text response rather than
+    # silently scoring an empty field list after a successful process exit.
+    run=subprocess.run(["tesseract","stdin","stdout","-l",lang,"--psm",str(psm),
+                        "-c","tessedit_create_tsv=1"],
                        input=png,capture_output=True,timeout=30)
     if run.returncode:
         raise RuntimeError("TESSERACT_TSV_FAILED: "+run.stderr.decode(errors="replace")[-400:])
+    rows=csv.DictReader(io.StringIO(run.stdout.decode()),delimiter="\t")
+    if not rows.fieldnames or not {"text","left","top","width","height","conf",
+            "block_num","par_num","line_num"}.issubset(rows.fieldnames):
+        raise RuntimeError("TESSERACT_TSV_FORMAT_INVALID")
     words=[]
-    for r in csv.DictReader(io.StringIO(run.stdout.decode()),delimiter="\t"):
+    for r in rows:
         text=r.get("text","").strip().replace("\u200e","").replace("\u200f","")
         if not text:continue
         left,top,w,h=(int(r[z]) for z in ("left","top","width","height"))
         words.append({"text":text,"bbox":[left,top,left+w,top+h],
                       "confidence_uncalibrated":float(r["conf"]) if float(r["conf"])>=0 else None,
                       "line_key":(r["block_num"],r["par_num"],r["line_num"])})
-    text_run=subprocess.run(["tesseract","stdin","stdout","-l",lang,"--psm","6"],
+    text_run=subprocess.run(["tesseract","stdin","stdout","-l",lang,"--psm",str(psm)],
                             input=png,capture_output=True,timeout=30)
     if text_run.returncode:raise RuntimeError("TESSERACT_TEXT_FAILED")
     return words,text_run.stdout.decode(errors="replace").strip(),time.perf_counter()-start
@@ -122,8 +148,153 @@ def associate_fields(words,language="en"):
                           [w["confidence_uncalibrated"] for w in values if w["confidence_uncalibrated"] is not None] or [None])})
     return output
 
+
+def associate_source_regions(words,language,*,source_sha256,page_size):
+    """Resolve one OCR label to value glyphs using observed geometry, never gold.
+
+    A small glyph-height-derived context margin includes the entire visible
+    character region. It does not turn a table/page box into field evidence.
+    Ambiguous repeated labels remain in the issue ledger rather than guessing.
+    """
+    if not isinstance(source_sha256,str) or not re.fullmatch(r"[0-9a-f]{64}",source_sha256):
+        raise ValueError("SOURCE_SHA_INVALID")
+    if (len(page_size)!=2 or not all(type(v) is int and v>0 for v in page_size)):
+        raise ValueError("SOURCE_PAGE_SIZE_INVALID")
+    width,height=page_size
+    grouped={}
+    for word in words:
+        box=word.get("bbox",[])
+        if (len(box)!=4 or not all(type(v) is int for v in box)
+                or not (0<=box[0]<box[2]<=width and 0<=box[1]<box[3]<=height)):
+            raise ValueError("SOURCE_BOX_INVALID")
+        grouped.setdefault(tuple(word["line_key"]),[]).append(word)
+    fields=[];issues=[]
+    for row_key,line in grouped.items():
+        labels=[]
+        for word in line:
+            name=re.sub(r"[^A-Z]","",word["text"].upper())
+            if name in LABELS.values():
+                labels.append((next(k for k,v in LABELS.items() if v==name),word))
+        if not labels:continue
+        if len(labels)!=1:
+            issues.append({"reason_code":"AMBIGUOUS_LABEL_ROW","source_row_key":list(row_key)})
+            continue
+        key,label=labels[0]
+        values=[word for word in line if word is not label
+                and word["bbox"][0]>label["bbox"][2]]
+        if not values:
+            issues.append({"reason_code":"VALUE_REGION_MISSING","field_id":key})
+            continue
+        values.sort(key=lambda word:word["bbox"][0],reverse=language=="ar")
+        glyph_box=[min(w["bbox"][0] for w in values),min(w["bbox"][1] for w in values),
+                   max(w["bbox"][2] for w in values),max(w["bbox"][3] for w in values)]
+        pad=max(2,min(8,round((glyph_box[3]-glyph_box[1])*0.2)))
+        box=[max(label["bbox"][2]+1,glyph_box[0]-pad),max(0,glyph_box[1]-pad),
+             min(width,glyph_box[2]+pad),min(height,glyph_box[3]+pad)]
+        if (box[2]-box[0])*(box[3]-box[1])>=width*height*0.5:
+            issues.append({"reason_code":"REGION_NOT_FIELD_SPECIFIC","field_id":key})
+            continue
+        value=" ".join(word["text"] for word in values)
+        fields.append({"field_id":key,"kind":"OCR_DETECTED","value":value,
+            "ocr_value_original":value,"value_normalized":None,"page":1,"row_id":"main",
+            "source_row_key":list(row_key),"bbox":box,"glyph_bbox":glyph_box,
+            "source_sha256":source_sha256,"rendered_page_sha256":source_sha256,
+            "coordinate_system":"SOURCE_IMAGE_PIXELS","image_size":[width,height],
+            "locator_method":"TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version":"dg002-field-regions-v1","evidence_profile":"DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated":min([w["confidence_uncalibrated"] for w in values
+                if w.get("confidence_uncalibrated") is not None] or [None]),
+            "review_required":True,"review_reasons":["OCR_UNCALIBRATED","SOURCE_AUTHORITY_NOT_ATTESTED"],
+            "g2_native_rows_verified":False,"financial_decision":"NOT_AUTHORIZED"})
+    duplicate_ids={f["field_id"] for f in fields if sum(
+        other["field_id"]==f["field_id"] for other in fields)>1}
+    if duplicate_ids:
+        fields=[f for f in fields if f["field_id"] not in duplicate_ids]
+        issues.extend({"field_id":key,"reason_code":"MULTIPLE_FIELD_REGIONS"} for key in sorted(duplicate_ids))
+    return fields,issues
+
+
+def compare_source_regions(root):
+    """One real baseline, a geometry projection, and bounded Arabic crop OCR.
+
+    Gold is loaded only after all predictions exist. Page CER/WER is retained
+    from baseline: per-field crop OCR is not a new full-page transcription.
+    """
+    root=Path(root)
+    frozen={name:sha((root/name).read_bytes()) for name in ("gold.json","manifest.json")}
+    manifest=json.loads((root/"manifest.json").read_text())["fixtures"]
+    baseline=json.loads((root/"predictions_tesseract.json").read_text())
+    raw={p["id"]:p for p in json.loads((root/"raw_tesseract.json").read_text())["pages"]}
+    base_docs={p["id"]:p for p in baseline["documents"]}
+    geometry_docs=[];crop_docs=[];issues=[];crop_trace=[];crop_seconds=0;association_seconds=0
+    for item in manifest:
+        png=(root/item["image"]).read_bytes()
+        if sha(png)!=item["image_sha256"]:raise ValueError("INPUT_SHA_MISMATCH")
+        with Image.open(io.BytesIO(png)) as image:
+            association_start=time.perf_counter()
+            fields,problems=associate_source_regions(raw[item["id"]]["raw_tsv_words"],item["language"],
+                source_sha256=item["image_sha256"],page_size=image.size)
+            association_seconds+=time.perf_counter()-association_start
+            for field in fields:
+                field["engine"]=baseline["engine"]
+            geometry_docs.append({**base_docs[item["id"]],"fields":fields})
+            crop_fields=[]
+            for field in fields:
+                candidate=dict(field)
+                if item["language"]=="ar":
+                    box=field["bbox"]
+                    buffer=io.BytesIO();image.crop(tuple(box)).save(buffer,format="PNG")
+                    crop_words,text,seconds=tesseract_run(buffer.getvalue(),"ar",psm=7,engine_language="ara")
+                    crop_seconds+=seconds
+                    ordered=sorted(crop_words,key=lambda word:word["bbox"][0],reverse=True)
+                    if ordered:
+                        candidate["value"]=" ".join(word["text"] for word in ordered)
+                        candidate["locator_method"]="SOURCE_REGION_ARABIC_OCR_RECHECK"
+                        candidate["ocr_profile"]={"language":"ara","psm":7,"crop_source_bbox":box}
+                        candidate["confidence_uncalibrated"]=min([w["confidence_uncalibrated"] for w in ordered
+                            if w.get("confidence_uncalibrated") is not None] or [None])
+                        if candidate["value"]!=field["value"]:
+                            candidate["review_reasons"]=field["review_reasons"]+["OCR_PASSES_DISAGREE"]
+                    else:
+                        candidate["review_reasons"]=field["review_reasons"]+["REGION_OCR_EMPTY"]
+                    crop_trace.append({"document_id":item["id"],"field_id":field["field_id"],
+                        "source_sha256":item["image_sha256"],"crop_source_bbox":box,
+                        "text":text,"words":crop_words,"seconds":round(seconds,4)})
+                crop_fields.append(candidate)
+            crop_docs.append({**base_docs[item["id"]],"fields":crop_fields})
+        issues.extend({"document_id":item["id"],**issue} for issue in problems)
+    common={key:value for key,value in baseline.items() if key!="documents"}
+    geometry={**common,"documents":geometry_docs,"association":"SOURCE_REGIONS_V1",
+        "runtime_seconds":round(baseline["runtime_seconds"]+association_seconds,3),
+        "incremental_association_seconds":round(association_seconds,6)}
+    crop={**common,"documents":crop_docs,"association":"SOURCE_REGIONS_ARABIC_RECHECK_V1",
+        "runtime_seconds":round(baseline["runtime_seconds"]+association_seconds+crop_seconds,3),
+        "incremental_region_runtime_seconds":round(crop_seconds,3),
+        "peak_rss_mb":round(max(baseline["peak_rss_mb"],
+            resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024,
+            resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss/1024),3)}
+    gold=json.loads((root/"gold.json").read_text())
+    reports={name:evaluate(gold,pred) for name,pred in
+        (("baseline",baseline),("source_regions",geometry),("arabic_region_recheck",crop))}
+    for name,pred in (("source_regions",geometry),("arabic_region_recheck",crop)):
+        jsonsave(root/("predictions_"+name+".json"),pred)
+    jsonsave(root/"source_region_ocr_trace.json",{"regions":crop_trace,"issues":issues})
+    if frozen!={name:sha((root/name).read_bytes()) for name in frozen}:
+        raise ValueError("FROZEN_ORACLE_CHANGED")
+    summary={"source_frozen_sha256":frozen,"fixture_count":len(manifest),"reports":reports,
+        "page_text_metrics":"Baseline pages retained; crop OCR modifies fields only",
+        "comparison_scope":"Same image SHA corpus and same actual baseline words; no model or production qualification",
+        "all_fields_human_review":True,"financial_decisions":False}
+    jsonsave(root/"comparison_source_regions.json",summary)
+    print(json.dumps({key:{name:report[name] for name in ("fields_expected","fields_exact",
+        "fields_exact_and_aligned","evidence_source_aligned","unsafe_accepted_fields",
+        "review_or_missing_fields","cer_whitespace_ignored","wer_whitespace_tokenized")}
+        for key,report in reports.items()}))
+    return summary
+
 def run_tesseract(root):
     root=Path(root);manifest=json.loads((root/"manifest.json").read_text())["fixtures"]
+    record_runtime(root)
     docs=[];results=[];total_runtime=0
     for item in manifest:
         f=root/item["image"];png=f.read_bytes()
@@ -200,9 +371,12 @@ def main():
     p=argparse.ArgumentParser();p.add_argument("--out",required=True)
     p.add_argument("--generate-only",action="store_true")
     p.add_argument("--use-frozen",action="store_true")
+    p.add_argument("--compare-source-regions",action="store_true")
     args=p.parse_args();root=Path(args.out)
     if args.use_frozen:
         if not (root/"gold.json").is_file():raise ValueError("FROZEN_GOLD_MISSING")
     else:make_fixtures(root)
-    if not args.generate_only:run_tesseract(root)
+    if not args.generate_only:
+        run_tesseract(root)
+        if args.compare_source_regions:compare_source_regions(root)
 if __name__=="__main__":main()

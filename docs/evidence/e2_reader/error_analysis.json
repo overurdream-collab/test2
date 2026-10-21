@@ -1,0 +1,102 @@
+{
+  "errors": [
+    {
+      "classification": "EVIDENCE_ASSOCIATION_FAILURE",
+      "document_id": "invoice_en",
+      "field_id": "quantity",
+      "kind": "quantity",
+      "language": "en",
+      "exact_value": true,
+      "correct_page_row_and_iou": false,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.31127
+    },
+    {
+      "classification": "READING_AND_ASSOCIATION_FAILURE",
+      "document_id": "invoice_ar",
+      "field_id": "quantity",
+      "kind": "quantity",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": false,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.311355
+    },
+    {
+      "classification": "READING_AND_ASSOCIATION_FAILURE",
+      "document_id": "invoice_ar",
+      "field_id": "unit_price",
+      "kind": "amount",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": false,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.486263
+    },
+    {
+      "classification": "OCR_OR_FIELD_READING_FAILURE",
+      "document_id": "invoice_ar",
+      "field_id": "line_total",
+      "kind": "amount",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": true,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.521281
+    },
+    {
+      "classification": "READING_AND_ASSOCIATION_FAILURE",
+      "document_id": "lab_ar",
+      "field_id": "test_result",
+      "kind": "lab_result",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": false,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.479753
+    },
+    {
+      "classification": "OCR_OR_FIELD_READING_FAILURE",
+      "document_id": "lab_ar",
+      "field_id": "reference",
+      "kind": "reference_range",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": true,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.51511
+    },
+    {
+      "classification": "OCR_OR_FIELD_READING_FAILURE",
+      "document_id": "prescription_ar",
+      "field_id": "strength",
+      "kind": "medication_strength",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": true,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.617284
+    },
+    {
+      "classification": "OCR_OR_FIELD_READING_FAILURE",
+      "document_id": "prescription_ar",
+      "field_id": "frequency",
+      "kind": "frequency",
+      "language": "ar",
+      "exact_value": false,
+      "correct_page_row_and_iou": true,
+      "referred_to_review": true,
+      "unsafe_accepted": false,
+      "bbox_iou": 0.775116
+    }
+  ],
+  "separate_reading_and_association": true,
+  "memory_metric": "maximum parent or child process peak RSS on Linux; not summed concurrent RSS"
+}

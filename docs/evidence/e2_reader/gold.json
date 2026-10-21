@@ -1,0 +1,499 @@
+{
+  "documents": [
+    {
+      "id": "invoice_en",
+      "sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "MEDICAL INVOICE\nSERVICE Complete blood count\nQUANTITY 2\nUNITPRICE 15.00\nAMOUNT 30.00"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "service_name",
+          "kind": "service",
+          "value": "Complete blood count",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            181,
+            873,
+            233
+          ]
+        },
+        {
+          "field_id": "quantity",
+          "kind": "quantity",
+          "value": "2",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            341,
+            467,
+            384
+          ]
+        },
+        {
+          "field_id": "unit_price",
+          "kind": "amount",
+          "value": "15.00",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            500,
+            554,
+            543
+          ]
+        },
+        {
+          "field_id": "line_total",
+          "kind": "amount",
+          "value": "30.00",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            659,
+            554,
+            702
+          ]
+        }
+      ]
+    },
+    {
+      "id": "invoice_ar",
+      "sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "MEDICAL INVOICE\nSERVICE تحليل دم شامل\nQUANTITY ٢\nUNITPRICE ١٥٫٠٠\nAMOUNT ٣٠٫٠٠"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "service_name",
+          "kind": "service",
+          "value": "تحليل دم شامل",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            871,
+            181,
+            1137,
+            235
+          ]
+        },
+        {
+          "field_id": "quantity",
+          "kind": "quantity",
+          "value": "٢",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1102,
+            345,
+            1137,
+            384
+          ]
+        },
+        {
+          "field_id": "unit_price",
+          "kind": "amount",
+          "value": "١٥٫٠٠",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1027,
+            503,
+            1137,
+            548
+          ]
+        },
+        {
+          "field_id": "line_total",
+          "kind": "amount",
+          "value": "٣٠٫٠٠",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1027,
+            663,
+            1137,
+            707
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lab_en",
+      "sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "LABORATORY REPORT\nTEST Hemoglobin\nRESULT 13.5\nUNIT g/dL\nREFERENCE 12.0-16.0"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "value": "Hemoglobin",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            181,
+            677,
+            233
+          ]
+        },
+        {
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "value": "13.5",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            341,
+            529,
+            384
+          ]
+        },
+        {
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "value": "g/dL",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            499,
+            527,
+            551
+          ]
+        },
+        {
+          "field_id": "reference",
+          "kind": "reference_range",
+          "value": "12.0-16.0",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            659,
+            630,
+            702
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lab_ar",
+      "sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "LABORATORY REPORT\nTEST الهيموجلوبين\nRESULT ١٣٫٥\nUNIT غ/دل\nREFERENCE ١٢-١٦"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "test_name",
+          "kind": "lab_test",
+          "value": "الهيموجلوبين",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            918,
+            181,
+            1137,
+            235
+          ]
+        },
+        {
+          "field_id": "test_result",
+          "kind": "lab_result",
+          "value": "١٣٫٥",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1047,
+            344,
+            1137,
+            389
+          ]
+        },
+        {
+          "field_id": "unit",
+          "kind": "lab_unit",
+          "value": "غ/دل",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1041,
+            499,
+            1137,
+            553
+          ]
+        },
+        {
+          "field_id": "reference",
+          "kind": "reference_range",
+          "value": "١٢-١٦",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1025,
+            663,
+            1137,
+            702
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radiology_en",
+      "sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "RADIOLOGY REPORT\nSITE Chest\nFINDING No focal opacity\nMODALITY X-ray"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "value": "Chest",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            181,
+            554,
+            225
+          ]
+        },
+        {
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "value": "No focal opacity",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            340,
+            757,
+            392
+          ]
+        },
+        {
+          "field_id": "modality",
+          "kind": "modality",
+          "value": "X-ray",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            501,
+            544,
+            551
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radiology_ar",
+      "sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "RADIOLOGY REPORT\nSITE الصدر\nFINDING لا يوجد ارتشاح\nMODALITY أشعة سينية"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "site",
+          "kind": "anatomical_site",
+          "value": "الصدر",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            1025,
+            181,
+            1137,
+            235
+          ]
+        },
+        {
+          "field_id": "finding",
+          "kind": "radiology_finding",
+          "value": "لا يوجد ارتشاح",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            888,
+            340,
+            1137,
+            394
+          ]
+        },
+        {
+          "field_id": "modality",
+          "kind": "modality",
+          "value": "أشعة سينية",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            939,
+            490,
+            1137,
+            549
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prescription_en",
+      "sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "PRESCRIPTION\nDRUG Amoxicillin\nSTRENGTH 500 mg\nDOSE 1 capsule\nFREQUENCY twice daily"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "drug",
+          "kind": "medication_name",
+          "value": "Amoxicillin",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            181,
+            653,
+            225
+          ]
+        },
+        {
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "value": "500 mg",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            341,
+            592,
+            392
+          ]
+        },
+        {
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "value": "1 capsule",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            499,
+            629,
+            551
+          ]
+        },
+        {
+          "field_id": "frequency",
+          "kind": "frequency",
+          "value": "twice daily",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            428,
+            658,
+            651,
+            710
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prescription_ar",
+      "sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "PRESCRIPTION\nDRUG أموكسيسيلين\nSTRENGTH ٥٠٠ ملغ\nDOSE كبسولة واحدة\nFREQUENCY مرتان يوميا"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "drug",
+          "kind": "medication_name",
+          "value": "أموكسيسيلين",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            905,
+            172,
+            1137,
+            235
+          ]
+        },
+        {
+          "field_id": "strength",
+          "kind": "medication_strength",
+          "value": "٥٠٠ ملغ",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            993,
+            340,
+            1137,
+            394
+          ]
+        },
+        {
+          "field_id": "dose",
+          "kind": "medication_dose",
+          "value": "كبسولة واحدة",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            898,
+            499,
+            1138,
+            553
+          ]
+        },
+        {
+          "field_id": "frequency",
+          "kind": "frequency",
+          "value": "مرتان يوميا",
+          "page": 1,
+          "row_id": "main",
+          "bbox": [
+            941,
+            658,
+            1137,
+            712
+          ]
+        }
+      ]
+    }
+  ],
+  "oracle": "AUTHORED_SYNTHETIC_NOT_OCR"
+}

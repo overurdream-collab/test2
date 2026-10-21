@@ -1,0 +1,5347 @@
+{
+  "field_count": 30,
+  "records": [
+    {
+      "document_id": "invoice_en",
+      "language": "en",
+      "source": {
+        "id": "invoice_en",
+        "category": "invoice",
+        "language": "en",
+        "image": "assets/invoice_en.png",
+        "image_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+        "pdf": "assets/invoice_en.pdf",
+        "pdf_sha256": "7e1076cd9ef170af44467817d97785106a6ea6b970d52b9f5d6bef25b72cdf41",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "service_name",
+        "kind": "service",
+        "value": "Complete blood count",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          181,
+          873,
+          233
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "Complete blood count",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              437,
+              188,
+              865,
+              226
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.136024
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.702852
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "Complete blood count",
+            "ocr_value_original": "Complete blood count",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              429,
+              180,
+              873,
+              234
+            ],
+            "glyph_bbox": [
+              437,
+              188,
+              865,
+              226
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.136024,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.960879
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "Complete blood count",
+            "ocr_value_original": "Complete blood count",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              429,
+              180,
+              873,
+              234
+            ],
+            "glyph_bbox": [
+              437,
+              188,
+              865,
+              226
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.136024,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.960879
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_en",
+      "language": "en",
+      "source": {
+        "id": "invoice_en",
+        "category": "invoice",
+        "language": "en",
+        "image": "assets/invoice_en.png",
+        "image_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+        "pdf": "assets/invoice_en.pdf",
+        "pdf_sha256": "7e1076cd9ef170af44467817d97785106a6ea6b970d52b9f5d6bef25b72cdf41",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "quantity",
+        "kind": "quantity",
+        "value": "2",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          341,
+          467,
+          384
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "2",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              438,
+              348,
+              456,
+              377
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 97.012268
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": false,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.31127
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "2",
+            "ocr_value_original": "2",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              432,
+              342,
+              462,
+              383
+            ],
+            "glyph_bbox": [
+              438,
+              348,
+              456,
+              377
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 97.012268,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.733453
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "2",
+            "ocr_value_original": "2",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              432,
+              342,
+              462,
+              383
+            ],
+            "glyph_bbox": [
+              438,
+              348,
+              456,
+              377
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 97.012268,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.733453
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_en",
+      "language": "en",
+      "source": {
+        "id": "invoice_en",
+        "category": "invoice",
+        "language": "en",
+        "image": "assets/invoice_en.png",
+        "image_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+        "pdf": "assets/invoice_en.pdf",
+        "pdf_sha256": "7e1076cd9ef170af44467817d97785106a6ea6b970d52b9f5d6bef25b72cdf41",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "unit_price",
+        "kind": "amount",
+        "value": "15.00",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          500,
+          554,
+          543
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "15.00",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              507,
+              544,
+              536
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.506355
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.562016
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "15.00",
+            "ocr_value_original": "15.00",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              433,
+              501,
+              550,
+              542
+            ],
+            "glyph_bbox": [
+              439,
+              507,
+              544,
+              536
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.506355,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.885382
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "15.00",
+            "ocr_value_original": "15.00",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              433,
+              501,
+              550,
+              542
+            ],
+            "glyph_bbox": [
+              439,
+              507,
+              544,
+              536
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.506355,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.885382
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_en",
+      "language": "en",
+      "source": {
+        "id": "invoice_en",
+        "category": "invoice",
+        "language": "en",
+        "image": "assets/invoice_en.png",
+        "image_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+        "pdf": "assets/invoice_en.pdf",
+        "pdf_sha256": "7e1076cd9ef170af44467817d97785106a6ea6b970d52b9f5d6bef25b72cdf41",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "line_total",
+        "kind": "amount",
+        "value": "30.00",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          659,
+          554,
+          702
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "30.00",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              438,
+              666,
+              544,
+              695
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.318138
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.567368
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "30.00",
+            "ocr_value_original": "30.00",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "4",
+              "1"
+            ],
+            "bbox": [
+              432,
+              660,
+              550,
+              701
+            ],
+            "glyph_bbox": [
+              438,
+              666,
+              544,
+              695
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.318138,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.892949
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "30.00",
+            "ocr_value_original": "30.00",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "4",
+              "1"
+            ],
+            "bbox": [
+              432,
+              660,
+              550,
+              701
+            ],
+            "glyph_bbox": [
+              438,
+              666,
+              544,
+              695
+            ],
+            "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.318138,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_en",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.892949
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_ar",
+      "language": "ar",
+      "source": {
+        "id": "invoice_ar",
+        "category": "invoice",
+        "language": "ar",
+        "image": "assets/invoice_ar.png",
+        "image_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+        "pdf": "assets/invoice_ar.pdf",
+        "pdf_sha256": "c5bc5a85cb2e63f432ecae651896370d6bb7d3b6e2698d695057d07cd4a51ae8",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "service_name",
+        "kind": "service",
+        "value": "تحليل دم شامل",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          871,
+          181,
+          1137,
+          235
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "تحليل دم شامل",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              881,
+              188,
+              1129,
+              227
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 91.575912
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.67335
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "تحليل دم شامل",
+            "ocr_value_original": "تحليل دم شامل",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              873,
+              180,
+              1137,
+              235
+            ],
+            "glyph_bbox": [
+              881,
+              188,
+              1129,
+              227
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.575912,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.974569
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "service_name",
+            "kind": "OCR_DETECTED",
+            "value": "تحليل دم شامل",
+            "ocr_value_original": "تحليل دم شامل",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              873,
+              180,
+              1137,
+              235
+            ],
+            "glyph_bbox": [
+              881,
+              188,
+              1129,
+              227
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.575912,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "service_name",
+            "kind": "service",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.974569
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_ar",
+      "language": "ar",
+      "source": {
+        "id": "invoice_ar",
+        "category": "invoice",
+        "language": "ar",
+        "image": "assets/invoice_ar.png",
+        "image_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+        "pdf": "assets/invoice_ar.pdf",
+        "pdf_sha256": "c5bc5a85cb2e63f432ecae651896370d6bb7d3b6e2698d695057d07cd4a51ae8",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "quantity",
+        "kind": "quantity",
+        "value": "٢",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1102,
+          345,
+          1137,
+          384
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "y",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1111,
+              352,
+              1128,
+              377
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 57.235638
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": false,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.311355
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "y",
+            "ocr_value_original": "y",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              1106,
+              347,
+              1133,
+              382
+            ],
+            "glyph_bbox": [
+              1111,
+              352,
+              1128,
+              377
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 57.235638,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.692308
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "quantity",
+            "kind": "OCR_DETECTED",
+            "value": "1",
+            "ocr_value_original": "y",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              1106,
+              347,
+              1133,
+              382
+            ],
+            "glyph_bbox": [
+              1111,
+              352,
+              1128,
+              377
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 67.550323,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "OCR_PASSES_DISAGREE"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1106,
+                347,
+                1133,
+                382
+              ]
+            }
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "quantity",
+            "kind": "quantity",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.692308
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_ar",
+      "language": "ar",
+      "source": {
+        "id": "invoice_ar",
+        "category": "invoice",
+        "language": "ar",
+        "image": "assets/invoice_ar.png",
+        "image_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+        "pdf": "assets/invoice_ar.pdf",
+        "pdf_sha256": "c5bc5a85cb2e63f432ecae651896370d6bb7d3b6e2698d695057d07cd4a51ae8",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "unit_price",
+        "kind": "amount",
+        "value": "١٥٫٠٠",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1027,
+          503,
+          1137,
+          548
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "0ر10",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1040,
+              511,
+              1123,
+              540
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 37.777477
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": false,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.486263
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "0ر10",
+            "ocr_value_original": "0ر10",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              1034,
+              505,
+              1129,
+              546
+            ],
+            "glyph_bbox": [
+              1040,
+              511,
+              1123,
+              540
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 37.777477,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.786869
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "unit_price",
+            "kind": "OCR_DETECTED",
+            "value": "١0ر٠٠",
+            "ocr_value_original": "0ر10",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              1034,
+              505,
+              1129,
+              546
+            ],
+            "glyph_bbox": [
+              1040,
+              511,
+              1123,
+              540
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 84.123207,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "OCR_PASSES_DISAGREE"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1034,
+                505,
+                1129,
+                546
+              ]
+            }
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "unit_price",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.786869
+          }
+        }
+      }
+    },
+    {
+      "document_id": "invoice_ar",
+      "language": "ar",
+      "source": {
+        "id": "invoice_ar",
+        "category": "invoice",
+        "language": "ar",
+        "image": "assets/invoice_ar.png",
+        "image_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+        "pdf": "assets/invoice_ar.pdf",
+        "pdf_sha256": "c5bc5a85cb2e63f432ecae651896370d6bb7d3b6e2698d695057d07cd4a51ae8",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "line_total",
+        "kind": "amount",
+        "value": "٣٠٫٠٠",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1027,
+          663,
+          1137,
+          707
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "ارس",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1036,
+              670,
+              1123,
+              699
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 15.748596
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.521281
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "ارس",
+            "ocr_value_original": "ارس",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              1030,
+              664,
+              1129,
+              705
+            ],
+            "glyph_bbox": [
+              1036,
+              670,
+              1123,
+              699
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 15.748596,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.838636
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "line_total",
+            "kind": "OCR_DETECTED",
+            "value": "ترعش",
+            "ocr_value_original": "ارس",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              1030,
+              664,
+              1129,
+              705
+            ],
+            "glyph_bbox": [
+              1036,
+              670,
+              1123,
+              699
+            ],
+            "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 43.571053,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "OCR_PASSES_DISAGREE"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1030,
+                664,
+                1129,
+                705
+              ]
+            }
+          },
+          "score": {
+            "document_id": "invoice_ar",
+            "field_id": "line_total",
+            "kind": "amount",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.838636
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_en",
+      "language": "en",
+      "source": {
+        "id": "lab_en",
+        "category": "laboratory",
+        "language": "en",
+        "image": "assets/lab_en.png",
+        "image_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+        "pdf": "assets/lab_en.pdf",
+        "pdf_sha256": "dc834c5b332673b96ad16b2a7ec4e30344590bd12606ce48910bd3b508905079",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "test_name",
+        "kind": "lab_test",
+        "value": "Hemoglobin",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          181,
+          677,
+          233
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "Hemoglobin",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              188,
+              666,
+              226
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.599625
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.666203
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "Hemoglobin",
+            "ocr_value_original": "Hemoglobin",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              431,
+              180,
+              674,
+              234
+            ],
+            "glyph_bbox": [
+              439,
+              188,
+              666,
+              226
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.599625,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.940598
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "Hemoglobin",
+            "ocr_value_original": "Hemoglobin",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              431,
+              180,
+              674,
+              234
+            ],
+            "glyph_bbox": [
+              439,
+              188,
+              666,
+              226
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.599625,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.940598
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_en",
+      "language": "en",
+      "source": {
+        "id": "lab_en",
+        "category": "laboratory",
+        "language": "en",
+        "image": "assets/lab_en.png",
+        "image_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+        "pdf": "assets/lab_en.pdf",
+        "pdf_sha256": "dc834c5b332673b96ad16b2a7ec4e30344590bd12606ce48910bd3b508905079",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "test_result",
+        "kind": "lab_result",
+        "value": "13.5",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          341,
+          529,
+          384
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "13.5",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              348,
+              518,
+              377
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.287582
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.527516
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "13.5",
+            "ocr_value_original": "13.5",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              433,
+              342,
+              524,
+              383
+            ],
+            "glyph_bbox": [
+              439,
+              348,
+              518,
+              377
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.287582,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.859084
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "13.5",
+            "ocr_value_original": "13.5",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              433,
+              342,
+              524,
+              383
+            ],
+            "glyph_bbox": [
+              439,
+              348,
+              518,
+              377
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.287582,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.859084
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_en",
+      "language": "en",
+      "source": {
+        "id": "lab_en",
+        "category": "laboratory",
+        "language": "en",
+        "image": "assets/lab_en.png",
+        "image_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+        "pdf": "assets/lab_en.pdf",
+        "pdf_sha256": "dc834c5b332673b96ad16b2a7ec4e30344590bd12606ce48910bd3b508905079",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "unit",
+        "kind": "lab_unit",
+        "value": "g/dL",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          499,
+          527,
+          551
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "g/dL",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              437,
+              506,
+              520,
+              544
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 94.84845
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.612665
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "g/dL",
+            "ocr_value_original": "g/dL",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              429,
+              498,
+              528,
+              552
+            ],
+            "glyph_bbox": [
+              437,
+              506,
+              520,
+              544
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 94.84845,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.944053
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "g/dL",
+            "ocr_value_original": "g/dL",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              429,
+              498,
+              528,
+              552
+            ],
+            "glyph_bbox": [
+              437,
+              506,
+              520,
+              544
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 94.84845,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.944053
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_en",
+      "language": "en",
+      "source": {
+        "id": "lab_en",
+        "category": "laboratory",
+        "language": "en",
+        "image": "assets/lab_en.png",
+        "image_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+        "pdf": "assets/lab_en.pdf",
+        "pdf_sha256": "dc834c5b332673b96ad16b2a7ec4e30344590bd12606ce48910bd3b508905079",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "reference",
+        "kind": "reference_range",
+        "value": "12.0-16.0",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          659,
+          630,
+          702
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "12.0-16.0",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              666,
+              620,
+              695
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 92.364166
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.604306
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "12.0-16.0",
+            "ocr_value_original": "12.0-16.0",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "2"
+            ],
+            "bbox": [
+              433,
+              660,
+              626,
+              701
+            ],
+            "glyph_bbox": [
+              439,
+              666,
+              620,
+              695
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 92.364166,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.911006
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "12.0-16.0",
+            "ocr_value_original": "12.0-16.0",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "2"
+            ],
+            "bbox": [
+              433,
+              660,
+              626,
+              701
+            ],
+            "glyph_bbox": [
+              439,
+              666,
+              620,
+              695
+            ],
+            "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 92.364166,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_en",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.911006
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_ar",
+      "language": "ar",
+      "source": {
+        "id": "lab_ar",
+        "category": "laboratory",
+        "language": "ar",
+        "image": "assets/lab_ar.png",
+        "image_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+        "pdf": "assets/lab_ar.pdf",
+        "pdf_sha256": "69678535ac6acbcf989f3087fa825456f603a25527abc721a387765c36295e65",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "test_name",
+        "kind": "lab_test",
+        "value": "الهيموجلوبين",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          918,
+          181,
+          1137,
+          235
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "الهيموجلوبين",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              928,
+              188,
+              1126,
+              228
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 92.427673
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.669711
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "الهيموجلوبين",
+            "ocr_value_original": "الهيموجلوبين",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              920,
+              180,
+              1134,
+              236
+            ],
+            "glyph_bbox": [
+              928,
+              188,
+              1126,
+              228
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 92.427673,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.943039
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "test_name",
+            "kind": "OCR_DETECTED",
+            "value": "الهيموجلوبين",
+            "ocr_value_original": "الهيموجلوبين",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              920,
+              180,
+              1134,
+              236
+            ],
+            "glyph_bbox": [
+              928,
+              188,
+              1126,
+              228
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 92.427673,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_name",
+            "kind": "lab_test",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.943039
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_ar",
+      "language": "ar",
+      "source": {
+        "id": "lab_ar",
+        "category": "laboratory",
+        "language": "ar",
+        "image": "assets/lab_ar.png",
+        "image_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+        "pdf": "assets/lab_ar.pdf",
+        "pdf_sha256": "69678535ac6acbcf989f3087fa825456f603a25527abc721a387765c36295e65",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "test_result",
+        "kind": "lab_result",
+        "value": "١٣٫٥",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1047,
+          344,
+          1137,
+          389
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "10",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1060,
+              352,
+              1127,
+              381
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 3.750671
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": false,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.479753
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "10",
+            "ocr_value_original": "10",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              1054,
+              346,
+              1133,
+              387
+            ],
+            "glyph_bbox": [
+              1060,
+              352,
+              1127,
+              381
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 3.750671,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.799753
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "test_result",
+            "kind": "OCR_DETECTED",
+            "value": "[ف#ررا",
+            "ocr_value_original": "10",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              1054,
+              346,
+              1133,
+              387
+            ],
+            "glyph_bbox": [
+              1060,
+              352,
+              1127,
+              381
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 3.939896,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "OCR_PASSES_DISAGREE"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1054,
+                346,
+                1133,
+                387
+              ]
+            }
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "test_result",
+            "kind": "lab_result",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.799753
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_ar",
+      "language": "ar",
+      "source": {
+        "id": "lab_ar",
+        "category": "laboratory",
+        "language": "ar",
+        "image": "assets/lab_ar.png",
+        "image_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+        "pdf": "assets/lab_ar.pdf",
+        "pdf_sha256": "69678535ac6acbcf989f3087fa825456f603a25527abc721a387765c36295e65",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "unit",
+        "kind": "lab_unit",
+        "value": "غ/دل",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1041,
+          499,
+          1137,
+          553
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "غ/دل",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1051,
+              506,
+              1130,
+              546
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 90.8535
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.609568
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "غ/دل",
+            "ocr_value_original": "غ/دل",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              1043,
+              498,
+              1138,
+              554
+            ],
+            "glyph_bbox": [
+              1051,
+              506,
+              1130,
+              546
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 90.8535,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.935151
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "unit",
+            "kind": "OCR_DETECTED",
+            "value": "غ/دل",
+            "ocr_value_original": "غ/دل",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              1043,
+              498,
+              1138,
+              554
+            ],
+            "glyph_bbox": [
+              1051,
+              506,
+              1130,
+              546
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.765068,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1043,
+                498,
+                1138,
+                554
+              ]
+            }
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "unit",
+            "kind": "lab_unit",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.935151
+          }
+        }
+      }
+    },
+    {
+      "document_id": "lab_ar",
+      "language": "ar",
+      "source": {
+        "id": "lab_ar",
+        "category": "laboratory",
+        "language": "ar",
+        "image": "assets/lab_ar.png",
+        "image_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+        "pdf": "assets/lab_ar.pdf",
+        "pdf_sha256": "69678535ac6acbcf989f3087fa825456f603a25527abc721a387765c36295e65",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "reference",
+        "kind": "reference_range",
+        "value": "١٢-١٦",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1025,
+          663,
+          1137,
+          702
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "11-17",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1038,
+              670,
+              1128,
+              695
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 28.974678
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.51511
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "11-17",
+            "ocr_value_original": "11-17",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              1033,
+              665,
+              1133,
+              700
+            ],
+            "glyph_bbox": [
+              1038,
+              670,
+              1128,
+              695
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 28.974678,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.801282
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "reference",
+            "kind": "OCR_DETECTED",
+            "value": "1-177 ١",
+            "ocr_value_original": "11-17",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              1033,
+              665,
+              1133,
+              700
+            ],
+            "glyph_bbox": [
+              1038,
+              670,
+              1128,
+              695
+            ],
+            "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 48.066349,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "OCR_PASSES_DISAGREE"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                1033,
+                665,
+                1133,
+                700
+              ]
+            }
+          },
+          "score": {
+            "document_id": "lab_ar",
+            "field_id": "reference",
+            "kind": "reference_range",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.801282
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_en",
+      "language": "en",
+      "source": {
+        "id": "radiology_en",
+        "category": "radiology",
+        "language": "en",
+        "image": "assets/radiology_en.png",
+        "image_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+        "pdf": "assets/radiology_en.pdf",
+        "pdf_sha256": "7a347516daf7439de4e5f2289456a61cf995e6bce9e8035d7ac964435be98292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "site",
+        "kind": "anatomical_site",
+        "value": "Chest",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          181,
+          554,
+          225
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "Chest",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              437,
+              188,
+              545,
+              218
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.602608
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.584416
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "Chest",
+            "ocr_value_original": "Chest",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              431,
+              182,
+              551,
+              224
+            ],
+            "glyph_bbox": [
+              437,
+              188,
+              545,
+              218
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.602608,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.909091
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "Chest",
+            "ocr_value_original": "Chest",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              431,
+              182,
+              551,
+              224
+            ],
+            "glyph_bbox": [
+              437,
+              188,
+              545,
+              218
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.602608,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.909091
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_en",
+      "language": "en",
+      "source": {
+        "id": "radiology_en",
+        "category": "radiology",
+        "language": "en",
+        "image": "assets/radiology_en.png",
+        "image_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+        "pdf": "assets/radiology_en.pdf",
+        "pdf_sha256": "7a347516daf7439de4e5f2289456a61cf995e6bce9e8035d7ac964435be98292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "finding",
+        "kind": "radiology_finding",
+        "value": "No focal opacity",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          340,
+          757,
+          392
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "No focal opacity",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              347,
+              749,
+              385
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.513611
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.688567
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "No focal opacity",
+            "ocr_value_original": "No focal opacity",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              431,
+              339,
+              757,
+              393
+            ],
+            "glyph_bbox": [
+              439,
+              347,
+              749,
+              385
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.513611,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.954505
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "No focal opacity",
+            "ocr_value_original": "No focal opacity",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "1"
+            ],
+            "bbox": [
+              431,
+              339,
+              757,
+              393
+            ],
+            "glyph_bbox": [
+              439,
+              347,
+              749,
+              385
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.513611,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.954505
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_en",
+      "language": "en",
+      "source": {
+        "id": "radiology_en",
+        "category": "radiology",
+        "language": "en",
+        "image": "assets/radiology_en.png",
+        "image_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+        "pdf": "assets/radiology_en.pdf",
+        "pdf_sha256": "7a347516daf7439de4e5f2289456a61cf995e6bce9e8035d7ac964435be98292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "modality",
+        "kind": "modality",
+        "value": "X-ray",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          501,
+          544,
+          551
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "X-ray",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              436,
+              508,
+              536,
+              544
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 95.425018
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.62069
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "X-ray",
+            "ocr_value_original": "X-ray",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "2"
+            ],
+            "bbox": [
+              429,
+              501,
+              543,
+              551
+            ],
+            "glyph_bbox": [
+              436,
+              508,
+              536,
+              544
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 95.425018,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.982759
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "X-ray",
+            "ocr_value_original": "X-ray",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "3",
+              "2"
+            ],
+            "bbox": [
+              429,
+              501,
+              543,
+              551
+            ],
+            "glyph_bbox": [
+              436,
+              508,
+              536,
+              544
+            ],
+            "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 95.425018,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_en",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.982759
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_ar",
+      "language": "ar",
+      "source": {
+        "id": "radiology_ar",
+        "category": "radiology",
+        "language": "ar",
+        "image": "assets/radiology_ar.png",
+        "image_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+        "pdf": "assets/radiology_ar.pdf",
+        "pdf_sha256": "46d1d1ad3af953cff46fc5799a703db458256787e811f8f6a122b2d15c81ca60",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "site",
+        "kind": "anatomical_site",
+        "value": "الصدر",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          1025,
+          181,
+          1137,
+          235
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "الصدر",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1032,
+              188,
+              1126,
+              227
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 91.714828
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.606151
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "الصدر",
+            "ocr_value_original": "الصدر",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              1024,
+              180,
+              1134,
+              235
+            ],
+            "glyph_bbox": [
+              1032,
+              188,
+              1126,
+              227
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.714828,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.947521
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "site",
+            "kind": "OCR_DETECTED",
+            "value": "الصدر",
+            "ocr_value_original": "الصدر",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              1024,
+              180,
+              1134,
+              235
+            ],
+            "glyph_bbox": [
+              1032,
+              188,
+              1126,
+              227
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.714828,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "site",
+            "kind": "anatomical_site",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.947521
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_ar",
+      "language": "ar",
+      "source": {
+        "id": "radiology_ar",
+        "category": "radiology",
+        "language": "ar",
+        "image": "assets/radiology_ar.png",
+        "image_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+        "pdf": "assets/radiology_ar.pdf",
+        "pdf_sha256": "46d1d1ad3af953cff46fc5799a703db458256787e811f8f6a122b2d15c81ca60",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "finding",
+        "kind": "radiology_finding",
+        "value": "لا يوجد ارتشاح",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          888,
+          340,
+          1137,
+          394
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "لا يوجد ارتشاح",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              898,
+              347,
+              1126,
+              387
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 92.753159
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.678269
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "لا يوجد ارتشاح",
+            "ocr_value_original": "لا يوجد ارتشاح",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              890,
+              339,
+              1134,
+              395
+            ],
+            "glyph_bbox": [
+              898,
+              347,
+              1126,
+              387
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 92.753159,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.945601
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "finding",
+            "kind": "OCR_DETECTED",
+            "value": "لا يوجد ارتشاح",
+            "ocr_value_original": "لا يوجد ارتشاح",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              890,
+              339,
+              1134,
+              395
+            ],
+            "glyph_bbox": [
+              898,
+              347,
+              1126,
+              387
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.211182,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                890,
+                339,
+                1134,
+                395
+              ]
+            }
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "finding",
+            "kind": "radiology_finding",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.945601
+          }
+        }
+      }
+    },
+    {
+      "document_id": "radiology_ar",
+      "language": "ar",
+      "source": {
+        "id": "radiology_ar",
+        "category": "radiology",
+        "language": "ar",
+        "image": "assets/radiology_ar.png",
+        "image_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+        "pdf": "assets/radiology_ar.pdf",
+        "pdf_sha256": "46d1d1ad3af953cff46fc5799a703db458256787e811f8f6a122b2d15c81ca60",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "modality",
+        "kind": "modality",
+        "value": "أشعة سينية",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          939,
+          490,
+          1137,
+          549
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "أشعة سينية",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              949,
+              497,
+              1129,
+              542
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 90.266373
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.693374
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "أشعة سينية",
+            "ocr_value_original": "أشعة سينية",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              941,
+              489,
+              1137,
+              550
+            ],
+            "glyph_bbox": [
+              949,
+              497,
+              1129,
+              542
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 90.266373,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.95776
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "modality",
+            "kind": "OCR_DETECTED",
+            "value": "أشعة سينية",
+            "ocr_value_original": "أشعة سينية",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              941,
+              489,
+              1137,
+              550
+            ],
+            "glyph_bbox": [
+              949,
+              497,
+              1129,
+              542
+            ],
+            "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 90.266373,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "radiology_ar",
+            "field_id": "modality",
+            "kind": "modality",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.95776
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_en",
+      "language": "en",
+      "source": {
+        "id": "prescription_en",
+        "category": "prescription",
+        "language": "en",
+        "image": "assets/prescription_en.png",
+        "image_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+        "pdf": "assets/prescription_en.pdf",
+        "pdf_sha256": "3a56a212f3d2637722ee15deaa140f41f52f15cc3ab307a576e3748ef533f6ba",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "drug",
+        "kind": "medication_name",
+        "value": "Amoxicillin",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          181,
+          653,
+          225
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "Amoxicillin",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              435,
+              188,
+              642,
+              218
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 87.184845
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.627273
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "Amoxicillin",
+            "ocr_value_original": "Amoxicillin",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              429,
+              182,
+              648,
+              224
+            ],
+            "glyph_bbox": [
+              435,
+              188,
+              642,
+              218
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 87.184845,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.929091
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "Amoxicillin",
+            "ocr_value_original": "Amoxicillin",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              429,
+              182,
+              648,
+              224
+            ],
+            "glyph_bbox": [
+              435,
+              188,
+              642,
+              218
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 87.184845,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.929091
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_en",
+      "language": "en",
+      "source": {
+        "id": "prescription_en",
+        "category": "prescription",
+        "language": "en",
+        "image": "assets/prescription_en.png",
+        "image_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+        "pdf": "assets/prescription_en.pdf",
+        "pdf_sha256": "3a56a212f3d2637722ee15deaa140f41f52f15cc3ab307a576e3748ef533f6ba",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "strength",
+        "kind": "medication_strength",
+        "value": "500 mg",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          341,
+          592,
+          392
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "500 mg",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              438,
+              348,
+              581,
+              385
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 94.32872
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.632592
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "500 mg",
+            "ocr_value_original": "500 mg",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              431,
+              341,
+              588,
+              392
+            ],
+            "glyph_bbox": [
+              438,
+              348,
+              581,
+              385
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 94.32872,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.957317
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "500 mg",
+            "ocr_value_original": "500 mg",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              431,
+              341,
+              588,
+              392
+            ],
+            "glyph_bbox": [
+              438,
+              348,
+              581,
+              385
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 94.32872,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.957317
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_en",
+      "language": "en",
+      "source": {
+        "id": "prescription_en",
+        "category": "prescription",
+        "language": "en",
+        "image": "assets/prescription_en.png",
+        "image_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+        "pdf": "assets/prescription_en.pdf",
+        "pdf_sha256": "3a56a212f3d2637722ee15deaa140f41f52f15cc3ab307a576e3748ef533f6ba",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "dose",
+        "kind": "medication_dose",
+        "value": "1 capsule",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          499,
+          629,
+          551
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "1 capsule",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              439,
+              506,
+              620,
+              544
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.576065
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.658056
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "1 capsule",
+            "ocr_value_original": "1 capsule",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              431,
+              498,
+              628,
+              552
+            ],
+            "glyph_bbox": [
+              439,
+              506,
+              620,
+              544
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.576065,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.944496
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "1 capsule",
+            "ocr_value_original": "1 capsule",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              431,
+              498,
+              628,
+              552
+            ],
+            "glyph_bbox": [
+              439,
+              506,
+              620,
+              544
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.576065,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.944496
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_en",
+      "language": "en",
+      "source": {
+        "id": "prescription_en",
+        "category": "prescription",
+        "language": "en",
+        "image": "assets/prescription_en.png",
+        "image_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+        "pdf": "assets/prescription_en.pdf",
+        "pdf_sha256": "3a56a212f3d2637722ee15deaa140f41f52f15cc3ab307a576e3748ef533f6ba",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "frequency",
+        "kind": "frequency",
+        "value": "twice daily",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          428,
+          658,
+          651,
+          710
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "twice daily",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              436,
+              665,
+              643,
+              703
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 96.654877
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.678337
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "twice daily",
+            "ocr_value_original": "twice daily",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              428,
+              657,
+              651,
+              711
+            ],
+            "glyph_bbox": [
+              436,
+              665,
+              643,
+              703
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.654877,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.962963
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "twice daily",
+            "ocr_value_original": "twice daily",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              428,
+              657,
+              651,
+              711
+            ],
+            "glyph_bbox": [
+              436,
+              665,
+              643,
+              703
+            ],
+            "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 96.654877,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_en",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "en",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.962963
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_ar",
+      "language": "ar",
+      "source": {
+        "id": "prescription_ar",
+        "category": "prescription",
+        "language": "ar",
+        "image": "assets/prescription_ar.png",
+        "image_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+        "pdf": "assets/prescription_ar.pdf",
+        "pdf_sha256": "a0307675806721500ce1f04d48526aff7447899fce2d215f22c292e16e967292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "drug",
+        "kind": "medication_name",
+        "value": "أموكسيسيلين",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          905,
+          172,
+          1137,
+          235
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "أموكسيسيلين",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              915,
+              179,
+              1128,
+              228
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 91.52195
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.71408
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "أموكسيسيلين",
+            "ocr_value_original": "أموكسيسيلين",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              907,
+              171,
+              1136,
+              236
+            ],
+            "glyph_bbox": [
+              915,
+              179,
+              1128,
+              228
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.52195,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.957078
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "drug",
+            "kind": "OCR_DETECTED",
+            "value": "أموكسيسيلين",
+            "ocr_value_original": "أموكسيسيلين",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "1"
+            ],
+            "bbox": [
+              907,
+              171,
+              1136,
+              236
+            ],
+            "glyph_bbox": [
+              915,
+              179,
+              1128,
+              228
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.52195,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "drug",
+            "kind": "medication_name",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.957078
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_ar",
+      "language": "ar",
+      "source": {
+        "id": "prescription_ar",
+        "category": "prescription",
+        "language": "ar",
+        "image": "assets/prescription_ar.png",
+        "image_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+        "pdf": "assets/prescription_ar.pdf",
+        "pdf_sha256": "a0307675806721500ce1f04d48526aff7447899fce2d215f22c292e16e967292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "strength",
+        "kind": "medication_strength",
+        "value": "٥٠٠ ملغ",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          993,
+          340,
+          1137,
+          394
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "0°: ilo",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              1002,
+              347,
+              1122,
+              387
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 8.978233
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.617284
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "0°: ilo",
+            "ocr_value_original": "0°: ilo",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              994,
+              339,
+              1130,
+              395
+            ],
+            "glyph_bbox": [
+              1002,
+              347,
+              1122,
+              387
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 8.978233,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.912525
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "strength",
+            "kind": "OCR_DETECTED",
+            "value": "0°: ilo",
+            "ocr_value_original": "0°: ilo",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "2"
+            ],
+            "bbox": [
+              994,
+              339,
+              1130,
+              395
+            ],
+            "glyph_bbox": [
+              1002,
+              347,
+              1122,
+              387
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 8.978233,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "strength",
+            "kind": "medication_strength",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.912525
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_ar",
+      "language": "ar",
+      "source": {
+        "id": "prescription_ar",
+        "category": "prescription",
+        "language": "ar",
+        "image": "assets/prescription_ar.png",
+        "image_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+        "pdf": "assets/prescription_ar.pdf",
+        "pdf_sha256": "a0307675806721500ce1f04d48526aff7447899fce2d215f22c292e16e967292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "dose",
+        "kind": "medication_dose",
+        "value": "كبسولة واحدة",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          898,
+          499,
+          1138,
+          553
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "كبسولة واحدة",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              908,
+              506,
+              1131,
+              546
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 91.409538
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.688272
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "كبسولة واحدة",
+            "ocr_value_original": "كبسولة واحدة",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              900,
+              498,
+              1139,
+              554
+            ],
+            "glyph_bbox": [
+              908,
+              506,
+              1131,
+              546
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 91.409538,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.952564
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "dose",
+            "kind": "OCR_DETECTED",
+            "value": "كبسولة واحدة",
+            "ocr_value_original": "كبسولة واحدة",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "3"
+            ],
+            "bbox": [
+              900,
+              498,
+              1139,
+              554
+            ],
+            "glyph_bbox": [
+              908,
+              506,
+              1131,
+              546
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "SOURCE_REGION_ARABIC_OCR_RECHECK",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 90.006668,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0",
+            "ocr_profile": {
+              "language": "ara",
+              "psm": 7,
+              "crop_source_bbox": [
+                900,
+                498,
+                1139,
+                554
+              ]
+            }
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "dose",
+            "kind": "medication_dose",
+            "language": "ar",
+            "exact_value": true,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.952564
+          }
+        }
+      }
+    },
+    {
+      "document_id": "prescription_ar",
+      "language": "ar",
+      "source": {
+        "id": "prescription_ar",
+        "category": "prescription",
+        "language": "ar",
+        "image": "assets/prescription_ar.png",
+        "image_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+        "pdf": "assets/prescription_ar.pdf",
+        "pdf_sha256": "a0307675806721500ce1f04d48526aff7447899fce2d215f22c292e16e967292",
+        "page_count": 1,
+        "pixel_width": 1280,
+        "pixel_height": 1040
+      },
+      "expected": {
+        "field_id": "frequency",
+        "kind": "frequency",
+        "value": "مرتان يوميا",
+        "page": 1,
+        "row_id": "main",
+        "bbox": [
+          941,
+          658,
+          1137,
+          712
+        ]
+      },
+      "actual": {
+        "baseline": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "po Uli يوميا",
+            "page": 1,
+            "row_id": "main",
+            "bbox": [
+              952,
+              652,
+              1129,
+              709
+            ],
+            "review_required": true,
+            "confidence_uncalibrated": 29.475296
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.775116
+          }
+        },
+        "source_regions": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "po Uli يوميا",
+            "ocr_value_original": "po Uli يوميا",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              944,
+              644,
+              1137,
+              717
+            ],
+            "glyph_bbox": [
+              952,
+              652,
+              1129,
+              709
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 29.475296,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.731317
+          }
+        },
+        "arabic_region_recheck": {
+          "field": {
+            "field_id": "frequency",
+            "kind": "OCR_DETECTED",
+            "value": "po Uli يوميا",
+            "ocr_value_original": "po Uli يوميا",
+            "value_normalized": null,
+            "page": 1,
+            "row_id": "main",
+            "source_row_key": [
+              "1",
+              "2",
+              "4"
+            ],
+            "bbox": [
+              944,
+              644,
+              1137,
+              717
+            ],
+            "glyph_bbox": [
+              952,
+              652,
+              1129,
+              709
+            ],
+            "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+            "coordinate_system": "SOURCE_IMAGE_PIXELS",
+            "image_size": [
+              1280,
+              1040
+            ],
+            "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+            "locator_version": "dg002-field-regions-v1",
+            "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+            "confidence_uncalibrated": 29.475296,
+            "review_required": true,
+            "review_reasons": [
+              "OCR_UNCALIBRATED",
+              "SOURCE_AUTHORITY_NOT_ATTESTED",
+              "REGION_OCR_EMPTY"
+            ],
+            "g2_native_rows_verified": false,
+            "financial_decision": "NOT_AUTHORIZED",
+            "engine": "Tesseract tesseract 5.5.0"
+          },
+          "score": {
+            "document_id": "prescription_ar",
+            "field_id": "frequency",
+            "kind": "frequency",
+            "language": "ar",
+            "exact_value": false,
+            "correct_page_row_and_iou": true,
+            "referred_to_review": true,
+            "unsafe_accepted": false,
+            "bbox_iou": 0.731317
+          }
+        }
+      }
+    }
+  ]
+}
