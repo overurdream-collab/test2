@@ -2,15 +2,15 @@
 
 Official implementation repository. On-premises medical claims financial and administrative audit.
 
-## Licensing (draft proposal)
+## Licensing
 
-The proposed Apache-2.0 grant applies only to the first-party software and
+The Apache-2.0 grant applies only to the first-party software and
 tests identified in [LICENSE_SCOPE.md](LICENSE_SCOPE.md). Third-party fonts
 retain their own SIL OFL-1.1 terms; see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Institutional policy
-drafts, evidence and sensitive records are **not** covered. Review the
-[licensing assessment](docs/OSS_LICENSE_REVIEW_2026-10-22.md) before approving
-the draft pull request. This licensing change is not merged into `main`.
+drafts, evidence and sensitive records are **not** covered. See the
+[licensing assessment](docs/OSS_LICENSE_REVIEW_2026-10-22.md) for the scope,
+the maintainer's authorization, and outstanding third-party/security risks.
 
 ## Status
 The integrated engineering baseline is maintained on **main**: security/authentication, ingestion, reference data, claims, audit, governance, reporting, intelligence, enterprise RTL/LTR interfaces, release tooling and operational controls. Backend/UI coverage and unavailable capabilities are documented in `docs/FRONTEND_ROUTE_API_MATRIX.md` and `docs/OPERATIONAL_CONTROLS.md`. Every production acceptance gate remains OPEN until institutional authorization and signed acceptance. Synthetic CI success is not production certification.

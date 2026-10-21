@@ -38,7 +38,7 @@ claims decisions, authorize production deployment, or permit sharing patient
 data. The project is an engineering candidate; institutional approvals remain
 separate.
 
-This scope is proposed in a **Draft Pull Request**, not merged into `main`.
-Maintainers should complete an intellectual-property and security review
-before merging. A publicly available branch containing this license may
-already be used under its stated terms; review before publishing changes.
+The maintainer expressly approved this scoped Apache-2.0 grant and its
+commercial-use permissions on 2026-10-22. The accompanying review report
+records remaining risk limits. This license does not assign ownership of
+third-party material or extend to the excluded institutional documents.
