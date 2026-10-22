@@ -1,0 +1,37 @@
+name: MCIAS Reader DG-002A Scoring Contract (No Models)
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/document_reader_dg002_score.py
+      - tests/test_document_reader_dg002_score.py
+      - docs/DG-002_OCR_BENCHMARK_PROTOCOL_AR.md
+      - .github/workflows/document-reader-dg002-scoring.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-evaluator-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Evaluate scorer contract without installing OCR or loading models
+        run: |
+          python -m py_compile scripts/document_reader_dg002_score.py
+          python -m unittest discover -s tests -p test_document_reader_dg002_score.py -v
+      - name: Confirm this job is not presented as PaddleOCR or DeepSeek benchmark
+        run: |
+          python - <<'PY'
+          from scripts.document_reader_dg002_score import evaluate
+          gold = {'documents': []}
+          pred = {'documents': [], 'engine': 'NO_MODEL_RUN'}
+          report = evaluate(gold, pred)
+          assert report['status'] == 'DG002_SCORING_ONLY_NOT_MODEL_QUALIFICATION'
+          assert report['documents_expected'] == 0
+          assert report['field_exact_rate'] is None
+          print('DG002A SCORING CONTRACT PASS — DG002B/C MODELS NOT RUN')
+          PY

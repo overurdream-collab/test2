@@ -1,0 +1,1467 @@
+{
+  "engine": "Tesseract tesseract 5.5.0",
+  "runtime_seconds": 17.019,
+  "peak_rss_mb": 42.77,
+  "peak_vram_mb": null,
+  "machine": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "backend": "CPU",
+  "confidence_status": "UNCALIBRATED_HUMAN_REVIEW_ONLY",
+  "documents": [
+    {
+      "id": "invoice_en",
+      "sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "MEDICAL INVOICE\n\nSERVICE Complete blood count\nQUANTITY 2\n\nUNITPRICE 15.00\n\nAMOUNT 30.00"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "service_name",
+          "kind": "OCR_DETECTED",
+          "value": "Complete blood count",
+          "ocr_value_original": "Complete blood count",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            429,
+            180,
+            873,
+            234
+          ],
+          "glyph_bbox": [
+            437,
+            188,
+            865,
+            226
+          ],
+          "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.136024,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "quantity",
+          "kind": "OCR_DETECTED",
+          "value": "2",
+          "ocr_value_original": "2",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            432,
+            342,
+            462,
+            383
+          ],
+          "glyph_bbox": [
+            438,
+            348,
+            456,
+            377
+          ],
+          "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 97.012268,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "unit_price",
+          "kind": "OCR_DETECTED",
+          "value": "15.00",
+          "ocr_value_original": "15.00",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "3",
+            "1"
+          ],
+          "bbox": [
+            433,
+            501,
+            550,
+            542
+          ],
+          "glyph_bbox": [
+            439,
+            507,
+            544,
+            536
+          ],
+          "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.506355,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "line_total",
+          "kind": "OCR_DETECTED",
+          "value": "30.00",
+          "ocr_value_original": "30.00",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "4",
+            "1"
+          ],
+          "bbox": [
+            432,
+            660,
+            550,
+            701
+          ],
+          "glyph_bbox": [
+            438,
+            666,
+            544,
+            695
+          ],
+          "source_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "rendered_page_sha256": "e451bb45acab2879da4b6a5dd6eb02f68a4a40fc87005153957e647018402d75",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.318138,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "invoice_ar",
+      "sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "MEDICAL INVOICE\n\nSERVICE ‏تحليل دم شامل‎\nQUANTITY y\nUNITPRICE ‏0ر10‎\n‎AMOUNT ‏ارس‎"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "service_name",
+          "kind": "OCR_DETECTED",
+          "value": "تحليل دم شامل",
+          "ocr_value_original": "تحليل دم شامل",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            873,
+            180,
+            1137,
+            235
+          ],
+          "glyph_bbox": [
+            881,
+            188,
+            1129,
+            227
+          ],
+          "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 91.575912,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "quantity",
+          "kind": "OCR_DETECTED",
+          "value": "y",
+          "ocr_value_original": "y",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            1106,
+            347,
+            1133,
+            382
+          ],
+          "glyph_bbox": [
+            1111,
+            352,
+            1128,
+            377
+          ],
+          "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 57.235638,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "unit_price",
+          "kind": "OCR_DETECTED",
+          "value": "0ر10",
+          "ocr_value_original": "0ر10",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "3"
+          ],
+          "bbox": [
+            1034,
+            505,
+            1129,
+            546
+          ],
+          "glyph_bbox": [
+            1040,
+            511,
+            1123,
+            540
+          ],
+          "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 37.777477,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "line_total",
+          "kind": "OCR_DETECTED",
+          "value": "ارس",
+          "ocr_value_original": "ارس",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "4"
+          ],
+          "bbox": [
+            1030,
+            664,
+            1129,
+            705
+          ],
+          "glyph_bbox": [
+            1036,
+            670,
+            1123,
+            699
+          ],
+          "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "rendered_page_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 15.748596,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "lab_en",
+      "sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "LABORATORY REPORT\n\nTEST Hemoglobin\nRESULT 13.5\n\nUNIT g/dL\nREFERENCE 12.0-16.0"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "test_name",
+          "kind": "OCR_DETECTED",
+          "value": "Hemoglobin",
+          "ocr_value_original": "Hemoglobin",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            431,
+            180,
+            674,
+            234
+          ],
+          "glyph_bbox": [
+            439,
+            188,
+            666,
+            226
+          ],
+          "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.599625,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "test_result",
+          "kind": "OCR_DETECTED",
+          "value": "13.5",
+          "ocr_value_original": "13.5",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            433,
+            342,
+            524,
+            383
+          ],
+          "glyph_bbox": [
+            439,
+            348,
+            518,
+            377
+          ],
+          "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.287582,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "unit",
+          "kind": "OCR_DETECTED",
+          "value": "g/dL",
+          "ocr_value_original": "g/dL",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "3",
+            "1"
+          ],
+          "bbox": [
+            429,
+            498,
+            528,
+            552
+          ],
+          "glyph_bbox": [
+            437,
+            506,
+            520,
+            544
+          ],
+          "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 94.84845,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "reference",
+          "kind": "OCR_DETECTED",
+          "value": "12.0-16.0",
+          "ocr_value_original": "12.0-16.0",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "3",
+            "2"
+          ],
+          "bbox": [
+            433,
+            660,
+            626,
+            701
+          ],
+          "glyph_bbox": [
+            439,
+            666,
+            620,
+            695
+          ],
+          "source_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "rendered_page_sha256": "142071f62ea06a4dbb8d02f07ea1d6a31e50d1f55822bc589d5ad41f72f2afe0",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 92.364166,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "lab_ar",
+      "sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "LABORATORY REPORT\n\nTEST ‏الهيموجلوبين‎\n‎RESULT 10\nUNIT ‏غ/دل‎\n‎REFERENCE 11-17"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "test_name",
+          "kind": "OCR_DETECTED",
+          "value": "الهيموجلوبين",
+          "ocr_value_original": "الهيموجلوبين",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            920,
+            180,
+            1134,
+            236
+          ],
+          "glyph_bbox": [
+            928,
+            188,
+            1126,
+            228
+          ],
+          "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 92.427673,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "test_result",
+          "kind": "OCR_DETECTED",
+          "value": "10",
+          "ocr_value_original": "10",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            1054,
+            346,
+            1133,
+            387
+          ],
+          "glyph_bbox": [
+            1060,
+            352,
+            1127,
+            381
+          ],
+          "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 3.750671,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "unit",
+          "kind": "OCR_DETECTED",
+          "value": "غ/دل",
+          "ocr_value_original": "غ/دل",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "3"
+          ],
+          "bbox": [
+            1043,
+            498,
+            1138,
+            554
+          ],
+          "glyph_bbox": [
+            1051,
+            506,
+            1130,
+            546
+          ],
+          "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 90.8535,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "reference",
+          "kind": "OCR_DETECTED",
+          "value": "11-17",
+          "ocr_value_original": "11-17",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "4"
+          ],
+          "bbox": [
+            1033,
+            665,
+            1133,
+            700
+          ],
+          "glyph_bbox": [
+            1038,
+            670,
+            1128,
+            695
+          ],
+          "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "rendered_page_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 28.974678,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "radiology_en",
+      "sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "RADIOLOGY REPORT\n\nSITE Chest\n\nFINDING No focal opacity\nMODALITY X-ray"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "site",
+          "kind": "OCR_DETECTED",
+          "value": "Chest",
+          "ocr_value_original": "Chest",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            431,
+            182,
+            551,
+            224
+          ],
+          "glyph_bbox": [
+            437,
+            188,
+            545,
+            218
+          ],
+          "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.602608,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "finding",
+          "kind": "OCR_DETECTED",
+          "value": "No focal opacity",
+          "ocr_value_original": "No focal opacity",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "3",
+            "1"
+          ],
+          "bbox": [
+            431,
+            339,
+            757,
+            393
+          ],
+          "glyph_bbox": [
+            439,
+            347,
+            749,
+            385
+          ],
+          "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.513611,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "modality",
+          "kind": "OCR_DETECTED",
+          "value": "X-ray",
+          "ocr_value_original": "X-ray",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "3",
+            "2"
+          ],
+          "bbox": [
+            429,
+            501,
+            543,
+            551
+          ],
+          "glyph_bbox": [
+            436,
+            508,
+            536,
+            544
+          ],
+          "source_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "rendered_page_sha256": "b45fc26c2026242a714c02686ccf0710b0df2ab9801969d7dae014ba318aff7f",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 95.425018,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "radiology_ar",
+      "sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "RADIOLOGY REPORT\n\nالصدر ‎SITE‏\n‏لا يوجد ارتشاح ‎FINDING‏\n‏أشعة سينية ‎MODALITY‏"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "site",
+          "kind": "OCR_DETECTED",
+          "value": "الصدر",
+          "ocr_value_original": "الصدر",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            1024,
+            180,
+            1134,
+            235
+          ],
+          "glyph_bbox": [
+            1032,
+            188,
+            1126,
+            227
+          ],
+          "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 91.714828,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "finding",
+          "kind": "OCR_DETECTED",
+          "value": "لا يوجد ارتشاح",
+          "ocr_value_original": "لا يوجد ارتشاح",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            890,
+            339,
+            1134,
+            395
+          ],
+          "glyph_bbox": [
+            898,
+            347,
+            1126,
+            387
+          ],
+          "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 92.753159,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "modality",
+          "kind": "OCR_DETECTED",
+          "value": "أشعة سينية",
+          "ocr_value_original": "أشعة سينية",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "3"
+          ],
+          "bbox": [
+            941,
+            489,
+            1137,
+            550
+          ],
+          "glyph_bbox": [
+            949,
+            497,
+            1129,
+            542
+          ],
+          "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "rendered_page_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 90.266373,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "prescription_en",
+      "sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "text": "PRESCRIPTION\n\nDRUG Amoxicillin\nSTRENGTH 500 mg\nDOSE 1 capsule\nFREQUENCY twice daily"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "drug",
+          "kind": "OCR_DETECTED",
+          "value": "Amoxicillin",
+          "ocr_value_original": "Amoxicillin",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            429,
+            182,
+            648,
+            224
+          ],
+          "glyph_bbox": [
+            435,
+            188,
+            642,
+            218
+          ],
+          "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 87.184845,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "strength",
+          "kind": "OCR_DETECTED",
+          "value": "500 mg",
+          "ocr_value_original": "500 mg",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            431,
+            341,
+            588,
+            392
+          ],
+          "glyph_bbox": [
+            438,
+            348,
+            581,
+            385
+          ],
+          "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 94.32872,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "dose",
+          "kind": "OCR_DETECTED",
+          "value": "1 capsule",
+          "ocr_value_original": "1 capsule",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "3"
+          ],
+          "bbox": [
+            431,
+            498,
+            628,
+            552
+          ],
+          "glyph_bbox": [
+            439,
+            506,
+            620,
+            544
+          ],
+          "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.576065,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "frequency",
+          "kind": "OCR_DETECTED",
+          "value": "twice daily",
+          "ocr_value_original": "twice daily",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "4"
+          ],
+          "bbox": [
+            428,
+            657,
+            651,
+            711
+          ],
+          "glyph_bbox": [
+            436,
+            665,
+            643,
+            703
+          ],
+          "source_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "rendered_page_sha256": "c814bc826b5f3be8e977748ee9b2dc2b03cdffc9d445702e12bb6dca517af18b",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 96.654877,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    },
+    {
+      "id": "prescription_ar",
+      "sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "language": "ar",
+      "pages": [
+        {
+          "page": 1,
+          "text": "PRESCRIPTION\n\nDRUG ‏أموكسيسيلين‎\n‎STRENGTH ilo 0°:\nDOSE ‏كبسولة واحدة‎\nFREQUENCY ‏يوميا‎ Uli po"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "drug",
+          "kind": "OCR_DETECTED",
+          "value": "أموكسيسيلين",
+          "ocr_value_original": "أموكسيسيلين",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "1"
+          ],
+          "bbox": [
+            907,
+            171,
+            1136,
+            236
+          ],
+          "glyph_bbox": [
+            915,
+            179,
+            1128,
+            228
+          ],
+          "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 91.52195,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "strength",
+          "kind": "OCR_DETECTED",
+          "value": "0°: ilo",
+          "ocr_value_original": "0°: ilo",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "2"
+          ],
+          "bbox": [
+            994,
+            339,
+            1130,
+            395
+          ],
+          "glyph_bbox": [
+            1002,
+            347,
+            1122,
+            387
+          ],
+          "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 8.978233,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "dose",
+          "kind": "OCR_DETECTED",
+          "value": "كبسولة واحدة",
+          "ocr_value_original": "كبسولة واحدة",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "3"
+          ],
+          "bbox": [
+            900,
+            498,
+            1139,
+            554
+          ],
+          "glyph_bbox": [
+            908,
+            506,
+            1131,
+            546
+          ],
+          "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 91.409538,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        },
+        {
+          "field_id": "frequency",
+          "kind": "OCR_DETECTED",
+          "value": "po Uli يوميا",
+          "ocr_value_original": "po Uli يوميا",
+          "value_normalized": null,
+          "page": 1,
+          "row_id": "main",
+          "source_row_key": [
+            "1",
+            "2",
+            "4"
+          ],
+          "bbox": [
+            944,
+            644,
+            1137,
+            717
+          ],
+          "glyph_bbox": [
+            952,
+            652,
+            1129,
+            709
+          ],
+          "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "rendered_page_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+          "coordinate_system": "SOURCE_IMAGE_PIXELS",
+          "image_size": [
+            1280,
+            1040
+          ],
+          "locator_method": "TESSERACT_TSV_GLYPHS_WITH_CONTEXT",
+          "locator_version": "dg002-field-regions-v1",
+          "evidence_profile": "DG002_E2_COMPARISON_ONLY",
+          "confidence_uncalibrated": 29.475296,
+          "review_required": true,
+          "review_reasons": [
+            "OCR_UNCALIBRATED",
+            "SOURCE_AUTHORITY_NOT_ATTESTED"
+          ],
+          "g2_native_rows_verified": false,
+          "financial_decision": "NOT_AUTHORIZED",
+          "engine": "Tesseract tesseract 5.5.0"
+        }
+      ]
+    }
+  ],
+  "association": "SOURCE_REGIONS_V1",
+  "incremental_association_seconds": 0.002365
+}

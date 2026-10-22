@@ -1,0 +1,102 @@
+name: MCIAS Reader G2 Shared Audit A1 Contract PG16
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/reader_reviewed_ocr_contract.py
+      - scripts/reader_g2_audit_a1_pg16_contract.py
+      - .github/workflows/document-reader-shared-audit-pg16.yml
+      - docs/DG-001_READER_G2_AUDIT_A1_INTEGRATION_READINESS_AR.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pg16-isolated-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: mcias_reader_contract
+          POSTGRES_PASSWORD: reader-synthetic-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d mcias_reader_contract"
+          --health-interval 5s --health-timeout 5s --health-retries 15
+    env:
+      MCIAS_READER_PG16_ISOLATED: "YES"
+      READER_DB_URL: postgresql+psycopg://postgres:reader-synthetic-only@127.0.0.1:5432/mcias_reader_contract
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: fd1bb1d22f1957f40688baa207cdf449b0690cd9
+          path: pinned-shared-audit-readonly
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated project and local OCR dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng fonts-dejavu-core
+          python -m pip install -e '.[test]' 'psycopg[binary]'
+      - name: Validate PR29 and PR20 exact source SHAs
+        run: |
+          test "$(git -C pinned-shared-audit-readonly rev-parse HEAD)" = "fd1bb1d22f1957f40688baa207cdf449b0690cd9"
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          test -f pinned-shared-audit-readonly/mcias/audit_writer.py
+          test -f pinned-shared-audit-readonly/mcias/audit_contract.py
+      - name: Execute real PostgreSQL16 G2 review to Shared Audit and A1 contract
+        run: |
+          PYTHONPATH=.:scripts python scripts/reader_g2_audit_a1_pg16_contract.py \
+            --database-url "$READER_DB_URL" \
+            --audit-checkout pinned-shared-audit-readonly \
+            --a1-checkout pinned-a1-readonly \
+            --out reader-integration-contract-evidence
+      - name: Independently confirm A1 trusted PDF source is still refused
+        run: |
+          cd pinned-a1-readonly
+          PYTHONPATH=. python ../scripts/g2_ocr_a1_trusted_contract_probe.py \
+            ../reader-integration-contract-evidence/english_columnar.pdf
+      - name: Strict no-financial-authority and PG concurrency gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path("reader-integration-contract-evidence/pg16_readiness_evidence.json").read_text())
+          assert d["status"]=="PG16_REVIEW_SHARED_AUDIT_A1_METADATA_HELD"
+          assert d["reviewed_document_count"]==2 and d["reviewed_field_count"]==36
+          assert [r["a1_arithmetic"] for r in d["reviewed_cases"]]==[None,None]
+          assert all(r["a1_blocked_reasons"]==["SERVICE_DATE_NOT_EXPLICIT"] for r in d["reviewed_cases"])
+          assert d["after_correction_a1_arithmetic"] is None
+          for negative in ("CROSS_ORGANIZATION","FAKE_CLIENT_ACTOR","ORIGINAL_DIGEST_TAMPERED",
+                  "IDEMPOTENT_DUPLICATE","CONCURRENT_VERSION_CONFLICT",
+                  "DIRECT_REVIEW_HISTORY_MUTATION","DIRECT_SOURCE_CANDIDATE_TAMPER",
+                  "ENCRYPTED_ORIGINAL_TAMPERED","UNGRANTED_REVIEW_PERMISSION"):
+              assert negative in d["negative_checks"],negative
+          assert d["session_permissions_checked"] is True
+          assert d["a1_trusted_input_used"] is False
+          assert d["shared_audit_operationally_approved"] is False
+          assert d["financial_decision"]=="NOT_AUTHORIZED"
+          assert d["g2_trusted_pdf_rows"] is False
+          for item in d["reviewed_cases"]:
+              ref=item["contract_sample"]
+              assert ref["transcription_status"]=="TRANSCRIPTION_ACCEPTED"
+              assert ref["versions"][0]["audit_event_id"]
+              assert ref["g2_native_rows_verified"] is False
+              assert ref["financial_eligibility_verified"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-pg16-g2-shared-audit-a1-contract
+          path: reader-integration-contract-evidence/
+          retention-days: 30

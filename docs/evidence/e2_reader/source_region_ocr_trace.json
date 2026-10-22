@@ -1,0 +1,403 @@
+{
+  "regions": [
+    {
+      "document_id": "invoice_ar",
+      "field_id": "service_name",
+      "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "crop_source_bbox": [
+        873,
+        180,
+        1137,
+        235
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 1.1379
+    },
+    {
+      "document_id": "invoice_ar",
+      "field_id": "quantity",
+      "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "crop_source_bbox": [
+        1106,
+        347,
+        1133,
+        382
+      ],
+      "text": "1",
+      "words": [
+        {
+          "text": "1",
+          "bbox": [
+            5,
+            5,
+            22,
+            30
+          ],
+          "confidence_uncalibrated": 67.550323,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.731
+    },
+    {
+      "document_id": "invoice_ar",
+      "field_id": "unit_price",
+      "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "crop_source_bbox": [
+        1034,
+        505,
+        1129,
+        546
+      ],
+      "text": "١0ر٠٠‎",
+      "words": [
+        {
+          "text": "١0ر٠٠",
+          "bbox": [
+            6,
+            6,
+            89,
+            35
+          ],
+          "confidence_uncalibrated": 84.123207,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.6121
+    },
+    {
+      "document_id": "invoice_ar",
+      "field_id": "line_total",
+      "source_sha256": "df5fe6af76d70648ee4643a9ba4198a2490f53c6cbb0595876b839711905b2be",
+      "crop_source_bbox": [
+        1030,
+        664,
+        1129,
+        705
+      ],
+      "text": "ترعش",
+      "words": [
+        {
+          "text": "ترعش",
+          "bbox": [
+            6,
+            6,
+            93,
+            35
+          ],
+          "confidence_uncalibrated": 43.571053,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.507
+    },
+    {
+      "document_id": "lab_ar",
+      "field_id": "test_name",
+      "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "crop_source_bbox": [
+        920,
+        180,
+        1134,
+        236
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.5721
+    },
+    {
+      "document_id": "lab_ar",
+      "field_id": "test_result",
+      "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "crop_source_bbox": [
+        1054,
+        346,
+        1133,
+        387
+      ],
+      "text": "[ف#ررا",
+      "words": [
+        {
+          "text": "[ف#ررا",
+          "bbox": [
+            6,
+            6,
+            73,
+            35
+          ],
+          "confidence_uncalibrated": 3.939896,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.6191
+    },
+    {
+      "document_id": "lab_ar",
+      "field_id": "unit",
+      "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "crop_source_bbox": [
+        1043,
+        498,
+        1138,
+        554
+      ],
+      "text": "غ/دل",
+      "words": [
+        {
+          "text": "غ/دل",
+          "bbox": [
+            8,
+            8,
+            87,
+            48
+          ],
+          "confidence_uncalibrated": 91.765068,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.6132
+    },
+    {
+      "document_id": "lab_ar",
+      "field_id": "reference",
+      "source_sha256": "7caf58618ccb39e2ca1cda58d54fc3319f4dc3f5936b9b562b29cc690301a136",
+      "crop_source_bbox": [
+        1033,
+        665,
+        1133,
+        700
+      ],
+      "text": "١ 1-177",
+      "words": [
+        {
+          "text": "١",
+          "bbox": [
+            5,
+            5,
+            12,
+            30
+          ],
+          "confidence_uncalibrated": 56.260395,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "1-177",
+          "bbox": [
+            22,
+            5,
+            95,
+            30
+          ],
+          "confidence_uncalibrated": 48.066349,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.6447
+    },
+    {
+      "document_id": "radiology_ar",
+      "field_id": "site",
+      "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "crop_source_bbox": [
+        1024,
+        180,
+        1134,
+        235
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.179
+    },
+    {
+      "document_id": "radiology_ar",
+      "field_id": "finding",
+      "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "crop_source_bbox": [
+        890,
+        339,
+        1134,
+        395
+      ],
+      "text": "لا يوجد ارتشاح",
+      "words": [
+        {
+          "text": "لا",
+          "bbox": [
+            220,
+            8,
+            236,
+            38
+          ],
+          "confidence_uncalibrated": 93.405807,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "يوجد",
+          "bbox": [
+            132,
+            22,
+            204,
+            48
+          ],
+          "confidence_uncalibrated": 91.211182,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "ارتشاح",
+          "bbox": [
+            8,
+            8,
+            114,
+            48
+          ],
+          "confidence_uncalibrated": 92.516426,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.5486
+    },
+    {
+      "document_id": "radiology_ar",
+      "field_id": "modality",
+      "source_sha256": "6e0b3c9e103c96361b42200e1664281d6b1af211084b8598b4f7dbcd1e72b42d",
+      "crop_source_bbox": [
+        941,
+        489,
+        1137,
+        550
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.3712
+    },
+    {
+      "document_id": "prescription_ar",
+      "field_id": "drug",
+      "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "crop_source_bbox": [
+        907,
+        171,
+        1136,
+        236
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.4075
+    },
+    {
+      "document_id": "prescription_ar",
+      "field_id": "strength",
+      "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "crop_source_bbox": [
+        994,
+        339,
+        1130,
+        395
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.238
+    },
+    {
+      "document_id": "prescription_ar",
+      "field_id": "dose",
+      "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "crop_source_bbox": [
+        900,
+        498,
+        1139,
+        554
+      ],
+      "text": "كبسولة واحدة",
+      "words": [
+        {
+          "text": "كبسولة",
+          "bbox": [
+            115,
+            4,
+            234,
+            52
+          ],
+          "confidence_uncalibrated": 90.006668,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "text": "واحدة",
+          "bbox": [
+            8,
+            4,
+            97,
+            52
+          ],
+          "confidence_uncalibrated": 91.362381,
+          "line_key": [
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ],
+      "seconds": 0.537
+    },
+    {
+      "document_id": "prescription_ar",
+      "field_id": "frequency",
+      "source_sha256": "1994c284752bde20eaffac8a1c06d8b9ed973842a659e72af892f7957d3a1f5e",
+      "crop_source_bbox": [
+        944,
+        644,
+        1137,
+        717
+      ],
+      "text": "",
+      "words": [],
+      "seconds": 0.3013
+    }
+  ],
+  "issues": []
+}

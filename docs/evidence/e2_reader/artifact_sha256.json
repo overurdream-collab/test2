@@ -1,0 +1,19 @@
+{
+  "comparison_source_regions.json": "ec74069f3d3c515865993332ade66efcafbd7ecdd39cb29f72777334ae583bc1",
+  "error_analysis.json": "ceca011661e041a4c16698e84ef83442e012ef6fe0140f0e4c757f6a97ee3114",
+  "expected_actual_source.json": "b0f9a064f203074210607c39aeedaeeb6add51f69fc31225ded70a9559efa1f9",
+  "gold.json": "fde04977baa6fcb7b285151af41d8264b521a473e2cbcaceb31357abea7c6c50",
+  "initial_tsv_environment_failure.json": "fa49e90a7017163ef643b9b49afdadfd3305660eebee5ea8e634bde1ea442280",
+  "manifest.json": "bd4d3132d912982916d762f3e912226ade073cbf124392d83bb30d63c1decba1",
+  "metrics_tesseract.json": "75e9e4dc9788f53f79e3fd6ee0106703f6fafc6f345c7b1f9ae3a08263a58a03",
+  "predictions_arabic_region_recheck.json": "399469676e92cc857fa708d051b35adff039698e36bd1703ca71cb173a718fa5",
+  "predictions_source_regions.json": "1975262549e2e1540907704627bf70f2900052ee7fbae8f07fd91fc78cf0fc42",
+  "predictions_tesseract.json": "d93847dff33b44e2e47d70f34b13f0373fa2838674bec30cad802744ee966f65",
+  "pytest_output.txt": "57a52eeed307b08fa65209063665ba74551f2bc3660a50d6195fdfd62165eedf",
+  "raw_tesseract.json": "90498f99b31ca9e5eac36f91ee0498d266c4c1df5db1e682c4f9c22563169a31",
+  "runtime_provenance.json": "08ba8d836d4d11417a29ee9e490a895713df5a199d9106a8b89877cbde24bace",
+  "runtime_tesseract_identity.json": "032d0a6166d20cbbe9ce63f757c1e652369c9fc49976736cf7437cf4059df7ff",
+  "security_adoption.json": "a62540a5ea82c5017b2ff1bcb6eb8a0ad5a1160ce56dfe16dc805db23b47ddfb",
+  "security_compatibility_pytest.txt": "166ebaf0b71364e01faa827ea94bcd4e2ff817743ee29f6db590f71a7fd949f4",
+  "source_region_ocr_trace.json": "2c569edf31d0cffa846d4ef2aaf1548ddc38595f5ae2a8951adee38e3abf0e8f"
+}

@@ -1,0 +1,18 @@
+{
+  "arabic_error_review.json": "0fb7cde91d8b35b044c44e21fbca4f9137e688af1558f713fd7d579a647ae165",
+  "ci_gate_404b_verification.json": "d0237802f1ae921be2669490739658f30db8b145facdc324b6b719c0e315b4ef",
+  "ci_qualification_summary.json": "79630bac7a315dfdbe29840096a54bec692a0981eecc5ce10fa7bcf8691b4140",
+  "conflicting_dates.pdf": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+  "conflicting_dates.png": "e09c7cb0478ca9aa05ff8e1332dd96c1144fcc4b3737445b9d1f70aa9b1baf35",
+  "holdout_gold.json": "004175578a2ab4077a53ebdfbab245fe2dd61ed40b542327e5bb32254154e328",
+  "metrics.json": "05112e8a7a10d493a8e35715ec2de27275becf5713c401b9d26512098da78b65",
+  "predictions.json": "ada7c30c6975fc1e55820b3236a8447c1981b8b327bdc48850e012ce33142a42",
+  "pytest_output.txt": "635bb311dcab44b55c40379f2388953d53ea403a2e60dc0659f7a36ef2b7f531",
+  "raw.json": "bd2255b7fa5a084f7d41eaa97e4b96f38569afd273b51d50a615d79b7b1413ce",
+  "red_before_fix.json": "60f35fd42003f2690bbaa18ece89f3d63da26dd3cfd0c342257c54596c9cfd9c",
+  "reordered_arabic.pdf": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+  "reordered_arabic.png": "baa61e943f242f118b831124bb6ad9e83e30a78dbb16622f9282524af4c9b7b9",
+  "runtime_tesseract_identity.json": "032d0a6166d20cbbe9ce63f757c1e652369c9fc49976736cf7437cf4059df7ff",
+  "shifted_invoice.pdf": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+  "shifted_invoice.png": "18452fd150c17974f25de8b9afbdfe8056dfb75cad941f7b006e2df65db04a11"
+}

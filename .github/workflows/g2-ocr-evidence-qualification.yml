@@ -1,0 +1,67 @@
+name: MCIAS G2 OCR Evidence Qualification Isolated
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/g2_ocr_evidence_qualification_pilot.py
+      - scripts/g2_ocr_a1_trusted_contract_probe.py
+      - .github/workflows/g2-ocr-evidence-qualification.yml
+      - docs/DG-001_OCR_EVIDENCE_QUALIFICATION_HANDOFF_AR.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-evidence-qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install synthetic offline OCR and G2 source dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-ara tesseract-ocr-eng fonts-dejavu-core
+          python -m pip install -e .
+      - name: Persist candidate evidence and verify it from G2 original
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          PYTHONPATH=.:scripts python scripts/g2_ocr_evidence_qualification_pilot.py --out ocr-qualification-results --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
+      - name: Verify actual pinned A1 refuses unverified PDF source
+        run: |
+          cd pinned-a1-readonly
+          PYTHONPATH=. python ../scripts/g2_ocr_a1_trusted_contract_probe.py ../ocr-qualification-results/english_columnar.pdf
+      - name: Enforce independent synthetic qualification and untrusted-boundary gates
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("ocr-qualification-results/qualification_summary.json").read_text())
+          assert d["case_count"]==3 and d["candidate_count"]==54
+          assert len(d["negative_cases"])==7
+          assert d["records_status"]=="UNVERIFIED_OCR_CANDIDATE"
+          assert d["native_g2_extracted_records_created"]==0
+          assert d["a1_trusted_contract_authority"] is False
+          assert d["a1_trusted_source_verifications"]==[]
+          assert all(x["g2_status"]=="review_required" for x in d["results"])
+          assert all(x["financial_decision"]=="NOT_AUTHORIZED" for x in d["results"])
+          assert all(x["a1_arithmetic"] is None for x in d["results"])
+          assert all(x["a1_pure_advisory_ran"] is False for x in d["results"])
+          by_case={x["case"]:x for x in d["results"]}
+          for case in ("english_columnar","english_reordered"):
+              assert by_case[case]["a1_blocked_reasons"]==["SERVICE_DATE_NOT_EXPLICIT"]
+          assert all(x["independent_synthetic_gold_fields"]==18 for x in d["results"])
+          assert all(x["independent_synthetic_gold_regions"]==18 for x in d["results"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: g2-ocr-unverified-candidates-synthetic
+          path: ocr-qualification-results/
+          retention-days: 30

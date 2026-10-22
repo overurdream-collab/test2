@@ -1,0 +1,44 @@
+name: MCIAS Synthetic Reader G2 Custody
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/g2_trust_pilot.py
+      - .github/workflows/g2-reader-custody-pilot.yml
+      - docs/DG-001_DOCUMENT_READER_PILOT_AR.md
+      - docs/DG-001_G2_HANDOFF_AR.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  custody:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install G2 test runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
+          python -m pip install -e .
+
+      - name: Replay decrypted original through OCR and A1
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          PYTHONPATH=.:scripts python scripts/g2_trust_pilot.py --out reader-g2-results --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-g2-synthetic-source-replay
+          path: reader-g2-results/
+          retention-days: 30

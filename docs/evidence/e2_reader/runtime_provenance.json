@@ -1,0 +1,45 @@
+{
+  "repository": "tesseract-ocr/tessdata_fast",
+  "revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+  "license_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "ara_sha256": "e3206d3dc87fd50c24a0fb9f01838615911d25168f4e64415244b67d2bb3e729",
+  "ara_bytes": 1432056,
+  "english_source": "/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+  "tesseract_version": "tesseract 5.5.0",
+  "traineddata_actual_sha256": {
+    "ara": "e3206d3dc87fd50c24a0fb9f01838615911d25168f4e64415244b67d2bb3e729",
+    "eng": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+  },
+  "tesseract_binary_sha256": "74b76a5b994adcc18be362bf64ed5118082b2401d5d9a35242e92fc4c62e2b4b",
+  "tesseract_code_license": "Apache-2.0 per installed /usr/share/doc/tesseract-ocr/copyright",
+  "tessdata_license": "Apache-2.0; pinned upstream LICENSE hash above",
+  "baseline_engine_languages": {
+    "en": "eng",
+    "ar": "ara+eng"
+  },
+  "baseline_psm": 6,
+  "region_engine_language": "ara",
+  "region_psm": 7,
+  "backend": "CPU",
+  "gpu_used": false,
+  "OMP_THREAD_LIMIT": "1",
+  "TESSDATA_PREFIX": "/workspace/reader-runtime/tessdata",
+  "runtime_python": "/workspace/security-venv/bin/python",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "fixture_font_sha256": "57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e",
+  "source_head_before_changes": "d62e2bfa44ad662fb7a3628b0622a98f7f01787f",
+  "frozen_inputs": {
+    "gold.json": "fde04977baa6fcb7b285151af41d8264b521a473e2cbcaceb31357abea7c6c50",
+    "manifest.json": "bd4d3132d912982916d762f3e912226ade073cbf124392d83bb30d63c1decba1"
+  },
+  "memory_definition": "max baseline peak and parent/child individual Linux process ru_maxrss, not concurrent aggregate RSS",
+  "runtime_definition": "two Tesseract calls per page (TSV and text), plus measured association and optional two calls per Arabic field; excludes fixture generation",
+  "candidate_vlm_inference": "NOT_RUN; no model license/version requalification or large download in this task",
+  "cpu_limit_warning": "not an isolated hardware performance benchmark; single bounded CPU sample",
+  "python_environment": {
+    "python": "3.12.14",
+    "Pillow": "13.0.0",
+    "reportlab": "4.5.1",
+    "pytest": "9.1.1"
+  }
+}

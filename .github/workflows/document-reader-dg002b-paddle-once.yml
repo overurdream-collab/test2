@@ -1,0 +1,78 @@
+name: MCIAS Reader DG-002B PaddleOCR-VL-1.6 One-Time CPU Trial
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/document_reader_dg002b_paddle_once.py
+      - .github/workflows/document-reader-dg002b-paddle-once.yml
+permissions:
+  contents: read
+jobs:
+  one-time-pinned-paddle-cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record free CPU resource budget before model acquisition
+        run: |
+          mkdir -p dg002b-paddle-attempt
+          python scripts/document_reader_dg002b_paddle_preflight.py --output dg002b-paddle-attempt/resource_check.json
+          cat dg002b-paddle-attempt/resource_check.json
+      - name: Prepare identical locked image-only medical fixtures
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core
+          python -m pip install 'Pillow==11.3.0' 'reportlab==4.4.9'
+          PYTHONPATH=. python scripts/document_reader_dg002b_benchmark.py --out dg002b-paddle-dataset --generate-only
+      - name: Install pinned CPU runtime once, do not use GPU or paid services
+        id: setup
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 400 python -m pip install paddlepaddle==3.2.1 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/ 2>&1 | tee dg002b-paddle-attempt/setup.log
+          timeout 180 python -m pip install 'paddleocr[doc-parser]==3.7.0' 'huggingface-hub==0.36.0' 2>&1 | tee -a dg002b-paddle-attempt/setup.log
+          python -m pip freeze > dg002b-paddle-attempt/dependency_versions.txt
+      - name: One bounded exact-revision CPU inference attempt with one weight fetch
+        id: trial
+        if: ${{ steps.setup.outcome == 'success' }}
+        continue-on-error: true
+        run: |
+          env PYTHONPATH=. timeout --signal=TERM --kill-after=5s 550s python scripts/document_reader_dg002b_paddle_once.py --dataset dg002b-paddle-dataset --output dg002b-paddle-attempt
+      - name: Write explicit status when model never initialized
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path("dg002b-paddle-attempt/paddle_attempt.json")
+          if not p.exists():
+              status="NOT_RUN_PINNED_CPU_DEPENDENCY_INSTALL_FAILED"
+              if "${{ steps.setup.outcome }}" == "success":
+                  status="NOT_RUN_OR_TIMEOUT_BEFORE_MODEL_CHECKPOINT"
+              p.write_text(json.dumps({"status":status,"engine":"PaddleOCR-VL-1.6",
+                  "inference_executed":False,"weights_downloaded":False,
+                  "model_sha256":"NOT_VERIFIED","predictions":None,"metrics":None,
+                  "setup_outcome":"${{ steps.setup.outcome }}","trial_outcome":"${{ steps.trial.outcome }}",
+                  "comparative_accuracy":"NOT_MEASURED"},indent=2))
+          else:
+              d=json.loads(p.read_text())
+              if d["status"]=="STARTED":d["status"]="ABORTED_WITHOUT_QUALIFIED_INFERENCE"
+              d["setup_outcome"]="${{ steps.setup.outcome }}"
+              d["trial_outcome"]="${{ steps.trial.outcome }}"
+              p.write_text(json.dumps(d,indent=2))
+          print(p.read_text()[:2500])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-dg002b-paddle-single-cpu-trial
+          path: |
+            dg002b-paddle-attempt/paddle_attempt.json
+            dg002b-paddle-attempt/resource_check.json
+            dg002b-paddle-attempt/dependency_versions.txt
+            dg002b-paddle-attempt/setup.log
+          retention-days: 30

@@ -1,0 +1,60 @@
+name: MCIAS Reader Human OCR Attestation Isolated
+on:
+  push:
+    branches: [feat/mcias-document-reader-isolated-pilot]
+    paths:
+      - scripts/document_reader_human_review_pilot.py
+      - scripts/document_reader_human_review.html
+      - scripts/test_document_reader_human_review.py
+      - .github/workflows/document-reader-human-review-isolated.yml
+      - docs/DG-001_OCR_HUMAN_ATTESTATION_HANDOFF_AR.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-human-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b536a94adf4d190ac48856bd435a8a624f3931f4
+          path: pinned-a1-readonly
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated G2 runtime and Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-ara fonts-dejavu-core
+          python -m pip install -e '.[test,browser]'
+          python -m playwright install --with-deps chromium
+      - name: Validate pinned A1 and run live HTTP plus Chromium review tests
+        run: |
+          test "$(git -C pinned-a1-readonly rev-parse HEAD)" = "b536a94adf4d190ac48856bd435a8a624f3931f4"
+          PYTHONPATH=.:scripts python scripts/test_document_reader_human_review.py --a1 pinned-a1-readonly/mcias/agents/invoice_integrity.py --out reader-human-review-results
+      - name: Enforce no-authority and independent reviewer simulation scope
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('reader-human-review-results/human_review_results.json').read_text())
+          assert d['status']=='ISOLATED_BROWSER_AND_API_REVIEW_TESTED'
+          assert d['human_review_real_person'] is False
+          assert d['documents']==3 and d['ui_browser_overlay_fields']==18
+          assert d['pagination_tested'] and d['acceptance_18_of_18']
+          assert d['swapped_arithmetic_count']==2 and d['arabic_date_hold']
+          assert d['append_only_mutation_denied'] and d['idempotent_replay']
+          assert d['auth_spoof_denied'] and d['cross_tenant_denied']
+          assert d['original_ciphertext_tamper_denied']
+          assert d['a1_trusted_input_used'] is False
+          assert d['financial_decision']=='NOT_AUTHORIZED'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reader-human-review-browser-and-api-synthetic
+          path: reader-human-review-results/
+          retention-days: 30

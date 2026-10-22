@@ -1,0 +1,655 @@
+{
+  "oracle": "AUTHORED_BEFORE_OCR_NOT_USED_FOR_PREDICTION",
+  "cases": [
+    {
+      "id": "shifted_invoice",
+      "language": "en",
+      "engine_language": "eng",
+      "pdf": "shifted_invoice.pdf",
+      "pdf_sha256": "242562e86d69e9b6fa8bbf6db8e89b3938fd634297ab4299aaac8ef0f06559a7",
+      "image": "shifted_invoice.png",
+      "image_sha256": "18452fd150c17974f25de8b9afbdfe8056dfb75cad941f7b006e2df65db04a11",
+      "ambiguous": false,
+      "metadata": {
+        "effective_from": [
+          {
+            "value": "2025-12-01",
+            "label": "EFFECTIVE FROM",
+            "source_line": 2,
+            "bbox": [
+              895,
+              101,
+              1074,
+              132
+            ]
+          }
+        ],
+        "document_date": [
+          {
+            "value": "2026-04-10",
+            "label": "INVOICE_DATE",
+            "source_line": 3,
+            "bbox": [
+              895,
+              163,
+              1074,
+              194
+            ]
+          }
+        ],
+        "provider": [
+          {
+            "value": "SYN-HOSPITAL-42",
+            "label": "PROVIDER",
+            "source_line": 4,
+            "bbox": [
+              895,
+              225,
+              1161,
+              256
+            ]
+          }
+        ],
+        "service_date": [
+          {
+            "value": "2026-04-09",
+            "label": "SERVICE DATE",
+            "source_line": 5,
+            "bbox": [
+              895,
+              287,
+              1074,
+              318
+            ]
+          }
+        ],
+        "effective_until": [
+          {
+            "value": "2026-12-31",
+            "label": "EFFECTIVE UNTIL",
+            "source_line": 6,
+            "bbox": [
+              895,
+              349,
+              1074,
+              380
+            ]
+          }
+        ],
+        "invoice_number": [
+          {
+            "value": "INV-2026-731",
+            "label": "INVOICE",
+            "source_line": 7,
+            "bbox": [
+              895,
+              411,
+              1103,
+              442
+            ]
+          }
+        ],
+        "currency": [
+          {
+            "value": "USD",
+            "label": "CURRENCY",
+            "source_line": 8,
+            "bbox": [
+              895,
+              473,
+              967,
+              504
+            ]
+          }
+        ],
+        "stated_total": [
+          {
+            "value": "168.00",
+            "label": "GRANDTOTAL",
+            "source_line": 9,
+            "bbox": [
+              895,
+              535,
+              1006,
+              566
+            ]
+          }
+        ]
+      },
+      "rows": [
+        {
+          "id": "QX",
+          "code": "LAB-X",
+          "unit": "EA",
+          "qty": "2",
+          "price": "42.00",
+          "total": "84.00"
+        },
+        {
+          "id": "QY",
+          "code": "RX-Y",
+          "unit": "EA",
+          "qty": "1",
+          "price": "84.00",
+          "total": "84.00"
+        }
+      ],
+      "cell_boxes": [
+        {
+          "id": [
+            103,
+            929,
+            163,
+            970
+          ],
+          "code": [
+            353,
+            929,
+            458,
+            966
+          ],
+          "unit": [
+            643,
+            929,
+            698,
+            966
+          ],
+          "qty": [
+            893,
+            929,
+            927,
+            966
+          ],
+          "price": [
+            1133,
+            929,
+            1236,
+            966
+          ],
+          "total": [
+            1403,
+            929,
+            1506,
+            966
+          ]
+        },
+        {
+          "id": [
+            103,
+            1069,
+            160,
+            1110
+          ],
+          "code": [
+            353,
+            1069,
+            435,
+            1106
+          ],
+          "unit": [
+            643,
+            1069,
+            698,
+            1106
+          ],
+          "qty": [
+            893,
+            1069,
+            927,
+            1106
+          ],
+          "price": [
+            1133,
+            1069,
+            1236,
+            1106
+          ],
+          "total": [
+            1403,
+            1069,
+            1506,
+            1106
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\nEFFECTIVE FROM 2025-12-01\nINVOICE_DATE 2026-04-10\nPROVIDER SYN-HOSPITAL-42\nSERVICE DATE 2026-04-09\nEFFECTIVE UNTIL 2026-12-31\nINVOICE INV-2026-731\nCURRENCY USD\nGRANDTOTAL 168.00\nID CODE UNIT QTY PRICE TOTAL\nQX LAB-X EA 2 42.00 84.00\nQY RX-Y EA 1 84.00 84.00"
+    },
+    {
+      "id": "reordered_arabic",
+      "language": "ar",
+      "engine_language": "ara+eng",
+      "pdf": "reordered_arabic.pdf",
+      "pdf_sha256": "85809cec10d0acb203844a002e67ae2464971065d35a20d688029b5b7e76de03",
+      "image": "reordered_arabic.png",
+      "image_sha256": "baa61e943f242f118b831124bb6ad9e83e30a78dbb16622f9282524af4c9b7b9",
+      "ambiguous": false,
+      "metadata": {
+        "effective_until": [
+          {
+            "value": "2026-12-31",
+            "label": "EFFECTIVE UNTIL",
+            "source_line": 2,
+            "bbox": [
+              895,
+              101,
+              1074,
+              132
+            ]
+          }
+        ],
+        "provider": [
+          {
+            "value": "SYN-HOSPITAL-73",
+            "label": "PROVIDER",
+            "source_line": 3,
+            "bbox": [
+              895,
+              163,
+              1161,
+              194
+            ]
+          }
+        ],
+        "effective_from": [
+          {
+            "value": "2026-02-01",
+            "label": "EFFECTIVE FROM",
+            "source_line": 4,
+            "bbox": [
+              895,
+              225,
+              1074,
+              256
+            ]
+          }
+        ],
+        "invoice_number": [
+          {
+            "value": "INV-2026-842",
+            "label": "INVOICE",
+            "source_line": 5,
+            "bbox": [
+              895,
+              287,
+              1103,
+              318
+            ]
+          }
+        ],
+        "document_date": [
+          {
+            "value": "2026-05-09",
+            "label": "INVOICE_DATE",
+            "source_line": 6,
+            "bbox": [
+              895,
+              349,
+              1074,
+              380
+            ]
+          }
+        ],
+        "currency": [
+          {
+            "value": "USD",
+            "label": "CURRENCY",
+            "source_line": 7,
+            "bbox": [
+              895,
+              411,
+              967,
+              442
+            ]
+          }
+        ],
+        "service_date": [
+          {
+            "value": "2026-05-07",
+            "label": "SERVICE DATE",
+            "source_line": 8,
+            "bbox": [
+              895,
+              473,
+              1074,
+              504
+            ]
+          }
+        ],
+        "stated_total": [
+          {
+            "value": "168.00",
+            "label": "GRANDTOTAL",
+            "source_line": 9,
+            "bbox": [
+              895,
+              535,
+              1006,
+              566
+            ]
+          }
+        ]
+      },
+      "rows": [
+        {
+          "id": "QX",
+          "code": "أشعة",
+          "unit": "EA",
+          "qty": "2",
+          "price": "42.00",
+          "total": "84.00"
+        },
+        {
+          "id": "QY",
+          "code": "دواء",
+          "unit": "EA",
+          "qty": "1",
+          "price": "84.00",
+          "total": "84.00"
+        }
+      ],
+      "cell_boxes": [
+        {
+          "total": [
+            103,
+            929,
+            206,
+            966
+          ],
+          "code": [
+            383,
+            921,
+            463,
+            967
+          ],
+          "qty": [
+            673,
+            929,
+            707,
+            966
+          ],
+          "id": [
+            923,
+            929,
+            983,
+            970
+          ],
+          "price": [
+            1153,
+            929,
+            1256,
+            966
+          ],
+          "unit": [
+            1423,
+            929,
+            1478,
+            966
+          ]
+        },
+        {
+          "total": [
+            103,
+            1069,
+            206,
+            1106
+          ],
+          "code": [
+            383,
+            1068,
+            449,
+            1114
+          ],
+          "qty": [
+            673,
+            1069,
+            707,
+            1106
+          ],
+          "id": [
+            923,
+            1069,
+            980,
+            1110
+          ],
+          "price": [
+            1153,
+            1069,
+            1256,
+            1106
+          ],
+          "unit": [
+            1423,
+            1069,
+            1478,
+            1106
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\nEFFECTIVE UNTIL 2026-12-31\nPROVIDER SYN-HOSPITAL-73\nEFFECTIVE FROM 2026-02-01\nINVOICE INV-2026-842\nINVOICE_DATE 2026-05-09\nCURRENCY USD\nSERVICE DATE 2026-05-07\nGRANDTOTAL 168.00\nTOTAL CODE QTY ID PRICE UNIT\n84.00 أشعة 2 QX 42.00 EA\n84.00 دواء 1 QY 84.00 EA"
+    },
+    {
+      "id": "conflicting_dates",
+      "language": "en",
+      "engine_language": "eng",
+      "pdf": "conflicting_dates.pdf",
+      "pdf_sha256": "18ed7145cc81032c2e4b7221cf6b6528511370160483293854094ed25cb9a275",
+      "image": "conflicting_dates.png",
+      "image_sha256": "e09c7cb0478ca9aa05ff8e1332dd96c1144fcc4b3737445b9d1f70aa9b1baf35",
+      "ambiguous": true,
+      "metadata": {
+        "effective_from": [
+          {
+            "value": "2025-12-01",
+            "label": "EFFECTIVE FROM",
+            "source_line": 2,
+            "bbox": [
+              895,
+              101,
+              1074,
+              132
+            ]
+          }
+        ],
+        "document_date": [
+          {
+            "value": "2026-04-10",
+            "label": "INVOICE_DATE",
+            "source_line": 3,
+            "bbox": [
+              895,
+              163,
+              1074,
+              194
+            ]
+          }
+        ],
+        "provider": [
+          {
+            "value": "SYN-HOSPITAL-42",
+            "label": "PROVIDER",
+            "source_line": 4,
+            "bbox": [
+              895,
+              225,
+              1161,
+              256
+            ]
+          }
+        ],
+        "service_date": [
+          {
+            "value": "2026-04-09",
+            "label": "SERVICE DATE",
+            "source_line": 5,
+            "bbox": [
+              895,
+              287,
+              1074,
+              318
+            ]
+          },
+          {
+            "value": "2026-04-11",
+            "label": "SERVICE DATE",
+            "source_line": 6,
+            "bbox": [
+              895,
+              349,
+              1074,
+              380
+            ]
+          }
+        ],
+        "effective_until": [
+          {
+            "value": "2026-12-31",
+            "label": "EFFECTIVE UNTIL",
+            "source_line": 7,
+            "bbox": [
+              895,
+              411,
+              1074,
+              442
+            ]
+          }
+        ],
+        "invoice_number": [
+          {
+            "value": "INV-2026-731",
+            "label": "INVOICE",
+            "source_line": 8,
+            "bbox": [
+              895,
+              473,
+              1103,
+              504
+            ]
+          }
+        ],
+        "currency": [
+          {
+            "value": "USD",
+            "label": "CURRENCY",
+            "source_line": 9,
+            "bbox": [
+              895,
+              535,
+              967,
+              566
+            ]
+          }
+        ],
+        "stated_total": [
+          {
+            "value": "168.00",
+            "label": "GRANDTOTAL",
+            "source_line": 10,
+            "bbox": [
+              895,
+              597,
+              1006,
+              628
+            ]
+          }
+        ]
+      },
+      "rows": [
+        {
+          "id": "QX",
+          "code": "LAB-X",
+          "unit": "EA",
+          "qty": "2",
+          "price": "42.00",
+          "total": "84.00"
+        },
+        {
+          "id": "QY",
+          "code": "RX-Y",
+          "unit": "EA",
+          "qty": "1",
+          "price": "84.00",
+          "total": "84.00"
+        }
+      ],
+      "cell_boxes": [
+        {
+          "id": [
+            103,
+            929,
+            163,
+            970
+          ],
+          "code": [
+            353,
+            929,
+            458,
+            966
+          ],
+          "unit": [
+            643,
+            929,
+            698,
+            966
+          ],
+          "qty": [
+            893,
+            929,
+            927,
+            966
+          ],
+          "price": [
+            1133,
+            929,
+            1236,
+            966
+          ],
+          "total": [
+            1403,
+            929,
+            1506,
+            966
+          ]
+        },
+        {
+          "id": [
+            103,
+            1069,
+            160,
+            1110
+          ],
+          "code": [
+            353,
+            1069,
+            435,
+            1106
+          ],
+          "unit": [
+            643,
+            1069,
+            698,
+            1106
+          ],
+          "qty": [
+            893,
+            1069,
+            927,
+            1106
+          ],
+          "price": [
+            1133,
+            1069,
+            1236,
+            1106
+          ],
+          "total": [
+            1403,
+            1069,
+            1506,
+            1106
+          ]
+        }
+      ],
+      "text": "SYNTHETIC INVOICE HOLDOUT\nEFFECTIVE FROM 2025-12-01\nINVOICE_DATE 2026-04-10\nPROVIDER SYN-HOSPITAL-42\nSERVICE DATE 2026-04-09\nSERVICE DATE 2026-04-11\nEFFECTIVE UNTIL 2026-12-31\nINVOICE INV-2026-731\nCURRENCY USD\nGRANDTOTAL 168.00\nID CODE UNIT QTY PRICE TOTAL\nQX LAB-X EA 2 42.00 84.00\nQY RX-Y EA 1 84.00 84.00"
+    }
+  ]
+}

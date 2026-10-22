@@ -1,0 +1,35 @@
+# MCIAS — حالة مالك Document Reader المعزولة
+
+## 2026-10-21 — E2 / HANDOFF-20261021-303
+
+- استؤنف HEAD القائم `d62e2bfa44ad662fb7a3628b0622a98f7f01787f` دون فرع جديد أو تكرار Windows أو OCR/HumanReview/A1Bridge السابقة. هذا ملحق مالك لإلحاقه بحالة المنسق، وليس ادعاء حالة بقية النظام.
+- **ISOLATED VERIFIED:** إصلاح TSV المفقود في TESSDATA_PREFIX وإضافة تحقق مخرجات، وربط موضع القيمة من كلمات المحرك دون Gold. 23 اختبارًا فعليًا ناجحًا؛ ملفات الخام والمصدر والمقياس محفوظة.
+- على8صور PNG مجمدة و30حقلاً: الموضع26→30 والقيمة+الموضع22→23؛ النص ثابت23/30، والعربية8/15 **QUALITY BLOCKED**. قص عربي إضافي لم يحسن القراءة؛ الجميع HUMAN_REVIEW وثقة غير معايرة وG2-source غير موثق؛ لا قرار مالي.
+- Tesseract5.5.0 CPU بأوزان eng/ara محفوظة البصمات. لا VLM جديد أو تدريب أو download ثقيل. تحديث نطاق Pillow في workflow Reader وحده إلى13 بالتنسيق مع المشرف ومالك الأمن؛ لا ادعاء نجاح Dependency Audit على هذا الفرع.
+- **REVIEW PENDING:** CI على Commit المنشور ومراجعة مستقلة. لا تكامل G2/G5 أو قبول إنتاجي أو merge/deployment. انظر `E2_READER_COMPARISON_AR.md` لأوامر الاستئناف ودليل expected/actual30حقلاً وحدود الزمن/RSS.
+
+## 2026-10-21 — اعتماد الأمن / HANDOFF-20261021-305
+
+- نُقلت ملفات إصلاح PR33/6454b6d الستة المعتمدة بايتياً بعد المقارنة، على الفرع القائم نفسه: Pillow13، التدقيق الخارجي الصارم، واختبارات التوافق وتثبيت Tesseract في المشغلات. لا اختلافات مجال أخرى، ولا imports E1 أو تغيير Gold.
+- دليل65 حزمة بلا ثغرات أعيد استخدامه من مالك الأمن على ملفات مطابقة؛ لم يُعد Dependency Audit. أُعيدت اختبارات توافق Reader فقط: **34 PASS في15.50 ثانية دون تخطٍ** ومخرجها محفوظ. لا إعادة OCR Benchmark؛ نتائج HANDOFF303 وحدود جودة العربية لم تتغير.
+- الحالة ISOLATED VERIFIED للتوافق المحلي؛ نشر Commit Reader وDraft PR وCI المطابق من مسؤولية المشرف وما زالت PENDING.
+
+## 2026-10-21 — مشغّل Reader / HANDOFF-20261021-306
+
+- نُشر Draft PR35 عند869f79f المطابق لشجرة e89b6bd المحلية. تشغيل Reader [39590938187](https://github.com/overurdream-collab/test2/actions/runs/39590938187) فشل قبل جمع الاختبارات بسبب SQLAlchemy المفقودة في تثبيت OCR الجزئي؛ حُفظ الفشل ورابطه.
+- الإصلاح في workflow Reader وحده: تثبيت المشروع `-e '.[test]'` مع Pillow13 المعتمدة؛ لا تعديل اختبار أو استبعاد conftest أو تغيير Gold. تصحيح مرجع الأمن في التقرير إلى HANDOFF305 يطابق الترقيم المنسق.
+- تحقق المشرف من نجاح G1–G7 وDependency Audit على HEAD المنشور نفسه. لا إعادة OCR أو الاختبارات الناجحة محليًا؛ `git diff --check` هو التحقق المحلي للإصلاح المحدود.
+- الحالة IMPLEMENTED / REVIEW PENDING؛ نشر الإصلاح والتحقق من Reader CI على SHA المطابق هما الخطوة التالية للمشرف، دون merge أو deployment.
+
+## 2026-10-21 — E4 / HANDOFF-20261021-404
+
+- أغلقت وحدة ربط metadata: provider_code وservice_date وeffective_from/until مرتبطون بتسمية وسطر ومربع المصدر؛ DATE العام أو التعارض/التكرار لا يؤهل A1. تغيّرت توقعات استهلاك pilots القديمة إلى الحجب دون تعديل Gold/صورها، بتنسيق المشرف ومالك A1.
+- RED2 فشل ثم GREEN10 PASS فعلية. holdout3PDF جديدة محفوظة: metadata16/16 نص وربط، الجدول23/24 نص و24/24 موضع للحالتين غير المتعارضتين؛ CER0.011968/WER0.024390،8.894s،107.457MiB لأقصى عملية منفردة. كل payloads محجوبة بثقة rowid والثالث بتعارض التاريخ أيضًا؛ صفر دليل مالي مؤهل.
+- الأخطاء العربية السبعة السابقة أخطاء OCR مع مواضع صحيحة؛ لا تصحيح بالتخمين، ولا إعادة23اختبارًا/8صور/Audit/PG. Pillow13 في workflow structured المتأثر؛ لا أوزان أو تدريب أو network جديد.
+- ISOLATED VERIFIED للنطاق المحدود وQUALITY BLOCKED للعربية والثقة المالية. CI على Commit الجديد REVIEW PENDING؛ نشر PR35 والتحقق المطابق مسؤولية المشرف. التقرير والدليل: E4_READER_QUALITY_AR.md وevidence/e4_reader.
+
+## 2026-10-21 — G2 OCR gate / HANDOFF-20261021-404b
+
+- فشل CI39674878822 على44c99cac في توقع arithmetic القديم بعد نجاح التنفيذ ورفض PDF. فُحص artifact12380858567 الحقيقي: الحجب قائم للجميع، وأول حالتين SERVICE_DATE_NOT_EXPLICIT؛ كل قيود54مرشحًا/7سوالب/18Gold باقية.
+- صُحح workflow G2 OCR وحده ليتحقق من null/عدم تشغيل A1 والأسباب الصريحة، ونُفذت assertions نفسها على actualsummary بنجاح. التثبيت الحالي للمشروع يستهلك Pillow13؛ لا تغيير runtime أو Gold أو إعادة OCR/tests/Audit/PG.
+- IMPLEMENTED / REVIEW PENDING لنشر Commit والتحقق من CI المطابق؛ الملخص وبصمته وZIP digest ودليل gate محفوظة في evidence/e4_reader وتقرير E4.
