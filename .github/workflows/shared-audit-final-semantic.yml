@@ -1,0 +1,39 @@
+name: Shared Audit Final Semantic Evidence
+on:
+  pull_request:
+    paths:
+      - scripts/resolve_audit_semantics.py
+      - .github/workflows/shared-audit-final-semantic.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/mcias-shared-audit-writer-phase1
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: shared-audit-consumer-inventory
+          run-id: 39330289038
+          github-token: ${{ github.token }}
+          path: original
+      - name: Verify evidence and scan pinned source without edits
+        run: |
+          test -s original/files.csv
+          test -s original/matches.csv
+          test -s original/summary.json
+          test -s original/SUMMARY.md
+          python scripts/resolve_audit_semantics.py original/matches.csv docs/shared_audit_semantic_evidence
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-audit-final-semantic-evidence
+          path: docs/shared_audit_semantic_evidence/
+          if-no-files-found: error

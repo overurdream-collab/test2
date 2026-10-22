@@ -1,0 +1,35 @@
+name: Shared Audit Consumer Inventory (read-only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/audit_consumer_inventory.py'
+      - '.github/workflows/shared-audit-consumer-inventory.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch pinned references
+        run: |
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git fetch --no-tags origin refs/pull/25/head:refs/remotes/origin/inventory-pr25
+          git fetch --no-tags origin refs/pull/28/head:refs/remotes/origin/inventory-pr28
+          git fetch --no-tags origin refs/pull/29/head:refs/remotes/origin/inventory-pr29
+      - name: Execute read-only SHA-pinned inventory
+        run: python scripts/audit_consumer_inventory.py --out audit-inventory
+      - name: Publish summary
+        if: always()
+        run: |
+          if test -f audit-inventory/SUMMARY.md; then cat audit-inventory/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shared-audit-consumer-inventory
+          path: audit-inventory/
+          if-no-files-found: error
