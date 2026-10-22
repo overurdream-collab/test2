@@ -25,6 +25,7 @@ import {
   donut,
   preferences,
 } from "./ui.js";
+import { renderReferencePilot, renderClaimPilot } from "./minimum_pilot.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -1196,63 +1197,7 @@ function catalog(ctx) {
     card.append(form);
     root.append(card);
   }
-  if (kind === "batches" && allowed(ctx, "claims.import")) {
-    root.append(operation(ctx,
-      L("اعتماد نطاق أوراق المصدر", "Approve source sheet scope"),
-      L("صنّف جميع الأوراق قبل الاستيراد؛ PAYMENT وFAMILY_SUMMARY لا تصبحان مطالبات.", "Classify every sheet before import; PAYMENT and FAMILY_SUMMARY are excluded from claims."),
-      [idField("document_id", L("المستند", "Document ID")),
-        {name: "sheet_types", label: L("أنواع الأوراق بصيغة JSON", "Sheet types as JSON"), value: '{"1":"CLAIMS","2":"PAYMENT","3":"FAMILY_SUMMARY"}'}],
-      "claims.import", (v) => ctx.api.request("/api/v1/claims/documents/" + safeId(v.document_id) + "/source-scope",
-        {method: "POST", body: {sheet_types: JSON.parse(v.sheet_types)}}), {confirmation: true}));
-    root.append(
-      operation(
-        ctx,
-        L("تجهيز دفعة من مصدر موثّق", "Stage batch from verified source"),
-        L(
-          "استخدم معرّف المستند المسجل. الخادم يفرض سلامة المصدر والمؤسسة.",
-          "Use a registered document ID. The backend enforces source integrity and tenant scope.",
-        ),
-        [idField("document_id", L("المستند", "Document ID"))],
-        "claims.import",
-        (v) =>
-          ctx.api.request(
-            "/api/v1/claims/batches/from-document/" + safeId(v.document_id),
-            { method: "POST" },
-          ),
-      ),
-    );
-    root.append(
-      operation(
-        ctx,
-        L("استئناف استيراد الدفعة", "Resume batch import"),
-        L(
-          "استيراد قابل للاستئناف دون تكرار سجلات مالية.",
-          "Resumable import without duplicate financial records.",
-        ),
-        [
-          idField("batch_id", L("الدفعة", "Batch ID")),
-          {
-            name: "chunk_size",
-            label: L("حجم الجزء", "Chunk size"),
-            type: "number",
-            min: 1,
-            max: 1000,
-            value: 100,
-          },
-        ],
-        "claims.import",
-        (v) =>
-          ctx.api.request(
-            "/api/v1/claims/batches/" +
-              safeId(v.batch_id) +
-              "/resume?chunk_size=" +
-              v.chunk_size,
-            { method: "POST" },
-          ),
-        { confirmation: true },
-      ),
-    );
-  }
+  if (kind === "batches" && allowed(ctx, "claims.import")) renderClaimPilot(ctx);
   if (kind === "claims" && allowed(ctx, "claims.import"))
     root.append(
       operation(
@@ -1327,7 +1272,15 @@ function catalog(ctx) {
     );
   }
   if (kind === "contracts") {
-    referenceForms(ctx);
+    if (ctx.scope === "admin") {
+      renderReferencePilot(ctx);
+      const advanced = el("details", null, "pilot-advanced");
+      advanced.append(el("summary", L("أدوات العقود والأهلية السابقة", "Existing contract and eligibility tools")));
+      const content = el("div");
+      advanced.append(content);
+      ctx.root.append(advanced);
+      referenceForms({...ctx,root:content});
+    } else referenceForms(ctx);
   }
   if (kind === "users")
     root.append(
