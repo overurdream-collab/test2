@@ -2,13 +2,18 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from pydantic import BaseModel, ConfigDict
 from mcias.app import get_db
 from mcias.auth import resolve_user
 from mcias.tenant import require_organization
 from mcias.models_claims import ClaimBatch, ClaimEntry, ClaimAttachment
-from mcias.claim_batches import BatchConflict, stage, preview, resume, attach
+from mcias.claim_batches import BatchConflict, stage, preview, resume, attach, approve_source_scope
 
 router=APIRouter(prefix="/api/v1/claims",tags=["claims"])
+
+class SourceScopeApproval(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sheet_types: dict[int, str]
 
 def _actor(db,authorization,permission):
     user,_=resolve_user(db,authorization)
@@ -26,6 +31,17 @@ def _run(db,fn):
     except __import__("sqlalchemy").exc.IntegrityError as exc:
         db.rollback()
         raise HTTPException(409,"claim integrity constraint") from exc
+
+@router.post("/documents/{document_id}/source-scope", status_code=201)
+def approve_document_scope(document_id: str, payload: SourceScopeApproval,
+                           authorization: str | None = Header(default=None),
+                           db: Session = Depends(get_db)):
+    actor = _actor(db, authorization, "claims.import")
+    approval = _run(db, lambda: approve_source_scope(db, actor, document_id, payload.sheet_types))
+    return {"approval_id": approval.id, "document_id": document_id,
+            "source_sha256": approval.details["source_sha256"],
+            "mapping_version": approval.details["mapping_version"],
+            "sheet_types": approval.details["sheet_types"]}
 
 @router.post("/batches/from-document/{document_id}",status_code=201)
 def create_batch(document_id: str,authorization: str | None=Header(default=None),

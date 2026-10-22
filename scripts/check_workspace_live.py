@@ -10,7 +10,10 @@ with sync_playwright() as pw:
  page=b.new_page(viewport={'width':1440,'height':1000});errors=[];requests=[]
  page.on('pageerror',lambda e:errors.append(str(e)));page.on('request',lambda r:requests.append(r.url))
  page.goto(args.base_url+'/login');page.get_by_label('اسم المستخدم',exact=True).fill(f['username']);page.get_by_label('كلمة المرور',exact=True).fill(f['password']);page.get_by_role('button',name='تسجيل الدخول بأمان',exact=True).click();expect(page.locator('.kpi').first).to_be_visible()
- assert page.locator('.kpi-value').all_text_contents()==['12000.0000','0','0','12'];assert not page.locator('.banner.demo').count();checks.append('real login/session and frozen PostgreSQL report totals')
+ # This seed has no authoritative references or G5 snapshots. The contracted
+ # dashboard therefore counts zero completed audits and never invents exposure.
+ assert f['expected']['dashboard']['classification_counts']['UNABLE_TO_AUDIT']==12
+ assert page.locator('.kpi-value').all_text_contents()==['12000.0000','0','0','غير قابل للتقدير'];assert not page.locator('.banner.demo').count();checks.append('real session and contracted KPIs: claimed total, zero completed audits/review findings, unquantified exposure')
  page.evaluate('()=>{history.pushState({},"","/institution/claims");dispatchEvent(new PopStateEvent("popstate"));}');expect(page.locator('tbody tr')).to_have_count(12);assert 'SYNTHETIC_PRIVATE_FIELD_NOT_DISCLOSED' not in page.locator('body').text_content();checks.append('tenant-scoped real claim catalog excludes raw medical fields')
  page.get_by_role('button',name='عرض الدليل',exact=True).first.click();expect(page.locator('h1')).to_have_text('تفاصيل المطالبة');expect(page.locator('main')).to_contain_text('1000.0000');checks.append('real protected claim detail drill-down')
  page.evaluate('()=>{history.pushState({},"","/admin/dashboard");dispatchEvent(new PopStateEvent("popstate"));}');expect(page.locator('main')).to_contain_text('وصول غير مصرح');checks.append('real reader identity cannot enter administrative interface')

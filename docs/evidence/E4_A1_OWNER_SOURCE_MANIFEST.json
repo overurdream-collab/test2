@@ -1,0 +1,27 @@
+{
+  "owner": "A1",
+  "approved_files_only": [
+    {
+      "path": "mcias/agents/__init__.py",
+      "sha256": "08d2b011543656dbc6b9b668d555687c1b88c157147b5964fca1302b1dc76533"
+    },
+    {
+      "path": "mcias/agents/invoice_integrity.py",
+      "sha256": "5bc9c0e042309e1df7b0386c572e0ffe38dab74e6b4aa94442b84393e99f7dba"
+    },
+    {
+      "path": "mcias/agents/a1_trusted_input.py",
+      "sha256": "da59f1bc301032748b5e960565944c60083b86f0b139ac48d84eefe0a5153906"
+    },
+    {
+      "path": "mcias/agents/a1_review_packet.py",
+      "sha256": "313f1194929a16c11e0940138de1d3001825e46e539b32d703bfac1622a68fb8"
+    }
+  ],
+  "owner_parent": "6af41a04cf887d389656c9ce7ffc4e03b396b5a4",
+  "runtime_owner_commit": "6aca20dedbd4bcc7f18f9f4737bb9f1da6cc1f27",
+  "documentation_owner_commit": "19c9fb05a7a28502e9ec4ef99c0c51c8ba42d4b5",
+  "published_pr20_head": "c9a98ae32a798a42f79241d86df0da2e64231096",
+  "owner_worklog": "https://github.com/overurdream-collab/test2/blob/c9a98ae32a798a42f79241d86df0da2e64231096/docs/engineering/worklogs/A1_2026-10-21_integration.md",
+  "scope": "Existing source/packet service only; no app/API/model workflow/migrations copied; original byte and field evidence grants no arithmetic authority."
+}

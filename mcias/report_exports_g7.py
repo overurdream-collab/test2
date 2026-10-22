@@ -53,6 +53,19 @@ def render_xlsx(report, *, include_originals=False, language="en"):
         ws.append([currency, item["claimed"], item["approved_claimed"],
                    item["held_claimed"], item["payable"], item["deductions"],
                    item["approved_count"], item["held_count"]])
+    audit = report.summary.get("audit")
+    if audit:
+        ws.append([])
+        ws.append(["نتائج التدقيق — ليست قراراً مالياً" if language == "ar" else "Audit outcomes — no financial authorization", "schema", audit["audit_state_schema_version"]])
+        for state, count in audit["outcome_counts"].items():
+            ws.append([state, count])
+        for key, ar, en in (("completed_audit_count", "المكتمل تدقيقها", "Completed audits"),
+                            ("incomplete_audit_count", "غير المكتمل تدقيقها", "Incomplete audits"),
+                            ("unclassified_count", "دون نتيجة تدقيق مسجلة", "Without a recorded outcome"),
+                            ("complete_reference_count", "شهادات مرجعية مكتملة", "Complete reference certificates"),
+                            ("required_reference_count", "الشهادات المرجعية المطلوبة", "Required reference certificates"),
+                            ("source_evidence_verified_count", "مصدر مطالبة مثبت", "Verified claim sources")):
+            ws.append([ar if language == "ar" else en, audit[key]])
     ws.freeze_panes = "A10"
     ws.column_dimensions["A"].width = 29
     for col in "BCDEFGH":
@@ -122,5 +135,11 @@ def render_pdf(report):
     story += [table, Spacer(1, 18),
               Paragraph("Held items are never treated as approved payable amounts.", style["Normal"]),
               Paragraph("Source/patient identifiers are intentionally absent from this PDF.", style["Normal"])]
+    audit = report.summary.get("audit")
+    if audit:
+        story += [Spacer(1, 12), Paragraph("Advisory audit outcomes (schema 2): no financial authorization", style["Heading2"])]
+        for state, count in audit["outcome_counts"].items():
+            story.append(Paragraph(escape(f"{state}: {count}"), style["Normal"]))
+        story.append(Paragraph(escape(f"Completed: {audit['completed_audit_count']}; incomplete: {audit['incomplete_audit_count']}; without recorded outcome: {audit['unclassified_count']}"), style["Normal"]))
     doc.build(story)
     return output.getvalue()

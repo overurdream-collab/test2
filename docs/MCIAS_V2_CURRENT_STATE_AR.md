@@ -84,3 +84,201 @@ Date: 2026-10-21. This is a narrow **CAI-01-only** state file on a branch forked
 - Reviewed existing coordination comments and pull-request reviews: no explicit owner approvals on PR #25/#29/#31. No duplicate requests sent.
 - Existing preflight code/tests and integration design retained; no native-service Excel→G2→G4→G3→G5→Shared Audit PG16 acceptance run or persisted event ID established.
 - CONTRACT_APPROVAL_PENDING; E2E_NOT_EXECUTED. Next action: written owner sign-off, then isolated PG16 implementation and verified post-commit evidence.
+
+
+## 2026-10-21 — G2/G4 authorized minimal implementation overlay (HANDOFF-201)
+- Supersedes prior G2/G4 unimplemented statements only within this isolated branch: actual worksheet name/index/physical row inventory and source-bound append-only scope approval now gate existing XLSX stage/preview/resume. Only approved CLAIMS enter; valid claim-shaped PAYMENT is explicitly excluded and retained as source evidence.
+- Source SHA, document/job/approval/mapping and raw row lineage persist without new schema or importer. Unknown/changed/unapproved scopes block; organization isolation and no duplicate claim on retry verified after Commit and independent PG16 reread.
+- Actual evidence: focused regressions43 PASS; parent current-tree PostgreSQL16.15 E1/source-scope/batches/ingestion21 PASS. CI for new committed SHA pending; no all-gate or financial acceptance claimed.
+- Owner files/interface, test commands and remaining root/G5 combined-verification dependency: docs/DG001_INPUTS_G2G4.md. No merge/deployment/force push/real data.
+
+# MCIAS v2.0 current state — Shared Audit owner overlay
+
+2026-10-21, HANDOFF-20261021-204: minimum `claim_inputs_audited` support in the existing shared writer/contract. The unchanged `write_event` API accepts bounded UUID/SHA/closed-code correlation for the four approved semantic outcomes. It verifies the immutable snapshot, claim/source tenant and exact reference/evidence projection, atomically reuses the existing primary key for one result event, and preserves caller-owned commit/rollback.
+
+HTTP429 fixture timing was diagnosed from real `RateLimitBucket` rows; only the test clock changed. Final real PG16/unit regression after snapshot-reference projection validation: **39 passed in 3.91 seconds**, independently executed by the root coordinator. No merge/deployment/migration, no PHI, no financial approval. Full native-service composition, current CI links and institutional acceptance remain separate. See docs/DG001_INPUTS_SHARED_AUDIT.md and HANDOFF-20261021-204.
+
+
+## 2026-10-21 — G3 owner implementation (HANDOFF-20261021-202)
+- Existing reference_service.applicable_reference_snapshots emits all six families from the actual binding CAI01 section9 directive, not an assumed table list; native dated IDs/version/approval/source evidence and missing dimensions remain explicit.
+- PostgreSQL16.15 + SQLite actual targeted result:18 passed0 skipped0 failed (coordinator executed isolated mcias_inputs_g3). Includes post-Commit historical selection, signed source integrity, missing-reference safety, tenant isolation and no implicit commit.
+- Full six-family completeness remains BLOCKED by absent authoritative family/coverage/terms/class-scope/policy-date/usage/dispensing attestations; G3 and source owners own closure. complete=False is retained; native lookup_complete never implies whole-claim acceptance.
+- No G5/schema changes, merge, deployment, force push, real patient data or financial finalization. Exact-head CI pending publication.
+
+
+## 2026-10-21 — G5 INPUTS-FIRST owner implementation (HANDOFF-20261021-203)
+- Existing G5 snapshot JSON now retains four semantic outcomes, G3 six-reference certificates, verified G2/G4 source and check coverage. Shared Audit owns the event schema/writer. No parallel engine or state table.
+- Owned pure regressions: 35 PASS; preliminary coordinator-composed PG16 cases: 7 PASS, rerun pending final signed-reference fixture/producer commits. These are partial engineering results, not full six-family acceptance.
+- Overall claim remains unresolved when mandatory reference families are incomplete; native historical tariff comparison can produce a bounded proven result. No automatic financial decision. Full-family completeness blocker belongs to G3/input owners.
+- Owner handoff: docs/DG001_INPUTS_G5.md. Imported G2/G3/Shared Audit producer files are excluded from the G5 commit.
+
+## 2026-10-21 — G5 final conflict guard (HANDOFF-20261021-213)
+- Final signed-producer G5 composition: coordinator reports 12 PASS/8.39s before the followup guard.
+- Local tariff proof now also requires policy/provider tariff and currency agreement; a new actual PG16 conflict case awaits coordinator verification. Existing full six-family acceptance blocker remains unchanged.
+
+# Independent security owner state — 2026-10-21
+Pillow13.0.0; real audit65 external packages0 known vulnerabilities;34 actual compatibility tests pass. Local mcias is explicitly source-bound, all external dependencies retained. See DG001_INPUTS_SECURITY.md. Exact-SHA CI pending publication. No institutional acceptance/merge/deployment.
+
+
+Runner followup215: real security audit/unit/Postgres CI PASS on46e4ad8. Enterprise full suite lacked Tesseract; prerequisite now added, new-head verification pending.
+
+## Coordinated INPUTS-FIRST minimum —2026-10-21
+Final local composed PG16:60PASS0SKIP; full unit389PASS37integration-envSKIP; dependencies65external0known vulnerabilities. Owner commits, adopted interfaces and first remaining G3 completeness blocker are in INPUTS_FIRST_COORDINATED_DELIVERY.md. Exact-head CI pending publication; no full six-family or financial/production acceptance.
+
+## الاستئناف المثبت — 2026-10-21 10:51 UTC
+راجع RESUME_VERIFIED_20261021_AR.md وENGINEERING_TASK_REGISTER_AR.json. PR34a0f5ed8 وجميع فحوصه المشغلة ناجحة؛ محليeec7b7a بنفسtree. دورة G3-completeness/G5-review-only/Audit-v2 لم تُنفذ قبل الانقطاع وبدأت الآن بملكية واضحة؛ لا إعادة للعمل الناجح.
+
+## 2026-10-21 — استئناف G3 من أحدث PR34 (HANDOFF-20261021-301)
+- أساس الاستئناف `a0f5ed864dad35a415e7173aea82c1b0441b07d8`؛ دون إعادة نجاحات E1 السابقة أو تعديل ملفات G5/Shared Audit.
+- نفذ جدول مرجع واحد فوق صفوف G2 الموجودة، مع اعتماد Super Admin محدد النطاق والفترة، وتحقق manifest/العدد/SHA/بصمة الصفوف، واختيار تاريخي، وعزل المؤسسات ونسخة معتمدة محمية من التعديل.
+- INTEGRATION VERIFIED في نطاق G2→G3: المشرف أثبت39 passed1 skipped106.86s على SQLite+PostgreSQL16؛ جميع11حالةPG نفذت. التخطي الوحيد خاص بمشغلPGعلىSQLite. التقرير والعقد والأمر في G3_E1_COMPLETENESS_AR.md؛ CIللإضافة ينتظرالنشر.
+- المتبقي: استهلاك الشهادة في G5 وShared Audit وHuman Review على SHAمركب نهائي، وتحديث expected Alembichead إلى0019 بتنسيقالمشرف والحفاظعلىL1، ثم قبولمستقل. ليس اعتمادًا مؤسسيًا أو قرارًا ماليًا؛ لاMerge/Deployment.
+
+
+## HANDOFF-20261021-304 — Shared Audit v2
+عقد النتائج الرسمية وتوافق السجل التاريخي محفوظان.35PASS0SKIP علىSQLite وPG16.15؛ source-native G3/G5 والـCI المطابق ما زالا قيد التنفيذ. التفاصيل والأمر في SHARED_AUDIT_V2_HANDOFF_AR.md.
+
+
+### HANDOFF-20261021-302 — استئناف G5 INPUTS-FIRST ونتائج التدقيق الاستشارية
+- Scope: توسيع run_audit القائم بنمط review_only وشهادات G3 الموثقة، والتمثيل الرسمي schema2 في AuditSnapshot نفسه، واختبارات G2→G4→G3→G5→Shared Audit→G6 الاصطناعية فقط.
+- Why: استئناف a0f5ed864dad دون تكرار إصلاح G2/G4، وإغلاق نقص استهلاك المرجعيات مع منع القرار المالي ونقص الدليل من التحول إلى إثبات مخالفة.
+- Files: mcias/audit_agents.py؛ mcias/audit_service.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ docs/evidence/G5_E1_PG16_KNOWN_TRUTH.json؛ سجل التنفيذ والحالة الحالية. ملفات G3 والكاتب مستثناة من Commit G5.
+- Tests: قبل guard الأخير: PG16 بواسطة المنسق22PASS0SKIP/224.92s و20حالة حقيقة محفوظة؛ SQLite22PASS/170.64s؛ انحدار40PASS/1.38s. بعد guard: SQLite focused3PASS20DESELECTED/16.49s. PostgreSQL الموجه وCI للـSHA المركب معلقتان، ولا تنسب النتائج السابقة إلى التعديل الأخير.
+- Result: INTEGRATION VERIFIED للمسار المحدد قبل guard؛ ISOLATED VERIFIED للتصحيح المحدود؛ REVIEW PENDING للتسليم النهائي. لا اعتماد إنتاجي أو مالي أو مؤسسي.
+- Risks: complete في G3 هو تصديق Super Admin على مصدر ونطاق وفترة محددة، ولا يعني اكتمالًا عالميًا. لا تقاس جودة OCR أو جودة سريرية بهذه الاختبارات. artifact السابق يسبق guard وتصحيح fixture الاستهلاك.
+- Next: المنسق يشغل PG16 للحالات missing_due/legitimate_periodic/reference_collision، يركب Commits المنتجين، ثم يتحقق من CI على HEAD نفسه. توصيل codec قراءة API بملكية المنسق، دون تعديل السجلات التاريخية.
+- Handoff: docs/G5_E1_FULL_REVIEW_AR.md؛ المصدر G3 37cc61ab8d55a31424922bc5fd28f7f8051176ef والكاتب328e6293244d992d95fb122296cd25e5deaffcae؛ لا merge/deploy/force/reset أو بيانات مرضى أو حكم مالي تلقائي.
+
+
+### HANDOFF-20261021-302C — تصحيح إسقاط قراءة الحالة التاريخية دون استنتاج سبب
+- Scope: تعديل codec قراءة G5 فقط، مع حفظ source_audit_state_schema_version وتتبع نسخة المفردات التاريخية.
+- Why: المفردة التاريخية UNRESOLVED_OR_MISSING_REFERENCE تجمع احتمال نقص الدليل والمرجع؛ لا يجوز اختراع سبب REFERENCE_INCOMPLETE من الاسم وحده.
+- Files: mcias/audit_agents.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ سجل التنفيذ والحالة الحالية. لا تعديل في snapshot محفوظ أو خدمة التشغيل أو المنتجين.
+- Tests: اختبار codec الموجه 8 PASS و22 DESELECTED في0.48 ثانية، بما فيه المصدر null/الغائب، وعدم اكتمال صريح، وفجوة محفوظة، وثبات البيانات الأصلية ونسخة المصدر عند تكرار الإسقاط. لم تعد Native/PG.
+- Result: ISOLATED VERIFIED لتصحيح القراءة؛ التكامل مع API وCI المركب بملكية المنسق، ولا ادعاء اعتماد إنتاجي.
+- Risks: snapshot تاريخية لا تحمل audit_state تظل كما هي في API دون تخمين؛ المنسق مسؤول عن هذا الفرع عند توصيل القراءة.
+- Next: المنسق يركب هذا Commit بعد d0edc60c0f0486962a6db3f2ee254fb13c155e7a، ويوصل codec في قراءة API فقط، ثم يتحقق من CI على HEAD المركب نفسه.
+- Handoff: اقرأ تقرير G5؛ لا إعادة Native/PG لتعديل قراءة فقط، ولا mutation للسجلات التاريخية أو تغيير سياسة مالية أو merge/deployment.
+
+
+## HANDOFF-20261021-307 — استئناف مثبت
+تركيبمصدرG2/G4معشهاداتG3المعتمدةوG5الاستشاريوSharedAuditوG6holdمتحققبنطاقالحالاتالاصطناعيةالموثق.39PASS1SKIPG3؛35PASSaudit؛22PGقبلguardثم3PGبعده؛APIcodec10PASS؛migrationguards27PASSواستعادة1PASSبعدتوفيرعميلDocker. لاجمعمتداخلللأعدادأوقبولإنتاج. CIالمطابقيراقبفيPR34، وReaderDraftPR35بجودةعربية8/15محجوبة. آخرreceiptوسجلالملكيةيحددانالمتبقي.
+
+
+تحديث الدليل307: نجحت جميع تشغيلات Reader الأربعة على ea625ae، بما فيها المقارنة الفعلية والتبعيات. روابطها في RESUME_EXECUTION_VERIFIED_20261021_AR.md. تبقى جودة العربية8/15 محجوبة رغم نجاح CI.
+
+
+### HANDOFF-20261021-308 — حجب اكتمال التكرار عند نقص نافذة السجل التاريخي
+- Scope: إصلاح فحص duplicates القائم في G5 واختباره ودليله فقط؛ لا تغيير في G3 أو الكاتب أو المخطط أو الحساب المالي.
+- Why: مراجعة مستقلة أثبتت MATCH_VERIFIED خاطئة مع سجل يغطي يوم الخدمة فقط وسياسة تطلب مراجعة30 يومًا سابقة؛ نقص الفترة لا يثبت غياب الصرف.
+- Files: mcias/audit_agents.py؛ tests/test_g5_inputs_first_review.py؛ docs/G5_E1_FULL_REVIEW_AR.md؛ docs/evidence/G5_HISTORY_LOOKBACK_SQLITE.json؛ سجل التنفيذ والحالة الحالية.
+- Tests: RED قبل المنتج:1 FAILED،32 DESELECTED،2.74s على SQLite دون URL؛ بعد الحاجز3 PASS،31 DESELECTED،34.15s للحالات الثلاث فقط. pure null/overflow/exclusive-until:1 PASS،33 DESELECTED،0.24s. أثبت artifact تطابق SHA للمصدر التاريخي بين الحالات الثلاث. PG16 وCI الجديدان معلقان لدى المنسق.
+- Result: ISOLATED VERIFIED؛ النافذة الناقصة UNRESOLVED/REFERENCE_INCOMPLETE مع7 executed و1 blocked، وحد البداية الكامل MATCH ضمن الاختبارات الاصطناعية. شهادة G3 الأصلية محفوظة دون إعادة تفسير اعتمادها.
+- Risks: هذا تحقق محلي محدد النطاق لا قبول إنتاجي؛ لا تقدير30 يومًا عند سياسة null، والتاريخ خارج نطاق التقويم يظل غير محسوم. لا إعادة للاختبارات21 السابقة أو ادعاء نجاحها على هذا التعديل.
+- Next: المنسق يشغل PG16 لمرشح lookback على Commit نفسه، ثم CI المركب ويوثق الروابط؛ لا توسعة لهذا الإصلاح.
+- Handoff: الأساس b18a83fa932e6894a52deb9435b93ca5f95575ad، والقراءة المستقلة على PR34 هي سبب الإصلاح؛ استخدم report/artifact للحقيقة المعروفة، ولا merge/deploy/force أو بيانات مرضى أو قرار مالي تلقائي.
+
+
+## HANDOFF-20261021-309 — نافذة السجل التاريخي
+ملاحظة المراجع المستقل على949 أُثبتت RED وأُصلحت فيb4212d1، ثم اجتاز الإصلاح4 اختباراتPG16 موجهة. نقص يوم واحد من النافذة يمنع المطابقة، والحد الكامل يسمح بها. المصدر وشهادةG3 محفوظان. الأرقام131/21 تخص HEAD السابق؛ مجموعة الحقيقة الحالية24 حالة، وCI المصحح يتابع فيPR34. التفاصيل G5_LOOKBACK_REVIEW_CLOSURE_AR.md.
+
+
+### HANDOFF-20261021-400 — استلام دورة التكامل الحالية وتوزيع الملكية
+- Scope: استلام أحدث PR/CI وشجرة PR34 النظيفة، وتكليف ستة وكلاء حاليين E3/G5 وE4/A1/Reader/Contract وE5/G7 والأداء، مع حفظ المراحل التاريخية.
+- Why: متابعة التنفيذ من ba1ec6b/remote1503c16 دون تكرار المصدر أو إصلاح Pillow أو قياس OCR الأصلي؛ فصل خط الأساس عن تغييرات الدورة الجديدة.
+- Files: docs/INTEGRATION_CYCLE_20261021_AR.md؛ docs/ENGINEERING_TASK_REGISTER_AR.json؛ state/journal.
+- Tests: فحص GitHub لرؤوس PR20/23/25/29/31/32/33/34/35 وL1/L2؛ مطابقة شجرة PR34؛ ستة CI ناجحة على1503c16؛ artifact24 متوقع=فعلي وبصمة ZIP محفوظة. لا تشغيل مكرر لاختبارات خط الأساس.
+- Result: INTEGRATION VERIFIED للخط السابق G2→G6 ضمن24 حالة؛ QUALITY BLOCKED لجودة العربية والعقود؛ تكليفات التنفيذ الجديدة أرسلت فعليًا وقيد المتابعة، لا ادعاء قبولها.
+- Risks: أرقام المجموعة الاصطناعية لا تمثل انتشار المخالفات أو الأداء أو جودة النموذج؛ G7 وحزمة A1 وقياس الأداء ما زالت قيد التنفيذ، وسلاسل L1/L2 غير مركبة.
+- Next: مراجعة Commits المالكين، تنفيذ PG16 مركزي للمنتج/المستهلك وG7 والقياس، نشر الفروع القائمة فقط ثم التحقق من CI على SHA الجديد.
+- Handoff: المشرف؛ العقد الإضافي A1 source_evidence للربط فقط وليس سلطة حسابية؛ DATE العام لا يثبت تاريخ الخدمة؛ حالات schema2 القائمة محفوظة؛ لا merge/deploy/reset/force أو موارد مدفوعة أو بيانات مرضى.
+
+
+### HANDOFF-20261021-402 — قياس PG16 أصلي مع إعادة قراءة وحفظ الدليل
+- Scope: سكربت قياس محدود لخدماتG2→G6 القائمة، واختبارات الحواجز وملخص ودليل القياس الكامل المضغوط، بلا تعديل خدمات الإنتاج.
+- Why: قياس عدد الصفوف والأزمنة وCPU/RSS وإعادة المحاولة فعليًا، دون اشتقاق عدد المطالبات من القيمة المالية أو إعادة مجموعة24 السابقة.
+- Files: scripts/benchmark_inputs_first.py؛ tests/test_benchmark_inputs_first.py؛ docs/E6_NATIVE_PERFORMANCE_AR.md؛ docs/evidence/E6_NATIVE_PG16_BENCHMARK.json وjson.gz؛ state/journal.
+- Tests: مالك الأداة20PASS pure قبل القياس؛ المشرف3/3عيناتPG16.15 بأحجام10/25/100،135مطالبةبعدCommit، worker_exit0/schema_removedtrue لكلعينة، وثباتعداداتإعادةالاستيرادوالتدقيق.
+- Result: INTEGRATION VERIFIED ضمن نطاق القياس فقط؛ ملفات8لكلعينة،PAYMENTمستبعد، ستشهاداتودليلتنفيذوفحوصكاملة،135event/hold، لاقرارمالي؛ الأصلالكاملمحفوظبالبصمة.
+- Risks: عملية عميل واحدة متسلسلة،3عينات فقط؛ لاقياسOCRأوPGservermemoryأوتزامن، ولاSLA. رُصد عملتربيعيn(n+1) لإعادةفحصscope و3n(n+1) لصفوفالشهادات، دونإصلاحهفيهذاالتسليم.
+- Next: مالكاG2/G4وG3بالتنسيقمعG5يحددانتقليلإعادةالقراءةمعحفظالنسخوالعزل؛ rootينشرنفسالشجرةويراجعCI؛ لا إعادةالعيناتالناجحة.
+- Handoff: أداةnative_performance؛ أكملالمشرفالحفظبعدتوقفالوكيلبحدالاستخدام؛ sourceba1ec6b/remote1503c16 وscriptSHAفيالتقرير؛ لاmerge/deploy/reset/force أوبياناتحقيقية.
+
+
+## HANDOFF-20261021-401 — G7 نتائج التدقيق والتتبع الآمن
+- Scope: امتداد التقرير والخدمة وexplorer وXLSX/PDF القائمة في G7 واختباراتها؛ بيانات اصطناعية فقط، دون تعديل ملكية G3/G5/Shared Audit أوترحيلات.
+- Why: freeze_batch كان يعرض held/approved المالي دون نتائج INPUTS-FIRST أو اكتمال الفحوص؛ والمراجعة أثبتت ضرورة ربط الاكتمال بحدث نتيجة محفوظ وتنقية أدلة legacy.
+- Files: mcias/reporting_g7.py؛ mcias/reporting_g7_explorer.py؛ mcias/report_exports_g7.py؛ mcias/report_pdf_ar_g7.py؛ tests/test_g7_inputs_first_reporting.py؛ docs/E5_REPORTING_INTEGRATION_AR.md؛ سجل التنفيذ والحالة الحالية.
+- Tests: pure/legacy/read/export قبل التشديد35PASS/7deselected،2.24s؛ native SQLite أولي4PASS/14deselected،32.24s؛ RED حدث مفقود1FAILED،0.23s ثم GREEN30pure/4deselected،0.41s؛ بعد gate نوع/نتيجة الحدث مرشح14PASS/22deselected،0.41s. لاجمع متداخل. المشرف أثبتWeb8PASS،0.68s/XML=/tmp/g7-web-root.xml؛ التعليق المحلي AnyIO لم يتكرر بالسياق المسموح وسببه غير محسوم. git diff --check ناجح؛ PG16/CI النهائي معلقان.
+- Result: IMPLEMENTED/ISOLATED VERIFIED بنطاق pure الموثق؛ أربع حالات schema2 مستقلة عن المالي، completed يحتاج6شهادات سارية و8قواعد صالحة ومصدرًا مطابقًا وحدثًا واحدًا متوافقًا، missing غير مكتمل وduplicate/conflict محجوب، UUID/enum فقط في الأدلة ولاraw roster. مراجعة contract_quality قراءةً فقط أغلقت ملاحظاتها دون ادعاء اختبار مستقل.
+- Risks: native4 السابقة سبقت التشديد الأخير؛ التزامن وPG16 والاستدامة النهائية وCI على Commit النهائي والقبول المخول لم تنجز بعد عند تسليم المالك؛ لا قبول إنتاجي أو مالي أو استنتاج جودة OCR/عقود من هذا الدليل.
+- Next: المشرف يشغل مرشح native_services من اختبار G7 مع MCIAS_TEST_DATABASE_URL=PG16، ويحفظ MCIAS_G7_EVIDENCE_OUTPUT، ثم اختبارات G7 الفيزيائية القائمة وCI المطابق دون إعادة baseline بلاسبب؛ لا دمج أو نشر.
+- Handoff: أساس ba1ec6bdb578eaefa19920985fddfbcc8bede945؛ واجهة create_snapshot(db,actor,batch_id) محفوظة، summary.audit إضافية وdataset schema2؛ مرجع الاستئناف والدليل docs/E5_REPORTING_INTEGRATION_AR.md؛ لا reset/force/merge/deploy أوبيانات حقيقية.
+
+
+### HANDOFF-20261021-406 — بوابة أدلة A1 في G5
+- Scope: استهلاك اختياري داخلي لعقد A1 review.v1 داخل review_only القائم؛ لا API أو محرك أو حالات جديدة.
+- Why: لا تصل أدلة الفاتورة إلى G5، واختلاف quantity*unit_price لا يثبت خطأ حسابيًا دون سياق الخصم/الضريبة وقاعدة معتمدة.
+- Files: mcias/audit_agents.py؛ mcias/audit_service.py؛ tests/test_g5_a1_evidence_gate.py؛ docs/E3_RULES_EVIDENCE_INTEGRATION_AR.md؛ سجل التنفيذ والحالة الحالية. لا ملفات منتج A1/G3/Reader/CI/Shared Audit.
+- Tests: اختبار gate النقي المحلي 24 PASS/0.16s؛ git diff --check ناجح. المنتج الحقيقي وPG16 وCI بملكية المشرف ولا تدعيها هذه النتيجة.
+- Result: ISOLATED VERIFIED؛ إعادة تحقق المصدر تستعمل build_a1_snapshot القائم، ومؤشرات Decimal تظل UNRESOLVED مع نقص السياق/القاعدة، وغياب packet يحفظ معيار Excel الحالي.
+- Risks: بصمتا input/output A1 غير موثقتين بإعادة الحساب؛ حُفظ ذلك صراحة. reference_context يحمل IDs/SHA وتواريخ/نسخة فقط ويغير بصمة snapshot الجديد؛ حدث Shared Audit بلا قيم/PHI ولم يتغير.
+- Next: المشرف يثبت producer→G5→G7 على PG16 باختباره الحقيقي ونسخة مركبة ثابتة؛ نقص السلطة الحسابية يبقى عائقًا لمالك G3/A1 ولا يُعالج بافتراضات.
+- Handoff: أساس ba1ec6bdb578eaefa19920985fddfbcc8bede945؛ الاتفاق المكتوب بين G5/A1 والمشرف محفوظ في التقرير. لا merge/deploy/force/reset أو بيانات حقيقية أو حكم مالي تلقائي.
+
+تحديث406 من المشرف: المنتج الحقيقي A1→G5→Shared Audit→G6→G7 اجتاز4/4 علىPG16 في34.64s؛ الحالاتinvoiceمتسق/متعارض/rehashedswap/missingstore كلهاUNRESOLVED،sourceverifiedللأوليين،وretryبحدثواحد وCommitreadback وG6hold وG7incomplete. تطابق SHA256 لملفيG5 مع التقرير، ولا تغييرruntimeبعده. الدليلA1_G5_NATIVE_PG16.jsonl/XMLبملكيةالمشرف؛ لا ادعاءتحققالفرعكلهأوCIجديد.
+
+
+### HANDOFF-20261021-406b — ثبات هوية نتيجة A1 المعاد توليدها
+- Scope: إسقاط حتمي ضيق لهوية review findings ومقارنة snapshot القائمة داخل G5 فقط، واختبارات هوية موجهة.
+- Why: أثبت المراجع تضمين created_at في بصمة إخراج A1؛ وأثبت المشرف RED على PG16 لإعادة preview بنفس المصدر والتشغيل:1 FAILED،3 DESELECTED،7.33s مع تكرار snapshot.
+- Files: mcias/audit_service.py؛ tests/test_g5_a1_evidence_gate.py؛ docs/E3_RULES_EVIDENCE_INTEGRATION_AR.md؛ journal/state. لا تعديل في المنتج أو G3 أو Shared Audit أو audit_agents.py.
+- Tests: هوية نقية19 PASS،24 DESELECTED،0.43s وdiff check ناجح؛ ثم تحقق المشرف PG16 المصحح1 PASS،3 DESELECTED،12.10s على SHA الخدمة نفسه. دليلا RED/GREEN واختبار المنتج الحقيقي بملكية المشرف.
+- Result: INTEGRATION VERIFIED لإصلاح fresh-preview retry المحدد؛ يستبعد الإسقاط حصريًا input/output/run غير الموثقة داخل evidence.a1_evidence، وتحتفظ snapshot الأولى بالتتبع الأصلي. بقي snapshot/event/report واحدًا رغم تغير بصمة إخراج المنتج.
+- Risks: لا تصديق لبصمات تنفيذ A1 ولا تعديل للسجلات التاريخية؛ هوية no-packet والبصمات المالية دون تغيير؛ تبقى أدلة المصدر والقيم والقواعد والنسخ والحالة وflags ضمن الهوية. لا ادعاء تحقق كل الفرع.
+- Next: تركيب Commit المالك الثابت وCI المركب ومراجعة مستقلة محدودة؛ لا إعادة لمجموعات ناجحة دون تغيير مؤثر.
+- Handoff: أساس341a991a8d933364c6bfa49e98e2a8b327d6dace؛ service SHA-256 b3c3eaaa06232023399264af8b579e757cda719a827b8c0400c554938c2336e5؛ التفصيل والأمر في تقرير E3. لا Merge/Deploy/Force/Reset أو بيانات حقيقية أو حكم مالي.
+
+
+### HANDOFF-20261021-400B — تركيب الجسر القائم وG7 وأدلةPG16 وملاحظةإعادةالمنتج
+- Scope: نقلأربعةملفاتA1القائمةبموافقةمالكهاوبصماتها،واختبارnativeA1→G5→Audit→G6→G7،ودليلG7والقياسوعقدCIوتحديثسجلالملكية.
+- Why: إغلاقحدودالمنتج/المستهلكمننقطةالاستئنافدوننظامموازٍ؛حفظالتحققفعليًاوفصلالنجاحالأولعنعيبfreshproducerretryاللاحق.
+- Files: mcias/agents/{__init__,invoice_integrity,a1_trusted_input,a1_review_packet}.py؛tests/test_g5_a1_native_bridge.py؛inputs-first-pg16.yml؛docs/E4_A1_BRIDGE_AR.md؛E4_A1_OWNER_SOURCE_MANIFEST.json؛G7/A1native/RED/GREENevidence؛INTEGRATION_CYCLE_RESULTS_AR.md؛taskregister؛state/journal.
+- Tests: G7sourceDF849B:4PGPASS/19.51sوالتزامن؛A1native4PASS/34.64sقبلfreshretry؛RED1FAILED7.33sثمG51PASS12.10sلفريشpreview؛gate24PASSثمidentity19PASS؛A1110PASS13.89s؛Contract93PASSو5CIعلى28987af؛جميعالأعدادمفصولةدونجمعمتداخل.
+- Result: INTEGRATION VERIFIED ضمنالسيناريوهاتالموثقة؛كلنتائجA1تبقىUNRESOLVEDلانقصauthority/context؛G7لايصفمكتملًا دونحدثمطابق،والتصديرمنقح؛أغلقالمراجععيبيG7وهويةG5قراءةًفقط.
+- Risks: CIالجديدللشجرةالمركبةمعلّقحتىالنشر؛ReaderQUALITYBLOCKEDوبوابةCIتاريخيةفاشلةقيدمواءمةالحجب؛Recallالعقود2/6باقٍ؛القياسرصدعملاًتربيعيًادونإصلاحه؛لاادعاءإنتاجأوقبولشامل.
+- Next: نشرالشجرةالمطابقةعلىPR34القائموفحصCIوالـartifact؛متابعةتصحيحبوابةReaderPR35وCIA1PR20؛تسجيلآخرHEADوروابطالنتائجفيالإيصالوالـPRدونإعادةاختبارناجحللوثائق.
+- Handoff: sourceA1runtime6aca/seal19c9وموافقتهفيمانيفست؛G5b5a1778؛G7df849b9؛performance0526403؛تقريرالدورةيوضحالأولوالناقصوالمالكين؛لاreset/force/merge/deploymentأوبيناتمرضىأوقرارمالي.
+
+
+## HANDOFF-20261022-502 — G7 المؤشرات وتصنيفات العرض
+- Scope: إسقاط قراءة صغير في reporting_g7 وallowlist explorer واختبار G7 الموجود؛ امتداد summary.dashboard بإصدار1 دون تغيير G5/G6/الكاتب/المخطط/UI/harness/Docker.
+- Why: summary.audit الأربع موجودة لكن عقد مخرجات G7 يطلب أربع KPIs وخمس فئات حصرية ومؤشر رفض مقترح مستقل؛ لا مساواة فرق مالي بتعرض أوتفعيل سياسة رفض غير معتمدة.
+- Files: mcias/reporting_g7.py؛ mcias/reporting_g7_explorer.py؛ tests/test_g7_inputs_first_reporting.py؛ docs/E5_REPORTING_INTEGRATION_AR.md؛ docs/ENGINEERING_TASK_REGISTER_AR.json؛ سجلا التنفيذ والحالة الحالية.
+- Tests: مرشح dashboard/redacted_explorer:14PASS/35deselected،0.41s؛ انحدار reporting+inputs_first باستبعادnative/dashboard/redacted:47PASS/18deselected،0.32s؛ git diff --check ناجح. لاPG/شبكة/HTTP من المالك ولا إعادةbaseline غير مرتبط.
+- Result: IMPLEMENTED/ISOLATED VERIFIED؛ أربعKPIs وخمس فئات مجموعها المطالبات الفريدة؛ العملات منفصلة؛ G6 rejection مؤهل مع snapshot مكتمل فقط يحسب ضمن human_approved_rejected، ورفض ناقص يبقىmissing/unable رغم محورREJECTED المالي؛ exposure غير معلوم لغيرclean، immediate policy غير متاحة ولاقرار مالي آلي.
+- Risks: لا affected-interval contract موثوق ولاسياسة رفض فوري نافذة؛ مقدار المطالبات المرفوضة ليس وفرًا أوقيمة تعرض؛ PG16/HTTP/UI وCI والقبول المستقل عند المشرف؛ لا إنتاج أوادعاء اكتمال كل عقد المخرجات.
+- Next: المشرف يستهلك summary.dashboard وحقول الصف المعتمدة في UI القائمة ويشغل تحقق PG16/HTTP المركزي على Commit ثابت؛ يحفظ SHA وروابط CI دون إعادة اختبارات ناجحة بلاسبب.
+- Handoff: الأساس df849b96efc0741eca8157c77e08b1a67fed2b16؛ استلام التجميع96137c4/PR34HEAD4b14a2e وفق المشرف؛ العقد النهائي والدليل في E5_REPORTING_INTEGRATION_AR.md؛ لا reset/force/merge/deploy أوخدمة/وثيقة/وكيل جديد.
+
+## 2026-10-22 — G3 dataset HTTP adapter (HANDOFF-20261022-504)
+- Added registration/approval/metadata routes to existing reference_api only; delegate to unchanged register_reference_dataset/approve_reference_dataset with permanent DB actor/permission/SuperAdmin checks. Real login retains MFA; no schema/migration or new service.
+- G3 native regression28PASS12deselected5.66s. Coordinator composed run71PASS1warning129.19s includes5 new authenticated G3 HTTP tests using SQLite explicitly; centralPG16 environment is not G3HTTPPG16 proof. Initial local TestClient startup hang and canceled network retry remain recorded, not counted as PASS.
+- Source-backed upload/readback, single approval event after retry, tenant/auth/role/current-grant/date/count/scope/tamper negatives covered; metadata omits source payload/scope/filename. Coordinator owns remaining browser/PG16 final-flow/CI evidence and central harness permission-fixture closure.
+- Contract/report G3_E1_COMPLETENESS_AR.md. No other owner services/UI changes, push, merge, deployment, reset, real patient data or financial finalization.
+
+## HANDOFF-20261022-501 — G5 HTTP للمراجعة فقط
+- أضيفPOST/api/v1/audits/claims/{claim_id}/reviewإلىrouterالقائمبعقدمعتمدمنالمشرفقبلالتعديل؛الخادميحددreview_only=Trueولايمررالعميلسياسةأوpacketأوخيارًاماليًا.
+- يفرضالجلسةوالصلاحيةوالمؤسسةودورSuperAdminوعاملMFAالحاليين؛200نفسإسقاطGET،والحسابماليًاheldدائمًا.لاخدمةأومحركأوقواعدجديدة.
+- تحققالمشرفPG16للمجموعةالمركبة:71PASS/1warning/129.19s،تشمل17HTTPG5حقيقيةبمصادروخدماتقائمةوحدثواحدبعدCommitوretryوعزلمؤسسي.تطابقتبصماتملفيالمالكللتشغيل؛تفصيلالدليلوعقدHTTPفيE3_RULES_EVIDENCE_INTEGRATION_AR.md.
+- الحالةINTEGRATION VERIFIEDللوصلةالمحددةفقط؛هارنسالبرنامجUI/DockerوالتركيبوقبولHEADوCIبملكيةالمشرف.لامergeأونشرأوبياناتمرضىأوحكمماليتلقائي.
+
+### HANDOFF-20261022-503 — مطالبة Excel عبر البرنامج الحقيقي
+- Scope: تركيب واجهتي G3/G5 المملوكتين وإسقاط G7، ونماذج المصدر/التدقيق ومؤشرات الواجهة، واستبدال حقن snapshot في harness القائم، وتجربة Docker محلية اصطناعية فقط.
+- Why: نجاح خدمات PG16 السابق لم يثبت طلب مستخدم كاملًا؛ كان harness يدرج AuditSnapshot، ولم تعرض الواجهة المؤشرات الأربعة والفئات الخمس المطلوبة.
+- Files: audit_api.py؛reference_api.py؛reporting_g7.py وexplorer؛web_workspace/views.js؛check_integrated_workflow.py وcheck_workspace_live.py؛اختبارات المالكين؛deploy/Dockerfile وcompose.synthetic.yml و.dockerignore؛inputs-first-pg16.yml؛التقارير القائمة وسجل المهام؛docs/evidence/MINIMAL_BROWSER_PG16_RESULT.json؛journal/state.
+- Tests: 71PASS/1warning/129.19s لواجهات G3/G5 وG7؛ G3HTTP SQLite صراحة، وG5/G7 PG16. JavaScript10PASS وsyntaxPASS. Chromium→HTTP→PG16.15:8 فحوص كاملة ناجحة، بلا page errors؛ انحدار workspace الحي6 فحوص ناجحة. قُرئ الأصل المشفر مستقلًا بعدCommit وطابق XLSX وبصمته. Docker المحلي7 فحوصHTTP-only كاملة ناجحة علىPG16 والمستخدم1900؛CI الجديد يُسجل بعد نشرSHA مطابق.
+- Result: INTEGRATION VERIFIED لنطاق مطالبة اصطناعية واحدة عبر المسار الحقيقي؛ CLAIMS1 وPAYMENT/FAMILY_SUMMARY مستبعدتان،6 مراجع معتمدة والنسخة التاريخية الصحيحة،VIOLATION_PROVEN مع financial held،snapshot/event واحد عند التكرار،G6hold من مراجع مستقل،G7 أربعة مؤشرات وخمس فئات عرض. التعرض UNQUANTIFIED ومقترح الرفض غير متاح دون سياسة معتمدة.
+- Risks: هذا ليس اعتمادًا إنتاجيًا أو ماليًا أو دليلاً لجودةOCR. حُفظ فشل تهيئة الدور الاصطناعي وحُل بمنح صلاحية الدورcanonical، دون تغييرحارسPG. مقارنة readback تستخدم الإسقاط المنقح نفسه بدل مساواةrawبالـAPI. عطل بدءDocker من صلاحيات0600 لملفاتbuild-context أُغلق بجعل الشيفرة العامة والترحيلات ووالدscripts مقروءة للمستخدم1900؛لاchmod للمفاتيح/المصادرالخاصة.
+- Next: اكتمل تحقق الصورة؛حفظCommit المركب ونشر شجرته إلىDraftPR34 بتحديث fast-forward محمي بـexpectedSHA، ومتابعةCI المطابق. لا إعادة اختبارات ناجحة بلا تغيير مؤثر ولا توسعOCR/أداء.
+- Handoff: آخر baseline محلي96137c4/منشور4b14a2e؛ مصادر المالكين المحلية G3=7f224a377cc11cdf6d5425f7fb3197556569cff3،G5=497bea582c08eabf875a4ed24ddddf15ba4a2297،G7=c700cbbd4f8a25da19775da97c262bbbafbc4396. السجل والتشغيلWindows فيINTEGRATION_CYCLE_RESULTS_AR.md. لا merge/deploy/reset/force أو بيانات حقيقية.

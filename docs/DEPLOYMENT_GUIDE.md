@@ -74,7 +74,7 @@ alembic current
 python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-الرأس الحالي `0018_claim_query_indexes`. بعد الترحيل يبدّل المشغّل إلى حساب التشغيل المحدود؛ لا تعمل الخدمة بحساب DBA. الواجهتان `/admin/dashboard` و`/institution/dashboard` تعيدان حالة الدخول دون سجلات قبل المصادقة. افتح المنفذ عبر وكيل مؤسسي HTTPS فقط عند اعتماده، واضبط proxy trust على عناوين موثوقة محددة لا `*`. API لا يقرأ X-Forwarded-For مباشرة.
+الرأس الحالي `0019_reference_dataset_v1`. بعد الترحيل يبدّل المشغّل إلى حساب التشغيل المحدود؛ لا تعمل الخدمة بحساب DBA. الواجهتان `/admin/dashboard` و`/institution/dashboard` تعيدان حالة الدخول دون سجلات قبل المصادقة. افتح المنفذ عبر وكيل مؤسسي HTTPS فقط عند اعتماده، واضبط proxy trust على عناوين موثوقة محددة لا `*`. API لا يقرأ X-Forwarded-For مباشرة.
 
 `deploy/compose.g9.yml` بديل هندسي اختياري: PostgreSQL داخلي، API غير root، وTLS على `127.0.0.1:8443` فقط. جهّز `deploy/private/{runtime.env,postgres-owner.env,authorization-registry.json,tls.crt,tls.key,encrypted-sources/}` خارج Git، ثم `docker compose -f deploy/compose.g9.yml up -d --build` بعد مراجعة الشبكة والصلاحيات. الصور tags متغيرة والبناء يتصل لتنزيل مكتبات؛ ثبّت digests وwheelhouse معتمدًا قبل الإفراج الإنتاجي.
 

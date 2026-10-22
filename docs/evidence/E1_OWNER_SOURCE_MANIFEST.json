@@ -1,0 +1,75 @@
+{
+  "files": [
+    {
+      "path": "mcias/models_reference.py",
+      "owner_commit": "37cc61ab8d55a31424922bc5fd28f7f8051176ef",
+      "sha256": "2b52475030a02f22d0f0458dd1b4462b61ea5082cfc8ed5b7d255162411adb73"
+    },
+    {
+      "path": "mcias/reference_service.py",
+      "owner_commit": "37cc61ab8d55a31424922bc5fd28f7f8051176ef",
+      "sha256": "386e081900b0859d890000cd501636946a79062b43889bcd7e4e79c8c5744eac"
+    },
+    {
+      "path": "mcias/audit_contract.py",
+      "owner_commit": "328e6293244d992d95fb122296cd25e5deaffcae",
+      "sha256": "8f02fa55e3298e4381c83b198b757054366cc8fc12fc487a6e0347db7ea33f7b"
+    },
+    {
+      "path": "mcias/audit_writer.py",
+      "owner_commit": "328e6293244d992d95fb122296cd25e5deaffcae",
+      "sha256": "ecf40b850f17cc1c307067064b8a26a7ed94424fe9b6ee9570ff8840e1233f64"
+    },
+    {
+      "path": "mcias/audit_agents.py",
+      "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+      "sha256": "9edb601b9f4fdda3c8502ab7c8375169b8a568aecad64146c88d28e47dbe29fe"
+    },
+    {
+      "path": "mcias/audit_service.py",
+      "owner_commit": "d0edc60c0f0486962a6db3f2ee254fb13c155e7a",
+      "sha256": "1835e1618ae6b27b0ce8c5611f5ad890a25746c4c736b3aa1c88f94d7588bb06"
+    },
+    {
+      "path": "tests/test_g5_inputs_first_review.py",
+      "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+      "sha256": "eb7a1e98b1f3cdaafc35b56dd3390523d1cf8fd5c3352b20080ac82cb77e8e84"
+    }
+  ],
+  "focused_sha256": "0bd12b6cf4804f82b91083fba2b2de73a881c52a9cb11d760a653eec5cccbae3",
+  "focused_cases": [
+    {
+      "case": "legitimate_periodic",
+      "expected": "MATCH_VERIFIED",
+      "actual": "MATCH_VERIFIED",
+      "claim_id": "d9e923ec-90b6-4ca4-a2a8-3347b67baa0c",
+      "snapshot_id": "6f609939-25e9-4044-bc92-809d4708305e",
+      "event_id": "cd5678db-2274-513e-8617-286147265d48"
+    },
+    {
+      "case": "reference_collision",
+      "expected": "UNRESOLVED",
+      "actual": "UNRESOLVED",
+      "claim_id": "8ba50ebb-a62e-47bb-9202-d819a3eec40a",
+      "snapshot_id": "9b66e24c-b1a5-4357-928d-52bc1855cacf",
+      "event_id": "fd765857-5bb4-55a3-9f34-a7419d8e6f74"
+    },
+    {
+      "case": "missing_due",
+      "expected": "UNRESOLVED",
+      "actual": "UNRESOLVED",
+      "claim_id": "45a431c6-b6fd-4f40-ac18-dc0c14203e8f",
+      "snapshot_id": "c3d2187f-ef33-4150-81b4-1a74a92f0e65",
+      "event_id": "ebff599e-e151-560c-9b05-0588b6a9c381"
+    }
+  ],
+  "lookback_guard": {
+    "owner_commit": "b4212d1be0889812c99cc2f0fb6b2ce1b9222315",
+    "pg16_tests": 4,
+    "pg16_deselected": 30,
+    "seconds": 27.94,
+    "native_cases": 3,
+    "evidence_sha256": "a1356c4eae195d58f47f29944d2790463045a6fd7ee17cd8300312705b85bc6e",
+    "independent_review": "resume_reader: targeted causal gap closed by code inspection; no independent test rerun"
+  }
+}

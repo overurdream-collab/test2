@@ -79,3 +79,57 @@ def prevent_approved_tariff_delete(mapper, connection, target):
     status = connection.execute(select(ContractVersion.status).where(ContractVersion.id == target.contract_id)).scalar_one_or_none()
     if status == "approved":
         raise ValueError("approved contract tariff is immutable")
+
+class ReferenceDatasetVersion(Base):
+    """A Super Admin attestation over an existing G2 extraction and its scope.
+
+    The dataset's rows remain in ExtractedSourceRecord; no second importer or
+    reference-row store is introduced. Completeness is a bounded human assertion.
+    """
+    __tablename__ = "reference_dataset_versions"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False, index=True)
+    owner_organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False)
+    family: Mapped[str] = mapped_column(String(20), nullable=False)
+    dataset_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    version: Mapped[int] = mapped_column(__import__("sqlalchemy").Integer, nullable=False)
+    document_id: Mapped[str] = mapped_column(ForeignKey("ingestion_documents.id"), nullable=False)
+    job_id: Mapped[str] = mapped_column(ForeignKey("ingestion_jobs.id"), nullable=False)
+    source_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    effective_from: Mapped[date] = mapped_column(Date, nullable=False)
+    effective_until: Mapped[date] = mapped_column(Date, nullable=False)
+    coverage_from: Mapped[date] = mapped_column(Date, nullable=False)
+    coverage_until: Mapped[date] = mapped_column(Date, nullable=False)
+    scope: Mapped[dict] = mapped_column(JSON, nullable=False)
+    expected_record_count: Mapped[int] = mapped_column(__import__("sqlalchemy").Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="draft")
+    created_by: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=now_utc)
+    approved_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"))
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    approval_event_id: Mapped[str | None] = mapped_column(ForeignKey("audit_log.id"))
+    __table_args__ = (
+        UniqueConstraint("organization_id", "family", "dataset_key", "version", name="uq_reference_dataset_version"),
+        CheckConstraint("family IN ('beneficiary','contract','tariff','policy','caps','history')", name="ck_reference_dataset_family"),
+        CheckConstraint("version > 0 AND expected_record_count > 0", name="ck_reference_dataset_counts"),
+        CheckConstraint("effective_from < effective_until AND coverage_from < coverage_until", name="ck_reference_dataset_dates"),
+        CheckConstraint("status IN ('draft','approved')", name="ck_reference_dataset_status"),
+        CheckConstraint("status <> 'approved' OR (approved_by IS NOT NULL AND approved_at IS NOT NULL AND approval_event_id IS NOT NULL)", name="ck_reference_dataset_approval"),
+    )
+
+
+@event.listens_for(ReferenceDatasetVersion, "before_insert")
+def dataset_cannot_start_approved(mapper, connection, target):
+    if target.status == "approved":
+        raise ValueError("reference dataset must be reviewed after registration")
+
+
+@event.listens_for(ReferenceDatasetVersion, "before_update")
+@event.listens_for(ReferenceDatasetVersion, "before_delete")
+def approved_dataset_is_immutable(mapper, connection, target):
+    from sqlalchemy import inspect
+    state = inspect(target)
+    previous = state.attrs.status.history.deleted
+    if (previous and previous[0] == "approved") or (not previous and target.status == "approved"):
+        raise ValueError("approved reference dataset is immutable")

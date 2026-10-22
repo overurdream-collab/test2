@@ -4,6 +4,7 @@ This is an engineering snapshot builder, NOT institutional approval of accountin
 It must not change any G4, G5 or G6 record.
 """
 from decimal import Decimal, InvalidOperation
+from datetime import date, datetime
 from hashlib import sha256
 import json
 from sqlalchemy import select
@@ -13,6 +14,10 @@ from mcias.models_audit import AuditSnapshot
 from mcias.models_governance_g6 import GovernanceCase, GovernanceEvent
 from mcias.models_reporting_g7 import ReportSnapshot
 from mcias.palermo2 import verify as verify_palermo2
+from mcias.audit_agents import AGENTS, OFFICIAL_AUDIT_STATES, project_audit_findings
+from mcias.audit_contract import (REFERENCE_FAMILIES, CLAIM_AUDIT_ACTION,
+    CLAIM_AUDIT_REASONS_V2, claim_reference_projection, clean_claim_audit_details, _uuid)
+from mcias.audit_writer import write_event
 
 class ReportBlocked(ValueError):
     pass
@@ -39,7 +44,193 @@ def _same_org(obj, org):
     if obj.organization_id != org:
         raise ReportBlocked("cross-organization evidence mismatch")
 
-def freeze_batch(batch, claims, snapshots, cases, events):
+def _evidence_ids(values):
+    """Historical free text is never a public evidence identifier."""
+    safe = set()
+    for value in values if isinstance(values, list) else []:
+        try:
+            safe.add(_uuid(value))
+        except ValueError:
+            continue
+    return sorted(safe)
+
+def _reference_core(references):
+    return [{key: reference[key] for key in ("family", "id", "version", "status", "evidence_ids", "gaps")}
+            for reference in references]
+
+def _human_rejection(case, events, latest):
+    """Read the existing G6 decision chain; do not create or authorize decisions."""
+    if latest is None or latest.kind != "reject" or case is None:
+        return False
+    try:
+        actor_id = _uuid(latest.actor_id)
+        _uuid(latest.id)
+        opener_id = _uuid(case.opened_by)
+        if not isinstance(latest.created_at, datetime) or actor_id == opener_id:
+            return False
+        earlier = [event for event in events if event.version < latest.version]
+        previous = max(earlier, key=lambda event: (event.version, event.id)) if earlier else None
+        reason = latest.payload.get("reason_code")
+        return bool(previous and previous.version + 1 == latest.version
+            and previous.kind in {"propose", "hold"} and previous.actor_id != actor_id
+            and not any(event.kind == "propose" and event.actor_id == actor_id for event in earlier)
+            and isinstance(reason, str) and 1 <= len(reason) <= 64
+            and reason.isascii() and reason.replace("_", "").isalnum())
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+def _dashboard_row(row, case, events, latest):
+    """Five contract presentation categories, independent of G5 audit states."""
+    rejection = _human_rejection(case, events, latest)
+    notes = {(rule["rule_id"], rule["rule_version"]) for rule in row["audit_rules"]
+             if rule["audit_state"] in {"VIOLATION_PROVEN", "UNRESOLVED", "AUDIT_UNAVAILABLE"}}
+    objection = latest is not None and latest.kind in {"object", "request_reaudit"}
+    if rejection and row["completed_audit"]:
+        classification = "HUMAN_APPROVED_REJECTION"
+    elif row["audit_state"] in {None, "AUDIT_UNAVAILABLE"}:
+        classification = "UNABLE_TO_AUDIT"
+    elif not row["completed_audit"]:
+        classification = "MISSING_EVIDENCE"
+    elif notes or objection:
+        classification = "HUMAN_REVIEW_REQUIRED"
+    else:
+        classification = "NO_DETECTED_FINDINGS"
+    decision = ("REJECTED" if rejection else "APPROVED" if row["state"] == "approved"
+                else "PENDING_HUMAN_REVIEW" if case else "NOT_DECIDED")
+    return {"audit_classification": classification, "financial_decision_status": decision,
+        "review_finding_count": 0 if classification in {"NO_DETECTED_FINDINGS", "HUMAN_APPROVED_REJECTION"}
+            else len(notes) + int(objection),
+        "decision_event_id": latest.id if latest and decision in {"APPROVED", "REJECTED"} else None}
+
+def _dashboard_summary(rows, by_currency):
+    """The four contracted KPIs, with no inferred affected amounts or policy."""
+    classifications = ("NO_DETECTED_FINDINGS", "HUMAN_REVIEW_REQUIRED", "MISSING_EVIDENCE",
+                       "UNABLE_TO_AUDIT", "HUMAN_APPROVED_REJECTION")
+    review_classes = {"HUMAN_REVIEW_REQUIRED", "MISSING_EVIDENCE"}
+    counts = {name: sum(row["audit_classification"] == name for row in rows) for name in classifications}
+    if sum(counts.values()) != len(rows):
+        raise ReportBlocked("dashboard classification reconciliation failed")
+    grouped = {}
+    for row in rows:
+        grouped.setdefault(row["currency"], []).append(row)
+    total, audited, review, exposure, rejected = {}, {}, {}, {}, {}
+    for currency, totals in sorted(by_currency.items()):
+        scoped = grouped[currency]
+        review_rows = [row for row in scoped if row["audit_classification"] in review_classes]
+        unknown = sum(row["audit_classification"] != "NO_DETECTED_FINDINGS" for row in scoped)
+        total[currency] = {"status": "KNOWN", "amount": totals["claimed"], "missing_amount_count": 0}
+        audited[currency] = sum(row["completed_audit"] for row in scoped)
+        review[currency] = {"claim_count": len(review_rows),
+            "finding_count": sum(row["review_finding_count"] for row in review_rows)}
+        exposure[currency] = {"status": "UNQUANTIFIED" if unknown else "QUANTIFIED",
+            "amount": None if unknown else "0", "unquantified_claim_count": unknown}
+        rejected[currency] = number(sum((amount(row["claimed"]) for row in scoped
+            if row["audit_classification"] == "HUMAN_APPROVED_REJECTION"), Decimal(0)))
+    return {"schema_version": 1, "kpis": {
+        "total_claimed": {"by_currency": total},
+        "audited_claims": {"count": sum(audited.values()), "by_currency": audited},
+        "review_required": {"claim_count": sum(item["claim_count"] for item in review.values()),
+            "finding_count": sum(item["finding_count"] for item in review.values()), "by_currency": review},
+        "potential_exposure": {"by_currency": exposure}},
+        "classification_counts": counts,
+        "recommended_rejection_pending": {"available": False, "claim_count": 0,
+            "reason_code": "APPROVED_REJECTION_POLICY_UNAVAILABLE"},
+        "human_approved_rejected": {"claim_count": counts["HUMAN_APPROVED_REJECTION"],
+            "claimed_by_currency": rejected}}
+
+def _audit_projection(snapshot, claim, batch):
+    """Read the existing G5 contract; never infer audit completion from a name."""
+    result = {"audit_state": None, "audit_state_schema_version": 2,
+        "source_audit_state_schema_version": None, "audit_reason_code": None,
+        "completed_audit": False, "audit_coverage": None, "audit_references": [],
+        "audit_rules": [], "source_evidence_verified": False,
+        "complete_reference_count": 0}
+    if snapshot is None or not isinstance(snapshot.findings, dict) or "audit_state" not in snapshot.findings:
+        return result
+    try:
+        findings = project_audit_findings(snapshot.findings)
+    except (TypeError, ValueError) as exc:
+        raise ReportBlocked("invalid stored audit outcome") from exc
+    state = findings["audit_state"]
+    result.update(audit_state=state,
+        source_audit_state_schema_version=findings["source_audit_state_schema_version"])
+    if findings.get("reason_code") in CLAIM_AUDIT_REASONS_V2[state]:
+        result["audit_reason_code"] = findings["reason_code"]
+    certificates = findings.get("reference_certificates", [])
+    if not isinstance(certificates, list) or any(not isinstance(certificate, dict) for certificate in certificates):
+        raise ReportBlocked("invalid stored reference certificates")
+    if certificates:
+        try:
+            safe = clean_claim_audit_details({"audit_snapshot_id": snapshot.id,
+                "source_record_id": claim.extracted_record_id, "document_id": claim.source_locator.get("document_id"),
+                "source_sha256": batch.source_sha256, "policy_fingerprint": snapshot.policy_fingerprint,
+                "audit_state": snapshot.findings["audit_state"],
+                "audit_state_schema_version": snapshot.findings.get("audit_state_schema_version", 1),
+                "reason_code": snapshot.findings.get("reason_code"),
+                "references": claim_reference_projection(certificates)})
+            result["audit_references"] = safe["references"]
+            by_family = {certificate["family"]: certificate for certificate in certificates}
+            for reference in result["audit_references"]:
+                for key in ("effective_from", "effective_until", "coverage_from", "coverage_until"):
+                    value = by_family[reference["family"]].get(key)
+                    reference[key] = date.fromisoformat(value).isoformat() if value is not None else None
+        except (ValueError, TypeError) as exc:
+            raise ReportBlocked("invalid stored reference certificates") from exc
+    source = findings.get("source_evidence")
+    locator = claim.source_locator
+    result["source_evidence_verified"] = bool(isinstance(source, dict)
+        and source.get("source_record_id") == claim.extracted_record_id
+        and source.get("document_id") == locator.get("document_id")
+        and source.get("document_id") == getattr(batch, "ingestion_document_id", locator.get("document_id"))
+        and source.get("document_id")
+        and source.get("source_sha256") == batch.source_sha256 == locator.get("source_sha256")
+        and source.get("source_scope_approval_id") == locator.get("source_scope_approval_id")
+        and source.get("source_scope_approval_id"))
+    ready = set()
+    for certificate in certificates:
+        if certificate.get("organization_id") != claim.organization_id:
+            raise ReportBlocked("cross-organization reference mismatch")
+        try:
+            valid = (certificate.get("approved") is True and certificate.get("complete") is True
+                and certificate.get("lookup_status") == "reference_applicable" and not certificate.get("gaps")
+                and certificate.get("reference_id") and certificate.get("version") is not None
+                and certificate.get("source_evidence")
+                and date.fromisoformat(certificate["effective_from"]) <= claim.service_date < date.fromisoformat(certificate["effective_until"])
+                and date.fromisoformat(certificate["coverage_from"]) <= claim.service_date < date.fromisoformat(certificate["coverage_until"]))
+        except (AttributeError, KeyError, TypeError, ValueError):
+            valid = False
+        if valid:
+            ready.add(certificate.get("family"))
+    result["complete_reference_count"] = len(ready & REFERENCE_FAMILIES)
+    coverage = findings.get("coverage", {})
+    if isinstance(coverage, dict) and all(type(coverage.get(key)) is int for key in ("required", "executed", "blocked")):
+        result["audit_coverage"] = {key: coverage[key] for key in ("required", "executed", "blocked")}
+    checks = findings.get("agents", [])
+    if not isinstance(checks, list) or any(not isinstance(check, dict) for check in checks):
+        raise ReportBlocked("invalid stored audit checks")
+    for check in checks:
+        if check.get("rule_id") in AGENTS and type(check.get("rule_version")) is int and 1 <= check["rule_version"] <= 999999999:
+            result["audit_rules"].append({"rule_id": check["rule_id"], "rule_version": check["rule_version"],
+                "audit_state": check.get("audit_state"),
+                "reference_families": [family for family in check.get("reference_families", []) if family in REFERENCE_FAMILIES],
+                "evidence_record_ids": _evidence_ids(check.get("reference"))})
+    completed_checks = (len(checks) == len(AGENTS) and {check.get("agent") for check in checks} == set(AGENTS)
+        and all(check.get("audit_state") in {"MATCH_VERIFIED", "VIOLATION_PROVEN"}
+            and check.get("rule_id") == check.get("agent")
+            and type(check.get("rule_version")) is int and 1 <= check["rule_version"] <= 999999999
+            and isinstance(check.get("reference"), list)
+            and all(isinstance(value, str) for value in check["reference"])
+            and len(_evidence_ids(check["reference"])) == len(set(check["reference"])) for check in checks))
+    state_proven = (all(check.get("audit_state") == "MATCH_VERIFIED" for check in checks)
+        if state == "MATCH_VERIFIED" else any(check.get("audit_state") == "VIOLATION_PROVEN" for check in checks))
+    result["completed_audit"] = bool(state in {"MATCH_VERIFIED", "VIOLATION_PROVEN"}
+        and result["source_evidence_verified"] and len(certificates) == len(REFERENCE_FAMILIES)
+        and ready == REFERENCE_FAMILIES and completed_checks and state_proven
+        and result["audit_coverage"] == {"required": len(AGENTS), "executed": len(AGENTS), "blocked": 0})
+    return result
+
+
+def freeze_batch(batch, claims, snapshots, cases, events, audit_events=()):
     """Pure builder; never rounds or invents an institution's accounting policy."""
     org = batch.organization_id
     by_claim, by_snapshot, by_case = {}, {}, {}
@@ -53,6 +244,15 @@ def freeze_batch(batch, claims, snapshots, cases, events):
         _same_org(e, org)
         by_case.setdefault(e.case_id, []).append(e)
 
+    shared_events = {}
+    for event in audit_events:
+        if event.action == CLAIM_AUDIT_ACTION:
+            details = event.details
+            if not isinstance(details, dict):
+                raise ReportBlocked("invalid shared audit evidence")
+            if details.get("organization_id") != org:
+                raise ReportBlocked("cross-organization audit event mismatch")
+            shared_events.setdefault(details.get("audit_snapshot_id"), []).append(event)
     rows = []
     totals = {}
     observed = set()
@@ -122,7 +322,35 @@ def freeze_batch(batch, claims, snapshots, cases, events):
             "source_record_id": claim.extracted_record_id,
             "source_locator": claim.source_locator,
             "source_values": claim.source_values,
+            "source_document_id": claim.source_locator.get("document_id"),
+            "source_sha256": batch.source_sha256,
+            "source_position": {key: claim.source_locator[key] for key in
+                ("kind", "index", "row", "column", "page", "bbox") if key in claim.source_locator},
+            **_audit_projection(snapshot, claim, batch),
         }
+        correlated = shared_events.get(snapshot.id, []) if snapshot else []
+        if len(correlated) > 1:
+            raise ReportBlocked("duplicate shared audit outcome event")
+        if any(event.resource_type != "claim_entry" or event.details.get("outcome") != "success"
+               or event.resource_id != claim.id or event.details.get("source_record_id") != claim.extracted_record_id
+               or event.details.get("document_id") != claim.source_locator.get("document_id")
+               or event.details.get("source_sha256") != batch.source_sha256 for event in correlated):
+            raise ReportBlocked("shared audit claim/source mismatch")
+        for event in correlated:
+            try:
+                _uuid(event.id)
+                safe = clean_claim_audit_details(event.details)
+            except ValueError as exc:
+                raise ReportBlocked("invalid shared audit evidence") from exc
+            if (safe["audit_state"] != snapshot.findings.get("audit_state")
+                or safe.get("audit_state_schema_version", 1) != snapshot.findings.get("audit_state_schema_version", 1)
+                or safe.get("reason_code") != snapshot.findings.get("reason_code")
+                or safe["policy_fingerprint"] != snapshot.policy_fingerprint
+                or safe["references"] != _reference_core(item["audit_references"])):
+                raise ReportBlocked("shared audit outcome/reference mismatch")
+        item["audit_event_ids"] = sorted(event.id for event in correlated)
+        item["completed_audit"] = item["completed_audit"] and len(correlated) == 1
+        item.update(_dashboard_row(item, chosen_case, events_for_case, latest))
         rows.append(item)
         tot = totals.setdefault(claim.currency, {
             "claimed": Decimal(0), "approved_claimed": Decimal(0),
@@ -141,7 +369,15 @@ def freeze_batch(batch, claims, snapshots, cases, events):
 
     if batch.imported_count != len(rows) or batch.record_count != len(rows) or batch.status != "imported":
         raise ReportBlocked("batch not fully imported; report cannot be reconciled")
-    summary = {"total_claims": len(rows), "by_currency": {}}
+    completed = sum(row["completed_audit"] for row in rows)
+    summary = {"total_claims": len(rows), "by_currency": {}, "audit": {
+        "audit_state_schema_version": 2,
+        "outcome_counts": {state: sum(row["audit_state"] == state for row in rows) for state in sorted(OFFICIAL_AUDIT_STATES)},
+        "completed_audit_count": completed, "incomplete_audit_count": len(rows) - completed,
+        "unclassified_count": sum(row["audit_state"] is None for row in rows),
+        "complete_reference_count": sum(row["complete_reference_count"] for row in rows),
+        "required_reference_count": len(rows) * len(REFERENCE_FAMILIES),
+        "source_evidence_verified_count": sum(row["source_evidence_verified"] for row in rows)}}
     for currency, values in sorted(totals.items()):
         if values["approved_claimed"] + values["held_claimed"] != values["claimed"]:
             raise ReportBlocked("T20 claim aggregation failed")
@@ -150,7 +386,8 @@ def freeze_batch(batch, claims, snapshots, cases, events):
         summary["by_currency"][currency] = {
             k: v if isinstance(v, int) else number(v) for k, v in values.items()
         }
-    dataset = {"schema": 1, "organization_id": org, "batch_id": batch.id,
+    summary["dashboard"] = _dashboard_summary(rows, summary["by_currency"])
+    dataset = {"schema": 2, "organization_id": org, "batch_id": batch.id,
                "source_sha256": batch.source_sha256, "rows": rows}
     return dataset, summary
 
@@ -186,7 +423,9 @@ def create_snapshot(db, actor, batch_id):
     ).join(ClaimEntry, GovernanceCase.claim_id == ClaimEntry.id).where(
         ClaimEntry.batch_id == batch_id,
         GovernanceEvent.organization_id == actor.organization_id)).all()
-    dataset, summary = freeze_batch(batch, claims, snapshots, cases, events)
+    audit_events = db.scalars(select(AuditLog).where(AuditLog.action == CLAIM_AUDIT_ACTION,
+        AuditLog.resource_type == "claim_entry", AuditLog.resource_id.in_([claim.id for claim in claims]))).all()
+    dataset, summary = freeze_batch(batch, claims, snapshots, cases, events, audit_events)
     digest = fingerprint(dataset, summary)
     previous = db.scalar(select(ReportSnapshot).where(
         ReportSnapshot.organization_id == actor.organization_id,
@@ -201,9 +440,9 @@ def create_snapshot(db, actor, batch_id):
         fingerprint=digest, created_by=actor.id)
     db.add(report)
     db.flush()
-    db.add(AuditLog(actor_id=actor.id, action="g7_report_frozen",
-        resource_type="report_snapshot", resource_id=report.id,
-        details={"batch_id": batch_id, "version": report.version, "sha256": digest}))
+    write_event(db, actor=actor, organization_id=actor.organization_id, action="g7_report_frozen",
+        resource_type="report_snapshot", resource_id=report.id, outcome="success",
+        details={"version": report.version})
     db.commit()
     return report
 

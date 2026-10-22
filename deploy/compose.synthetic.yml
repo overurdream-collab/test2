@@ -1,0 +1,52 @@
+# Local synthetic verification only. Reuses the G9 image and the real services.
+# No changes to the production preview, authentication or migration guards.
+name: mcias-synthetic
+x-runtime: &runtime
+  MCIAS_ENVIRONMENT: development
+  MCIAS_DATABASE_URL: postgresql+psycopg://mcias_synthetic:${MCIAS_SYNTHETIC_DB_PASSWORD:?Generate a private synthetic environment}@db:5432/mcias_synthetic_e2e
+  MCIAS_E2E_DATABASE_URL: postgresql+psycopg://mcias_synthetic:${MCIAS_SYNTHETIC_DB_PASSWORD}@db:5432/mcias_synthetic_e2e
+  MCIAS_STORAGE_DIR: /var/lib/mcias/sources
+  MCIAS_STORAGE_KEY: ${MCIAS_STORAGE_KEY:?Generate a storage key}
+  MCIAS_MFA_ENCRYPTION_KEY: ${MCIAS_MFA_ENCRYPTION_KEY:?Generate an MFA key}
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: mcias_synthetic_e2e
+      POSTGRES_USER: mcias_synthetic
+      POSTGRES_PASSWORD: ${MCIAS_SYNTHETIC_DB_PASSWORD}
+    volumes: [database:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U mcias_synthetic -d mcias_synthetic_e2e"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  app:
+    image: mcias-synthetic:local
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        MCIAS_INSTALL_EXTRA: verification
+    environment: *runtime
+    depends_on:
+      db: {condition: service_healthy}
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: [sources:/var/lib/mcias]
+    command: [sh, -ec, "alembic upgrade head && exec uvicorn mcias.app:app --host 0.0.0.0 --port 8000 --workers 1 --no-access-log"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+  verify:
+    image: mcias-synthetic:local
+    profiles: [verification]
+    environment: *runtime
+    depends_on:
+      app: {condition: service_healthy}
+    volumes: [evidence:/opt/mcias/.e2e-output, "sources:/var/lib/mcias:ro"]
+    command: [python, scripts/check_integrated_workflow.py, --base-url, "http://app:8000", --http-only]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+volumes:
+  database:
+  sources:
+  evidence:
