@@ -250,6 +250,26 @@ def approve_dataset(dataset_id: UUID, payload: ReferenceDatasetApprovalIn,
     return _dataset_metadata(item)
 
 
+@router.get("/datasets")
+def reference_dataset_list(family: Literal["beneficiary", "contract", "tariff", "policy", "caps", "history"] | None = None,
+        limit: int = 50, offset: int = 0,
+        authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    """Metadata-only tenant list for the existing six-source G3 register."""
+    if limit < 1 or limit > 100 or offset < 0:
+        raise HTTPException(400, "invalid pagination")
+    user = _dataset_http_actor(db, authorization)
+    statement = select(ReferenceDatasetVersion).where(
+        ReferenceDatasetVersion.organization_id == user.organization_id)
+    if family is not None:
+        statement = statement.where(ReferenceDatasetVersion.family == family)
+    entries = db.scalars(statement.order_by(
+        ReferenceDatasetVersion.family, ReferenceDatasetVersion.dataset_key,
+        ReferenceDatasetVersion.version.desc(), ReferenceDatasetVersion.id)
+        .offset(offset).limit(limit + 1)).all()
+    return {"items": [_dataset_metadata(item) for item in entries[:limit]],
+            "has_more": len(entries) > limit, "offset": offset}
+
+
 @router.get("/datasets/{dataset_id}")
 def reference_dataset_metadata(dataset_id: UUID,
         authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
