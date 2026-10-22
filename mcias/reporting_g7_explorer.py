@@ -73,6 +73,7 @@ def entries(report_id: str,
               "audit_state", "audit_state_schema_version", "source_audit_state_schema_version",
               "audit_reason_code", "completed_audit", "audit_coverage", "audit_references", "audit_rules",
               "complete_reference_count", "source_evidence_verified", "audit_event_ids",
+              "audit_classification", "financial_decision_status", "review_finding_count", "decision_event_id",
               "source_document_id", "source_record_id", "source_sha256", "source_position")
     return {"report_id": report.id, "version": report.version,
             "total": len(filtered), "offset": offset, "limit": limit,

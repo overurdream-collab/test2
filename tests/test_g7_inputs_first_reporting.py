@@ -254,6 +254,8 @@ def test_redacted_explorer_filters_audit_outcomes_without_roster_or_originals(mo
         db=db, audit_state="MATCH_VERIFIED")
     row = result["items"][0]
     assert row["audit_state"] == "MATCH_VERIFIED" and row["source_position"]["row"] == 7
+    assert row["audit_classification"] == "NO_DETECTED_FINDINGS"
+    assert row["financial_decision_status"] == "PENDING_HUMAN_REVIEW"
     assert row["audit_references"][0]["effective_from"] == "2026-01-01"
     assert row["audit_references"][0]["coverage_until"] == "2026-07-01"
     assert all(secret not in json.dumps(result) for secret in ("PRIVATE-ROSTER-TOKEN", "token-one", "synthetic-test-only", "source_values", "source_locator"))
@@ -265,6 +267,162 @@ def test_redacted_explorer_filters_audit_outcomes_without_roster_or_originals(mo
     assert "MATCH_VERIFIED" in cells and "Completed audits" in cells
     assert "PRIVATE-ROSTER-TOKEN" not in json.dumps(cells)
     assert render_pdf(report).startswith(b"%PDF")
+
+
+def rejection_events(case, snapshot):
+    """The persisted shape of the existing G6 independent-human decision flow."""
+    case.id = str(uuid4()); case.opened_by = str(uuid4())
+    proposal = SimpleNamespace(id=str(uuid4()), organization_id=case.organization_id,
+        case_id=case.id, snapshot_id=snapshot.id, version=1, kind="propose", actor_id=case.opened_by,
+        payload={"reason_code": "synthetic_proposal"}, created_at=snapshot.created_at)
+    rejection = SimpleNamespace(id=str(uuid4()), organization_id=case.organization_id,
+        case_id=case.id, snapshot_id=snapshot.id, version=2, kind="reject", actor_id=str(uuid4()),
+        payload={"reason_code": "synthetic_reviewed_rejection"}, created_at=snapshot.created_at + timedelta(minutes=1))
+    return [proposal, rejection]
+
+
+def test_dashboard_four_kpis_five_exclusive_categories_and_separate_currencies():
+    fixtures = [audit_fixture(state) for state in
+        ("MATCH_VERIFIED", "VIOLATION_PROVEN", "UNRESOLVED", "AUDIT_UNAVAILABLE", "VIOLATION_PROVEN")]
+    batch = fixtures[0][0]; batch.imported_count = batch.record_count = 5
+    claims, snapshots, cases, events, audits = [], [], [], [], []
+    for index, (_, claim, snapshot, case, _) in enumerate(fixtures):
+        claim.currency = "USD" if index in (0, 1, 4) else "YER"
+        claim.batch_id = batch.id
+        claim.source_locator["document_id"] = batch.ingestion_document_id
+        if snapshot.findings["source_evidence"]:
+            snapshot.findings["source_evidence"]["document_id"] = batch.ingestion_document_id
+        case.id = str(uuid4())
+        if index == 1:
+            snapshot.findings["agents"][4]["audit_state"] = "VIOLATION_PROVEN"
+        if index == 4:
+            events.extend(rejection_events(case, snapshot))
+        claims.append(claim); snapshots.append(snapshot); cases.append(case)
+        audits.append(shared_event(batch, claim, snapshot))
+    dataset, summary = freeze_batch(batch, claims, snapshots, cases, events, audits)
+    dashboard = summary["dashboard"]
+    assert len(dashboard["kpis"]) == 4 and len(dashboard["classification_counts"]) == 5
+    assert set(dashboard["classification_counts"].values()) == {1}
+    assert sum(dashboard["classification_counts"].values()) == summary["total_claims"] == 5
+    kpis = dashboard["kpis"]
+    assert kpis["total_claimed"]["by_currency"] == {
+        "USD": {"status": "KNOWN", "amount": "600", "missing_amount_count": 0},
+        "YER": {"status": "KNOWN", "amount": "400", "missing_amount_count": 0}}
+    assert kpis["audited_claims"] == {"count": 3, "by_currency": {"USD": 3, "YER": 0}}
+    assert kpis["review_required"] == {"claim_count": 2, "finding_count": 3,
+        "by_currency": {"USD": {"claim_count": 1, "finding_count": 2}, "YER": {"claim_count": 1, "finding_count": 1}}}
+    assert kpis["potential_exposure"]["by_currency"] == {
+        currency: {"status": "UNQUANTIFIED", "amount": None, "unquantified_claim_count": 2}
+        for currency in ("USD", "YER")}
+    assert dashboard["recommended_rejection_pending"] == {"available": False, "claim_count": 0,
+        "reason_code": "APPROVED_REJECTION_POLICY_UNAVAILABLE"}
+    assert dashboard["human_approved_rejected"] == {"claim_count": 1,
+        "claimed_by_currency": {"USD": "200", "YER": "0"}}
+    rejected = next(row for row in dataset["rows"] if row["audit_classification"] == "HUMAN_APPROVED_REJECTION")
+    assert rejected["decision_event_id"] == events[-1].id
+    assert rejected["financial_decision_status"] == "REJECTED"
+    assert all(row["state"] == "held" and row["payable"] is None for row in dataset["rows"])
+
+
+def test_dashboard_matching_advisory_has_no_open_finding_or_financial_approval():
+    batch, claim, snapshot, case, _ = audit_fixture()
+    snapshot.findings["human_review_required"] = True
+    dataset, summary = freeze_batch(batch, [claim], [snapshot], [case], [], [shared_event(batch, claim, snapshot)])
+    row = dataset["rows"][0]
+    assert row["audit_classification"] == "NO_DETECTED_FINDINGS" and row["review_finding_count"] == 0
+    assert row["financial_decision_status"] == "PENDING_HUMAN_REVIEW" and row["payable"] is None
+    assert summary["dashboard"]["kpis"]["review_required"]["claim_count"] == 0
+    assert summary["dashboard"]["kpis"]["potential_exposure"]["by_currency"]["YER"] == {
+        "status": "QUANTIFIED", "amount": "0", "unquantified_claim_count": 0}
+
+
+def test_dashboard_incomplete_human_rejection_preserves_evidence_gap_and_financial_axis():
+    batch, claim, snapshot, case, _ = audit_fixture("UNRESOLVED")
+    events = rejection_events(case, snapshot)
+    dataset, summary = freeze_batch(batch, [claim], [snapshot], [case], events, [shared_event(batch, claim, snapshot)])
+    row = dataset["rows"][0]
+    assert row["audit_classification"] == "MISSING_EVIDENCE"
+    assert row["financial_decision_status"] == "REJECTED" and row["decision_event_id"] == events[-1].id
+    assert row["audit_state"] == "UNRESOLVED" and row["completed_audit"] is False
+    assert summary["dashboard"]["human_approved_rejected"]["claim_count"] == 0
+    assert summary["dashboard"]["kpis"]["review_required"]["claim_count"] == 1
+    assert row["payable"] is None and row["deduction"] is None
+
+
+@pytest.mark.parametrize("fault", ["same_actor", "no_previous", "wrong_previous", "missing_actor", "missing_time", "missing_reason"])
+def test_dashboard_human_rejection_requires_a_qualified_recorded_g6_event(fault):
+    batch, claim, snapshot, case, _ = audit_fixture("VIOLATION_PROVEN")
+    events = rejection_events(case, snapshot)
+    if fault == "same_actor":
+        events[-1].actor_id = case.opened_by
+    elif fault == "no_previous":
+        events = events[-1:]
+    elif fault == "wrong_previous":
+        events[0].kind = "object"
+    elif fault == "missing_actor":
+        events[-1].actor_id = None
+    elif fault == "missing_time":
+        events[-1].created_at = None
+    else:
+        events[-1].payload = {}
+    dataset, summary = freeze_batch(batch, [claim], [snapshot], [case], events, [shared_event(batch, claim, snapshot)])
+    row = dataset["rows"][0]
+    assert row["audit_classification"] == "HUMAN_REVIEW_REQUIRED"
+    assert row["financial_decision_status"] == "PENDING_HUMAN_REVIEW" and row["decision_event_id"] is None
+    assert summary["dashboard"]["human_approved_rejected"]["claim_count"] == 0
+
+
+def test_dashboard_objection_reopens_the_latest_human_decision_without_erasing_history():
+    batch, claim, snapshot, case, _ = audit_fixture("VIOLATION_PROVEN")
+    events = rejection_events(case, snapshot)
+    before, summary = freeze_batch(batch, [claim], [snapshot], [case], events, [shared_event(batch, claim, snapshot)])
+    digest = fingerprint(before, summary)
+    objection = SimpleNamespace(**{**vars(events[-1]), "id": str(uuid4()), "version": 3,
+        "kind": "object", "actor_id": case.opened_by, "created_at": snapshot.created_at + timedelta(minutes=2)})
+    after, _ = freeze_batch(batch, [claim], [snapshot], [case], [*events, objection], [shared_event(batch, claim, snapshot)])
+    assert before["rows"][0]["audit_classification"] == "HUMAN_APPROVED_REJECTION"
+    assert after["rows"][0]["audit_classification"] == "HUMAN_REVIEW_REQUIRED"
+    assert after["rows"][0]["financial_decision_status"] == "PENDING_HUMAN_REVIEW"
+    assert after["rows"][0]["decision_event_id"] is None
+    assert fingerprint(before, summary) == digest
+
+
+def test_dashboard_latest_snapshot_does_not_inherit_an_older_rejection():
+    batch, claim, snapshot, case, _ = audit_fixture("VIOLATION_PROVEN")
+    events = rejection_events(case, snapshot)
+    newer = deepcopy(snapshot); newer.id = str(uuid4()); newer.created_at += timedelta(days=1)
+    newer.findings.update(audit_state="MATCH_VERIFIED", reason_code="CHECKS_COMPLETED")
+    for check in newer.findings["agents"]:
+        check["audit_state"] = "MATCH_VERIFIED"
+    dataset, _ = freeze_batch(batch, [claim], [snapshot, newer], [case], events,
+        [shared_event(batch, claim, snapshot), shared_event(batch, claim, newer)])
+    row = dataset["rows"][0]
+    assert row["audit_snapshot_id"] == newer.id and row["audit_classification"] == "NO_DETECTED_FINDINGS"
+    assert row["financial_decision_status"] == "NOT_DECIDED" and row["decision_event_id"] is None
+
+
+def test_dashboard_does_not_infer_exposure_or_rejection_policy_from_financial_differences():
+    from test_g7_reporting import frozen
+    report = frozen()
+    row = report.dataset["rows"][0]
+    assert row["state"] == "approved" and row["deduction"] == "136.00" and row["payable"] == "64.00"
+    assert row["audit_classification"] == "UNABLE_TO_AUDIT" and row["financial_decision_status"] == "APPROVED"
+    exposure = report.summary["dashboard"]["kpis"]["potential_exposure"]["by_currency"]["YER"]
+    assert exposure["status"] == "UNQUANTIFIED" and exposure["amount"] is None
+    batch, claim, snapshot, case, _ = audit_fixture("VIOLATION_PROVEN")
+    snapshot.findings.update(affected_amount="200", immediate_rejection_recommended=True,
+        rejection_policy={"approved": True, "reason_code": "TARIFF_REJECTION_POLICY_BREACH"})
+    _, summary = freeze_batch(batch, [claim], [snapshot], [case], [], [shared_event(batch, claim, snapshot)])
+    assert summary["dashboard"]["recommended_rejection_pending"]["available"] is False
+    assert summary["dashboard"]["recommended_rejection_pending"]["claim_count"] == 0
+    assert summary["dashboard"]["kpis"]["potential_exposure"]["by_currency"]["YER"]["amount"] is None
+
+
+def test_dashboard_cannot_classify_a_foreign_organization_rejection():
+    batch, claim, snapshot, case, _ = audit_fixture("VIOLATION_PROVEN")
+    events = rejection_events(case, snapshot); events[-1].organization_id = "foreign"
+    with pytest.raises(ReportBlocked, match="cross-organization"):
+        freeze_batch(batch, [claim], [snapshot], [case], events, [shared_event(batch, claim, snapshot)])
 
 
 @pytest.mark.parametrize("scenario,expected", [("match", "MATCH_VERIFIED"), ("tariff", "VIOLATION_PROVEN"),

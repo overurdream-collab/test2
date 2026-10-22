@@ -49,8 +49,10 @@ jobs:
           tests/test_g3_inputs_first_certificates.py tests/test_g3_reference.py
           tests/test_g3_lifecycle.py tests/test_g3_signed_authorization.py
           tests/test_g3_reference_datasets.py
+          tests/test_g3_reference_dataset_http.py
           tests/test_g5_inputs_first.py tests/test_g5_agent_order.py
           tests/test_g5_inputs_first_review.py tests/test_g5_snapshot_read_contract.py
+          tests/test_g5_review_api.py
           tests/test_g5_a1_evidence_gate.py tests/test_g5_a1_native_bridge.py
           tests/test_g7_inputs_first_reporting.py
           tests/test_shared_audit_contract_v2.py

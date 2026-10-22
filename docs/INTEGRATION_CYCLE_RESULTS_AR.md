@@ -45,3 +45,56 @@ Reader: لا إعادة لمجموعة الصور8 السابقة. على3PDF ho
 |L1/L2 والإنتاج|حالة الفروع المستقلة محفوظة؛ لا جمع لسلاسلAlembic أو ادعاء جاهزية تشغيلية أو سريرية أو إنتاجية|
 
 لا نسبة إجمالية دون أوزان ومعايير قبول معتمدة. لا قرار حساس مطلوب لهذه الدورة المعزولة، ولا دمج أو نشر أو قوة مالية تلقائية. روابط CI الجديدة وحالة آخر HEAD تحفظ في وصف PRs وإيصال الاستئناف المحلي بعد انتهاء التشغيل، دون إعادة اختبارات ناجحة لتحديث وثيقة فقط.
+
+## استئناف 2026-10-22 — مطالبة واحدة عبر البرنامج الفعلي
+
+عند الاستلام: PR34 عند `4b14a2e8d5951d5de4144f845a33032b71924247`، والشجرة المحلية النظيفة عند `96137c4e350fea1b5d31c47edfc8c327f51f3994` مطابقة لشجرته `53915d8d78cfe5c93a2564776f88c2fc4d7e4e5c`. آخر عملية مكتملة كانت توثيق نجاح [CI الأصلي PG16 رقم39676110515](https://github.com/overurdream-collab/test2/actions/runs/39676110515):218 PASS وتخطي SQLite واحد، و32 حالة دليل متوقع=فعلي. هذا دليل لمسار الخدمات، وليس لتجربة المتصفح الجديدة.
+
+فُحص main عند `be8679cc2db113a6febc03b305cdb14ce52996c6`؛ التغيير الأخير ترخيص ووثائق فقط. لم يُدمج main أو أي فرع. PR25 يبقى `8a616f7f68f506df08deccd62a9faa7d7ec89272` وPR29 `c7769edfdf6e287824ff7afbd8a74389547d7b53` وPR31 `bd2d1b0c92a5410466217802be936dd469b3b35f`. إصلاحاتها المركبة السابقة محفوظة؛ لا مستورد جديد ولا إعادة OCR أو Pillow أو تحسين أداء جانبي.
+
+|المكون|موجود|مختبر سابقًا|التكامل عند الاستلام|الإغلاق المحدود الجاري|
+|---|---|---|---|---|
+|G2|نعم، أصل مشفر وSHA256 واستخراجExcel|PG16|مرتبط بخدماتG4|إعادة استخدامه عبر رفعHTTP فعلي|
+|G3|نعم، شهادات ست ومصادر معتمدة|PG16 والتاريخ|متصل بخدمةG5|كشف التسجيل والاعتماد القائمين عبرAPI بدل إدراج سجلات اختبار|
+|G4|نعم، نطاق أوراق ومعاينة واستئناف|PG16 والعزل والتكرار|مرتبطG2→G5|نموذج نطاق الأوراق في الواجهة، مع استبعادPAYMENT وFAMILY_SUMMARY|
+|G5|نعم،8 فحوص و4 نتائج رسمية|PG16|خدمة داخلية فقط؛ harness القديم يحقنsnapshot|POST استشاري محمي يستدعي المحرك الموجود فقط|
+|Shared Audit|نعم، عقدv2 وكاتب مشترك|PG16 بعدCommit|حدث واحد مرتبط بالمطالبة والمراجع|إعادة قراءة الحدث الحقيقي عقب تشغيلHTTP|
+|G6|نعم، حالة وأحداث بشرية|PG16 والصلاحيات|خدمات وحالةhold مثبتتان|مراجع مستقل يسجلhold فعليًا دون قرار مالي|
+|G7|نعم، تقرير ثابت وتصدير|PG16|حالاتG5 الأربع مثبتة؛ مؤشرات العرض المطلوبة ناقصة|إسقاط المؤشرات الأربعة والفئات الخمس من العقد القائم|
+
+التغييرات منسقة مع مالكي G3 وG5 وG7 الموجودين. المشرف يملك تركيب الملفات والواجهة وharness وDocker فقط. تبقى معرفات وحالات G5 كما هي؛ تصنيفات G7 إسقاط عرض مستقل. التعرض المالي غير القابل لإثبات المبلغ يظهر `UNQUANTIFIED`، ومؤشر الرفض المقترح غير متاح لعدم وجود سياسة رفض معتمدة؛ لا يُستنتج المبلغ من فرق claimed/payable.
+
+التحقق المحلي المحفوظ حتى هذه النقطة: سلسلة Alembic الأصلية إلى `0019_reference_dataset_v1` على PostgreSQL16 اصطناعية؛71 PASS/تحذير واحد في129.19s لواجهتي G3/G5 وG7. اختبارات G3 HTTP تستخدمSQLite صراحة، بينما fixtures G5/G7 في هذا التشغيل تستخدمPG16 ومخططات معزولة. اختبارات JavaScript:10 PASS وفحصsyntax ناجح. لا يُنسب نجاح هذه الاختبارات إلى CI الجديد قبل نشر SHA مطابق.
+
+نجحت تجربة Chromium→HTTP→PG16.15:8 فحوص كاملة و0page errors. [الدليل المحفوظ](evidence/MINIMAL_BROWSER_PG16_RESULT.json) يثبت مطالبة واحدة بقيمة120USD،8/8 قواعد،6/6 شهادات،نسخةتعرفة1 السارية رغم وجود2 الأحدث،ومخالفةتعرفة مثبتة دون payable. استُبعد صفPAYMENT وصفFAMILY_SUMMARY، وأعادت معاينةG4 صفCLAIMS صالحًا واحدًا. التكرار يعيدsnapshot نفسها وحدثSharedAudit واحدًا؛المراجع المستقل سجلhold واحدًا،والتقرير مصنفHUMAN_REVIEW_REQUIRED،والتعرضUNQUANTIFIED. أعيد فتح الأصل من التخزين المشفر في جلسة مستقلة وطابق6556byte وبصمةXLSX. انحدار workspace الحي:6 فحوص ناجحة،بما فيها منعغيرالإداريمنواجهةالإدارةوإبطالالجلسةوالتقريرغيرالمكتمللايُحتسبمدققًا.
+
+فشلت أول تجربةHTTP عند اعتمادG3 لأن fixture منح workspace.super_admin لدوراختبار فقط؛حارس0019 يشترط الصلاحية علىsuper_admin نفسه. صُححت تهيئةالحساب بصورةidempotent دونتغييرالحارس أوالخدمة. فشلassert لاحق قارنraw findings بإسقاطAPI المنقح؛أصلح إلىمطابقةproject_audit_findings معفحص الحالةوالمصدر والشهاداتالمحفوظة. بقيتعريفG5 والخدمةودليلPHI-safe دونتغيير. سجلاتRED محفوظةمحليًا؛ لا تُحتسبنجاحًا.
+
+نجح Docker المحلي الفعلي: صورة `sha256:8f0e6e5499667c6711561c00623a39c9b8bf4acd85a916fba3594e9dc4fbad36`،مستخدم1900 غيرالجذر،قاعدةPG16 خاصة،وترحيل0019 دون تغييرحواجزه. [دليلDocker](evidence/MINIMAL_DOCKER_PG16_RESULT.json) يحفظ7 فحوص كاملة فينمطHTTP-only؛لا حقنsnapshot أوclaims أوreference datasets. فشل البدء الأول لأن ملفاتbuild-context كانت0600؛جُعلت الشيفرة العامة والترحيلات ووالدscripts مقروءة فقط للمستخدمغيرالجذر،دون تغييرصلاحياتالمفاتيح أوالمصادرالخاصة. احتُفظ بالحاويةالفاشلةوسجلها بدلإخفاءالفشل. صورةG9القائمةأعيد استخدامها،والـcomposeالإنتاجي لم يتغير.
+
+حفظCommit وروابطCI المطابقة قيد الإغلاق. نقطة الاستئناف الخاصة: `.e2e-output/MINIMAL_INTEGRATION_CHECKPOINT.json`؛ لا تحتوي مفاتيح أو كلمات مرور.
+
+### تجربة Windows11 وDocker المحلية الاصطناعية
+
+من checkout الفرع المعروض في PR34، داخل PowerShell وDocker Desktop (Linux containers):
+
+```powershell
+New-Item -ItemType Directory -Force .e2e-output | Out-Null
+function New-SyntheticKey {
+  $bytes = New-Object byte[] 32
+  $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  $rng.GetBytes($bytes)
+  $rng.Dispose()
+  return ([BitConverter]::ToString($bytes)).Replace('-', '').ToLowerInvariant()
+}
+@("MCIAS_SYNTHETIC_DB_PASSWORD=$(New-SyntheticKey)",
+  "MCIAS_STORAGE_KEY=$(New-SyntheticKey)",
+  "MCIAS_MFA_ENCRYPTION_KEY=$(New-SyntheticKey)") |
+  Set-Content -Encoding ascii .e2e-output/docker-synthetic.env
+docker compose --env-file .e2e-output/docker-synthetic.env -f deploy/compose.synthetic.yml up --build -d
+docker compose --env-file .e2e-output/docker-synthetic.env -f deploy/compose.synthetic.yml --profile verification run --name mcias-synthetic-verification verify
+docker cp mcias-synthetic-verification:/opt/mcias/.e2e-output/integrated-workflow-results.json .e2e-output/docker-integrated-workflow-results.json
+docker cp mcias-synthetic-verification:/opt/mcias/.e2e-output/integrated-workflow-credentials.json .e2e-output/integrated-workflow-credentials.json
+```
+
+الواجهة: `http://localhost:8000/login`. ملف الاعتمادات محلي خاص ويحمل حسابات اصطناعية وسرTOTP؛ لا يرفع إلىGit أوCI. استخدم الحساب الإداري وTOTP لتصفح المطالبة والتقرير، وحساب المراجع للمراجعة البشرية. يحفظ Docker بياناته في volumes محلية؛ لا تستخدم `down -v` أو تعيد توليد المفاتيح لنفس البيانات عند الاستئناف. ملف `compose.g9.yml` الإنتاجي لم يُعدّل. الأمر أعلاه وصفة Windows؛ لا يُدّعى تشغيلWindows11 جديد من بيئةLinux الحالية.

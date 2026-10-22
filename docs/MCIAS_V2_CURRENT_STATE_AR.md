@@ -249,3 +249,36 @@ Final local composed PG16:60PASS0SKIP; full unit389PASS37integration-envSKIP; de
 - Risks: CIالجديدللشجرةالمركبةمعلّقحتىالنشر؛ReaderQUALITYBLOCKEDوبوابةCIتاريخيةفاشلةقيدمواءمةالحجب؛Recallالعقود2/6باقٍ؛القياسرصدعملاًتربيعيًادونإصلاحه؛لاادعاءإنتاجأوقبولشامل.
 - Next: نشرالشجرةالمطابقةعلىPR34القائموفحصCIوالـartifact؛متابعةتصحيحبوابةReaderPR35وCIA1PR20؛تسجيلآخرHEADوروابطالنتائجفيالإيصالوالـPRدونإعادةاختبارناجحللوثائق.
 - Handoff: sourceA1runtime6aca/seal19c9وموافقتهفيمانيفست؛G5b5a1778؛G7df849b9؛performance0526403؛تقريرالدورةيوضحالأولوالناقصوالمالكين؛لاreset/force/merge/deploymentأوبيناتمرضىأوقرارمالي.
+
+
+## HANDOFF-20261022-502 — G7 المؤشرات وتصنيفات العرض
+- Scope: إسقاط قراءة صغير في reporting_g7 وallowlist explorer واختبار G7 الموجود؛ امتداد summary.dashboard بإصدار1 دون تغيير G5/G6/الكاتب/المخطط/UI/harness/Docker.
+- Why: summary.audit الأربع موجودة لكن عقد مخرجات G7 يطلب أربع KPIs وخمس فئات حصرية ومؤشر رفض مقترح مستقل؛ لا مساواة فرق مالي بتعرض أوتفعيل سياسة رفض غير معتمدة.
+- Files: mcias/reporting_g7.py؛ mcias/reporting_g7_explorer.py؛ tests/test_g7_inputs_first_reporting.py؛ docs/E5_REPORTING_INTEGRATION_AR.md؛ docs/ENGINEERING_TASK_REGISTER_AR.json؛ سجلا التنفيذ والحالة الحالية.
+- Tests: مرشح dashboard/redacted_explorer:14PASS/35deselected،0.41s؛ انحدار reporting+inputs_first باستبعادnative/dashboard/redacted:47PASS/18deselected،0.32s؛ git diff --check ناجح. لاPG/شبكة/HTTP من المالك ولا إعادةbaseline غير مرتبط.
+- Result: IMPLEMENTED/ISOLATED VERIFIED؛ أربعKPIs وخمس فئات مجموعها المطالبات الفريدة؛ العملات منفصلة؛ G6 rejection مؤهل مع snapshot مكتمل فقط يحسب ضمن human_approved_rejected، ورفض ناقص يبقىmissing/unable رغم محورREJECTED المالي؛ exposure غير معلوم لغيرclean، immediate policy غير متاحة ولاقرار مالي آلي.
+- Risks: لا affected-interval contract موثوق ولاسياسة رفض فوري نافذة؛ مقدار المطالبات المرفوضة ليس وفرًا أوقيمة تعرض؛ PG16/HTTP/UI وCI والقبول المستقل عند المشرف؛ لا إنتاج أوادعاء اكتمال كل عقد المخرجات.
+- Next: المشرف يستهلك summary.dashboard وحقول الصف المعتمدة في UI القائمة ويشغل تحقق PG16/HTTP المركزي على Commit ثابت؛ يحفظ SHA وروابط CI دون إعادة اختبارات ناجحة بلاسبب.
+- Handoff: الأساس df849b96efc0741eca8157c77e08b1a67fed2b16؛ استلام التجميع96137c4/PR34HEAD4b14a2e وفق المشرف؛ العقد النهائي والدليل في E5_REPORTING_INTEGRATION_AR.md؛ لا reset/force/merge/deploy أوخدمة/وثيقة/وكيل جديد.
+
+## 2026-10-22 — G3 dataset HTTP adapter (HANDOFF-20261022-504)
+- Added registration/approval/metadata routes to existing reference_api only; delegate to unchanged register_reference_dataset/approve_reference_dataset with permanent DB actor/permission/SuperAdmin checks. Real login retains MFA; no schema/migration or new service.
+- G3 native regression28PASS12deselected5.66s. Coordinator composed run71PASS1warning129.19s includes5 new authenticated G3 HTTP tests using SQLite explicitly; centralPG16 environment is not G3HTTPPG16 proof. Initial local TestClient startup hang and canceled network retry remain recorded, not counted as PASS.
+- Source-backed upload/readback, single approval event after retry, tenant/auth/role/current-grant/date/count/scope/tamper negatives covered; metadata omits source payload/scope/filename. Coordinator owns remaining browser/PG16 final-flow/CI evidence and central harness permission-fixture closure.
+- Contract/report G3_E1_COMPLETENESS_AR.md. No other owner services/UI changes, push, merge, deployment, reset, real patient data or financial finalization.
+
+## HANDOFF-20261022-501 — G5 HTTP للمراجعة فقط
+- أضيفPOST/api/v1/audits/claims/{claim_id}/reviewإلىrouterالقائمبعقدمعتمدمنالمشرفقبلالتعديل؛الخادميحددreview_only=Trueولايمررالعميلسياسةأوpacketأوخيارًاماليًا.
+- يفرضالجلسةوالصلاحيةوالمؤسسةودورSuperAdminوعاملMFAالحاليين؛200نفسإسقاطGET،والحسابماليًاheldدائمًا.لاخدمةأومحركأوقواعدجديدة.
+- تحققالمشرفPG16للمجموعةالمركبة:71PASS/1warning/129.19s،تشمل17HTTPG5حقيقيةبمصادروخدماتقائمةوحدثواحدبعدCommitوretryوعزلمؤسسي.تطابقتبصماتملفيالمالكللتشغيل؛تفصيلالدليلوعقدHTTPفيE3_RULES_EVIDENCE_INTEGRATION_AR.md.
+- الحالةINTEGRATION VERIFIEDللوصلةالمحددةفقط؛هارنسالبرنامجUI/DockerوالتركيبوقبولHEADوCIبملكيةالمشرف.لامergeأونشرأوبياناتمرضىأوحكمماليتلقائي.
+
+### HANDOFF-20261022-503 — مطالبة Excel عبر البرنامج الحقيقي
+- Scope: تركيب واجهتي G3/G5 المملوكتين وإسقاط G7، ونماذج المصدر/التدقيق ومؤشرات الواجهة، واستبدال حقن snapshot في harness القائم، وتجربة Docker محلية اصطناعية فقط.
+- Why: نجاح خدمات PG16 السابق لم يثبت طلب مستخدم كاملًا؛ كان harness يدرج AuditSnapshot، ولم تعرض الواجهة المؤشرات الأربعة والفئات الخمس المطلوبة.
+- Files: audit_api.py؛reference_api.py؛reporting_g7.py وexplorer؛web_workspace/views.js؛check_integrated_workflow.py وcheck_workspace_live.py؛اختبارات المالكين؛deploy/Dockerfile وcompose.synthetic.yml و.dockerignore؛inputs-first-pg16.yml؛التقارير القائمة وسجل المهام؛docs/evidence/MINIMAL_BROWSER_PG16_RESULT.json؛journal/state.
+- Tests: 71PASS/1warning/129.19s لواجهات G3/G5 وG7؛ G3HTTP SQLite صراحة، وG5/G7 PG16. JavaScript10PASS وsyntaxPASS. Chromium→HTTP→PG16.15:8 فحوص كاملة ناجحة، بلا page errors؛ انحدار workspace الحي6 فحوص ناجحة. قُرئ الأصل المشفر مستقلًا بعدCommit وطابق XLSX وبصمته. Docker المحلي7 فحوصHTTP-only كاملة ناجحة علىPG16 والمستخدم1900؛CI الجديد يُسجل بعد نشرSHA مطابق.
+- Result: INTEGRATION VERIFIED لنطاق مطالبة اصطناعية واحدة عبر المسار الحقيقي؛ CLAIMS1 وPAYMENT/FAMILY_SUMMARY مستبعدتان،6 مراجع معتمدة والنسخة التاريخية الصحيحة،VIOLATION_PROVEN مع financial held،snapshot/event واحد عند التكرار،G6hold من مراجع مستقل،G7 أربعة مؤشرات وخمس فئات عرض. التعرض UNQUANTIFIED ومقترح الرفض غير متاح دون سياسة معتمدة.
+- Risks: هذا ليس اعتمادًا إنتاجيًا أو ماليًا أو دليلاً لجودةOCR. حُفظ فشل تهيئة الدور الاصطناعي وحُل بمنح صلاحية الدورcanonical، دون تغييرحارسPG. مقارنة readback تستخدم الإسقاط المنقح نفسه بدل مساواةrawبالـAPI. عطل بدءDocker من صلاحيات0600 لملفاتbuild-context أُغلق بجعل الشيفرة العامة والترحيلات ووالدscripts مقروءة للمستخدم1900؛لاchmod للمفاتيح/المصادرالخاصة.
+- Next: اكتمل تحقق الصورة؛حفظCommit المركب ونشر شجرته إلىDraftPR34 بتحديث fast-forward محمي بـexpectedSHA، ومتابعةCI المطابق. لا إعادة اختبارات ناجحة بلا تغيير مؤثر ولا توسعOCR/أداء.
+- Handoff: آخر baseline محلي96137c4/منشور4b14a2e؛ مصادر المالكين المحلية G3=7f224a377cc11cdf6d5425f7fb3197556569cff3،G5=497bea582c08eabf875a4ed24ddddf15ba4a2297،G7=c700cbbd4f8a25da19775da97c262bbbafbc4396. السجل والتشغيلWindows فيINTEGRATION_CYCLE_RESULTS_AR.md. لا merge/deploy/reset/force أو بيانات حقيقية.

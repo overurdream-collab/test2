@@ -180,3 +180,83 @@ async def import_tariffs(contract_id: str, request: Request, apply: bool = False
     if not preview["complete"] or not preview["accepted"]:
         raise HTTPException(409, "all tariff rows must validate before atomic import")
     return _perform(db, lambda: apply_tariff_batch(db, user, contract_id, preview["accepted"]))
+
+# Dataset source and completeness checks remain in the existing G3 service.
+# These routes expose its registration/approval operations to authenticated HTTP
+# callers without accepting approval flags or financial values in the request.
+from typing import Literal
+from uuid import UUID
+from pydantic import ConfigDict, StrictBool, StrictInt, StrictStr
+from mcias.models_reference import ReferenceDatasetVersion
+from mcias.reference_service import (
+    _dataset_actor, register_reference_dataset, approve_reference_dataset,
+)
+
+
+class ReferenceDatasetIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    document_id: UUID
+    family: Literal["beneficiary", "contract", "tariff", "policy", "caps", "history"]
+    dataset_key: str = Field(min_length=1, max_length=100)
+    version: StrictInt = Field(ge=1)
+    effective_from: date
+    effective_until: date
+    coverage_from: date
+    coverage_until: date
+    scope: dict[str, StrictStr | StrictBool]
+    expected_record_count: StrictInt = Field(ge=1)
+
+
+class ReferenceDatasetApprovalIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    reason_code: Literal["source_scope_complete"]
+
+
+def _dataset_http_actor(db, authorization, *, approval=False):
+    user, _ = resolve_user(db, authorization)
+    try:
+        return _dataset_actor(db, user, approval=approval)
+    except ReferenceConflict as exc:
+        db.rollback()
+        raise HTTPException(403, "reference dataset access denied") from exc
+
+
+def _dataset_metadata(item):
+    # Exclude source rows, raw payloads, population scope and original filenames.
+    return {key: getattr(item, key) for key in (
+        "id", "family", "dataset_key", "version", "status", "document_id", "job_id",
+        "source_sha256", "source_fingerprint", "effective_from", "effective_until",
+        "coverage_from", "coverage_until", "expected_record_count", "approved_by",
+        "approved_at", "approval_event_id",
+    )}
+
+
+@router.post("/datasets", status_code=201)
+def register_dataset(payload: ReferenceDatasetIn,
+        authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user = _dataset_http_actor(db, authorization)
+    values = payload.model_dump(exclude={"document_id", "family"})
+    item = _perform(db, lambda: register_reference_dataset(db, user, str(payload.document_id),
+        payload.family, **values))
+    return _dataset_metadata(item)
+
+
+@router.post("/datasets/{dataset_id}/approve")
+def approve_dataset(dataset_id: UUID, payload: ReferenceDatasetApprovalIn,
+        authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user = _dataset_http_actor(db, authorization, approval=True)
+    item = _perform(db, lambda: approve_reference_dataset(db, user, str(dataset_id),
+        reason_code=payload.reason_code))
+    return _dataset_metadata(item)
+
+
+@router.get("/datasets/{dataset_id}")
+def reference_dataset_metadata(dataset_id: UUID,
+        authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
+    user = _dataset_http_actor(db, authorization, approval=True)
+    item = db.scalar(select(ReferenceDatasetVersion).where(
+        ReferenceDatasetVersion.id == str(dataset_id),
+        ReferenceDatasetVersion.organization_id == user.organization_id))
+    if item is None:
+        raise HTTPException(404, "reference dataset not found")
+    return _dataset_metadata(item)

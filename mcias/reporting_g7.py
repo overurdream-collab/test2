@@ -4,7 +4,7 @@ This is an engineering snapshot builder, NOT institutional approval of accountin
 It must not change any G4, G5 or G6 record.
 """
 from decimal import Decimal, InvalidOperation
-from datetime import date
+from datetime import date, datetime
 from hashlib import sha256
 import json
 from sqlalchemy import select
@@ -57,6 +57,86 @@ def _evidence_ids(values):
 def _reference_core(references):
     return [{key: reference[key] for key in ("family", "id", "version", "status", "evidence_ids", "gaps")}
             for reference in references]
+
+def _human_rejection(case, events, latest):
+    """Read the existing G6 decision chain; do not create or authorize decisions."""
+    if latest is None or latest.kind != "reject" or case is None:
+        return False
+    try:
+        actor_id = _uuid(latest.actor_id)
+        _uuid(latest.id)
+        opener_id = _uuid(case.opened_by)
+        if not isinstance(latest.created_at, datetime) or actor_id == opener_id:
+            return False
+        earlier = [event for event in events if event.version < latest.version]
+        previous = max(earlier, key=lambda event: (event.version, event.id)) if earlier else None
+        reason = latest.payload.get("reason_code")
+        return bool(previous and previous.version + 1 == latest.version
+            and previous.kind in {"propose", "hold"} and previous.actor_id != actor_id
+            and not any(event.kind == "propose" and event.actor_id == actor_id for event in earlier)
+            and isinstance(reason, str) and 1 <= len(reason) <= 64
+            and reason.isascii() and reason.replace("_", "").isalnum())
+    except (AttributeError, TypeError, ValueError):
+        return False
+
+def _dashboard_row(row, case, events, latest):
+    """Five contract presentation categories, independent of G5 audit states."""
+    rejection = _human_rejection(case, events, latest)
+    notes = {(rule["rule_id"], rule["rule_version"]) for rule in row["audit_rules"]
+             if rule["audit_state"] in {"VIOLATION_PROVEN", "UNRESOLVED", "AUDIT_UNAVAILABLE"}}
+    objection = latest is not None and latest.kind in {"object", "request_reaudit"}
+    if rejection and row["completed_audit"]:
+        classification = "HUMAN_APPROVED_REJECTION"
+    elif row["audit_state"] in {None, "AUDIT_UNAVAILABLE"}:
+        classification = "UNABLE_TO_AUDIT"
+    elif not row["completed_audit"]:
+        classification = "MISSING_EVIDENCE"
+    elif notes or objection:
+        classification = "HUMAN_REVIEW_REQUIRED"
+    else:
+        classification = "NO_DETECTED_FINDINGS"
+    decision = ("REJECTED" if rejection else "APPROVED" if row["state"] == "approved"
+                else "PENDING_HUMAN_REVIEW" if case else "NOT_DECIDED")
+    return {"audit_classification": classification, "financial_decision_status": decision,
+        "review_finding_count": 0 if classification in {"NO_DETECTED_FINDINGS", "HUMAN_APPROVED_REJECTION"}
+            else len(notes) + int(objection),
+        "decision_event_id": latest.id if latest and decision in {"APPROVED", "REJECTED"} else None}
+
+def _dashboard_summary(rows, by_currency):
+    """The four contracted KPIs, with no inferred affected amounts or policy."""
+    classifications = ("NO_DETECTED_FINDINGS", "HUMAN_REVIEW_REQUIRED", "MISSING_EVIDENCE",
+                       "UNABLE_TO_AUDIT", "HUMAN_APPROVED_REJECTION")
+    review_classes = {"HUMAN_REVIEW_REQUIRED", "MISSING_EVIDENCE"}
+    counts = {name: sum(row["audit_classification"] == name for row in rows) for name in classifications}
+    if sum(counts.values()) != len(rows):
+        raise ReportBlocked("dashboard classification reconciliation failed")
+    grouped = {}
+    for row in rows:
+        grouped.setdefault(row["currency"], []).append(row)
+    total, audited, review, exposure, rejected = {}, {}, {}, {}, {}
+    for currency, totals in sorted(by_currency.items()):
+        scoped = grouped[currency]
+        review_rows = [row for row in scoped if row["audit_classification"] in review_classes]
+        unknown = sum(row["audit_classification"] != "NO_DETECTED_FINDINGS" for row in scoped)
+        total[currency] = {"status": "KNOWN", "amount": totals["claimed"], "missing_amount_count": 0}
+        audited[currency] = sum(row["completed_audit"] for row in scoped)
+        review[currency] = {"claim_count": len(review_rows),
+            "finding_count": sum(row["review_finding_count"] for row in review_rows)}
+        exposure[currency] = {"status": "UNQUANTIFIED" if unknown else "QUANTIFIED",
+            "amount": None if unknown else "0", "unquantified_claim_count": unknown}
+        rejected[currency] = number(sum((amount(row["claimed"]) for row in scoped
+            if row["audit_classification"] == "HUMAN_APPROVED_REJECTION"), Decimal(0)))
+    return {"schema_version": 1, "kpis": {
+        "total_claimed": {"by_currency": total},
+        "audited_claims": {"count": sum(audited.values()), "by_currency": audited},
+        "review_required": {"claim_count": sum(item["claim_count"] for item in review.values()),
+            "finding_count": sum(item["finding_count"] for item in review.values()), "by_currency": review},
+        "potential_exposure": {"by_currency": exposure}},
+        "classification_counts": counts,
+        "recommended_rejection_pending": {"available": False, "claim_count": 0,
+            "reason_code": "APPROVED_REJECTION_POLICY_UNAVAILABLE"},
+        "human_approved_rejected": {"claim_count": counts["HUMAN_APPROVED_REJECTION"],
+            "claimed_by_currency": rejected}}
 
 def _audit_projection(snapshot, claim, batch):
     """Read the existing G5 contract; never infer audit completion from a name."""
@@ -270,6 +350,7 @@ def freeze_batch(batch, claims, snapshots, cases, events, audit_events=()):
                 raise ReportBlocked("shared audit outcome/reference mismatch")
         item["audit_event_ids"] = sorted(event.id for event in correlated)
         item["completed_audit"] = item["completed_audit"] and len(correlated) == 1
+        item.update(_dashboard_row(item, chosen_case, events_for_case, latest))
         rows.append(item)
         tot = totals.setdefault(claim.currency, {
             "claimed": Decimal(0), "approved_claimed": Decimal(0),
@@ -305,6 +386,7 @@ def freeze_batch(batch, claims, snapshots, cases, events, audit_events=()):
         summary["by_currency"][currency] = {
             k: v if isinstance(v, int) else number(v) for k, v in values.items()
         }
+    summary["dashboard"] = _dashboard_summary(rows, summary["by_currency"])
     dataset = {"schema": 2, "organization_id": org, "batch_id": batch.id,
                "source_sha256": batch.source_sha256, "rows": rows}
     return dataset, summary

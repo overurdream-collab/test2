@@ -632,6 +632,7 @@ function dashboard(ctx) {
     output.replaceChildren();
     const summary = report.summary,
       totals = summary.by_currency;
+    const dashboard = summary.dashboard;
     const hero = el("section", null, "hero"),
       text = el("div");
     text.append(
@@ -714,12 +715,38 @@ function dashboard(ctx) {
     );
     charts.append(financial, status);
     output.append(charts);
+    if (dashboard) {
+      const classifications = panel(
+        L("تصنيفات التدقيق", "Audit classifications"),
+        L("تصنيف العرض مستقل عن القرار المالي", "Presentation is independent of financial decisions"),
+      );
+      for (const [code, ar, en] of [
+        ["NO_DETECTED_FINDINGS", "لا توجد ملاحظات", "No detected findings"],
+        ["HUMAN_REVIEW_REQUIRED", "تحتاج مراجعة بشرية", "Human review required"],
+        ["MISSING_EVIDENCE", "أدلة ناقصة", "Missing evidence"],
+        ["UNABLE_TO_AUDIT", "تعذر التدقيق", "Unable to audit"],
+        ["HUMAN_APPROVED_REJECTION", "مرفوضة بعد اعتماد بشري", "Human approved rejection"],
+      ]) classifications.append(el("p", L(ar, en) + ": " + display(dashboard.classification_counts[code])));
+      const recommended = dashboard.recommended_rejection_pending;
+      classifications.append(el("p", L("رفض فوري مقترح بانتظار الاعتماد", "Immediate rejection recommended pending approval") + ": " +
+        (recommended.available ? display(recommended.claim_count) : L("غير متاح؛ لا سياسة رفض معتمدة", "Unavailable; no approved rejection policy"))));
+      output.append(classifications);
+    }
     function currency() {
       const [c, v] = currencies.find(
         ([currency]) => currency === cf.input.value,
       ) ||
         currencies[0] || ["—", {}];
-      metrics.replaceChildren(
+      if (dashboard) {
+        const values = dashboard.kpis;
+        const exposure = values.potential_exposure.by_currency[c];
+        metrics.replaceChildren(
+          kpi(L("إجمالي قيمة المطالبات", "Total claimed value"), display(values.total_claimed.by_currency[c]?.amount), "claims", c, "/institution/reports"),
+          kpi(L("المطالبات المدققة", "Audited claims"), display(values.audited_claims.by_currency[c] || 0), "audit", L("فحوص إلزامية مكتملة", "Mandatory checks complete"), "/institution/financial-audit"),
+          kpi(L("تحتاج مراجعة بشرية", "Needs human review"), display(values.review_required.by_currency[c]?.claim_count || 0), "beneficiaries", L("مطالبات فريدة؛ عدد الملاحظات: ", "Unique claims; findings: ") + display(values.review_required.by_currency[c]?.finding_count || 0), "/institution/reviews"),
+          kpi(L("التعرض المالي المحتمل", "Potential financial exposure"), exposure?.status === "QUANTIFIED" ? display(exposure.amount) : L("غير قابل للتقدير", "Unquantified"), "policy", c + " · " + L("ليس خصمًا أو قرارًا ماليًا", "No deduction or financial decision"), "/institution/reports"),
+        );
+      } else metrics.replaceChildren(
         kpi(
           L("إجمالي المطالب به", "Total claimed"),
           display(v.claimed),
@@ -1170,6 +1197,13 @@ function catalog(ctx) {
     root.append(card);
   }
   if (kind === "batches" && allowed(ctx, "claims.import")) {
+    root.append(operation(ctx,
+      L("اعتماد نطاق أوراق المصدر", "Approve source sheet scope"),
+      L("صنّف جميع الأوراق قبل الاستيراد؛ PAYMENT وFAMILY_SUMMARY لا تصبحان مطالبات.", "Classify every sheet before import; PAYMENT and FAMILY_SUMMARY are excluded from claims."),
+      [idField("document_id", L("المستند", "Document ID")),
+        {name: "sheet_types", label: L("أنواع الأوراق بصيغة JSON", "Sheet types as JSON"), value: '{"1":"CLAIMS","2":"PAYMENT","3":"FAMILY_SUMMARY"}'}],
+      "claims.import", (v) => ctx.api.request("/api/v1/claims/documents/" + safeId(v.document_id) + "/source-scope",
+        {method: "POST", body: {sheet_types: JSON.parse(v.sheet_types)}}), {confirmation: true}));
     root.append(
       operation(
         ctx,
@@ -1244,12 +1278,17 @@ function catalog(ctx) {
       ),
     );
   if (kind === "audits") {
+    if (ctx.context.roles.includes("super_admin") && allowed(ctx, "claims.read")) root.append(operation(ctx,
+      L("تشغيل تدقيق المطالبة", "Run claim audit"),
+      L("يفحص الخادم المدخلات والمرجعيات السارية؛ النتيجة استشارية وتبقى المعالجة المالية معلّقة.", "The server checks trusted inputs and effective references. Results are advisory; financial processing remains held."),
+      [idField("claim_id", L("المطالبة", "Claim ID"))], "claims.read",
+      (v) => ctx.api.request("/api/v1/audits/claims/" + safeId(v.claim_id) + "/review", {method: "POST"}), {confirmation: true}));
     root.append(
       el(
         "p",
         L(
-          "لا توجد عملية تنفيذ تدقيق إنتاجي في API. النتائج أدناه من لقطات الخادم غير القابلة للتعديل.",
-          "There is no production audit execution API. Results below come from immutable backend snapshots.",
+          "النتائج من لقطات الخادم غير القابلة للتعديل؛ لا اعتماد أو رفض مالي تلقائي.",
+          "Results come from immutable backend snapshots; financial approval or rejection is never automatic.",
         ),
         "auth-note",
       ),

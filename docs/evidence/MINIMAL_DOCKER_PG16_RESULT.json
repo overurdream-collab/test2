@@ -1,0 +1,429 @@
+{
+  "synthetic_data": true,
+  "actual_http_and_postgresql": true,
+  "mode": "http_only",
+  "status": "PASS",
+  "audit_execution": "real POST /api/v1/audits/claims/{claim_id}/review",
+  "institutional_acceptance": false,
+  "checks": [
+    "real login with enrolled encrypted Super Admin MFA",
+    "real XLSX upload, SHA256, three-sheet approval; only CLAIMS imported and retry deduplicated",
+    "six source-backed reference datasets approved through HTTP, plus future tariff and execution evidence",
+    "real G5 HTTP execution proves dated tariff violation; repeated execution returns same held advisory snapshot",
+    "separate real reviewer records G6 hold; financial approval remains unauthorized",
+    "real G7 four KPIs/five classifications, safe XLSX export, denied originals export and cross-tenant denial",
+    "independent PostgreSQL session rereads committed source, one shared audit event, G6 event and frozen G7 snapshot"
+  ],
+  "page_errors": [],
+  "actual_postgresql_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+  "http_statuses": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=synthetic-workflow.xlsx",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=synthetic-workflow.xlsx",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ingestion/jobs/08af2676-402c-46f6-a3fc-2ef395bca25d/records",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/claims/documents/035ff3c8-25fa-4e16-85e8-ae19b5edf51c/source-scope",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/claims/batches/from-document/035ff3c8-25fa-4e16-85e8-ae19b5edf51c",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/claims/batches/238a6b12-6dec-4874-8f81-751cbac70719/resume",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/claims/batches/238a6b12-6dec-4874-8f81-751cbac70719/preview",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/claims/batches/238a6b12-6dec-4874-8f81-751cbac70719/resume",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/claims/batches/238a6b12-6dec-4874-8f81-751cbac70719/entries",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-beneficiary.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/80819c81-0eea-42fe-9b50-102b682c7f68/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/80819c81-0eea-42fe-9b50-102b682c7f68",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-contract.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/d64755a8-b7dc-43df-8756-01ebbf8c7758/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/d64755a8-b7dc-43df-8756-01ebbf8c7758",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-tariff.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/e7429348-ac8c-4280-9835-bb210480e5b2/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/e7429348-ac8c-4280-9835-bb210480e5b2",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-policy.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/b6dd8c67-af0a-46de-8125-1f1a835cffe5/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/b6dd8c67-af0a-46de-8125-1f1a835cffe5",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-caps.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/f9ad221e-ddf8-4931-a696-120f17956374/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/f9ad221e-ddf8-4931-a696-120f17956374",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-history.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/152c31ef-d16c-4541-baa0-6973360d8aab/approve",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference/datasets/152c31ef-d16c-4541-baa0-6973360d8aab",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-tariff-v2.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reference/datasets/5a46efda-1117-4677-b2b0-5ccee126bc6b/approve",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/ingestion/uploads?filename=SYN-execution.csv",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/claims/entries/c0d92403-2b01-4212-b73f-3a1ca66c30fc/attachments/647f3c6c-6454-47ea-9c25-9b92ad71582d",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/audits/claims/c0d92403-2b01-4212-b73f-3a1ca66c30fc/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/audits/claims/c0d92403-2b01-4212-b73f-3a1ca66c30fc/review",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audits/d1aad552-c0da-47f7-b1e5-fc7ff3b4c1fb",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/governance/cases/from-audit/d1aad552-c0da-47f7-b1e5-fc7ff3b4c1fb",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/governance/cases/d332ea48-7ff7-4293-9bd1-d211b73bd15d/events",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/governance/cases/d332ea48-7ff7-4293-9bd1-d211b73bd15d/events",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/governance/cases/d332ea48-7ff7-4293-9bd1-d211b73bd15d",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/reports/batches/238a6b12-6dec-4874-8f81-751cbac70719/snapshots",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/snapshots/b822e017-1a94-4615-b323-6fea7c8509c0/dashboard",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/snapshots/b822e017-1a94-4615-b323-6fea7c8509c0/excel",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/snapshots/b822e017-1a94-4615-b323-6fea7c8509c0/excel?include_originals=true",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/workspace/claims/c0d92403-2b01-4212-b73f-3a1ca66c30fc",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/audits/d1aad552-c0da-47f7-b1e5-fc7ff3b4c1fb",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/snapshots/b822e017-1a94-4615-b323-6fea7c8509c0",
+      "status": 404
+    }
+  ],
+  "organization_id": "9a24505c-14af-4ed0-90ef-2877594a1abe",
+  "claim_id": "c0d92403-2b01-4212-b73f-3a1ca66c30fc",
+  "claim_reference": "SYN-CLAIM-f52a5401fbc5",
+  "source_document_id": "035ff3c8-25fa-4e16-85e8-ae19b5edf51c",
+  "source_sha256": "38ba9d3e7294ad912962e1c2fa3604f440e7739fa81006d676e44ab9ec43d5b7",
+  "source_scope_approval_id": "47667786-9de1-4feb-b8da-971edfe2954e",
+  "batch_id": "238a6b12-6dec-4874-8f81-751cbac70719",
+  "source_locator": {
+    "kind": "sheet",
+    "index": 1,
+    "row": 2,
+    "column": null,
+    "sheet_name": "CLAIMS",
+    "document_id": "035ff3c8-25fa-4e16-85e8-ae19b5edf51c",
+    "job_id": "08af2676-402c-46f6-a3fc-2ef395bca25d",
+    "source_sha256": "38ba9d3e7294ad912962e1c2fa3604f440e7739fa81006d676e44ab9ec43d5b7",
+    "source_scope_approval_id": "47667786-9de1-4feb-b8da-971edfe2954e",
+    "mapping_version": "g4-canonical-v1",
+    "sheet_type": "CLAIMS"
+  },
+  "references": [
+    {
+      "family": "beneficiary",
+      "id": "80819c81-0eea-42fe-9b50-102b682c7f68",
+      "version": 1,
+      "source_document_id": "965e8c15-94e0-481a-b916-8b3ce72f2aac",
+      "source_sha256": "6046bc14ff6f03e6b03dd1ef6c5d8c737b9ae749d9093df1affb9e97fd771554"
+    },
+    {
+      "family": "contract",
+      "id": "d64755a8-b7dc-43df-8756-01ebbf8c7758",
+      "version": 1,
+      "source_document_id": "676c9482-eeb5-419b-9835-7b8552c78180",
+      "source_sha256": "b6f66a9476a5360b377070654e92e9f8f8164d47c44317129c25cdf13ae499e2"
+    },
+    {
+      "family": "tariff",
+      "id": "e7429348-ac8c-4280-9835-bb210480e5b2",
+      "version": 1,
+      "source_document_id": "38ba9789-3093-4742-ac4c-b8f508bb30f2",
+      "source_sha256": "d023fae53d8c560731fc34b045056839560174a78726ff6f9880acc34d9419e9"
+    },
+    {
+      "family": "policy",
+      "id": "b6dd8c67-af0a-46de-8125-1f1a835cffe5",
+      "version": 1,
+      "source_document_id": "a92e83b0-853f-4847-9d4f-ec3f8a756659",
+      "source_sha256": "2a5763f8cfd432a95d849077fa889e955917650ee3e456f6e2942636c8e27b81"
+    },
+    {
+      "family": "caps",
+      "id": "f9ad221e-ddf8-4931-a696-120f17956374",
+      "version": 1,
+      "source_document_id": "73706a9c-dffe-40ae-8464-8c623fbcfdfe",
+      "source_sha256": "a1fcba4b058f5e9b411e6a89f41ae0c06800c802818134812133eff6860b831c"
+    },
+    {
+      "family": "history",
+      "id": "152c31ef-d16c-4541-baa0-6973360d8aab",
+      "version": 1,
+      "source_document_id": "4d1f0a2c-1eb9-4af4-ba29-ee6e99dff67d",
+      "source_sha256": "a27a4894f4c506873e55ea96ac1e8f337597b4434b7034091f014c4777c154a2"
+    }
+  ],
+  "newer_inapplicable_tariff_id": "5a46efda-1117-4677-b2b0-5ccee126bc6b",
+  "execution_document_id": "647f3c6c-6454-47ea-9c25-9b92ad71582d",
+  "snapshot_id": "d1aad552-c0da-47f7-b1e5-fc7ff3b4c1fb",
+  "expected_audit_state": "VIOLATION_PROVEN",
+  "actual_audit_state": "VIOLATION_PROVEN",
+  "governance_case_id": "d332ea48-7ff7-4293-9bd1-d211b73bd15d",
+  "human_review_event_id": "ca024e99-29c1-40f7-8221-fbff5f9c1428",
+  "report_id": "b822e017-1a94-4615-b323-6fea7c8509c0",
+  "report_fingerprint": "02a5af817cef2d0a1fec3e3ced84e3de9c0adaebedccee0bb9b4346c41e31c6a",
+  "dashboard": {
+    "schema_version": 1,
+    "kpis": {
+      "total_claimed": {
+        "by_currency": {
+          "USD": {
+            "status": "KNOWN",
+            "amount": "120.0000",
+            "missing_amount_count": 0
+          }
+        }
+      },
+      "audited_claims": {
+        "count": 1,
+        "by_currency": {
+          "USD": 1
+        }
+      },
+      "review_required": {
+        "claim_count": 1,
+        "finding_count": 1,
+        "by_currency": {
+          "USD": {
+            "claim_count": 1,
+            "finding_count": 1
+          }
+        }
+      },
+      "potential_exposure": {
+        "by_currency": {
+          "USD": {
+            "status": "UNQUANTIFIED",
+            "amount": null,
+            "unquantified_claim_count": 1
+          }
+        }
+      }
+    },
+    "classification_counts": {
+      "NO_DETECTED_FINDINGS": 0,
+      "HUMAN_REVIEW_REQUIRED": 1,
+      "MISSING_EVIDENCE": 0,
+      "UNABLE_TO_AUDIT": 0,
+      "HUMAN_APPROVED_REJECTION": 0
+    },
+    "recommended_rejection_pending": {
+      "available": false,
+      "claim_count": 0,
+      "reason_code": "APPROVED_REJECTION_POLICY_UNAVAILABLE"
+    },
+    "human_approved_rejected": {
+      "claim_count": 0,
+      "claimed_by_currency": {
+        "USD": "0"
+      }
+    }
+  },
+  "audit_log_id": "83c8d34d-df99-5885-bdc4-57a8fad995dd",
+  "source_record_id": "32e4d358-befa-4181-b4f6-aa98ed47f6ab",
+  "financial_decision_status": "PENDING_HUMAN_REVIEW"
+}

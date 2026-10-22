@@ -162,6 +162,36 @@
       "evidence": "docs/RESUME_EXECUTION_VERIFIED_20261021_AR.md",
       "status": "BLOCKED",
       "execution": "تحديثexpected-headالدقيق فقط دونضعفحراس أوضمسلاسل أخرى"
+    },
+    {
+      "id": "E5-G7",
+      "owner": "e5_reporting",
+      "branch": "existing isolated G7 worktree; supervisor composes existing PR34",
+      "worktree": "/workspace/integration-g7",
+      "sha": "df849b96efc0741eca8157c77e08b1a67fed2b16",
+      "sha_role": "baseline_before_owner_commit; exact delivery commit supplied to supervisor",
+      "handoff": "HANDOFF-20261022-502",
+      "files": [
+        "mcias/reporting_g7.py",
+        "mcias/reporting_g7_explorer.py",
+        "tests/test_g7_inputs_first_reporting.py"
+      ],
+      "complete": "four dashboard KPIs, five exclusive presentation categories, qualified human event/snapshot projection; independent financial axis and unquantified exposure; pure14 and targeted regression47 passed",
+      "missing": "central PG16/HTTP/UI verification, matching CI and independent acceptance on composed commit",
+      "depends": [
+        "existing G5 schema2 and shared audit correlation",
+        "existing G6 immutable decisions",
+        "supervisor-owned existing UI"
+      ],
+      "acceptance": "4KPIs/5exclusivecounts; tenant/event/currency integrity; unknown exposure without affected-interval authority; unavailable immediate rejection policy; no automatic financial decision",
+      "tests": [
+        "dashboard/redacted explorer:14PASS/35deselected,0.41s",
+        "G7 targeted regression:47PASS/18deselected,0.32s",
+        "git diff --check PASS"
+      ],
+      "evidence": "docs/E5_REPORTING_INTEGRATION_AR.md#handoff-20261022-502",
+      "status": "ISOLATED VERIFIED",
+      "execution": "source read projection implemented; UI/harness/Docker untouched; PG16 and CI assigned to supervisor"
     }
   ],
   "baseline_remote_head": "a0f5ed864dad35a415e7173aea82c1b0441b07d8",
@@ -269,5 +299,33 @@
       "PR35_initial_cycle": "44c99cac1a8d4f272e7a364fba284a5f116b10e2"
     },
     "ci": "New composed PR34 exact-head CI is pending publication; final run receipts retained in PR descriptions and .e2e-output checkpoint; prior historical task records remain archival."
+  },
+  "minimal_program_20261022": {
+    "owner": "root, existing G3/G5/G7/audit_integration owners",
+    "branch": "codex/inputs-first-coordinated",
+    "baseline_local": "96137c4e350fea1b5d31c47edfc8c327f51f3994",
+    "baseline_published": "4b14a2e8d5951d5de4144f845a33032b71924247",
+    "main_inspected": "be8679cc2db113a6febc03b305cdb14ce52996c6",
+    "owner_sources": {
+      "G3": "7f224a377cc11cdf6d5425f7fb3197556569cff3",
+      "G5": "497bea582c08eabf875a4ed24ddddf15ba4a2297",
+      "G7": "c700cbbd4f8a25da19775da97c262bbbafbc4396"
+    },
+    "handoff": "HANDOFF-20261022-503",
+    "status": "INTEGRATION VERIFIED",
+    "scope": "one synthetic Excel claim via real browser/HTTP/PG16 only",
+    "evidence": "docs/evidence/MINIMAL_BROWSER_PG16_RESULT.json",
+    "tests": {
+      "combined_api_G7": "71 PASS, 1 warning, 129.19s; G3 HTTP fixture SQLite explicitly, G5/G7 PG16",
+      "frontend": "10 PASS and JS syntax PASS",
+      "browser_http_pg16": "8 checks PASS; unchanged encrypted original reread",
+      "workspace_live": "6 checks PASS",
+      "docker_http_pg16": "7 checks PASS; image sha256:8f0e6e5499667c6711561c00623a39c9b8bf4acd85a916fba3594e9dc4fbad36; non-root1900; migratedPG16"
+    },
+    "pending": [
+      "exact composed Commit publication and CI"
+    ],
+    "acceptance": "REVIEW PENDING; no financial or production approval",
+    "docker_evidence": "docs/evidence/MINIMAL_DOCKER_PG16_RESULT.json"
   }
 }

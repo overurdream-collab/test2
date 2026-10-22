@@ -23,7 +23,8 @@ data/
 *.pyo
 tests/
 docs/
-scripts/
+scripts/*
+!scripts/check_integrated_workflow.py
 node_modules/
 .e2e-output/
 build/
