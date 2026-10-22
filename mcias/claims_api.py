@@ -7,7 +7,7 @@ from mcias.app import get_db
 from mcias.auth import resolve_user
 from mcias.tenant import require_organization
 from mcias.models_claims import ClaimBatch, ClaimEntry, ClaimAttachment
-from mcias.claim_batches import BatchConflict, stage, preview, resume, attach, approve_source_scope
+from mcias.claim_batches import BatchConflict, stage, preview, resume, attach, approve_source_scope, sheet_inventory
 
 router=APIRouter(prefix="/api/v1/claims",tags=["claims"])
 
@@ -31,6 +31,13 @@ def _run(db,fn):
     except __import__("sqlalchemy").exc.IntegrityError as exc:
         db.rollback()
         raise HTTPException(409,"claim integrity constraint") from exc
+
+@router.get("/documents/{document_id}/worksheet-inventory")
+def document_worksheet_inventory(document_id: str, authorization: str | None = Header(default=None),
+                                 db: Session = Depends(get_db)):
+    actor = _actor(db, authorization, "claims.import")
+    return _run(db, lambda: sheet_inventory(db, actor, document_id))
+
 
 @router.post("/documents/{document_id}/source-scope", status_code=201)
 def approve_document_scope(document_id: str, payload: SourceScopeApproval,
