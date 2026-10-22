@@ -81,6 +81,27 @@ def _source_fingerprint(doc, job, records):
                                       ensure_ascii=False).encode()).hexdigest()
     return digest, sheets
 
+def sheet_inventory(db, actor, document_id):
+    """Read-only, integrity-checked sheet choices; no source values or PHI."""
+    if not actor.active or not actor.organization_id:
+        raise BatchConflict("active organization required")
+    doc = _document(db, actor.organization_id, document_id)
+    job = _job(db, actor.organization_id, doc.id)
+    _complete(db, doc, job)
+    records = _records(db, job)
+    if not _xlsx(doc, job, records):
+        raise BatchConflict("Excel worksheet inventory only")
+    fingerprint, inventory = _source_fingerprint(doc, job, records)
+    return {"document_id": doc.id, "source_sha256": doc.sha256,
+            "source_fingerprint": fingerprint,
+            "sheets": [
+                {"index": index, "name": sheet["name"], "data_rows": sheet["data_rows"],
+                 "claims_columns_present": set(FIELDS).issubset(sheet["headers"]),
+                 "reserved_non_claims": sheet["name"].strip().upper() in ("PAYMENT", "FAMILY_SUMMARY")}
+                for index, sheet in sorted(inventory.items())
+            ]}
+
+
 def approve_source_scope(db, actor, document_id, sheet_types):
     """Approve an observed XLSX inventory; caller flags never authorize import.
 
