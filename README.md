@@ -101,3 +101,7 @@ pending institutional approval.
 ## Bilingual policy and external acceptance pack
 
 [العربية](docs/ACCEPTANCE_PACK_INDEX.md) · [English](docs/ACCEPTANCE_PACK_INDEX_EN.md): 13 proposed financial decisions, deployment checks, external test/report templates, UAT and independent penetration-test scope. All external results/signatures remain unexecuted; these documents do not authorize production.
+
+
+## MCIAS mandatory engineering traceability — A1 Draft
+Read docs/engineering/INDEX.md then TRACEABILITY_POLICY_AR.md, HANDOFF_A1_AR.md and worklogs/A1_2026-10-17.md before modifying code. The A1 Draft branch records historic commits and CI runs and requires a same-commit worklog entry for every new change. This policy is not active on main until explicitly reviewed and merged. Production acceptance remains OPEN.

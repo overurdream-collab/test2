@@ -1,0 +1,23 @@
+name: MCIAS per-commit audit trail
+on:
+  pull_request:
+  push:
+    branches: [main, feat/mcias-a1-invoice-integrity]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mandatory-event-ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify all post-baseline commits have same-commit action logs
+        run: python scripts/check_traceability.py
+      - name: Test the gate against synthetic Git commits
+        run: python -m unittest tests.test_traceability -v
