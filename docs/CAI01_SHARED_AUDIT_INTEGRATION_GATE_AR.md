@@ -1,0 +1,19 @@
+# CAI-01 — Shared Audit writer conflict and runtime acceptance gate
+**Baseline SHA:** `9c3fc6cb8ebf32498f5c378e60fa45a2bde8c1ea` (2026-10-21). **Decision:** BLOCKED FOR REAL E2E; not a substitute for PG16 testing.
+## Verified implementation compatibility
+- PR #25 HEAD `8a616f7f68f506df08deccd62a9faa7d7ec89272` and PR #29 HEAD `fd1bb1d22f1957f40688baa207cdf449b0690cd9` both change `mcias/audit_writer.py`. PR #29 additionally defines `mcias/audit_contract.py`. Both remain independent Draft PRs.
+- Both writers expose `write_event(db,actor,organization_id,action,resource_type,resource_id,outcome,details)` and `record_outcome_independent(...)`; PR #29 validates action/resource/outcome and sanitizes details through `clean_details`. Accepted metadata keys are only `version,previous_version,previous_id,new_id,effective_from,effective_until,reason_code,contract_number,status` (with contract_number deliberately omitted). CAI-01 source SHA, sheet/row, reference family, rule version, evidence IDs and human review link are **not** supported as details today. Writing an event is not proof that those fields survived.
+- Owner approval required: Shared Audit PR #29 owner must decide approved bounded metadata representation or stable foreign-key linkage; G2 PR #25 owner must coordinate its audit_writer modifications. **Do not copy/overwrite either implementation or loosen PHI protections.**
+## Minimal real integration preconditions (no bypass)
+| Component | Owned file / dependency | Exact missing condition | Verification |
+|---|---|---|---|
+| G2 | `mcias/ingestion/parsers/excel_parser.py` + G2 schema | trusted sheet name/type, raw cell and physical row provenance, SHA and approved manifest | synthetic XLSX CLAIMS=1 PAYMENT=1; 2 rows accounted |
+| G3 | `mcias/models_reference.py` + reference integrity | six approved service-date effective reference families with completeness proof | dated fixtures and missing/incomplete/expired negatives |
+| G4 | `mcias/claim_batches.py` | approved eligible-only sheet/row gate on actual stage/preview/resume | 1 ClaimEntry, PAYMENT retained but not imported, tenant and restart tests |
+| G5 | `mcias/audit_agents.py` + `mcias/audit_engine.py` | applicable checks, rules, evidence and reference version; incomplete never violation | real inspect_claim, checked/held counts, no financial decision |
+| Shared Audit | `mcias/audit_writer.py` PR #29 and `mcias/audit_contract.py` | approved event correlation preserving source/ref/rule/review lineage | query actual committed event IDs/metadata |
+| G6 | existing human review service | explicit routing and no automated financial approval | DB assertion |
+**Run:** CI 39509631819 at baseline: unit PASS, postgres-integration PASS, dependency-audit FAIL. Security log confirms Pillow 12.3.0 with eight CVEs, 13.0.0 suggested. These are NOT the twelve CAI-01 PG16 acceptance tests.
+**Acceptance scenarios:** 1 valid, 2 tariff, 3 duplicate, 4 cap, 5 beneficiary incomplete, 6 missing reference, 7 incomplete reference, 8 expired reference, 9 historical version, 10 technical failure, 11 cross-tenant, 12 Shared Audit/Human Review: all **BLOCKED_NOT_EXECUTED**. No verified Shared Audit event IDs, no check coverage denominator, no measured E2E latency or resource usage.
+**Decision register:** CAI-AUD-001 choose PR #29 contract as candidate for owner review, not merge authorization; CAI-G4-001 require trusted manifest gate before mixed-sheet import; CAI-G3-001 require completeness before proven violation; CAI-SEC-001 delegate Pillow maintenance to dependency owner. No shared code edits.
+**Next:** AI CTO and component owners approve writer schema, G2 manifest, G3 snapshot, G4 gate, G5 coverage; only then implement owner-scoped changes and run actual PostgreSQL 16 with saved logs and evidence. No fake integration.
