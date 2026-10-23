@@ -48,7 +48,7 @@ def artifact_record(path: Path, logical_name: str) -> dict:
     return {"path": logical_name, "size": size, "sha256": digest.hexdigest()}
 
 def create_manifest(artifacts: dict[str, Path], commit_sha: str,
-                    migration_head: str = "0018_claim_query_indexes") -> dict:
+                    migration_head: str = "0023_insurer_intake") -> dict:
     if (not isinstance(commit_sha, str) or len(commit_sha) != 40
         or any(c not in "0123456789abcdef" for c in commit_sha)):
         raise ReleaseBlocked("a verified full git commit SHA is mandatory")

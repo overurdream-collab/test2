@@ -25,6 +25,12 @@ import {
   donut,
   preferences,
 } from "./ui.js";
+import { rbacProvisioning } from "./rbac_provisioning.js";
+import { featuresManagement } from "./feature_management.js";
+import { inputList } from "./input_list.js";
+import { institutionOverview, institutionUsers } from "./institution.js";
+import { accessManagement } from "./access_management.js";
+import { auditWorkspace, resultReports } from "./audit_workspace.js";
 const agentNames = {
   eligibility: ["الأهلية", "Eligibility"],
   tariff: ["التعرفة", "Tariffs"],
@@ -58,6 +64,20 @@ const reasons = () => [
 export function renderView(ctx) {
   const { root, route } = ctx;
   const kind = route.kind;
+  if (kind === 'access-management') { accessManagement(ctx); return; }
+  if (kind === 'audit-workspace') { auditWorkspace(ctx); return; }
+  if (kind === 'result-reports') { resultReports(ctx); return; }
+  if (kind === "institution-users") { institutionUsers(ctx); return; }
+  if (['dashboard','admin-overview'].includes(kind) && !ctx.demo) { institutionOverview(ctx); return; }
+  if (kind === "rbac-provisioning") { rbacProvisioning(ctx); return; }
+  if (kind === "input-list") {
+    inputList(ctx);
+    return;
+  }
+  if (kind === "features-management") {
+    featuresManagement(ctx);
+    return;
+  }
   if (kind === "retention") {
     retention(ctx);
     return;

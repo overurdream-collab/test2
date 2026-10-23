@@ -3,7 +3,7 @@
 All ranges are Decimal, and each monetary stage operates on the remaining
 eligible amount. Policy is explicit and versioned; absence blocks processing.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace, asdict
 from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
 from hashlib import sha256
 import json
@@ -23,8 +23,14 @@ class AuditPolicy:
     exclusion: Decimal
     tariff: Decimal
     approved: bool=False
+    amount_basis: str='GROSS'
+    reference_fingerprint: str|None=None
 
     def validate(self):
+        import re
+        if self.amount_basis not in ('GROSS','NET'):raise PolicyBlocked('unknown amount basis')
+        if self.amount_basis=='NET' and not re.fullmatch('[0-9a-f]{64}',self.reference_fingerprint or ''):
+            raise PolicyBlocked('NET policy must bind exact reference versions')
         if not self.approved or not self.policy_id:
             raise PolicyBlocked("written approved financial policy required")
         if self.rounding not in ("HALF_UP","HALF_EVEN") or self.precision not in (0,2,4):
@@ -51,6 +57,7 @@ def evaluate(claimed: Decimal, currency: str, policy: AuditPolicy, *,
              eligible: bool, evidence_complete: bool, source_id: str,
              contract_id: str, beneficiary_enrollment_id: str) -> dict:
     policy.validate()
+    if policy.amount_basis!='GROSS':raise PolicyBlocked('NET policy requires the NET evaluation path')
     if currency!=policy.currency:
         raise PolicyBlocked("currency conversion not authorized")
     if not all((source_id,contract_id,beneficiary_enrollment_id)):
@@ -80,4 +87,40 @@ def evaluate(claimed: Decimal, currency: str, policy: AuditPolicy, *,
             "currency":currency,"policy_id":policy.policy_id,"source_id":source_id,
             "contract_id":contract_id,"enrollment_id":beneficiary_enrollment_id}
     result["fingerprint"]=sha256(json.dumps(result,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    return result
+
+def policy_definition(policy):
+    policy.validate()
+    data={key:(str(value) if isinstance(value,Decimal) else list(value) if isinstance(value,tuple) else value)
+          for key,value in asdict(policy).items()}
+    # Preserve the exact signed fingerprints of historical GROSS policies.
+    if policy.amount_basis=='GROSS' and policy.reference_fingerprint is None:
+        data.pop('amount_basis');data.pop('reference_fingerprint')
+    return data
+
+def evaluate_net(claim,policy,reference_check):
+    """Apply the existing gross rules once, reconcile against already-NET input."""
+    policy.validate()
+    if policy.amount_basis!='NET':raise PolicyBlocked('explicit NET policy required')
+    context=reference_check['calculation']
+    gross_policy=replace(policy,amount_basis='GROSS',reference_fingerprint=None,
+                         tariff=policy.tariff*D(context['quantity']))
+    gross=evaluate(D(context['gross']),claim.currency,gross_policy,eligible=True,evidence_complete=True,
+        source_id=claim.extracted_record_id,contract_id=reference_check['references']['contract']['id'],
+        beneficiary_enrollment_id=reference_check['references']['beneficiary_enrollment']['id'])
+    claimed=money(claim.claimed_amount,policy);expected=D(gross['payable'])
+    payable=min(claimed,expected);difference=claimed-payable
+    definition=policy_definition(policy)
+    result={'status':'calculated','amount_basis':'NET','claimed':str(claimed),'payable':str(payable),
+        'total_deduction':str(difference),'deductions':[{'rule':'net_reference_adjustment','deduction':str(difference),'remaining':str(payable)}],
+        'currency':claim.currency,'policy_id':policy.policy_id,'source_id':claim.extracted_record_id,
+        'contract_id':reference_check['references']['contract']['id'],
+        'enrollment_id':reference_check['references']['beneficiary_enrollment']['id'],
+        'gross_evidence':gross,'policy_definition':definition,'quantity':context['quantity'],
+        'policy_fingerprint':sha256(json.dumps(definition,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+        'source_values_fingerprint':sha256(json.dumps(claim.source_values,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+        'invoice_evidence':reference_check['invoices'],'reference_fingerprint':policy.reference_fingerprint,
+        'source_columns':reference_check['source_columns'],
+        'copay_deducted_again':False}
+    result['fingerprint']=sha256(json.dumps(result,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     return result

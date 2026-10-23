@@ -47,6 +47,57 @@ def stage(db,actor,document_id):
     db.commit()
     return batch
 
+def confirmed_mapping(db,batch):
+    event=db.scalar(select(AuditLog).where(AuditLog.organization_id==batch.organization_id,
+        AuditLog.action=='claim_batch.mapping',AuditLog.resource_id==batch.id).order_by(AuditLog.created_at.desc(),AuditLog.id.desc()).limit(1))
+    if not event:return None
+    import json
+    from mcias.models import SourceFile
+    from mcias.services.registry_service import store
+    source=db.get(SourceFile,event.details['source_id'])
+    if not source:raise BatchConflict('Mapping source missing')
+    mapping=json.loads(store().get(source.storage_key,source.sha256))
+    if mapping['organization_id']!=batch.organization_id or mapping['batch_id']!=batch.id:
+        raise BatchConflict('Mapping scope mismatch')
+    return mapping
+
+
+def source_columns(db,actor,batch_id):
+    batch=db.get(ClaimBatch,batch_id)
+    if not batch or batch.organization_id!=actor.organization_id:raise BatchConflict('Batch not accessible')
+    job=_job(db,actor.organization_id,batch.ingestion_document_id)
+    first=db.scalar(select(ExtractedSourceRecord).where(ExtractedSourceRecord.job_id==job.id).order_by(ExtractedSourceRecord.id).limit(1))
+    return {'columns':list(first.values) if first else [],'mapping':confirmed_mapping(db,batch),'imported_count':batch.imported_count}
+
+
+def set_mapping(db,actor,batch_id,columns,currency,date_format):
+    import json
+    from mcias.models import SourceFile
+    from mcias.services.registry_service import store
+    from mcias.services.rbac_service import _atomic
+    from mcias.services.transaction_lock import lock_record
+    with _atomic(db):
+        lock_record(db,'claim_mapping',actor.organization_id,batch_id)
+        batch=db.scalar(select(ClaimBatch).where(ClaimBatch.id==batch_id,ClaimBatch.organization_id==actor.organization_id).with_for_update())
+        if not batch or batch.imported_count:raise BatchConflict('Mapping must be confirmed before importing any row')
+        allowed=set(source_columns(db,actor,batch_id)['columns'])
+        expected={'claim_reference','beneficiary_token','provider_code','service_code','service_date','claimed_amount'}
+        optional={'beneficiary_name','category_code','gross_amount','unit_price','copay_amount','copay_percent','quantity','total_amount'}
+        if (not expected<=set(columns) or not set(columns)<=expected|optional
+                or len({columns[k] for k in expected})!=len(expected) or not set(columns.values())<=allowed):
+            raise BatchConflict('Select a distinct source column for each required field')
+        if columns['claimed_amount'].strip() in ('المطلوب','إجمالي التحمل','التعويض'):
+            raise BatchConflict('Claim amount must map to the NET column, not gross or copay')
+        mapping={'organization_id':actor.organization_id,'batch_id':batch.id,'columns':columns,
+            'currency':currency,'date_format':date_format,'amount_basis':'NET','price_basis':'PER_UNIT_GROSS'}
+        object_id,digest=store().put(json.dumps(mapping,ensure_ascii=False,sort_keys=True).encode())
+        source=SourceFile(sha256=digest,original_filename='claim-column-mapping.json',storage_key=object_id)
+        db.add(source);db.flush()
+        db.add(AuditLog(actor_id=actor.id,organization_id=actor.organization_id,action='claim_batch.mapping',
+            resource_type='claim_batch',resource_id=batch.id,details={'source_id':source.id,'source_sha256':digest,'amount_basis':'NET'}))
+        db.flush();return {'batch_id':batch.id,'amount_basis':'NET','source_sha256':digest}
+
+
 def preview(db,actor,batch_id,limit=100,offset=0):
     batch=db.get(ClaimBatch,batch_id)
     if batch is None or batch.organization_id!=actor.organization_id:
@@ -55,9 +106,10 @@ def preview(db,actor,batch_id,limit=100,offset=0):
     records=db.scalars(select(ExtractedSourceRecord).where(ExtractedSourceRecord.job_id==job.id)
         .order_by(ExtractedSourceRecord.id).offset(offset).limit(limit)).all()
     results=[]
+    mapping=confirmed_mapping(db,batch)
     for record in records:
         try:
-            normalized=normalize(record.values)
+            normalized=normalize(record.values,mapping)
             results.append({"record_id":record.id,"locator":record.locator,"valid":True,
                             "claim_reference":normalized["claim_reference"]})
         except ClaimValidationError as exc:
@@ -91,11 +143,12 @@ def resume(db,actor,batch_id,chunk_size=100):
         raise BatchConflict("invalid chunk size")
     accepted=0
     rejected=[]
+    mapping=confirmed_mapping(db,batch)
     for record in records:
         if record.id in already:
             continue
         try:
-            values=normalize(record.values)
+            values=normalize(record.values,mapping)
         except ClaimValidationError as exc:
             rejected.append({"record_id":record.id,"locator":record.locator,"reason":str(exc)})
             continue

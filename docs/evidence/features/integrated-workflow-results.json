@@ -1,0 +1,16 @@
+{
+  "synthetic_data": true,
+  "actual_http_and_postgresql": true,
+  "audit_execution": "fixture seam using Python engine; no production execution API",
+  "checks": [
+    "real administrative login with enrolled encrypted MFA",
+    "browser upload, source hash, extraction, duplicate detection and denied raw medical fields",
+    "malformed source quarantine, encrypted original retained and import blocked",
+    "browser staging and confirmed resumable import without duplicates; evidence linked",
+    "synthetic backend-engine snapshot independently verified and eight-agent browser evidence",
+    "independent approval, tenant denial, reconciled frozen totals, authorized export and original-field export denied",
+    "evidenced objection, re-audit request, immutable prior report and backend action audit trail"
+  ],
+  "page_errors": [],
+  "institutional_acceptance": false
+}

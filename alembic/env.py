@@ -8,6 +8,8 @@ import os
 def migration_database_url():
     return os.environ.get('MCIAS_TEST_DATABASE_URL') or Settings().database_url
 from mcias.models import Base
+import mcias.models_features  # register 0021 metadata without changing historical migrations
+import mcias.models_authorization
 config = context.config
 if config.config_file_name:
     fileConfig(config.config_file_name)

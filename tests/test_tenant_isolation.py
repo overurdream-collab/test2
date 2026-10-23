@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 import pytest
 from fastapi import HTTPException
 from sqlalchemy import create_engine
@@ -16,6 +17,7 @@ def test_tenant_and_medical_field_default_deny():
             role, perm = Role(code="tenant-reader-role"), Permission(code="claims.read")
             db.add_all([actor,role,perm]); db.flush()
             db.add_all([UserRole(user_id=actor.id,role_id=role.id), RolePermission(role_id=role.id,permission_id=perm.id)])
+            approve_fixture(db)
             db.commit()
             assert require_organization(db,actor,a.id,"claims.read")
             with pytest.raises(HTTPException) as err:

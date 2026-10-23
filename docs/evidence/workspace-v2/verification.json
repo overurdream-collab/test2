@@ -1,0 +1,81 @@
+{
+  "verified_at_utc": "2026-10-22T23:22:29.760841+00:00",
+  "branch": "feat/windows-laptop-testing",
+  "local_head": "74268ae89cb317c95b66aecc684d3a25423bef25",
+  "published_reference": "50ffd4bfd58661137cf079f99058159eb831e588",
+  "base_tree": "a2e0c8605cd0bac1983c164c5b958ef89e0a927a",
+  "working_tree_committed": false,
+  "push_performed": false,
+  "pytest": {
+    "command": "python -m pytest tests/ -q --tb=short -o faulthandler_timeout=45",
+    "passed": 549,
+    "failed": 0,
+    "skipped": 32,
+    "warnings": 1,
+    "duration_seconds": 112.24
+  },
+  "javascript": {
+    "command": "node --test tests/frontend/*.test.mjs",
+    "passed_file_suites": 2,
+    "failed_file_suites": 0
+  },
+  "browser": {
+    "included_in_pytest": true,
+    "engine": "Chromium",
+    "backend": "FastAPI TestClient",
+    "database": "isolated SQLite",
+    "actual_tcp_server": false,
+    "actual_postgresql": false,
+    "external_traffic": false
+  },
+  "static_checks": {
+    "app_import": "passed",
+    "javascript_syntax": "passed",
+    "git_diff_check": "passed"
+  },
+  "not_verified": [
+    "current PostgreSQL runtime grants and triggers",
+    "current Docker build and laptop setup",
+    "current Windows execution",
+    "current CI workflow and legacy browser scripts",
+    "financial audit execution and agents",
+    "institutional production acceptance"
+  ],
+  "warning": "Starlette TestClient httpx deprecation",
+  "modified_source_sha256": {
+    "deploy/compose.laptop.yml": "aa80ba152a92b6d5e5e1f8da507805ebaf7d6011eb8682df60b0e2af8c698c46",
+    "docs/IMPLEMENTATION_PROGRESS_AR.md": "8724594117495484f46e50d95ed83b6cfa682db04db8e74f223a47ad8d92aebb",
+    "docs/WINDOWS_LAPTOP_GUIDE.md": "447e8d1b296527e5e2793af9cb3f4840407b8655fde0f91996f41bb8234e17bb",
+    "mcias/api/access_routes.py": "2226f960e32cd3997b3e086dfafa5d14a6b272f40e1a7bac0339f201aa6b7fa7",
+    "mcias/api/features_routes.py": "d834663b645f5f9d56a82079bc8229d1ddbf1987974b7d2fac410bdcb2b867f6",
+    "mcias/api/registry_routes.py": "b330094bc3c4124239bc0c676646a5e2c401c41278f8cfee9f427c9eba3cb695",
+    "mcias/api/result_routes.py": "6e67da5238b78f0aaf4509c17a97391e2b8df99e0b982676d16ea073d10645d3",
+    "mcias/app.py": "2aad6d5257388b589d29b8e892b8949698477c447edd40b62e6a20e308f9ecc6",
+    "mcias/claim_batches.py": "5d3a3699e8f62f889cc0602c41aed7507fbe58da735387151fe8d2645c530162",
+    "mcias/claim_normalization.py": "fa697001e672a8e9647c2d08f21b92c62baf7d888e5dbacadcd67251489e5b4a",
+    "mcias/claims_api.py": "b9bd35397eae8620f03c9530aaca4dc06ecc1845520b3726ab722a50e2a11c69",
+    "mcias/report_exports_g7.py": "0ab1eddaded8cc4f023a68aa52f84fc43e81ea7369a928ab576f83edd5e3f2d4",
+    "mcias/schemas/registry.py": "cb536484751ec2015f31e787c626c38f39f6760184c048284cf37e9114af9049",
+    "mcias/seed/laptop.py": "900957aa0e281b5cb83c45a5eeb6fc8a16ddf5a5c1650755d58ce0cfa000af20",
+    "mcias/seed/reference_inputs.py": "a4c04ff531e3ae0c80f9bf950378fd488ddae7d0dea0cfce772c7175d7bc3bf4",
+    "mcias/services/access_service.py": "92fa5ae608fd98c32032ace587864fc82183fbce16850e65d7a5ffe9bc452373",
+    "mcias/services/authorization_service.py": "281e0e6d22ff8789d07e5f996e5c2ff2400fe0747bb65262ba37ed220b939578",
+    "mcias/services/feature_service.py": "2715f415817ae2f776116788177df3b72de48feee310b3d4daee08c7aaa96c07",
+    "mcias/services/institution_workspace.py": "a9b4130f12d7fb095a73ac8ec01f369383021177d714ce29815e05ef4455d986",
+    "mcias/services/registry_service.py": "b74ad495b566398e7b58bc6af71e71b61061399e3a790483b2d70c116d5abb20",
+    "mcias/services/result_service.py": "f8a597fd3c54e59e065817cd93d5286e5a3886b3713c459f98ffea39ca3cd0b7",
+    "mcias/web_workspace/access_management.js": "66c90961b2389fe19d645893dfd7b526f7eeb009167bf61a372e51f46fbba9e7",
+    "mcias/web_workspace/app.js": "cee34f4704dacad131366360ab3c45c97c470fbda84a84f13e5389d0b8847ec6",
+    "mcias/web_workspace/audit_workspace.js": "57222a4d032340a2b951bedc1213fba1867122138c1dd11c3fe72d50b82771d0",
+    "mcias/web_workspace/feature_navigation.js": "c6aaee54f26756416f6c90f41492f4bace03e0a34c2f3289aff07d97c3eca3ed",
+    "mcias/web_workspace/input_list.js": "7599f04fc31fd64ba2003baa7b955dfcaa2c4b032a74a65188bc37ea631cc06e",
+    "mcias/web_workspace/routes.json": "69636530980ba1e22233d49bdeb798acb71c59da699c86f2cc096a86f46cbe8b",
+    "mcias/web_workspace/views.js": "fca9f4432a156d4f1d1566588aef1b3541f04592b44e188b3f054e7660272593",
+    "mcias/web_workspace/workspace.css": "92a105d4b114adfe4f02c2b980044a1f543090937d80de864e35af74bffb328e",
+    "tests/conftest.py": "514dbbb856028eb852a2cf793ad17c6707ea5510ca38987e1991c4be88fbaf56",
+    "tests/frontend/features.test.mjs": "97a7e7c8252c5f3c4658243d3cf5e83c78d9e2c6cedf896037b846c9d6376509",
+    "tests/workspace_v2/test_access_and_registry.py": "3a2c3074cddf41d4162e95df49999b1588cdeb6bcd981736b9e45eb9d4660908",
+    "tests/workspace_v2/test_browser_workspace.py": "ae87184e554eb9fecf0318ad43f061df002c2f78519f62687e8f243381c1253d",
+    "tests/workspace_v2/test_mapping_and_results.py": "0e4c6c8345434af6a3a1db5190ef21bf30a97ebb868e1d6a32614ed76ed836e6"
+  }
+}

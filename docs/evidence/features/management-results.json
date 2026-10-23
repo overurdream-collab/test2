@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "real MFA login, 11 containers, 33 leaves and atomic entitlement save",
+    "cancel reloads persisted feature state",
+    "revocation requires reason and closes the grant",
+    "Arabic/English, light/dark and responsive feature tree"
+  ],
+  "page_errors": [],
+  "synthetic": true,
+  "actual_http_and_postgresql": true
+}

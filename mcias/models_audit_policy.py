@@ -28,9 +28,15 @@ def prevent_grant_deletion(*args):
 
 @event.listens_for(AuditPolicyGrant,"before_update")
 def guard_policy_grant_update(mapper, connection, target):
-    from sqlalchemy import inspect
+    from sqlalchemy import inspect, select
     state=inspect(target)
-    if target.revoked_at is None or state.attrs.revoked_at.history.deleted:
+    # A loaded NULL appears in history.deleted during the first legitimate
+    # revocation. Read the persisted value too, so expiring/unloading the
+    # attribute cannot make a second revocation look like the first one.
+    previous=connection.execute(select(AuditPolicyGrant.revoked_at).where(
+        AuditPolicyGrant.id==target.id)).scalar_one()
+    if (target.revoked_at is None or previous is not None
+            or not state.attrs.revoked_at.history.has_changes()):
         raise ValueError("only first revocation is allowed")
     for key in ("id","organization_id","policy_fingerprint","policy_id","approver_id","reviewer_id","signature","created_at"):
         if state.attrs[key].history.has_changes():

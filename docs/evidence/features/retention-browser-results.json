@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "real administrative login with enrolled encrypted MFA",
+    "real retention status, confirmed queued archive and WCAG checks"
+  ],
+  "errors": [],
+  "accessibility_violations": [],
+  "synthetic_data": true
+}

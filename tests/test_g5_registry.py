@@ -36,6 +36,8 @@ def test_g5_cross_tenant_signer_blocks():
 
 def test_g5_invalid_signature_blocks(monkeypatch):
     monkeypatch.setenv("MCIAS_G5_POLICY_VERIFICATION_KEY","x"*40)
+    # Isolate signature verification; unified RBAC is exercised with real DBs separately.
+    monkeypatch.setattr("mcias.audit_policy_registry.has_permission",lambda *args: True)
     db=FakeDB(grant())
     db.users={"head":SimpleNamespace(id="head",active=True,organization_id="org1"),
               "reviewer":SimpleNamespace(id="reviewer",active=True,organization_id="org1")}

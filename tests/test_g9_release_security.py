@@ -5,8 +5,13 @@ import os
 import tarfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
+from alembic import command
+from alembic.config import Config
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import make_url
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -14,7 +19,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from mcias.backup import (encrypt_bundle, decrypt_bundle, MAGIC,
                           MAX_ENTRIES, MAX_BUNDLE_BYTES)
-from mcias.preflight_g9 import check_runtime_env, check_certificate, report, safe_file
+from mcias.preflight_g9 import check_runtime_env, check_certificate, check_postgres_role, report, safe_file
 from mcias.release_g9 import (ReleaseBlocked, create_manifest, verify_manifest,
                               encode_receipt)
 
@@ -24,6 +29,7 @@ def test_g9_manifest_pins_exact_artifact_hash_and_blocks_tampering(tmp_path):
     wheel=tmp_path/"mcias-0.1.0-py3-none-any.whl"
     wheel.write_bytes(b"synthetic wheel bytes; never a real medical file")
     manifest=create_manifest({"wheels/mcias-0.1.0-py3-none-any.whl":wheel},COMMIT)
+    assert manifest["migration_head"] == "0023_insurer_intake"
     bundle=tmp_path/"bundle"
     (bundle/"wheels").mkdir(parents=True)
     copied=bundle/"wheels"/wheel.name
@@ -32,6 +38,69 @@ def test_g9_manifest_pins_exact_artifact_hash_and_blocks_tampering(tmp_path):
     copied.write_bytes(b"tampered")
     with pytest.raises(ReleaseBlocked,match="checksum"):
         verify_manifest(manifest,bundle)
+
+
+@pytest.mark.skipif(not os.getenv("MCIAS_TEST_DATABASE_URL"),
+                    reason="isolated PostgreSQL migration checks required")
+@pytest.mark.parametrize("revision,expected", [
+    ("0018_claim_query_indexes", "BLOCKED"),
+    ("0019_rbac", "BLOCKED"),
+    ("0021_organization_features", "BLOCKED"),
+    ("0022_rbac_authority", "BLOCKED"),
+    ("0023_insurer_intake", "PASS"),
+])
+def test_g9_runtime_rejects_old_schema_and_accepts_rbac_schema(monkeypatch, revision, expected):
+    """Check real migrated databases, without changing the shared suite's revision."""
+    parsed = make_url(os.environ["MCIAS_TEST_DATABASE_URL"])
+    marker = uuid4().hex[:12]
+    database_name = "mcias_g9_revision_" + marker
+    role_name = "mcias_g9_revision_role_" + marker
+    password = "synthetic_revision_probe_only"
+    admin = create_engine(parsed.set(database="postgres"), isolation_level="AUTOCOMMIT")
+    probe_url = parsed.set(database=database_name)
+    probe_admin = None
+    database_created = role_created = False
+    try:
+        with admin.connect() as conn:
+            conn.execute(text(f'CREATE DATABASE "{database_name}"'))
+            database_created = True
+        with monkeypatch.context() as context:
+            context.setenv("MCIAS_TEST_DATABASE_URL", probe_url.render_as_string(hide_password=False))
+            command.upgrade(Config("alembic.ini"), revision)
+        probe_admin = create_engine(probe_url, isolation_level="AUTOCOMMIT")
+        with admin.connect() as conn:
+            conn.execute(text(
+                f'CREATE ROLE "{role_name}" LOGIN PASSWORD \'{password}\' '
+                'NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS'
+            ))
+            role_created = True
+        with probe_admin.connect() as conn:
+            assert conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == revision
+            conn.execute(text(f'GRANT USAGE ON SCHEMA public TO "{role_name}"'))
+            conn.execute(text(f'GRANT SELECT ON TABLE public.alembic_version TO "{role_name}"'))
+        runtime_url = probe_url.set(username=role_name, password=password)
+        states = {item["control"]: item["status"] for item in check_postgres_role(
+            runtime_url.render_as_string(hide_password=False)
+        )}
+        assert states == {
+            "database.role_flags": "PASS",
+            "database.schema_create": "PASS",
+            "database.table_ownership": "PASS",
+            "database.audit_mutation": "PASS",
+            "database.migration_head": expected,
+        }
+    finally:
+        if probe_admin is not None:
+            probe_admin.dispose()
+        try:
+            with admin.connect() as conn:
+                if database_created:
+                    conn.execute(text(f'DROP DATABASE "{database_name}" WITH (FORCE)'))
+                if role_created:
+                    conn.execute(text(f'DROP ROLE "{role_name}"'))
+        finally:
+            admin.dispose()
+
 
 def test_g9_manifest_rejects_traversal_symlink_and_forged_approval(tmp_path):
     wheel=tmp_path/"mcias.whl"

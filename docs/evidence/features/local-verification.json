@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-12",
+  "source": "local execution, not current CI or institutional acceptance",
+  "reference_remote_commit": "8f5eea76fc324089b6649031150790345a0d9c01",
+  "python": {
+    "passed": 520,
+    "failed": 0,
+    "skipped": 0,
+    "duration_seconds": "47.454",
+    "warnings": 21
+  },
+  "javascript": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0
+  },
+  "postgresql": "16, three isolated databases; feature grants and encrypted intake also checked under limited roles",
+  "browser": {
+    "route_definitions": 94,
+    "page_errors": 0,
+    "axe_violations_in_checked_views": 0,
+    "widths": [
+      1440,
+      768,
+      390
+    ],
+    "real_http_and_postgresql": true,
+    "synthetic": true
+  },
+  "production_accepted": false
+}

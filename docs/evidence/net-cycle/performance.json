@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-23T14:57:16.602574+00:00",
+  "git_commit": "74268ae89cb317c95b66aecc684d3a25423bef25",
+  "git_working_tree": [
+    " M deploy/compose.laptop.yml",
+    " M docs/WINDOWS_LAPTOP_GUIDE.md",
+    " M mcias/api/features_routes.py",
+    " M mcias/api/registry_routes.py",
+    " M mcias/app.py",
+    " M mcias/audit_api.py",
+    " M mcias/audit_engine.py",
+    " M mcias/audit_policy_api.py",
+    " M mcias/audit_service.py",
+    " M mcias/claim_batches.py",
+    " M mcias/claim_normalization.py",
+    " M mcias/claims_api.py",
+    " M mcias/palermo2.py",
+    " M mcias/report_exports_g7.py",
+    " M mcias/reporting_g7.py",
+    " M mcias/schemas/registry.py",
+    " M mcias/seed/laptop.py",
+    " M mcias/services/authorization_service.py",
+    " M mcias/services/feature_service.py",
+    " M mcias/services/institution_workspace.py",
+    " M mcias/services/registry_service.py",
+    " M mcias/web_workspace/app.js",
+    " M mcias/web_workspace/feature_navigation.js",
+    " M mcias/web_workspace/input_list.js",
+    " M mcias/web_workspace/routes.json",
+    " M mcias/web_workspace/views.js",
+    " M mcias/web_workspace/workspace.css",
+    " M tests/conftest.py",
+    " M tests/frontend/features.test.mjs"
+  ],
+  "code_sha256": {
+    "scripts/check_net_cycle.py": "af26f1562928373e44cf3990cac18eaca60f67ecbd979765981ed1f690dd9ba7",
+    "mcias/audit_engine.py": "e2f1eb4b6d24ec5bf2ad6d18860dcf7a5dfd2deaa1200ad030e7338d12965733",
+    "mcias/audit_service.py": "9ce340875677a63de195038c7be319559b0e57cf10e95328c8b3c8c2f81875d3",
+    "mcias/palermo2.py": "de3fb91e857606557007826e619f2c4901a8f0d3341fbe6099f8c7d6c00a2b6b",
+    "mcias/services/net_audit_service.py": "077b0098f2296bc687cc297cbaffecaa163d72d9cf50fa07fd5ee39bbbf37419",
+    "mcias/services/invoice_service.py": "5fbd45fa394dfc5ffb1411b95eef256e779538b625d1037e17bde4ccfd98643a",
+    "mcias/services/result_service.py": "fa1bde65e76d4db107f687343805cd5d81899525936ee2a48adac702e0965ef5",
+    "mcias/services/claim_reference_service.py": "7a4216f822edc38c9a2138ccd29f1210e6e21d568517fa917fecfb18c6eac53e",
+    "mcias/claim_batches.py": "fc801d2989d21065c14866083c39e1661aaff2f285a9499c1932f2ae6f831ac8",
+    "tests/workspace_v2/net_cycle_fixtures.py": "26f9c758163d1db52642a1ddf8317a3f6a68321441a6e4fb0ef5e40606153922",
+    "tests/workspace_v2/invoice_fixtures.py": "b31ee0b6568c4aae9a1bc97161b0ab1dc18703508387b7ef98cf837422d80dcc"
+  },
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "database": "isolated in-memory SQLite per fresh subprocess; no migrations",
+  "transport": "FastAPI TestClient; in-process actual HTTP routes",
+  "synthetic": true,
+  "production_acceptance": false,
+  "runtime_sla_asserted": false,
+  "workload": "One accepted line first; then repeating accepted, proven NET price difference, missing invoice, identity review cases",
+  "limitations": [
+    "Synthetic data and SQLite do not prove laptop, PostgreSQL, concurrent production load or institutional acceptance.",
+    "One multi-page PDF bundle is explicitly linked per covered service; PDF content is operator-classified, not OCR-verified.",
+    "Audit/exports remain preliminary; only the one-line gate exercises an explicitly authorized human approval.",
+    "Peak RSS is a separate worker process high-water including interpreter, imports, setup and complete cycle.",
+    "Financial volume is not used to infer claim counts, required throughput or an SLA."
+  ],
+  "runs": [
+    {
+      "status": "passed",
+      "service_lines": 1,
+      "expected_counts": {
+        "accepted": 1,
+        "rejected": 0,
+        "held": 0,
+        "review": 0
+      },
+      "observed_counts": {
+        "accepted": 1,
+        "rejected": 0,
+        "held": 0,
+        "review": 0
+      },
+      "exact_accuracy": 1.0,
+      "confusion_matrix": {
+        "accepted": {
+          "accepted": 1,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "rejected": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "held": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "review": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        }
+      },
+      "class_metrics": {
+        "accepted": {
+          "support": 1,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "rejected": {
+          "support": 0,
+          "precision": null,
+          "recall": null
+        },
+        "held": {
+          "support": 0,
+          "precision": null,
+          "recall": null
+        },
+        "review": {
+          "support": 0,
+          "precision": null,
+          "recall": null
+        }
+      },
+      "unique_exported_lines": 1,
+      "exclusive_complete_outputs": true,
+      "original_xlsx_sha256": "7eb90ea14a8978aedf8d6552a6392575e357f11c81190189c797dbd86137ecb4",
+      "original_bytes_preserved": true,
+      "invoice_pdf_sha256": "7c6d4f0ef20e7ebbd729e36bd751a6af3103533943bd88cbee8bade2046ca80c",
+      "invoice_bytes_preserved": true,
+      "invoice_pdf_documents_uploaded": 1,
+      "invoice_pdf_pages": 1,
+      "invoice_documents_linked": 1,
+      "per_service_invoice_links": 1,
+      "unlinked_service_lines": 0,
+      "missing_invoice_held_correctly": true,
+      "signed_policy_fingerprints": 1,
+      "real_audit_snapshots": 1,
+      "real_verified_financial_snapshots": 1,
+      "snapshot_financial_conservation": {
+        "scope": "verified accepted/rejected snapshots only; held/review never counted as financial approval",
+        "claimed": "900.00",
+        "payable": "900.00",
+        "deductions": "0.00"
+      },
+      "human_approval_gate_proven": true,
+      "preliminary_exports_financially_final": false,
+      "stage_seconds": {
+        "isolated_setup": 2.315903,
+        "xlsx_ingestion_mapping_import": 0.992035,
+        "pdf_ingestion_and_per_line_links": 0.286122,
+        "reference_recheck": 0.267874,
+        "signed_policy_enrollment": 0.136809,
+        "net_audit_and_palermo2": 0.109477,
+        "human_approval_gate": 0.087644,
+        "freeze_and_download_four_files": 0.088214
+      },
+      "worker_elapsed_seconds": 6.597671,
+      "pipeline_seconds": 1.880531,
+      "pipeline_lines_per_second": 0.531765,
+      "audit_lines_per_second": 9.134339,
+      "process_peak_rss_mib": 132.703
+    },
+    {
+      "status": "passed",
+      "service_lines": 10,
+      "expected_counts": {
+        "accepted": 3,
+        "rejected": 3,
+        "held": 2,
+        "review": 2
+      },
+      "observed_counts": {
+        "accepted": 3,
+        "rejected": 3,
+        "held": 2,
+        "review": 2
+      },
+      "exact_accuracy": 1.0,
+      "confusion_matrix": {
+        "accepted": {
+          "accepted": 3,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "rejected": {
+          "accepted": 0,
+          "rejected": 3,
+          "held": 0,
+          "review": 0
+        },
+        "held": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 2,
+          "review": 0
+        },
+        "review": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 2
+        }
+      },
+      "class_metrics": {
+        "accepted": {
+          "support": 3,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "rejected": {
+          "support": 3,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "held": {
+          "support": 2,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "review": {
+          "support": 2,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      },
+      "unique_exported_lines": 10,
+      "exclusive_complete_outputs": true,
+      "original_xlsx_sha256": "86cc5a64848236adf1e31bc7d7fb08d39c01315f2334973c2288db9c26ac6391",
+      "original_bytes_preserved": true,
+      "invoice_pdf_sha256": "37bcad5b2904960a2c692b5b5bd2e240fa5ac30c9dcecb16255b7bca1c1380f0",
+      "invoice_bytes_preserved": true,
+      "invoice_pdf_documents_uploaded": 1,
+      "invoice_pdf_pages": 10,
+      "invoice_documents_linked": 1,
+      "per_service_invoice_links": 8,
+      "unlinked_service_lines": 2,
+      "missing_invoice_held_correctly": true,
+      "signed_policy_fingerprints": 1,
+      "real_audit_snapshots": 8,
+      "real_verified_financial_snapshots": 6,
+      "snapshot_financial_conservation": {
+        "scope": "verified accepted/rejected snapshots only; held/review never counted as financial approval",
+        "claimed": "5940.00",
+        "payable": "5400.00",
+        "deductions": "540.00"
+      },
+      "human_approval_gate_proven": false,
+      "preliminary_exports_financially_final": false,
+      "stage_seconds": {
+        "isolated_setup": 2.337488,
+        "xlsx_ingestion_mapping_import": 0.860593,
+        "pdf_ingestion_and_per_line_links": 0.887267,
+        "reference_recheck": 0.121386,
+        "signed_policy_enrollment": 0.194645,
+        "net_audit_and_palermo2": 0.503447,
+        "freeze_and_download_four_files": 0.193629
+      },
+      "worker_elapsed_seconds": 7.44447,
+      "pipeline_seconds": 2.760967,
+      "pipeline_lines_per_second": 3.621919,
+      "audit_lines_per_second": 19.863064,
+      "process_peak_rss_mib": 132.957
+    },
+    {
+      "status": "passed",
+      "service_lines": 50,
+      "expected_counts": {
+        "accepted": 13,
+        "rejected": 13,
+        "held": 12,
+        "review": 12
+      },
+      "observed_counts": {
+        "accepted": 13,
+        "rejected": 13,
+        "held": 12,
+        "review": 12
+      },
+      "exact_accuracy": 1.0,
+      "confusion_matrix": {
+        "accepted": {
+          "accepted": 13,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "rejected": {
+          "accepted": 0,
+          "rejected": 13,
+          "held": 0,
+          "review": 0
+        },
+        "held": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 12,
+          "review": 0
+        },
+        "review": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 12
+        }
+      },
+      "class_metrics": {
+        "accepted": {
+          "support": 13,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "rejected": {
+          "support": 13,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "held": {
+          "support": 12,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "review": {
+          "support": 12,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      },
+      "unique_exported_lines": 50,
+      "exclusive_complete_outputs": true,
+      "original_xlsx_sha256": "8dfdf335319b7dd504340a09515586b2ac87b0c037f036f57c42047c538aa854",
+      "original_bytes_preserved": true,
+      "invoice_pdf_sha256": "83996e6d46a4bddac6ec7df51cadd03d859c406bfb1cd22a83975e57ecc8edb0",
+      "invoice_bytes_preserved": true,
+      "invoice_pdf_documents_uploaded": 1,
+      "invoice_pdf_pages": 50,
+      "invoice_documents_linked": 1,
+      "per_service_invoice_links": 38,
+      "unlinked_service_lines": 12,
+      "missing_invoice_held_correctly": true,
+      "signed_policy_fingerprints": 1,
+      "real_audit_snapshots": 38,
+      "real_verified_financial_snapshots": 26,
+      "snapshot_financial_conservation": {
+        "scope": "verified accepted/rejected snapshots only; held/review never counted as financial approval",
+        "claimed": "25740.00",
+        "payable": "23400.00",
+        "deductions": "2340.00"
+      },
+      "human_approval_gate_proven": false,
+      "preliminary_exports_financially_final": false,
+      "stage_seconds": {
+        "isolated_setup": 2.465228,
+        "xlsx_ingestion_mapping_import": 0.851534,
+        "pdf_ingestion_and_per_line_links": 1.664582,
+        "reference_recheck": 0.233317,
+        "signed_policy_enrollment": 0.367473,
+        "net_audit_and_palermo2": 1.952104,
+        "freeze_and_download_four_files": 0.35406
+      },
+      "worker_elapsed_seconds": 10.132124,
+      "pipeline_seconds": 5.42307,
+      "pipeline_lines_per_second": 9.21987,
+      "audit_lines_per_second": 25.613389,
+      "process_peak_rss_mib": 135.211
+    },
+    {
+      "status": "passed",
+      "service_lines": 100,
+      "expected_counts": {
+        "accepted": 25,
+        "rejected": 25,
+        "held": 25,
+        "review": 25
+      },
+      "observed_counts": {
+        "accepted": 25,
+        "rejected": 25,
+        "held": 25,
+        "review": 25
+      },
+      "exact_accuracy": 1.0,
+      "confusion_matrix": {
+        "accepted": {
+          "accepted": 25,
+          "rejected": 0,
+          "held": 0,
+          "review": 0
+        },
+        "rejected": {
+          "accepted": 0,
+          "rejected": 25,
+          "held": 0,
+          "review": 0
+        },
+        "held": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 25,
+          "review": 0
+        },
+        "review": {
+          "accepted": 0,
+          "rejected": 0,
+          "held": 0,
+          "review": 25
+        }
+      },
+      "class_metrics": {
+        "accepted": {
+          "support": 25,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "rejected": {
+          "support": 25,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "held": {
+          "support": 25,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "review": {
+          "support": 25,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      },
+      "unique_exported_lines": 100,
+      "exclusive_complete_outputs": true,
+      "original_xlsx_sha256": "45d943be4f144605148bd42a4dab2a42d79a02e6b671539d7de47cf983cd41c6",
+      "original_bytes_preserved": true,
+      "invoice_pdf_sha256": "cc4ffe7139f3df10fe247aeadbe490e74a8ae3a9b2b5319d4e8269dca2cf80c7",
+      "invoice_bytes_preserved": true,
+      "invoice_pdf_documents_uploaded": 1,
+      "invoice_pdf_pages": 100,
+      "invoice_documents_linked": 1,
+      "per_service_invoice_links": 75,
+      "unlinked_service_lines": 25,
+      "missing_invoice_held_correctly": true,
+      "signed_policy_fingerprints": 1,
+      "real_audit_snapshots": 75,
+      "real_verified_financial_snapshots": 50,
+      "snapshot_financial_conservation": {
+        "scope": "verified accepted/rejected snapshots only; held/review never counted as financial approval",
+        "claimed": "49500.00",
+        "payable": "45000.00",
+        "deductions": "4500.00"
+      },
+      "human_approval_gate_proven": false,
+      "preliminary_exports_financially_final": false,
+      "stage_seconds": {
+        "isolated_setup": 3.240052,
+        "xlsx_ingestion_mapping_import": 1.098556,
+        "pdf_ingestion_and_per_line_links": 2.201346,
+        "reference_recheck": 0.302628,
+        "signed_policy_enrollment": 0.300131,
+        "net_audit_and_palermo2": 2.805802,
+        "freeze_and_download_four_files": 0.310361
+      },
+      "worker_elapsed_seconds": 12.799195,
+      "pipeline_seconds": 7.018824,
+      "pipeline_lines_per_second": 14.247401,
+      "audit_lines_per_second": 35.640434,
+      "process_peak_rss_mib": 139.512
+    }
+  ]
+}

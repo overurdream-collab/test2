@@ -1,0 +1,80 @@
+# Windows/Linux Docker Desktop: bounded synthetic localhost test profile.
+name: mcias-laptop
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: laptop_owner
+      POSTGRES_PASSWORD: ${LAPTOP_OWNER_PASSWORD:?Run laptop.ps1 first}
+      POSTGRES_DB: mcias_laptop_e2e
+    command: [postgres, -c, shared_buffers=64MB, -c, work_mem=4MB, -c, maintenance_work_mem=32MB, -c, max_connections=30]
+    volumes: [database:/var/lib/postgresql/data]
+    networks: [backend]
+    mem_limit: 384m
+    cpus: 1.0
+    pids_limit: 128
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U laptop_owner -d mcias_laptop_e2e']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    image: mcias-laptop:local
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.laptop
+    depends_on:
+      db: {condition: service_healthy}
+    environment: &runtime
+      MCIAS_ENVIRONMENT: development
+      MCIAS_LAPTOP_TEST_MODE: synthetic_localhost
+      MCIAS_RBAC_AUTHORITY: super_admin
+      MCIAS_DATABASE_URL: postgresql+psycopg://laptop_runtime:${LAPTOP_RUNTIME_PASSWORD:?required}@db:5432/mcias_laptop_e2e
+      MCIAS_MFA_ENCRYPTION_KEY: ${LAPTOP_MFA_KEY:?required}
+      MCIAS_STORAGE_KEY: ${LAPTOP_STORAGE_KEY:?required}
+      MCIAS_STORAGE_DIR: /var/lib/mcias/sources
+      MCIAS_LAPTOP_STATE_DIR: /var/lib/mcias/state
+      MCIAS_RBAC_TRUST_REGISTRY: /var/lib/mcias/state/synthetic-rbac-trust.json
+      MCIAS_ENABLE_UI_DEMO: 'true'
+      MCIAS_MALWARE_SCAN: disabled
+      MCIAS_RELEASE_COMMIT: ${LAPTOP_RELEASE_COMMIT:?required}
+    ports: ['127.0.0.1:${LAPTOP_HTTP_PORT:-8000}:8000']
+    networks: [backend, web]
+    volumes: [sources:/var/lib/mcias/sources, state:/var/lib/mcias/state]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:rw,nosuid,nodev,noexec,size=64m']
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 128
+
+  setup:
+    image: mcias-laptop:local
+    profiles: [setup]
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      <<: *runtime
+      MCIAS_E2E_DATABASE_URL: postgresql+psycopg://laptop_owner:${LAPTOP_OWNER_PASSWORD:?required}@db:5432/mcias_laptop_e2e
+      MCIAS_LAPTOP_RUNTIME_PASSWORD: ${LAPTOP_RUNTIME_PASSWORD:?required}
+    command: [python, -m, mcias.seed.laptop, setup]
+    networks: [backend]
+    volumes: [sources:/var/lib/mcias/sources, state:/var/lib/mcias/state]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ['/tmp:rw,nosuid,nodev,noexec,size=64m']
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 128
+
+networks:
+  backend: {internal: true}
+  web: {}
+volumes:
+  database:
+  sources:
+  state:

@@ -55,6 +55,10 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
         raise ReferenceConflict("only draft contract may be approved")
     if contract.created_by and contract.created_by == actor.id:
         raise ReferenceConflict("proposal author cannot approve own contract")
+    from mcias.services.authorization_service import check_permission_unified
+    if not (check_permission_unified(db,actor,'reference.approve') or
+            check_permission_unified(db,actor,'reference.contracts.approve')):
+        raise ReferenceConflict('approved functional contract-approval permission required')
     if not precedence_approved:
         raise ReferenceConflict("contract precedence decision is required")
     authorization = db.get(WrittenAuthorization, contract.authorization_id) if contract.authorization_id else None
@@ -63,6 +67,9 @@ def approve_contract(db, contract_id: str, actor, as_of: date, *, precedence_app
     approver = db.get(User, authorization.approved_by)
     if not approver or not approver.active or approver.organization_id != contract.organization_id:
         raise ReferenceConflict("written approver must be active in same organization")
+    from mcias.services.authorization_service import technical_identity
+    if technical_identity(db,approver):
+        raise ReferenceConflict('technical administrator cannot provide financial authorization')
     if os.getenv("MCIAS_ENVIRONMENT", "development") == "production":
         from mcias.production_authorization import verify_production_approval
         if not verify_production_approval(db, contract, authorization):

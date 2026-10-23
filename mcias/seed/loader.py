@@ -29,6 +29,9 @@ def load(config):
             org_id = identifier("organization")
             previous = db.scalar(select(AuditLog).where(AuditLog.action == "synthetic_seed_loaded", AuditLog.resource_id == org_id))
             if previous:
+                from mcias.seed.authorization import approve_synthetic
+                approve_synthetic(db,org_id,config.environment)
+                db.commit()
                 if previous.details["dataset_sha256"] != digest:
                     raise ValueError("dataset changed; use a fresh dedicated test database")
                 manifest = dict(previous.details["manifest"])
@@ -89,6 +92,8 @@ def load(config):
                 db.add(claim); ids.append(claim.id)
                 if i % 500 == 0: db.flush()
             db.flush()
+            from mcias.seed.authorization import approve_synthetic
+            approve_synthetic(db,org.id,config.environment)
             # Snapshot creation owns its commit. Receipt permits retry without duplicating data.
             manifest = {"username": actor.username, "password": "synthetic_e2e_password_only",
                         "organization_id": org.id, "claim_ids": ids, "batch_id": batch.id,

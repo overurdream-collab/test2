@@ -20,8 +20,36 @@ def engine():
 
 def test_migrations_reach_mfa_revision(engine):
     with engine.connect() as conn:
-        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0018_claim_query_indexes"
+        assert conn.execute(text("select version_num from alembic_version")).scalar_one() == "0023_insurer_intake"
         assert conn.execute(text("select to_regclass('public.mfa_factors')")).scalar_one() is not None
+        required_columns = {
+            "users": {
+                "status", "effective_from", "effective_to", "version",
+                "is_super_admin", "closed_by", "closed_at", "close_reason",
+                "full_name_ar", "full_name_en", "email", "last_login_at",
+            },
+            "permissions": {
+                "category", "description_ar", "description_en", "is_system", "created_at",
+            },
+            "audit_log": {
+                "organization_id", "actor_username", "actor_ip", "actor_user_agent",
+                "session_id", "category", "severity", "resource_snapshot", "before_state",
+                "after_state", "request_id", "trace_id", "endpoint", "method", "result",
+                "error_message", "error_code", "hash", "previous_hash",
+            },
+        }
+        for table_name, required in required_columns.items():
+            actual = set(conn.execute(text(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_schema = 'public' AND table_name = :table_name"
+            ), {"table_name": table_name}).scalars())
+            assert required <= actual, f"{table_name}: missing columns {sorted(required - actual)}"
+        tables = set(conn.execute(text(
+            "SELECT table_name FROM information_schema.tables "
+            "WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
+        )).scalars())
+        required_tables = {"groups", "group_permissions", "user_groups", "user_permissions"}
+        assert required_tables <= tables, f"missing RBAC tables {sorted(required_tables - tables)}"
 
 def test_claim_originals_protected_by_database(engine):
     with Session(engine) as db:

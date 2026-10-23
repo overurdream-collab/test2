@@ -1,3 +1,4 @@
+from tests.authorization_fixtures import approve_fixture
 """Security boundaries: atomic quotas, tenant archives, encryption and seed guard."""
 import hashlib
 import json
@@ -31,6 +32,7 @@ def database():
         db.add_all([AuditLog(actor_id="actor", action="synthetic_event", resource_type="test", created_at=datetime(2020,1,2,tzinfo=timezone.utc), details={"message":"اختبار"}),
                     AuditLog(actor_id="foreign", action="foreign-secret", resource_type="test", created_at=datetime(2020,1,2,tzinfo=timezone.utc)),
                     AuditLog(action="system-secret", resource_type="test", created_at=datetime(2020,1,2,tzinfo=timezone.utc))])
+        approve_fixture(db)
         db.commit()
     yield engine
     engine.dispose()
@@ -81,7 +83,11 @@ def test_retention_api_denies_anonymous_and_returns_queued_status(database):
             assert c.post("/api/v1/admin/retention/archive",headers=h,json={"month":"2020-01"}).status_code==202
             assert c.post("/api/v1/admin/retention/archive",headers=h,json={"month":"../evil"}).status_code==422
             with Session(database) as db:
-                db.execute(__import__("sqlalchemy").delete(RolePermission));db.commit()
+                from mcias.models import GroupPermission
+                for grant in db.scalars(select(GroupPermission).join(Permission).where(Permission.code=='retention.read')):
+                    grant.status='closed';grant.effective_to=datetime.now().date()
+                    grant.closed_by='actor';grant.closed_at=datetime.now(timezone.utc);grant.close_reason='Fixture revocation'
+                db.commit()
             assert c.get("/api/v1/admin/retention/status",headers=h).status_code==403
     finally: app.dependency_overrides.pop(get_db,None)
 

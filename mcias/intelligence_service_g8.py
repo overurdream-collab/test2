@@ -4,6 +4,7 @@ Server-enforced task permission gates, documented synthetic test evidence,
 independent activation and source-only deterministic analytics. No SQL/LLM
 execution, clinical assessments, payment orders or unsanctioned data sources.
 """
+from mcias.services.transaction_lock import lock_record
 import re
 from types import SimpleNamespace
 from sqlalchemy import select
@@ -31,7 +32,7 @@ def _task(db, actor, task_id, lock=False):
         AnalysisTaskVersion.id == task_id,
         AnalysisTaskVersion.organization_id == actor.organization_id)
     if lock:
-        query = query.with_for_update()
+        lock_record(db,'analysis_task',actor.organization_id,task_id)
     task = db.scalar(query)
     if task is None:
         raise IntelligenceBlocked("analysis task not accessible")
