@@ -58,7 +58,14 @@ def get_db(settings: Settings = Depends(get_settings)):
     engine = create_engine(settings.database_url, pool_pre_ping=True)
     try:
         with Session(engine) as session:
-            yield session
+            try:
+                yield session
+            except Exception as exc:
+                session.rollback()
+                from mcias.denial_events import AuthorizationDenied, record_denial_after_rollback
+                if isinstance(exc, AuthorizationDenied):
+                    record_denial_after_rollback(engine, exc)
+                raise
     finally:
         engine.dispose()
 

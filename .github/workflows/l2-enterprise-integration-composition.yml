@@ -1,0 +1,84 @@
+name: L2 Enterprise integration composition (PR25 real writer)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/l2-enterprise-integration-composition.yml'
+      - 'mcias/app.py'
+      - 'mcias/denial_events.py'
+      - 'scripts/check_integrated_workflow.py'
+  workflow_dispatch:
+jobs:
+  integrated-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mcias_ci
+          POSTGRES_PASSWORD: synthetic_ci_password_only
+          POSTGRES_DB: mcias_ci_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mcias_ci -d mcias_ci_e2e"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      MCIAS_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@127.0.0.1:5432/mcias_ci_e2e
+      MCIAS_E2E_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@127.0.0.1:5432/mcias_ci_e2e
+      MCIAS_TEST_DATABASE_URL: postgresql+psycopg://mcias_ci:synthetic_ci_password_only@127.0.0.1:5432/mcias_ci_e2e
+      MCIAS_BOOTSTRAP_TOKEN: synthetic_browser_tests_only
+      MCIAS_ENABLE_UI_DEMO: 'true'
+      MCIAS_ENVIRONMENT: development
+      MCIAS_STORAGE_DIR: .e2e-output/integrated-sources
+      MCIAS_STORAGE_KEY: '1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a'
+      MCIAS_MFA_ENCRYPTION_KEY: '2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MCIAS and browser dependencies
+        run: |
+          python -m pip install -e '.[test,browser]'
+          python -m playwright install --with-deps chromium
+      - name: Pin actual PR25 Shared Audit Writer in disposable runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e mcias/audit_writer.py
+          git fetch --no-tags --depth=1 origin 60f1db7d174e9d1a29921ed578392ed5705b2874
+          git show 60f1db7d174e9d1a29921ed578392ed5705b2874:mcias/audit_writer.py > mcias/audit_writer.py
+          test "$(git hash-object mcias/audit_writer.py)" = 509ce4124f012cc4a121294fe9122c9384902fd6
+          test "$(git status --porcelain mcias/audit_writer.py | cut -c1-2)" = "??"
+      - name: Safe PostgreSQL schema preparation
+        run: |
+          python - <<'PY'
+          import os
+          from sqlalchemy.engine import make_url
+          u=make_url(os.environ["MCIAS_TEST_DATABASE_URL"])
+          assert u.host == "127.0.0.1" and u.database == "mcias_ci_e2e"
+          assert os.environ["MCIAS_ENVIRONMENT"] == "development"
+          PY
+          alembic upgrade head
+      - name: Enterprise integrated HTTP + PostgreSQL workflow
+        run: |
+          set -euo pipefail
+          mkdir -p .e2e-output
+          python -m uvicorn mcias.app:app --host 127.0.0.1 --port 8000 > /tmp/mcias-l2-enterprise-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health/live >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/check_integrated_workflow.py --base-url http://127.0.0.1:8000
+      - name: Upload server log even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l2-enterprise-composition-evidence
+          path: |
+            /tmp/mcias-l2-enterprise-server.log
+            .e2e-output/
+          if-no-files-found: ignore
