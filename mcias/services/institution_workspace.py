@@ -16,22 +16,17 @@ _INTERNAL_SYNTHETIC_HASHES = ('synthetic-no-login', 'synthetic-not-login')
 
 
 def _enabled(db, actor, code):
+    if auth.authority_mode()=='super_admin':
+        if features.is_super_admin(db,actor):return True
+        from mcias.schemas.registry import SCHEMAS
+        if code in SCHEMAS:
+            return features.check_feature(db,actor.organization_id,code) and auth.check_permission_unified(db,actor,f'registry.{code}.read')
     return features.check_feature(db, actor.organization_id, code) and features.permitted(
         db, actor, *features.READ_PERMISSIONS[code])
 
 
 def _current_intake(db, actor, feature, field, today):
-    identities = set()
-    for event in registry._latest(db, actor, feature).values():
-        if event.details['status'] != 'open':
-            continue
-        record = registry._decode(db, actor, feature, event)
-        if date.fromisoformat(record['effective_from']) > today:
-            continue
-        if record['effective_to'] and date.fromisoformat(record['effective_to']) <= today:
-            continue
-        identities.add(record['values'][field])
-    return identities
+    return {row['values'][field] for row in registry.effective_records(db,actor,feature,today)}
 
 
 def _metric(value=None, status='available', sources=(), method=''):

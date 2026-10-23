@@ -228,3 +228,9 @@ app.include_router(rbac_provisioning_router)
 
 from mcias.api.institution_routes import router as institution_router
 app.include_router(institution_router)
+
+from mcias.api.access_routes import router as access_router
+app.include_router(access_router)
+
+from mcias.api.result_routes import router as result_files_router
+app.include_router(result_files_router)

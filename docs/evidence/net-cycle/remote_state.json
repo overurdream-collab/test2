@@ -1,0 +1,52 @@
+{
+  "read_at_utc": "2026-10-23T14:59:33.940Z",
+  "repository": "https://github.com/overurdream-collab/test2",
+  "branch": "feat/windows-laptop-testing",
+  "local_head": "74268ae89cb317c95b66aecc684d3a25423bef25",
+  "cached_origin_ref": "5032dee1c1d3542adb369aadf1c0c3adb3a7c665",
+  "remote_head_via_github_read_api": "50ffd4bfd58661137cf079f99058159eb831e588",
+  "remote_commit_url": "https://github.com/overurdream-collab/test2/commit/50ffd4bfd58661137cf079f99058159eb831e588",
+  "remote_commit_created_at": "2026-10-13T17:19:53Z",
+  "ci_runs_for_remote_head": [
+    {
+      "id": 38437800970,
+      "name": "MCIAS G9 release candidate and recovery checks",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/overurdream-collab/test2/actions/runs/38437800970"
+    },
+    {
+      "id": 38437801127,
+      "name": "MCIAS G8 Intelligence and Studio",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/overurdream-collab/test2/actions/runs/38437801127"
+    },
+    {
+      "id": 38437801134,
+      "name": "Laptop Docker and Windows launcher",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/overurdream-collab/test2/actions/runs/38437801134"
+    },
+    {
+      "id": 38437801101,
+      "name": "MCIAS G1-G7 checks",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/overurdream-collab/test2/actions/runs/38437801101"
+    },
+    {
+      "id": 38437800976,
+      "name": "Enterprise workspaces",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/overurdream-collab/test2/actions/runs/38437800976"
+    }
+  ],
+  "limitations": [
+    "Cached origin ref is stale; ahead/behind counts from git status do not represent live GitHub.",
+    "Historical remote CI does not cover uncommitted local modifications.",
+    "No fetch, pull, reset, commit, push or workflow trigger performed."
+  ]
+}

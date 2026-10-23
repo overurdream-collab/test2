@@ -30,6 +30,7 @@ services:
     environment: &runtime
       MCIAS_ENVIRONMENT: development
       MCIAS_LAPTOP_TEST_MODE: synthetic_localhost
+      MCIAS_RBAC_AUTHORITY: super_admin
       MCIAS_DATABASE_URL: postgresql+psycopg://laptop_runtime:${LAPTOP_RUNTIME_PASSWORD:?required}@db:5432/mcias_laptop_e2e
       MCIAS_MFA_ENCRYPTION_KEY: ${LAPTOP_MFA_KEY:?required}
       MCIAS_STORAGE_KEY: ${LAPTOP_STORAGE_KEY:?required}

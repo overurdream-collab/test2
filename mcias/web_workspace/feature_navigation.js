@@ -26,8 +26,30 @@ export function routeVisible(route, access) {
   if (access?.super_admin) return true;
   if (route.admin) return false;
   if (route.path.startsWith("/shared/") || route.kind === "settings") return true;
+  if (route.kind === 'input-list' && access?.authority === 'super_admin')
+    return Boolean(access.features?.includes(route.feature)
+      && access.permissions?.includes(`registry.${route.feature}.read`));
   return Boolean(route.feature && access?.features?.includes(route.feature)
     && (!route.permission || access.permissions.includes(route.permission)));
+}
+
+// Current owner decision: five top-level workspaces, with reference trees inside Inputs.
+export function workspaceNavigation(routes, scope) {
+  const prefix = scope === 'admin' ? '/admin' : '/institution';
+  const page = path => routes.filter(r => r.path === path);
+  const intake = routes.filter(r => r.kind === 'input-list' && r.feature !== 'inputs.insurers');
+  return [
+    ['الرئيسية', 'Home', page(`${prefix}/dashboard`)],
+    ['المدخلات', 'Inputs', intake],
+    ['التدقيق والمراجعة', 'Audit and review', page(`${prefix}/audit-workspace`)],
+    ['التقارير', 'Reports', page(`${prefix}/result-reports`)],
+    ['الإدارة', 'Administration', page(`${prefix}/administration`)],
+  ];
+}
+
+export function isWorkspacePage(route) {
+  return route.kind === 'input-list' && route.feature !== 'inputs.insurers'
+    || /\/(dashboard|audit-workspace|result-reports|administration)$/.test(route.path);
 }
 
 export function navigationGroups(routes, scope) {

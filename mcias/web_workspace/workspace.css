@@ -1452,3 +1452,12 @@ dialog::backdrop {
 @media (max-width: 1400px) { .institution-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 960px) { .institution-kpis, .institution-sections { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .institution-kpis, .institution-sections { grid-template-columns: minmax(0, 1fr); } .staff-card { flex-wrap: wrap; } .staff-card > div:first-child { flex-basis: 100%; } }
+
+/* Focused workspace: explicit per-input grants and selectable reference tables. */
+.permission-group{border:1px solid var(--border,#d5e1e6);border-radius:12px;margin-block:16px;padding:16px;min-width:0}
+.permission-option{display:flex;align-items:flex-start;gap:10px;padding:9px;border-bottom:1px solid var(--border,#d5e1e6);flex-wrap:wrap}
+.permission-option input{flex:0 0 auto;width:auto;margin-top:5px;accent-color:var(--accent,#087f84)}
+.permission-option code{direction:ltr;font-size:12px;overflow-wrap:anywhere;max-width:100%}
+.form-grid textarea{width:100%;min-height:110px;border:1px solid var(--border,#d5e1e6);border-radius:8px;padding:12px;font:inherit;background:var(--surface,#fff);color:inherit;resize:vertical}
+.table-scroll input[type=radio]{width:18px;height:18px;accent-color:var(--accent,#087f84)}
+.table-scroll tr:has(input[type=radio]:checked){background:var(--surface-soft,#e9f5f4)}

@@ -20,6 +20,10 @@ def limiter_database():
 
 @pytest.fixture(autouse=True)
 def isolated_rbac_trust_registry(monkeypatch,tmp_path_factory):
+    # Historical fixtures exercise the retained, cryptographically reviewed
+    # protocol explicitly. workspace_v2 fixtures switch to the new authority;
+    # their default-mode test unsets this variable and verifies the freeze.
+    monkeypatch.setenv('MCIAS_RBAC_AUTHORITY','reviewed')
     # A separate, empty registry per test; no fixture is activated automatically.
     path=tmp_path_factory.mktemp('synthetic-rbac-trust')/'registry.json'
     import os,shutil

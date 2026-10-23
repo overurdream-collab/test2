@@ -4,6 +4,7 @@ from decimal import Decimal, InvalidOperation
 from uuid import UUID
 from pydantic import Field, model_validator
 from mcias.schemas.common import Input, Reason
+from mcias.schemas.reference_links import ReferenceTerms
 
 # key -> Arabic label, English label, browser input type
 FIELDS = {
@@ -46,16 +47,26 @@ class RecordCreate(Input):
     effective_to: date | None = None
     values: dict[str, str] = Field(max_length=12)
     evidence_document_id: UUID | None = None
+    parent_id: UUID | None = None
+    clause_number: str | None = Field(default=None, pattern=r"^[1-9][0-9]*(\.[1-9][0-9]*)*$", max_length=60)
+    body: str = Field(default="", max_length=20000)
+    links: dict[str, UUID] = Field(default_factory=dict, max_length=3)
+    terms: ReferenceTerms = Field(default_factory=ReferenceTerms)
 
     @model_validator(mode="after")
     def dates(self):
         if not self.title.strip(): raise ValueError("title required")
+        if bool(self.parent_id) != bool(self.clause_number):
+            raise ValueError("parent_id and clause_number must be supplied together")
         if self.effective_to is not None and self.effective_to <= self.effective_from:
             raise ValueError("effective_to must be after effective_from")
         return self
 
 class RecordVersion(RecordCreate):
     expected_version: int = Field(ge=1)
+
+class RecordReplace(RecordVersion):
+    reason: Reason
 
 class RecordClose(Input):
     reason: Reason

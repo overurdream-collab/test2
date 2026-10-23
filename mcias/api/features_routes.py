@@ -80,6 +80,7 @@ def batch(org_id: UUID, payload: FeatureBatch, actor=Depends(admin), db=Depends(
 def mine(request: Request, response: Response, actor=Depends(deps.require_auth), db=Depends(deps.get_db)):
     response.headers["Cache-Control"] = "no-store"
     return {"organization_id": actor.organization_id, "features": features.get_visible_features(db, actor),
+        "authority": __import__('mcias.services.authorization_service',fromlist=['authority_mode']).authority_mode(),
         "institution_admin": institution_admin(db, actor),
         "permissions": features.permission_codes(db, actor), "super_admin": features.is_super_admin(db, actor),
         "expires_at": request.state.rbac_session_expires_at,

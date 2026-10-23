@@ -1182,5 +1182,11 @@
     "admin": true,
     "availability": "available",
     "feature": "inputs.insurers"
-  }
+  },
+  {"path":"/admin/audit-workspace","ar":"التدقيق والمراجعة","en":"Audit and review","icon":"audit","kind":"audit-workspace","permission":"claims.read","admin":true,"availability":"partial","feature":"audit.snapshots"},
+  {"path":"/institution/audit-workspace","ar":"التدقيق والمراجعة","en":"Audit and review","icon":"audit","kind":"audit-workspace","permission":"claims.read","admin":false,"availability":"partial","feature":"audit.snapshots"},
+  {"path":"/admin/result-reports","ar":"التقارير","en":"Reports","icon":"reports","kind":"result-reports","permission":"reports.read","admin":true,"availability":"available","feature":"reports.list"},
+  {"path":"/institution/result-reports","ar":"التقارير","en":"Reports","icon":"reports","kind":"result-reports","permission":"reports.read","admin":false,"availability":"available","feature":"reports.list"},
+  {"path":"/admin/administration","ar":"الإدارة","en":"Administration","icon":"settings","kind":"access-management","permission":"users.read","admin":true,"availability":"available","feature":null},
+  {"path":"/institution/administration","ar":"الإدارة","en":"Administration","icon":"settings","kind":"access-management","permission":"users.read","admin":false,"availability":"available","feature":"users.list"}
 ]

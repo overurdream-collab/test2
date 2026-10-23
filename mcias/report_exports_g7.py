@@ -124,3 +124,23 @@ def render_pdf(report):
               Paragraph("Source/patient identifiers are intentionally absent from this PDF.", style["Normal"])]
     doc.build(story)
     return output.getvalue()
+
+def render_result_partition(dataset, bucket):
+    """One sheet, one category, one row per source line; no duplicate all-claims file."""
+    from mcias.services.result_service import BUCKETS, LABELS, partition
+    if bucket not in BUCKETS:raise ReportBlocked('Unsupported output category')
+    partition(dataset['rows'],[row['line_id'] for row in dataset['rows']])
+    wb=Workbook();sheet=wb.active;sheet.title=LABELS[bucket];sheet.sheet_view.rightToLeft=True
+    columns=[('line_id','معرف البند'),('invoice_number','رقم الفاتورة'),('provider_code','مقدم الخدمة'),
+        ('service_code','الخدمة'),('service_date','تاريخ الخدمة'),('currency','العملة'),
+        ('claimed_net','الصافي الأصلي'),('proposed_net','الصافي المقترح'),
+        ('proposed_difference','الفرق المقترح'),('reason','سبب النتيجة'),('audited','تم تدقيقه'),
+        ('audit_snapshot_id','مرجع لقطة التدقيق'),('source_record_id','سجل المصدر')]
+    for col,(_,title) in enumerate(columns,1):
+        cell=_text_cell(sheet,1,col,title);cell.font=Font(bold=True,color='FFFFFF');cell.fill=PatternFill('solid',fgColor='243B53')
+    for row_index,row in enumerate((r for r in dataset['rows'] if r['bucket']==bucket),2):
+        for col,(key,_) in enumerate(columns,1):_text_cell(sheet,row_index,col,row.get('reason_ar',row.get(key)) if key=='reason' else row.get(key))
+    sheet.freeze_panes='A2';sheet.auto_filter.ref=sheet.dimensions
+    for col in sheet.columns:sheet.column_dimensions[col[0].column_letter].width=24
+    sheet.sheet_properties.pageSetUpPr.fitToPage=True
+    output=BytesIO();wb.save(output);return output.getvalue()

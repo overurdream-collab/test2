@@ -1,6 +1,29 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { matchRoute, selectionDiff, routeVisible, navigationGroups, institutionNavigation } from "../../mcias/web_workspace/feature_navigation.js";
+import { matchRoute, selectionDiff, routeVisible, navigationGroups, institutionNavigation, workspaceNavigation, isWorkspacePage } from "../../mcias/web_workspace/feature_navigation.js";
+
+test("current workspace has five sections and imports are separate from inputs", () => {
+  const routes=[...['dashboard','audit-workspace','result-reports','administration'].map(p=>({path:'/institution/'+p})),
+    {path:'/institution/inputs/contracts',kind:'input-list',feature:'inputs.contracts'},
+    {path:'/institution/inputs/insurers',kind:'input-list',feature:'inputs.insurers'},
+    {path:'/institution/claims/batches',kind:'batch-list'}];
+  const groups=workspaceNavigation(routes,'institution');
+  assert.deepEqual(groups.map(g=>g[0]),['الرئيسية','المدخلات','التدقيق والمراجعة','التقارير','الإدارة']);
+  assert.deepEqual(groups[1][2].map(r=>r.feature),['inputs.contracts']);
+  assert.equal(isWorkspacePage(routes.at(-1)),false);
+});
+
+test("manual input visibility requires explicit read and feature activation", () => {
+  const route={path:'/institution/inputs/contracts',kind:'input-list',feature:'inputs.contracts'};
+  const access={authority:'super_admin',permissions:[],features:['inputs.contracts']};
+  assert.equal(routeVisible(route,access),false);
+  access.permissions=['registry.inputs.contracts.create','registry.inputs.contracts.update'];
+  assert.equal(routeVisible(route,access),false);
+  access.permissions.push('registry.inputs.contracts.read');
+  assert.equal(routeVisible(route,access),true);
+  access.features=[];
+  assert.equal(routeVisible(route,access),false);
+});
 
 test("nested organization feature route captures only one path segment", () => {
   const routes = [{path:"/admin/organizations/:id"}, {path:"/admin/organizations/:id/features"}];

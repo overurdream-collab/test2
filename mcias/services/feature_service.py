@@ -160,5 +160,8 @@ def get_visible_features(db, user):
         return []
     if is_super_admin(db, user):
         return [r.code for r in list_features(db) if not r.is_container]
+    from mcias.services.authorization_service import authority_mode
+    from mcias.schemas.registry import SCHEMAS
     return [r.feature_code for r in get_org_features(db, user.organization_id)
-        if permitted(db, user, *READ_PERMISSIONS.get(r.feature_code, ()))]
+        if (permitted(db,user,f'registry.{r.feature_code}.read') if authority_mode()=='super_admin' and r.feature_code in SCHEMAS
+            else permitted(db, user, *READ_PERMISSIONS.get(r.feature_code, ())))]

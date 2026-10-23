@@ -85,7 +85,7 @@ def _covered(origin,provisioning,group,record,kind,permission_code=None):
             return item['user_id']==record.user_id
     return False
 
-def permission_records(db,user,code=None):
+def _reviewed_permission_records(db,user,code=None):
     if not live_user(user) or not user.organization_id:return []
     gp_origin=aliased(RbacGrantOrigin);ug_origin=aliased(RbacGrantOrigin)
     gp_provision=aliased(RbacProvisioning);ug_provision=aliased(RbacProvisioning)
@@ -111,15 +111,39 @@ def permission_records(db,user,code=None):
         results[permission.id]=permission
     return sorted(results.values(),key=lambda p:p.code)
 
+def authority_mode():
+    # Explicit compatibility mode retains the old signed protocol for regression
+    # tests/migration review. Default deployments freeze ALL previous role grants.
+    return os.getenv('MCIAS_RBAC_AUTHORITY', 'super_admin')
+
+def permission_records(db,user,code=None):
+    if authority_mode() == 'reviewed':
+        return _reviewed_permission_records(db,user,code)
+    if authority_mode() != 'super_admin':
+        return []
+    from mcias.services.access_service import permission_records as manual_records
+    return manual_records(db,user,code)
+
 def check_permission_unified(db,user,code):
     if not live_user(user) or not user.organization_id:return False
+    if authority_mode() not in ('super_admin','reviewed'):return False
     if technical_identity(db,user) and (code in FINANCIAL_APPROVALS or code=='groups.members.add'):return False
+    if authority_mode() == 'super_admin' and technical_admin(db,user):
+        from mcias.services.access_service import registry_codes
+        if code in registry_codes():return True
+        return db.scalar(select(Permission.id).where(Permission.code==code).limit(1)) is not None
     if code in TECHNICAL_CAPABILITIES and technical_admin(db,user):return True
     return bool(permission_records(db,user,code))
 
 def permission_codes(db,user):
+    if authority_mode() not in ('super_admin','reviewed'):return []
     codes={p.code for p in permission_records(db,user)}
-    if technical_admin(db,user):codes.update(TECHNICAL_CAPABILITIES)
+    if technical_admin(db,user):
+        if authority_mode() == 'super_admin':
+            from mcias.services.access_service import registry_codes
+            codes.update(registry_codes())
+            codes.update(c for c in db.scalars(select(Permission.code)) if c not in FINANCIAL_APPROVALS and c!='groups.members.add')
+        else:codes.update(TECHNICAL_CAPABILITIES)
     return sorted(codes)
 
 def institution_admin(db,user):

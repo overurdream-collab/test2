@@ -85,7 +85,18 @@ def freeze_batch(batch, claims, snapshots, cases, events):
         if snapshot and latest and latest.kind == "approve":
             calc = snapshot.calculation
             findings = snapshot.findings.get("agents", []) if isinstance(snapshot.findings, dict) else []
-            independent = verify_palermo2(claim, findings, calc)
+            reference_check=snapshot.findings.get('reference_check') if isinstance(snapshot.findings,dict) else None
+            needs_net_binding=(isinstance(calc,dict) and calc.get('amount_basis')=='NET') or reference_check is not None
+            if needs_net_binding:
+                policy_fp=getattr(snapshot,'policy_fingerprint',None)
+                policy_id=getattr(snapshot,'policy_id',None)
+                independent=(verify_palermo2(claim,findings,calc,policy_fingerprint=policy_fp,
+                    policy_id=policy_id,reference_check=reference_check) if policy_fp and policy_id
+                    else {'status':'held','issues':['NET_signed_snapshot_binding_missing']})
+            else:
+                # Existing GROSS evidence keeps its original verification
+                # protocol; NET-only binding fields are not retroactive.
+                independent=verify_palermo2(claim,findings,calc)
             if (isinstance(calc, dict) and calc.get("status") == "calculated"
                 and independent["status"] == "verified"
                 and snapshot.verification.get("status") == "verified"
@@ -98,8 +109,8 @@ def freeze_batch(batch, claims, snapshots, cases, events):
                     raise ReportBlocked("missing deduction evidence")
                 deductions = sum((amount(x["deduction"]) for x in steps), Decimal(0))
                 actual = calc.get("fingerprint")
-                recalculated = sha256(canonical({k: v for k, v in calc.items()
-                                                if k != "fingerprint"})).hexdigest()
+                recalculated = sha256(json.dumps({k: v for k, v in calc.items() if k != 'fingerprint'},
+                    sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
                 if (calc_claimed == claimed and candidate + deductions == claimed
                     and actual == recalculated):
                     state, reason, payable, deduction = "approved", None, number(candidate), number(deductions)

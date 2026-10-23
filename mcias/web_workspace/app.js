@@ -15,7 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
-import { matchRoute, routeVisible, navigationGroups, institutionNavigation } from "./feature_navigation.js";
+import { matchRoute, routeVisible, workspaceNavigation, isWorkspacePage } from "./feature_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -30,6 +30,7 @@ async function refreshAccess() {
   context = { ...access.user, organization: access.organization, permissions: access.permissions,
     roles: access.roles, expires_at: access.expires_at, institutionally_accepted: false, tenant_switching: false };
   context.institution_admin = access.institution_admin;
+  context.authority = access.authority;
 }
 const app = document.getElementById("app");
 api.onExpiry = () => {
@@ -299,8 +300,7 @@ function render() {
   const scopeRoutes = routes.filter(
     (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id") && routeVisible(r, access),
   );
-  const groups = scope === "institution" && context.institution_admin
-    ? institutionNavigation(scopeRoutes) : navigationGroups(scopeRoutes, scope);
+  const groups = workspaceNavigation(scopeRoutes, scope);
   function appendRoutes(target, items) {
     for (const r of items) {
       const a = link("", r.path, "nav-link");
@@ -316,8 +316,10 @@ function render() {
   }
   for (const [ar, en, items] of groups) {
     nav.append(el("p", L(ar, en), "nav-heading"));
-    if (items.every(r => r.kind === "input-list")) {
-      for (const [prefix, arabic, english] of [["inputs", "المدخلات", "Inputs"], ["beneficiaries", "المستفيدون", "Beneficiaries"], ["providers", "مقدمو الخدمة", "Providers"]]) {
+    if (!items.length) {
+      nav.append(el('p', L('غير متاح بالصلاحيات الحالية','Not available with current permissions'), 'nav-state'));
+    } else if (items.every(r => r.kind === "input-list")) {
+      for (const [prefix, arabic, english] of [["inputs", "البيانات والعقود", "Data and contracts"], ["beneficiaries", "المستفيدون", "Beneficiaries"], ["providers", "مقدمو الخدمة", "Providers"]]) {
         const children = items.filter(r => r.feature.startsWith(prefix + "."));
         if (!children.length) continue;
         const branch = el("details", null, "nav-tree"); branch.open = children.some(r => r.path === route.path);
@@ -326,18 +328,6 @@ function render() {
     } else appendRoutes(nav, items);
   }
   if (!scopeRoutes.some(r => r.feature)) nav.append(el("p", L("لا ميزات مفعّلة", "No enabled features"), "nav-heading"));
-  if (!context.institution_admin) nav.append(el("p", L("مساحات العمل", "WORKSPACES"), "nav-heading"));
-  if (context.roles.includes("super_admin"))
-    nav.append(
-      link(
-        scope === "admin"
-          ? L("واجهة المؤسسة", "Institution interface")
-          : L("واجهة الإدارة", "Administration interface"),
-        scope === "admin" ? "/institution/dashboard" : "/admin/dashboard",
-        "nav-link",
-      ),
-    );
-  nav.append(link(L("المساعدة", "Help"), "/shared/help", "nav-link"));
   sidebar.append(nav);
   const foot = el("div", null, "sidebar-foot");
   foot.append(
@@ -398,7 +388,7 @@ function render() {
     searchResults.replaceChildren();
     searchResults.hidden = !search;
     if (search) {
-      const results = routes.filter(r => routeVisible(r, access))
+      const results = routes.filter(r => isWorkspacePage(r) && routeVisible(r, access))
         .filter(
           (r) =>
             !r.path.includes(":id") &&
@@ -446,7 +436,6 @@ function render() {
     "لا يوجد مركز إشعارات تشغيلي",
     "An operational notification inbox is unavailable",
   );
-  topbar.append(notifications);
   const profile = button(
     context.username,
     () => navigate("/shared/profile"),
@@ -554,7 +543,7 @@ function render() {
   main.append(root);
   const restricted =
     (route.admin && !context.roles.includes("super_admin")) ||
-    (route.permission && !context.permissions.includes(route.permission));
+    (route.kind !== 'input-list' && route.permission && !context.permissions.includes(route.permission));
   if (restricted) {
     root.append(
       empty(

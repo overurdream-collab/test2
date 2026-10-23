@@ -87,6 +87,11 @@ def grant_runtime(engine, password):
         for table in MUTABLE_TABLES:
             connection.exec_driver_sql(f'GRANT UPDATE, DELETE ON {table} TO laptop_runtime')
         connection.exec_driver_sql('REVOKE UPDATE, DELETE ON audit_log FROM laptop_runtime')
+        # Closure only. SELECT FOR UPDATE also requires an UPDATE privilege.
+        for table in ('groups','group_permissions','user_groups','user_permissions'):
+            connection.exec_driver_sql(f'GRANT UPDATE (status,effective_to,closed_by,closed_at,close_reason) ON {table} TO laptop_runtime')
+        connection.exec_driver_sql('GRANT UPDATE (status,effective_to,closed_by,closed_at,close_reason,active) ON users TO laptop_runtime')
+        connection.exec_driver_sql('GRANT UPDATE (name) ON organizations TO laptop_runtime')
 
 
 def setup(env):
@@ -115,6 +120,8 @@ def setup(env):
                 updated = ensure_admin(db, seed['organization_id'], saved['accounts'], env, ADMIN_PERMISSIONS)
                 from mcias.seed.authorization import approve_synthetic
                 approve_synthetic(db,seed['organization_id'],'development')
+                from mcias.seed.reference_inputs import seed_reference_inputs
+                seed_reference_inputs(db,db.get(User,next(a['id'] for a in saved['accounts'] if a['username']=='SYN-laptop-admin')))
                 if updated: private_json(state, saved)
                 db.commit()
                 return {'status':'READY','synthetic':True,'reused':True}
@@ -149,6 +156,8 @@ def setup(env):
             ensure_admin(db, seed['organization_id'], accounts, env, ADMIN_PERMISSIONS)
             from mcias.seed.authorization import approve_synthetic
             approve_synthetic(db,seed['organization_id'],'development')
+            from mcias.seed.reference_inputs import seed_reference_inputs
+            seed_reference_inputs(db,db.get(User,accounts[0]['id']))
             private_json(state,{'synthetic':True,'organization_id':seed['organization_id'],'accounts':accounts})
             db.commit()
         return {'status':'READY','synthetic':True,'reused':False}
@@ -171,6 +180,9 @@ def check(env, *, verify_mfa=False, verify_inputs=False):
         try: ok=request(path)[1]['status']==expected
         except Exception: ok=False
         controls.append({'control':path,'status':'PASS' if ok else 'BLOCKED'})
+    from mcias.services.authorization_service import authority_mode
+    if authority_mode()=='super_admin':
+        return _check_manual_authority(env,controls,request,verify_mfa,verify_inputs)
     try:
         token=request('/api/v1/auth/login',{'username':'SYN-workspace-reader','password':'synthetic_e2e_password_only'})[1]['access_token']
         context=request('/api/v1/workspace/context',token=token)[1]
@@ -262,6 +274,66 @@ def check(env, *, verify_mfa=False, verify_inputs=False):
                 controls.append({'control':name+'_mfa_and_permissions','status':'BLOCKED'})
     return {'status':'TEST_CHECKS_PASS' if all(x['status']=='PASS' for x in controls) else 'BLOCKED',
             'synthetic':True,'production_accepted':False,'controls':controls}
+
+
+def _check_manual_authority(env,controls,request,verify_mfa,verify_inputs):
+    """A successful check now proves frozen staff access, not pre-granted access."""
+    from mcias.models_claims import ClaimEntry
+    def control(name,ok):controls.append({'control':name,'status':'PASS' if ok else 'BLOCKED'})
+    def denied(path,token):
+        try:request(path,token=token);return False
+        except HTTPError as exc:return exc.code==403
+    try:
+        token=request('/api/v1/auth/login',{'username':'SYN-workspace-reader','password':'synthetic_e2e_password_only'})[1]['access_token']
+        context=request('/api/v1/me/features',token=token)[1]
+        control('reader_authentication',context['user']['username']=='SYN-workspace-reader')
+        control('reader_permissions_frozen',context['permissions']==[])
+        control('reader_claims_denied',denied('/api/v1/workspace/catalog/claims',token))
+        control('reader_admin_denied',denied('/api/v1/workspace/catalog/users',token))
+        engine=create_engine(env['MCIAS_DATABASE_URL'],connect_args={'connect_timeout':3})
+        try:
+            with Session(engine) as db:
+                control('seed_claims',db.scalar(select(ClaimEntry.id).where(ClaimEntry.organization_id==context['organization_id']).limit(1)) is not None)
+                receipt=Path(env['MCIAS_LAPTOP_STATE_DIR'])/'laptop-smoke.json'
+                if receipt.exists():
+                    if receipt.is_symlink():raise ValueError('symbolic smoke receipt')
+                    saved=json.loads(receipt.read_text());claim=db.get(ClaimEntry,saved['claim_id'])
+                    control('entered_claim_persistence',bool(claim and claim.organization_id==context['organization_id'] and claim.claim_reference==saved['claim_reference']))
+        finally:engine.dispose()
+        request('/api/v1/auth/logout',{},token)
+    except Exception:control('authenticated_smoke',False)
+    if verify_mfa:
+        from mcias.mfa import generate_totp
+        from mcias.services.authorization_service import FINANCIAL_APPROVALS
+        path=Path(env['MCIAS_LAPTOP_STATE_DIR'])/'laptop-credentials.json'
+        if path.is_symlink():raise ValueError('symbolic private state')
+        for account in json.loads(path.read_text())['accounts']:
+            name=account['username'];payload={key:account[key] for key in ('username','password')}
+            try:
+                try:request('/api/v1/auth/login',payload);missing_denied=False
+                except HTTPError as exc:missing_denied=exc.code==401
+                encoded=account['totp_secret_base32'];secret=base64.b32decode(encoded+'='*((-len(encoded))%8))
+                payload['totp_code']=generate_totp(secret,int(time.time())//30)
+                token=request('/api/v1/auth/login',payload)[1]['access_token']
+                context=request('/api/v1/me/features',token=token)[1]
+                try:request('/api/v1/auth/login',payload);replay_denied=False
+                except HTTPError as exc:replay_denied=exc.code==401
+                technical=name=='SYN-laptop-admin'
+                correct=('super_admin' in context['roles'] and not FINANCIAL_APPROVALS.intersection(context['permissions'])) if technical else context['permissions']==[]
+                control(name+'_mfa_and_permissions',missing_denied and replay_denied and correct)
+                if technical and verify_inputs:
+                    suffix=secrets.token_hex(6);base='/api/v1/registry/inputs.contracts'
+                    data={'title':'SYN laptop reference check','effective_from':__import__('datetime').date.today().isoformat(),
+                        'values':{'record_code':'SYN-CHECK-'+suffix,'provider_code':'SYN-CHECK','contract_number':'SYN-CHECK'}}
+                    record=request(base+'/records',data,token)[1]
+                    updated=request(base+'/records/'+record['id']+'/replace',{**data,'title':'SYN changed reference',
+                        'expected_version':record['version'],'reason':'SYN laptop atomic replacement check'},token)[1]
+                    history=request(base+'/records/'+record['id']+'/history',token=token)[1]['items']
+                    control('reference_add_and_atomic_edit',updated['version']==record['version']+1 and len(history)==3 and history[0]['source_sha256']==record['source_sha256'])
+                request('/api/v1/auth/logout',{},token)
+            except Exception:control(name+'_mfa_and_permissions',False)
+    return {'status':'TEST_CHECKS_PASS' if all(x['status']=='PASS' for x in controls) else 'BLOCKED',
+        'synthetic':True,'production_accepted':False,'authority':'super_admin','controls':controls}
 
 
 def main(argv=None):
