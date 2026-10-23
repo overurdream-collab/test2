@@ -1,13 +1,16 @@
 """Authenticated, tenant-isolated ingestion endpoints; bounded upload size."""
 import os
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from sqlalchemy.orm import Session
+from cryptography.exceptions import InvalidTag
 from mcias.auth import resolve_user
 from mcias.app import get_db
 from mcias.tenant import require_organization, require_sensitive_field
 from mcias.storage import EncryptedStore
+from mcias.models import SourceFile
 from mcias.ingestion.file_scanner import MAX_BYTES
 from mcias.ingestion.orchestrator import ingest
+from mcias.ingestion.document_reader_preview import isolated_preview_pdf, reader_eligible
 from mcias.models_ingestion import IngestionDocument, IngestionJob, QuarantineItem
 
 router = APIRouter(prefix="/api/v1/ingestion", tags=["ingestion"])
@@ -71,6 +74,46 @@ def document_manifest(document_id: str, authorization: str | None = Header(defau
     require_organization(db, user, document.organization_id, "ingestion.read")
     job = db.scalar(select(IngestionJob).where(IngestionJob.document_id == document.id).order_by(IngestionJob.created_at.desc()))
     return {"document_id": document.id, "manifest": job.manifest if job else {}, "status": job.status if job else document.status}
+
+
+@router.post("/documents/{document_id}/reader-preview")
+def document_reader_preview(document_id: str, response: Response,
+                            authorization: str | None = Header(default=None),
+                            db: Session = Depends(get_db)):
+    """Manually requested invoice candidates; no trust or audit outcome changes."""
+    user, _ = resolve_user(db, authorization)
+    document = db.get(IngestionDocument, document_id)
+    if document is None:
+        raise HTTPException(404, "document not found")
+    require_organization(db, user, document.organization_id, "ingestion.read")
+    # Invoices can contain unrestricted health information. A metadata-reader
+    # alone cannot view their text or inferred medical service lines.
+    require_sensitive_field(db, user, document.organization_id, "text")
+    response.headers["Cache-Control"] = "no-store"
+    from sqlalchemy import select
+    job = db.scalar(select(IngestionJob).where(IngestionJob.document_id == document.id)
+                    .order_by(IngestionJob.created_at.desc()))
+    quarantined = ([{"reason": item.reason, "locator": item.locator} for item in
+                    db.scalars(select(QuarantineItem).where(QuarantineItem.job_id == job.id)).all()]
+                   if job and document.status == "review_required" else [])
+    if not job or job.status != document.status or job.manifest.get("format") != "pdf" or not reader_eligible(
+        document.status, job.manifest, quarantined
+    ):
+        raise HTTPException(409, "document has not passed G2 source screening")
+    if os.environ.get("MCIAS_DOCUMENT_READER_MODE") != "local_preview":
+        raise HTTPException(503, "local reader preview disabled")
+    if not document.filename.lower().endswith(".pdf"):
+        raise HTTPException(415, "reader preview accepts PDF invoices only")
+    source = db.get(SourceFile, document.source_id)
+    if source is None or source.sha256 != document.sha256:
+        raise HTTPException(409, "source integrity unavailable")
+    try:
+        store = EncryptedStore(os.environ["MCIAS_STORAGE_DIR"],
+                               bytes.fromhex(os.environ["MCIAS_STORAGE_KEY"]))
+        raw = store.get(source.storage_key, source.sha256)
+        return isolated_preview_pdf(raw, document.id, document.sha256)
+    except (KeyError, ValueError, OSError, InvalidTag) as exc:
+        raise HTTPException(409, "verified source could not be previewed") from exc
 
 @router.get("/jobs/{job_id}/quarantine")
 def job_quarantine(job_id: str, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
