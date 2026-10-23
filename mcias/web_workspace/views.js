@@ -1377,6 +1377,35 @@ async function documentDetail(ctx, id) {
     "/api/v1/ingestion/documents/" + safeId(id) + "/manifest",
     (data) => target.append(details(data)),
   );
+  if (allowed(ctx, "ingestion.read") && allowed(ctx, "medical_fields.text.read")) {
+    const preview = el("div");
+    const run = button(
+      L("معاينة قراءة الفاتورة (غير معتمدة)", "Preview invoice reader (unverified)"),
+      async () => {
+        run.disabled = true;
+        preview.replaceChildren(loading());
+        try {
+          const data = await ctx.api.request(
+            "/api/v1/ingestion/documents/" + safeId(id) + "/reader-preview",
+            { method: "POST" },
+          );
+          preview.replaceChildren(
+            el("p", L(
+              "قراءة استشارية فقط: جميع البيانات تحتاج مراجعة بشرية ولا تغيّر نتيجة التدقيق.",
+              "Advisory extraction only: human verification required; audit results are unchanged.",
+            ), "auth-note"),
+            details(data),
+          );
+        } catch (err) {
+          preview.replaceChildren(errorState(err));
+        } finally {
+          run.disabled = ctx.demo;
+        }
+      },
+    );
+    run.disabled = ctx.demo;
+    n.append(run, preview);
+  }
 }
 async function jobDetail(ctx, id) {
   const n = panel(
