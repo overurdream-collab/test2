@@ -15,6 +15,7 @@ import {
 } from "./ui.js";
 import { ApiClient } from "./api.js";
 import { renderView } from "./views.js";
+import { matchRoute, routeVisibleForContext, navigationGroupsForContext } from "./w1_navigation.js";
 const api = new ApiClient();
 let routes = [],
   context = null,
@@ -30,17 +31,7 @@ api.onExpiry = () => {
   );
 };
 function routeAt(path) {
-  const exact = routes.find((r) => r.path === path);
-  if (exact) return { route: exact, recordId: null };
-  for (const r of routes.filter((x) => x.path.endsWith("/:id"))) {
-    const prefix = r.path.slice(0, -3);
-    if (path.startsWith(prefix) && !path.slice(prefix.length).includes("/"))
-      return {
-        route: r,
-        recordId: decodeURIComponent(path.slice(prefix.length)),
-      };
-  }
-  return null;
+  return matchRoute(routes, path);
 }
 function navigate(path) {
   if (document.getElementById("drawer").open)
@@ -299,30 +290,15 @@ function render() {
   const scopeRoutes = routes.filter(
     (r) => r.path.startsWith("/" + scope + "/") && !r.path.includes(":id"),
   );
-  const groups =
-    scope === "admin"
-      ? [
-          [L("المنصة والوصول", "PLATFORM & ACCESS"), 0, 7],
-          [L("البيانات والحوكمة", "DATA & GOVERNANCE"), 7, 14],
-          [L("التحليل والعمليات", "ANALYSIS & OPERATIONS"), 14, 99],
-        ]
-      : [
-          [L("نظرة شاملة", "OVERVIEW"), 0, 3],
-          [L("الرعاية والإنفاق", "CARE & EXPENDITURE"), 3, 12],
-          [L("التدقيق والذكاء", "AUDIT & INTELLIGENCE"), 12, 20],
-          [L("الأدلة والمراجعة", "EVIDENCE & REVIEW"), 20, 99],
-        ];
-  for (const [title, start, end] of groups) {
-    nav.append(el("p", title, "nav-heading"));
-    for (const r of scopeRoutes.slice(start, end)) {
+  const groups = navigationGroupsForContext(scopeRoutes, scope, context);
+  for (const [ar, en, entries] of groups) {
+    nav.append(el("p", L(ar, en), "nav-heading"));
+    for (const r of entries) {
       const a = link("", r.path, "nav-link");
       a.title = L(r.ar, r.en);
       if (route.path === r.path) a.setAttribute("aria-current", "page");
       a.append(icon(r.icon), el("span", L(r.ar, r.en), "nav-text"));
-      if (r.kind === "unavailable")
-        a.append(el("span", L("مخطط", "Planned"), "nav-state"));
-      else if (r.permission && !context.permissions.includes(r.permission))
-        a.append(el("span", L("مقيد", "Restricted"), "nav-state"));
+      if (r.availability === "partial") a.append(el("span", L("جزئي", "Partial"), "nav-state"));
       nav.append(a);
     }
   }
@@ -402,7 +378,7 @@ function render() {
           (r) =>
             !r.path.includes(":id") &&
             L(r.ar, r.en).toLocaleLowerCase().includes(search) &&
-            (!r.admin || context.roles.includes("super_admin")),
+            routeVisibleForContext(r, context),
         )
         .slice(0, 15);
       for (const r of results)
@@ -545,9 +521,7 @@ function render() {
   main.append(banner);
   const root = el("div");
   main.append(root);
-  const restricted =
-    (route.admin && !context.roles.includes("super_admin")) ||
-    (route.permission && !context.permissions.includes(route.permission));
+  const restricted = !routeVisibleForContext(route, context) && route.kind !== "missing" && route.kind !== "unavailable";
   if (restricted) {
     root.append(
       empty(

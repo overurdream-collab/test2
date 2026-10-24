@@ -1,0 +1,28 @@
+name: W1 isolated UI verification
+on:
+  push:
+    branches: [feat/mcias-w1-windows-ui-reuse-pilot]
+  pull_request:
+    paths:
+      - 'mcias/web_workspace/**'
+      - 'tests/w1_navigation.test.mjs'
+      - '.github/workflows/w1-ui-verification.yml'
+permissions:
+  contents: read
+jobs:
+  w1-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: W1 focused navigation tests
+        run: node --test tests/w1_navigation.test.mjs
+      - name: Existing JavaScript syntax checks
+        run: npm run check
+      - name: W1 module syntax
+        run: node --check mcias/web_workspace/w1_navigation.js
+      - name: Existing frontend regression tests
+        run: npm test

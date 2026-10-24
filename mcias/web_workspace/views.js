@@ -67,7 +67,7 @@ export function renderView(ctx) {
     return;
   }
   if (kind === "dashboard") {
-    dashboard(ctx);
+    w1InstitutionDashboard(ctx);
     return;
   }
   if (kind === "admin-overview") {
@@ -88,6 +88,10 @@ export function renderView(ctx) {
   }
   if (["reports"].includes(kind)) {
     reports(ctx);
+    return;
+  }
+  if (kind === "users") {
+    w1UsersReadOnly(ctx);
     return;
   }
   if (
@@ -569,6 +573,36 @@ function adminOverview(ctx) {
   }
   ctx.root.append(grid);
 }
+// W1: institution.js visual composition adapted to main's governed report snapshot API.
+// No Windows overview API, no invented totals, and no synthetic operational data.
+function w1InstitutionDashboard(ctx) {
+  const hero = el("section", null, "hero institution-hero");
+  const heading = el("div");
+  heading.append(badge(L("لوحة المؤسسة", "Institution dashboard")),
+    el("h2", ctx.context.organization?.name || L("المؤسسة", "Institution")),
+    el("p", L("مؤشرات من تقارير محفوظة فقط؛ لا توجد أرقام تجريبية.",
+      "Metrics only from saved reports; no sample figures.")));
+  hero.append(heading, icon("dashboard")); ctx.root.append(hero);
+  const links = el("div", null, "grid institution-sections");
+  for (const [ar,en,path,asset] of [
+    ["المطالبات", "Claims", "/institution/claims", "claims"],
+    ["التدقيق", "Audit", "/institution/financial-audit", "audit"],
+    ["التقارير", "Reports", "/institution/reports", "reports"],
+    ["المستخدمون", "Users", "/institution/users", "security"]
+  ]) {
+    const route = ctx.routes.find(r => r.path === path);
+    if (!route || route.kind === "unavailable" || route.availability === "unavailable" ||
+      (route.permission && !ctx.context.permissions.includes(route.permission))) continue;
+    const card = link("", path, "feature-card");
+    card.append(icon(asset), el("h3", L(ar,en)));
+    if (route.availability !== "available") card.append(badge(L("جزئي", "Partial")));
+    links.append(card);
+  }
+  const section = panel(L("مساحات العمل", "Workspaces"), L("روابط بحسب الصلاحيات الحالية", "Links based on current permissions"));
+  section.append(links);ctx.root.append(section);
+  dashboard(ctx); // existing main read-only report dashboard, using protected API.
+}
+
 function dashboard(ctx) {
   const source = panel(
       L("نطاق التقرير", "Report scope"),
@@ -1016,6 +1050,41 @@ async function reportEntries(ctx, id, offset = 0, state = "", currency = "") {
     },
   );
 }
+// W1: read-only adaptation of Windows institutionUsers visual pattern.
+// Uses main's existing catalog endpoint and no user mutation endpoints.
+function w1UsersReadOnly(ctx) {
+  const card = panel(L("مستخدمو النظام", "System users"),
+    L("عرض مصرح به للقراءة فقط؛ الاعتماد الإداري الحساس لدى Super Admin.",
+      "Authorized read-only view; sensitive administrative approvals belong to Super Admin."), "security");
+  const search = field("w1-users-search", L("بحث محلي", "Local search"), {required:false,maxLength:120});
+  const status = field("w1-users-status", L("حالة الحساب", "Account status"),
+    {required:false,options:[["",L("الكل","All")],["active",L("نشط","Active")],["disabled",L("غير نشط","Inactive")]]});
+  const filters = el("div", null, "filters"), target = el("div");
+  filters.append(search.wrap,status.wrap);card.append(filters,target);ctx.root.append(card);
+  let rows = [];
+  function draw() {
+    target.replaceChildren();
+    const q = search.input.value.trim().toLocaleLowerCase(), st = status.input.value;
+    const selected = rows.filter(u => (!q || [u.username,u.full_name_ar,u.email].some(v => String(v||"").toLocaleLowerCase().includes(q)))
+      && (!st || (u.active === true ? "active" : "disabled") === st));
+    if (!selected.length) { target.append(empty(L("لا توجد نتائج", "No matching users"), L("لا توجد حسابات مطابقة في الصفحة الحالية", "No matching accounts on this page"))); return; }
+    const list = el("div", null, "staff-list");
+    for (const u of selected) {
+      const row = el("article", null, "staff-card"), identity = el("div");
+      identity.append(el("h3", u.full_name_ar || u.username || L("مستخدم", "User")),
+        el("p", u.username || "—", "muted"));
+      row.append(identity, badge(u.active === true ? L("نشط", "Active") : L("غير نشط", "Inactive")));
+      list.append(row);
+    }
+    target.append(list);
+  }
+  search.input.addEventListener("input", draw);status.input.addEventListener("change", draw);
+  target.append(loading());
+  void ctx.api.request("/api/v1/workspace/catalog/users?limit=25&offset=0")
+    .then(data => { rows = Array.isArray(data.items) ? data.items : []; draw(); })
+    .catch(error => target.replaceChildren(errorState(error)));
+}
+
 function catalog(ctx) {
   const { root, route } = ctx;
   const mapping = { ingestion: "jobs", quarantine: "jobs", appeals: "cases" };
