@@ -15,6 +15,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[test]'
+      - run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
       - run: python -m compileall -q mcias tests
       - run: node --check mcias/web_g7/dashboard.js
       - run: python -m pip wheel . --no-deps -w dist
@@ -31,7 +32,10 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip pip-audit
       - run: python -m pip install -e .
-      - run: pip-audit
+      - run: python scripts/audit_dependencies.py
+      - run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q tests/test_pillow13_compatibility.py tests/test_g2_reader.py tests/test_g2_ocr_isolation.py tests/test_g7_reporting.py tests/test_audit_export.py
 
   postgres-integration:
     runs-on: ubuntu-latest
