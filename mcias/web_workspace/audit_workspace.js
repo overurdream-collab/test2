@@ -28,6 +28,15 @@ export function auditWorkspace(ctx) {
         uploadResult.append(empty(L('توقف المسار عند الاستخراج','Pipeline stopped during extraction'),
           L('لم يتم إنشاء دفعة مطالبات. راجع حالة المستند وسجل الحجر قبل إعادة المحاولة.','No claim batch was created. Review document status and quarantine before retrying.')));
         if(uploadedDocument.manifest?.error)uploadResult.append(el('p',L('نوع خطأ الاستخراج: ','Extraction error type: ')+uploadedDocument.manifest.error));
+        if(uploadedDocument.job_id){
+          try{
+            const quarantine=await api.request(`/api/v1/ingestion/jobs/${uploadedDocument.job_id}/quarantine`);
+            for(const item of quarantine.items||[]){
+              uploadResult.append(el('p',L('سبب الحجر: ','Quarantine reason: ')+item.reason),
+                el('p',L('موضع السجل: ','Source location: ')+JSON.stringify(item.locator)));
+            }
+          }catch(quarantineError){uploadResult.append(errorState(quarantineError));}
+        }
         return;
       }
       stoppedAt='إنشاء دفعة المطالبات';
@@ -109,7 +118,7 @@ export function auditWorkspace(ctx) {
         const target=el('div');target.append(loading());openDrawer(L('معاينة الاستيراد','Import preview'),target);
         try{const preview=await api.request(`/api/v1/claims/batches/${id}/preview?limit=100`);target.replaceChildren(el('p',`${L('السجلات','Records')}: ${preview.record_count}`));
           for(const row of preview.rows)target.append(el('p',`${row.record_id.slice(0,8)} · ${row.valid?L('صالح','Valid'):row.reason}`));
-          const resume=button(L('تأكيد استيراد الصفوف الصالحة','Confirm import of valid rows'),async()=>{resume.disabled=true;try{let result;do{result=await api.request(`/api/v1/claims/batches/${id}/resume`,{method:'POST'});target.append(el('p',`${result.imported_count}/${result.record_count}`));}while(result.status==='importing');await batches(id);
+          const resume=button(L('تأكيد استيراد الصفوف الصالحة','Confirm import of valid rows'),async()=>{resume.disabled=true;try{let result;do{result=await api.request(`/api/v1/claims/batches/${id}/resume`,{method:'POST'});target.append(el('p',`${result.status} · ${result.imported_count}/${result.record_count}`));}while(result.status==='importing');await batches(id);
             if(result.status==='review_required')target.append(el('p',L('توجد صفوف تحتاج تصحيحًا؛ لم تُحذف ولم تُحتسب كمدققة.','Some rows need correction; they remain preserved and unaudited.')));
             else document.getElementById('drawer').close();}catch(error){
             target.append(errorState(error));
