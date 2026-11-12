@@ -10,8 +10,9 @@ logger = logging.getLogger(__name__)
 def parse(data: bytes) -> Extraction:
     book = load_workbook(io.BytesIO(data), read_only=True, data_only=False, keep_links=False)
     result = Extraction(format="xlsx")
+    sheet_count = len(book.worksheets)
     try:
-        if len(book.worksheets) > 50:
+        if sheet_count > 50:
             raise ValueError("worksheet limit exceeded")
         for sheet_index, sheet in enumerate(book.worksheets, start=1):
             iterator = sheet.iter_rows(values_only=False)
@@ -46,6 +47,6 @@ def parse(data: bytes) -> Extraction:
         book.close()
     logger.info(
         "xlsx_parse_complete sheets=%s processed_rows=%s quarantined_items=%s",
-        len(book.worksheets), result.units_processed, len(result.quarantined)
+        sheet_count, result.units_processed, len(result.quarantined)
     )
     return result
