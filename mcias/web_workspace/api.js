@@ -23,7 +23,13 @@ export class ApiError extends Error {
     const detail = typeof rawDetail === "string"
       ? rawDetail
       : rawDetail && typeof rawDetail === "object"
-        ? (rawDetail.message || rawDetail.reason || JSON.stringify(rawDetail))
+        ? [
+            rawDetail.message || rawDetail.reason,
+            rawDetail.batch_id ? `Batch ID: ${rawDetail.batch_id}` : null,
+            rawDetail.current_status ? `Current status: ${rawDetail.current_status}` : null,
+            rawDetail.record_count !== undefined ? `Records: ${rawDetail.imported_count ?? 0}/${rawDetail.record_count}` : null,
+            rawDetail.code ? `Code: ${rawDetail.code}` : null,
+          ].filter(Boolean).join(" · ") || JSON.stringify(rawDetail)
         : "";
     super(detail ? `${fallback}\n${detail}` : fallback);
     this.status = status;
