@@ -12,15 +12,40 @@ export function auditWorkspace(ctx) {
   const selected=field('audit-batch',L('دفعة المطالبات','Claim batch'),{required:false,options:[['',L('اختر دفعة','Select a batch')]]});
   const content=el('div');root.append(selected.wrap,content);
   selected.input.addEventListener('change',()=>void showBatch());
-  upload.addEventListener('submit',async event=>{event.preventDefault();if(submit.disabled||!upload.reportValidity())return;const source=file.input.files[0];if(!source)return;
+  upload.addEventListener('submit',async event=>{
+    event.preventDefault();if(submit.disabled||!upload.reportValidity())return;
+    const source=file.input.files[0];if(!source)return;
     if(source.size>20*1024*1024){uploadResult.replaceChildren(el('p',L('حجم الملف يتجاوز 20 MiB','File exceeds 20 MiB')));return;}
-    submit.disabled=true;uploadResult.replaceChildren(loading());try{
-      const document=await api.request('/api/v1/ingestion/uploads?filename='+encodeURIComponent(source.name),{method:'POST',raw:true,body:await source.arrayBuffer()});
-      if(document.status!=='extracted'){uploadResult.replaceChildren(empty(L('المصدر محفوظ ويحتاج مراجعة','Source preserved; review required'),L('لم يكتمل الاستخراج. لا تبدأ الدفعة قبل معالجة أسباب الحجر.','Extraction is incomplete. Resolve quarantine before staging.')));return;}
-      const batch=await api.request('/api/v1/claims/batches/from-document/'+document.document_id,{method:'POST'});
-      uploadResult.replaceChildren(el('p',L('حُفظ الأصل ببصمته: ','Original saved with hash: ')+document.sha256));
-      await batches(batch.id);await mapColumns(batch.id);
-    }catch(error){uploadResult.replaceChildren(errorState(error));}finally{submit.disabled=!can('ingestion.upload')||!can('claims.import');}});
+    let stoppedAt='بدء رفع الملف', uploadedDocument=null, stagedBatch=null;
+    submit.disabled=true;
+    uploadResult.replaceChildren(el('p',L('المرحلة 1/3: رفع الملف وفحصه واستخراج محتواه...','Stage 1/3: Uploading, scanning and extracting the file...')),loading());
+    try{
+      uploadedDocument=await api.request('/api/v1/ingestion/uploads?filename='+encodeURIComponent(source.name),{method:'POST',raw:true,body:await source.arrayBuffer()});
+      uploadResult.replaceChildren(el('p',L('نجح رفع الملف. حالة الاستخراج: ','Upload succeeded. Extraction status: ')+uploadedDocument.status),
+        el('p',L('معرّف المستند: ','Document ID: ')+uploadedDocument.document_id),
+        el('p',L('معرّف مهمة الاستخراج: ','Extraction job: ')+(uploadedDocument.job_id||'—')));
+      if(uploadedDocument.status!=='extracted'){
+        uploadResult.append(empty(L('توقف المسار عند الاستخراج','Pipeline stopped during extraction'),
+          L('لم يتم إنشاء دفعة مطالبات. راجع حالة المستند وسجل الحجر قبل إعادة المحاولة.','No claim batch was created. Review document status and quarantine before retrying.')));
+        if(uploadedDocument.manifest?.error)uploadResult.append(el('p',L('نوع خطأ الاستخراج: ','Extraction error type: ')+uploadedDocument.manifest.error));
+        return;
+      }
+      stoppedAt='إنشاء دفعة المطالبات';
+      uploadResult.append(el('p',L('المرحلة 2/3: إنشاء دفعة المطالبات...','Stage 2/3: Creating the claim batch...')));
+      stagedBatch=await api.request('/api/v1/claims/batches/from-document/'+uploadedDocument.document_id,{method:'POST'});
+      uploadResult.append(el('p',L('تم إنشاء الدفعة. الحالة: ','Batch created. Status: ')+stagedBatch.status),
+        el('p',L('معرّف الدفعة: ','Batch ID: ')+stagedBatch.id),
+        el('p',L('عدد السجلات: ','Record count: ')+stagedBatch.record_count));
+      stoppedAt='تحميل حالة الدفعة وربط الأعمدة';
+      await batches(stagedBatch.id);
+      await mapColumns(stagedBatch.id);
+    }catch(error){
+      uploadResult.append(errorState(error),el('p',L('توقفت السلسلة عند: ','Pipeline stopped at: ')+stoppedAt));
+      if(uploadedDocument)uploadResult.append(el('p',L('المستند الذي تم حفظه: ','Saved document: ')+uploadedDocument.document_id+' · '+uploadedDocument.status));
+      if(stagedBatch)uploadResult.append(el('p',L('الدفعة التي تم إنشاؤها: ','Created batch: ')+stagedBatch.id+' · '+stagedBatch.status));
+      toast(error.message);
+    }finally{submit.disabled=!can('ingestion.upload')||!can('claims.import');}
+  });
 
   async function batches(id=''){
     const previous=id||selected.input.value;const page=await api.request('/api/v1/workspace/catalog/batches?limit=100');
@@ -86,13 +111,30 @@ export function auditWorkspace(ctx) {
           for(const row of preview.rows)target.append(el('p',`${row.record_id.slice(0,8)} · ${row.valid?L('صالح','Valid'):row.reason}`));
           const resume=button(L('تأكيد استيراد الصفوف الصالحة','Confirm import of valid rows'),async()=>{resume.disabled=true;try{let result;do{result=await api.request(`/api/v1/claims/batches/${id}/resume`,{method:'POST'});target.append(el('p',`${result.imported_count}/${result.record_count}`));}while(result.status==='importing');await batches(id);
             if(result.status==='review_required')target.append(el('p',L('توجد صفوف تحتاج تصحيحًا؛ لم تُحذف ولم تُحتسب كمدققة.','Some rows need correction; they remain preserved and unaudited.')));
-            else document.getElementById('drawer').close();}catch(error){target.append(errorState(error));}finally{resume.disabled=false;}},'button primary');target.append(resume);
+            else document.getElementById('drawer').close();}catch(error){
+            target.append(errorState(error));
+            toast(error.message);
+            try{
+              const latest=await api.request(`/api/v1/claims/batches/${id}`);
+              target.append(panel(L('حالة الدفعة بعد الخطأ','Batch status after error'),
+                `${latest.status} · ${latest.imported_count}/${latest.record_count} · ${latest.id}`));
+              await batches(id);
+            }catch(refreshError){target.append(errorState(refreshError));}
+          }finally{resume.disabled=false;}},'button primary');target.append(resume);
         }catch(error){target.replaceChildren(errorState(error));}}));
       if(can('ingestion.upload')&&can('claims.import')&&page.entries.length)actions.append(button(L('إضافة فاتورة أو مرفق','Add invoice or attachment'),()=>attachInvoice(batch,page.entries)));
       if(can('reports.create')&&batch.status==='imported')actions.append(button(L('تجهيز ملفات النتائج الأربعة','Prepare four result files'),async()=>{
         try{await api.request('/api/v1/result-files/batches/'+id,{method:'POST'});ctx.navigate(ctx.scope==='admin'?'/admin/result-reports':'/institution/result-reports');}
         catch(error){toast(error.message);}}));
       if(can('claims.review')&&batch.status==='imported'){
+        actions.append(button(L('إعادة تشغيل الفحص المرجعي','Run reference validation'),async()=>{
+          try{
+            const result=await api.request(`/api/v1/claims/batches/${id}/reference-checks`,{method:'POST'});
+            body.append(panel(L('نتيجة الفحص المرجعي','Reference validation result'),
+              `${result.summary?.MATCHED??0} · ${result.summary?.REVIEW_REQUIRED??0} · ${result.summary?.BLOCKED??0}`));
+            toast(L('اكتمل الفحص المرجعي وحُفظت نتيجته','Reference validation completed and saved'));
+          }catch(error){body.append(errorState(error));toast(error.message);}
+        }));
         const run=button(L('بدء التدقيق','Start audit'),async()=>{run.disabled=true;try{
           const result=await api.request(`/api/v1/audits/batches/${id}/run`,{method:'POST'});
           const out=panel(L('نتيجة دورة التدقيق','Audit cycle result'),Object.entries(result.counts).map(([key,value])=>`${key}: ${value}`).join(' · '));
