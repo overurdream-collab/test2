@@ -4,44 +4,31 @@
  */
 import { L } from "./ui.js";
 export class ApiError extends Error {
-  constructor(status) {
-    super(
+  constructor(status, payload = null, path = "") {
+    const fallback =
       status === 401
-        ? L(
-            "انتهت الجلسة أو بيانات الدخول غير صحيحة.",
-            "Session expired or credentials are invalid.",
-          )
+        ? L("انتهت الجلسة أو بيانات الدخول غير صحيحة.", "Session expired or credentials are invalid.")
         : status === 403
-          ? L(
-              "الخادم رفض الوصول. راجع المسؤول لتوفير الصلاحية اللازمة.",
-              "The server denied access. Ask your administrator for the required permission.",
-            )
+          ? L("الخادم رفض الوصول. راجع المسؤول لتوفير الصلاحية اللازمة.", "The server denied access. Ask your administrator for the required permission.")
           : status === 404
-            ? L(
-                "لم يتم العثور على سجل مصرح بهذا المعرّف.",
-                "No authorized record was found with this identifier.",
-              )
+            ? L("لم يتم العثور على سجل مصرح بهذا المعرّف.", "No authorized record was found with this identifier.")
             : status === 409
-              ? L(
-                  "تعارض في الحالة أو سلامة الأدلة أو فصل المسؤوليات.",
-                  "State, evidence integrity or separation-of-duties conflict.",
-                )
+              ? L("تعارض في حالة العملية أو سلامة البيانات.", "The operation state or data integrity check conflicted.")
               : status === 422
-                ? L(
-                    "راجع الحقول وضوابط البيانات المطلوبة.",
-                    "Check the fields and required data constraints.",
-                  )
+                ? L("راجع الحقول وضوابط البيانات المطلوبة.", "Check the fields and required data constraints.")
                 : status === 429
-                  ? L(
-                      "طلبات كثيرة. أعد المحاولة لاحقًا.",
-                      "Too many attempts. Try again later.",
-                    )
-                  : L(
-                      "الخدمة غير متاحة. تحقق من اتصال الخادم.",
-                      "Service unavailable. Check server connectivity.",
-                    ),
-    );
+                  ? L("طلبات كثيرة. أعد المحاولة لاحقًا.", "Too many attempts. Try again later.")
+                  : L("الخدمة غير متاحة. تحقق من اتصال الخادم.", "Service unavailable. Check server connectivity.");
+    const rawDetail = payload?.detail ?? payload?.message ?? null;
+    const detail = typeof rawDetail === "string"
+      ? rawDetail
+      : rawDetail && typeof rawDetail === "object"
+        ? (rawDetail.message || rawDetail.reason || JSON.stringify(rawDetail))
+        : "";
+    super(detail ? `${fallback}\n${detail}` : fallback);
     this.status = status;
+    this.detail = rawDetail;
+    this.path = path;
   }
 }
 export class ApiClient {
@@ -119,7 +106,11 @@ export class ApiClient {
         this.clear();
         this.onExpiry();
       }
-      if (!response.ok) throw new ApiError(response.status);
+      if (!response.ok) {
+        let errorPayload = null;
+        try { errorPayload = await response.json(); } catch { /* response may be empty or non-JSON */ }
+        throw new ApiError(response.status, errorPayload, path);
+      }
       let payload;
       try {
         payload = response.status === 204 ? null : download ? await response.blob() : await response.json();
