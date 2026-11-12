@@ -1,4 +1,5 @@
 """Transactional ingestion: encrypted original first, tenant-scoped deduplication, reviewable extraction."""
+import logging
 from sqlalchemy import select
 from mcias.models import SourceFile, AuditLog
 from mcias.models_ingestion import IngestionDocument, IngestionJob, ExtractedSourceRecord, QuarantineItem
@@ -9,6 +10,8 @@ from mcias.ingestion.isolated_parser import isolated_parse
 from mcias.ingestion.manifest import manifest
 from mcias.ingestion.provenance import locator_dict
 from mcias.ingestion.palermo.palermo_1 import review
+
+logger = logging.getLogger(__name__)
 
 class IngestionError(ValueError):
     pass
@@ -34,10 +37,16 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
     job = IngestionJob(organization_id=organization_id, document_id=document.id, status="processing", manifest={})
     db.add(job)
     db.flush()
+    phase = "malware_scan"
     try:
         scan(data)
-        extraction = isolated_parse(identify(data, filename), data)
+        phase = "file_identification"
+        file_kind = identify(data, filename)
+        phase = f"{file_kind}_parsing"
+        extraction = isolated_parse(file_kind, data)
+        phase = "source_review"
         result = review(extraction)
+        phase = "persist_extracted_rows"
         for record in extraction.records:
             db.add(ExtractedSourceRecord(job_id=job.id, locator=locator_dict(record.locator), values=record.values, confidence=round(record.confidence*100)))
         for issue in extraction.quarantined:
@@ -45,7 +54,11 @@ def ingest(db, store, organization_id: str, actor_id: str, filename: str, data: 
         job.manifest = manifest(extraction)
         job.status = result["status"]
     except Exception as exc:
-        # Preserve encrypted originals; scanner failures are never treated as safe.
+        # Keep originals, but make the exact failed stage visible in server logs.
+        logger.exception(
+            "ingestion_failed phase=%s document_id=%s job_id=%s error_type=%s",
+            phase, document.id, job.id, type(exc).__name__
+        )
         job.status = "review_required"
         job.manifest = {"complete": False, "error": type(exc).__name__, "expected_units": 1, "processed_units": 0, "quarantined_units": 1}
         db.add(QuarantineItem(job_id=job.id, reason="unreadable or unsafe source", locator={"kind":"file","index":1}))
