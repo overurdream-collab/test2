@@ -54,10 +54,42 @@ def _reference_run(db,fn):
     except ValueError as exc:db.rollback();raise HTTPException(409,str(exc)) from None
     except (RuntimeError,OSError):db.rollback();raise HTTPException(503,'Encrypted reference storage unavailable') from None
 
+def _reference_conflict(batch: ClaimBatch, code: str, reason: str):
+    return HTTPException(status_code=409, detail={
+        "code": code,
+        "batch_id": batch.id,
+        "current_status": batch.status,
+        "record_count": batch.record_count,
+        "imported_count": batch.imported_count,
+        "reason": reason,
+        "message": f"لا يمكن بدء الفحص المرجعي للدفعة {batch.id}: {reason}",
+    })
+
+
 @router.post('/batches/{batch_id}/reference-checks',status_code=201)
 def run_reference_checks(batch_id:str,authorization:str|None=Header(default=None),db:Session=Depends(get_db)):
     actor=_actor(db,authorization,'claims.review')
     require_organization(db,actor,actor.organization_id,'claims.read')
+    batch=db.scalar(select(ClaimBatch).where(
+        ClaimBatch.id==batch_id,
+        ClaimBatch.organization_id==actor.organization_id
+    ))
+    if batch is None:
+        raise HTTPException(404, detail={"code":"BATCH_NOT_FOUND","batch_id":batch_id,
+                                         "message":"لم يتم العثور على دفعة ضمن مؤسستك."})
+    if batch.status != "imported":
+        reasons = {
+            "staged": "الدفعة مُجهزة فقط؛ اربط الأعمدة ثم أكمل استيراد السجلات.",
+            "importing": "الاستيراد لم يكتمل بعد؛ توجد سجلات لم تُستورد.",
+            "review_required": "الدفعة تحتاج مراجعة؛ توجد سجلات مرفوضة أو بيانات استخراج غير مكتملة.",
+        }
+        reason = reasons.get(batch.status, f"حالة الدفعة الحالية ({batch.status}) لا تسمح بالفحص المرجعي.")
+        raise _reference_conflict(batch, "BATCH_NOT_IMPORTED", reason)
+    if batch.imported_count != batch.record_count:
+        raise _reference_conflict(
+            batch, "BATCH_IMPORT_COUNT_MISMATCH",
+            "حالة الدفعة imported لكن عدد السجلات المستوردة لا يساوي العدد المتوقع؛ يلزم فحص سلامة الاستيراد."
+        )
     result=_reference_run(db,lambda:reference_checks.run(db,actor,batch_id))
     db.commit();return result
 
